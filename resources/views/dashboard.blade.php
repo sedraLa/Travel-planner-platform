@@ -1,10 +1,9 @@
 <x-app-layout>
     <section>
         <div class="description">
-            <h1 style="font-weight:bold; font-size:25px;margin-top:3px">Let's go travel</h1>
-            <img class="icon" src="{{ asset('images/icons8-globe-96.png') }}" alt="Globe Icon">
+            <h1 style="font-weight:bold; font-size:35px;margin-top:5px">Let's go travel</h1>
         </div>
-        <p style="font-size:18px;">
+        <p style="font-size:18px;text-align:center;width:80%;">
             Unleash the traveler <span>inside you</span> & enjoy your dream vacation. <br>
             Plan your trips effortlessly — from destinations to bookings, all in one place. <br>
             It's the easiest way to organize your perfect journey and design your dream trip with personalized recommendations.
