@@ -1,19 +1,39 @@
 <x-app-layout>
-<body style="background-color:white; background-image:url('');">
-    
-<form class="max-w-md mx-auto">   
-    <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
-    <div class="relative">
-        <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-            </svg>
-        </div>
-        <input type="search" id="default-search" class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search Mockups, Logos..." required />
-        <button type="submit" class="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
-    </div>
-</form>
+    @push('styles')
+    <link rel="stylesheet" href="{{asset('css/destinations.css')}}"
+    @endpush
 
-</body>
+    {{--body content--}}
+
+    <div class="main-wrapper">
+        <div class="hero-background"></div>
+        {{--search form--}}
+        <form class="search-form" method="GET" action="{{route('destination.index')}}">
+            <h1>Search your next destination</h1>
+            <div class="search-container">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                </svg>
+                <input type="search" id="default-search" name="search" class="search-input" placeholder="Search destinations..." required />
+                <button type="submit" class="search-button">Search</button>
+            </div>
+        </form>
+        {{--cards section--}}
+        <section class="cards">
+            @forelse ($destinations as $destination)
+                <div class="card">
+                <div class="card-img">
+                    <img src="{{ asset('storage/' . $destination->images->where('is_primary', true)->first()->image_url) }}" alt="Destination Image">
+                </div>
+                <h5>{{ $destination->name }}</h5>
+                <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
+                </div>
+            @empty
+                <p style="text-align:center;">No destinations found.</p>
+            @endforelse
+            </section>
+    </div>
+
 
 </x-app-layout>
