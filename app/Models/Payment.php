@@ -26,13 +26,13 @@ class Payment extends Model
 
     public function reservation()
     {
-        return $this->belongsTo(Reservation::class, 'reservation_id', 'reservation_id');
+        return $this->belongsTo(Reservation::class, 'reservation_id');
     }
 
     
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
 

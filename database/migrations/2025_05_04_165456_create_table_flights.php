@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('flight_number')->unique(); 
             $table->string('departure_airport');
             $table->string('arrival_airport'); 
-            $table->foreignId('destination_id')->constrained()->onDelete('set null');
+            $table->foreignId('destination_id')->nullable()->constrained()->onDelete('set null');
             $table->dateTime('departure_time'); 
             $table->dateTime('arrival_time');
             $table->string('booking_url'); 

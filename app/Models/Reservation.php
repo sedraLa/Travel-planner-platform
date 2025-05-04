@@ -39,7 +39,7 @@ class Reservation extends Model
 
     public function payment()
 {
-    return $this->hasOne(Payment::class, 'reservation_id', 'id');
+    return $this->hasOne(Payment::class, 'reservation_id');
 }
 
 }
