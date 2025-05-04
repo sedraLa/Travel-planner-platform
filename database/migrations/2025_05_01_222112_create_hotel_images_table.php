@@ -11,10 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        //hhhh
         Schema::create('hotel_images', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        $table->id('image_id');
+        $table->string('image_url'); 
+        $table->boolean('is_primary')->default(false);
+        $table->timestamps();
+        $table->unsignedBigInteger('hotel_id'); 
+        $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
         });
+        
     }
 
     /**

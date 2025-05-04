@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Hotel extends Model
 {
-    //بعد التعديل
+    //gggبعد التعديل
     use HasFactory;
     protected $fillable = [
-        'name',
+        'nameسسسس',
         'description',
         'address',
         'city',
