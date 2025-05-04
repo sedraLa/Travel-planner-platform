@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    //ghghgg
     /**
      * Run the migrations.
      */
@@ -14,10 +13,8 @@ return new class extends Migration
     {
         Schema::create('reservations', function (Blueprint $table) {
             $table->id('reservation_id');
-            $table->unsignedBigInteger('user_id')->nullable();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-            $table->unsignedBigInteger('hotel_id')->nullable();  
-            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('set null');
+            $table->foreignId('user_id')->constrained()->onDelete('set null');
+            $table->foreignId('hotel_id')->constrained()->onDelete('set null');
             $table->date('check_in_date');
             $table->date('check_out_date'); 
             $table->integer('rooms_count');
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('table_reservations');
     }
 };

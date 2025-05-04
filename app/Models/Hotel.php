@@ -7,10 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Hotel extends Model
 {
-    //gggبعد التعديل
     use HasFactory;
     protected $fillable = [
-        'nameسسسس',
+        'name',
         'description',
         'address',
         'city',
@@ -21,9 +20,9 @@ class Hotel extends Model
         'destination_id',
     ];
 
-    
+
     protected $hidden = [
-        'created_at', 
+        'created_at',
         'updated_at'
     ];
 
@@ -31,10 +30,10 @@ class Hotel extends Model
 
     public function destination()
     {
-        return $this->belongsTo(Destination::class, 'destination_id'); 
+        return $this->belongsTo(Destination::class, 'destination_id');
     }
 
-    
+
     public function images()
     {
         return $this->hasMany(HotelImage::class, 'hotel_id');
