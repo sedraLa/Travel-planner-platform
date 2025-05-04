@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('destination_id')->constrained()->onDelete('cascade');
             $table->string('image_url');
             $table->boolean('is_primary')->default(false);
-            $table->timestamps();
         });
     }
 

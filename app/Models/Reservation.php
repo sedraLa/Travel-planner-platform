@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    //fgghvghvv
     use HasFactory , SoftDeletes;
 
     protected $fillable = [
@@ -40,7 +39,7 @@ class Reservation extends Model
 
     public function payment()
 {
-    return $this->hasOne(Payment::class, 'reservation_id', 'reservation_id');
+    return $this->hasOne(Payment::class, 'reservation_id', 'id');
 }
 
 }

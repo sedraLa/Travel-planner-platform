@@ -18,8 +18,21 @@ class Destination extends Model
         'weather_info',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+
     public function images() {
         return $this->hasMany(DestinationImage::class);
+    }
+
+    public function flights() {
+        return $this->hasMany(Flight::class);
+    }
+
+    public function hotels() {
+        return $this->hasMany(Hotel::class);
     }
 
 

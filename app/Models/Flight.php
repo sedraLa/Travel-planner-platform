@@ -23,6 +23,12 @@ class Flight extends Model
         'duration',
         'price',
     ];
+
+    protected $hidden = [
+        'created_at',
+        'updated_at'
+    ];
+    
     public function destination()
     {
         return $this->belongsTo(Destination::class, 'destination_id');

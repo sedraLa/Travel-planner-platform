@@ -9,7 +9,6 @@ class Payment extends Model
 {
     use HasFactory ,SoftDeletes;
 
-//ffffffff
     protected $fillable = [
         'reservation_id',
         'user_id',
