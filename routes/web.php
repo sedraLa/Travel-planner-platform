@@ -32,4 +32,4 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/destinations',[DestinationController::class,'index'])->name('destination.index');
 Route::get('destinations/{id}',[DestinationController::class,'show'])->name('destination.show');
-require DIR.'/auth.php';
+require __DIR__.'/auth.php';
