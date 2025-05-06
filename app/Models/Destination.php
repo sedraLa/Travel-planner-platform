@@ -16,6 +16,7 @@ class Destination extends Model
         'location_details',
         'activities',
         'weather_info',
+        
     ];
 
     protected $hidden = [

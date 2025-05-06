@@ -1,6 +1,8 @@
+@php use App\Enums\UserRole;
+@endphp;
 <x-app-layout>
     @push('styles')
-    <link rel="stylesheet" href="{{asset('css/destinations.css')}}"
+    <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
     @endpush
 
     {{--body content--}}
@@ -17,6 +19,17 @@
                 </svg>
                 <input type="search" id="default-search" name="search" class="search-input" placeholder="Search destinations..." required />
                 <button type="submit" class="search-button">Search</button>
+
+                @if (Auth::user()->role === UserRole::ADMIN->value)
+                    <!-- Create Movie Button -->
+                    <a href="{{ route('destinations.create') }}"
+                        class="ml-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">
+                        Create
+                    </a>
+                @endif                     
+                              
+                
+
             </div>
         </form>
         {{--cards section--}}
@@ -24,7 +37,7 @@
             @forelse ($destinations as $destination)
                 <div class="card">
                 <div class="card-img">
-                    <img src="{{ asset('storage/' . $destination->images->where('is_primary', true)->first()->image_url) }}" alt="Destination Image">
+                <img src="{{ asset('storage/' . optional($destination->primary_image)->image_url) }}" alt="Destination Image">
                 </div>
                 <h5>{{ $destination->name }}</h5>
                 <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
@@ -36,4 +49,5 @@
     </div>
 
 
+    
 </x-app-layout>

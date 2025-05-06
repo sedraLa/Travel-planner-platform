@@ -4,8 +4,7 @@
     @endpush
     {{--body content--}}
     <div class="main-wrapper">
-        <div class="hero-background" style="background-image: url('{{ asset('storage/' . $destination->images->where('is_primary', true)->first()->image_url) }}');">
-        <div class="headings">
+    <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
             <h1>{{$destination->name}}</h1>
             <h3>{{$destination->city}}</h3>
         </div>
