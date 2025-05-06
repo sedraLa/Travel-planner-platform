@@ -32,4 +32,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/destinations',[DestinationController::class,'index'])->name('destination.index');
 Route::get('destinations/{id}',[DestinationController::class,'show'])->name('destination.show');
+Route::get('/destinations/edit/{id}', [DestinationController::class, 'edit'])->name('destinations.edit');
+Route::put('/destinations/{id}', [DestinationController::class, 'update'])->name('destinations.update');
+
+
 require __DIR__.'/auth.php';
