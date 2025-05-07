@@ -31,5 +31,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/destinations',[DestinationController::class,'index'])->name('destination.index');
+Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
+Route::post('/destinations/store', [DestinationController::class, 'store'])->name('destinations.store');
 Route::get('destinations/{id}',[DestinationController::class,'show'])->name('destination.show');
 require __DIR__.'/auth.php';
+
+

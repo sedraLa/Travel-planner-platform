@@ -1,13 +1,18 @@
-<x-app-layout>
+<x-details-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{asset('css/details.css')}}"
+        <link rel="stylesheet" href="{{asset('css/details.css')}}">
     @endpush
+    
     {{--body content--}}
+
+
     <div class="main-wrapper">
-        <div class="hero-background" style="background-image: url('{{ asset('storage/' . $destination->images->where('is_primary', true)->first()->image_url) }}');">
-        <div class="headings">
+    <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
+        <div class="headings" style="font-size:32px;">
             <h1>{{$destination->name}}</h1>
             <h3>{{$destination->city}}</h3>
+        </div>
+           
         </div>
         </div>
 
@@ -15,7 +20,7 @@
             <header>Explore everything about this city</header>
             <div class="cards">
                 @foreach($destination->images as $image)
-                    @if(!$image->is_primary) 
+                    @if(!$image->is_primary)
                         <div class="card">
                             <img src="{{ asset('storage/' . $image->image_url) }}" alt="Destination Image">
                         </div>
@@ -32,7 +37,7 @@
             <p>{{$destination->description}}</p>
             </div>
             <div class="things">
-                <h1>Things to do in {{$destination->name}}</h1>
+                <h1>Things to do</h1>
                     <p>{{ $destination->activities }}</p>
             </div>
 
@@ -43,3 +48,5 @@
             </div>
         </div>
     </div>
+
+</x-details-layout>

@@ -1,11 +1,29 @@
+@php use App\Enums\UserRole;@endphp
 <x-app-layout>
     @push('styles')
-    <link rel="stylesheet" href="{{asset('css/destinations.css')}}"
+    <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
     @endpush
 
     {{--body content--}}
 
     <div class="main-wrapper">
+        @if (Auth::user()->role === UserRole::ADMIN->value)
+        <!-- Create Destination Button -->
+        <div class="flex justify-end mb-4 px-6 pt-6">
+            <a href="{{ route('destinations.create') }}"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                + Add New Destination
+            </a>
+        </div>
+        
+    
+
+                     @if (session('success'))
+                    <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                   {{ session('success') }}
+                    </div>
+                        @endif
+             
         <div class="hero-background"></div>
         {{--search form--}}
         <form class="search-form" method="GET" action="{{route('destination.index')}}">
@@ -17,23 +35,32 @@
                 </svg>
                 <input type="search" id="default-search" name="search" class="search-input" placeholder="Search destinations..." required />
                 <button type="submit" class="search-button">Search</button>
+                @endif                     
+                              
+                
+
             </div>
         </form>
         {{--cards section--}}
-        <section class="cards">
+        <div class='cards'>
             @forelse ($destinations as $destination)
-                <div class="card">
+            <div class="card">
+            <a href="{{ route('destination.show', $destination->id) }}">
+                
                 <div class="card-img">
-                    <img src="{{ asset('storage/' . $destination->images->where('is_primary', true)->first()->image_url) }}" alt="Destination Image">
+                <img src="{{ asset('storage/' . optional($destination->primary_image)->image_url) }}" alt="Destination Image">
                 </div>
                 <h5>{{ $destination->name }}</h5>
                 <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
                 </div>
             @empty
                 <p style="text-align:center;">No destinations found.</p>
+             </a>
             @endforelse
-            </section>
+        </div>
+
     </div>
 
 
+    
 </x-app-layout>
