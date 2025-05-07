@@ -23,8 +23,6 @@ class DestinationController extends Controller
             $destination->primary_image = $destination->images->where('is_primary', true)->first();
         }
 
-
-
         return view('destinations.index',compact('destinations'));
     }
 
@@ -91,6 +89,7 @@ class DestinationController extends Controller
                 ]);
             }
         }
+        
         // إرجاع إلى صفحة الوجهات مع رسالة نجاح
         return redirect()->route('destination.index')->with('success', 'Destination created successfully!');
     }
@@ -101,7 +100,7 @@ class DestinationController extends Controller
     {
         $destination = Destination::with('images')->findOrFail($id);
         $primaryImage = $destination->images->where('is_primary', true)->first();
-        return view('destinations.show', compact('destination'));
+        return view('destinations.show', compact('destination', 'primaryImage'));
     }
 
     /**

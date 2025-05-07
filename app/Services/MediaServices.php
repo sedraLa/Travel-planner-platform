@@ -23,6 +23,6 @@ class MediaServices
         $path = $file->storeAs($folder, $fileName, 'public');
 
         // إرجاع المسار النسبي (مثلاً: storage/Destinations/xyz.jpg)
-        return 'storage/' . $path;
+        return  $path;
     }
 }

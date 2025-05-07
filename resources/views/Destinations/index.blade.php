@@ -8,6 +8,13 @@
     {{--body content--}}
 
     <div class="main-wrapper">
+
+                     @if (session('success'))
+                    <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                   {{ session('success') }}
+                    </div>
+                        @endif
+             
         <div class="hero-background"></div>
         {{--search form--}}
         <form class="search-form" method="GET" action="{{route('destination.index')}}">
@@ -33,8 +40,9 @@
             </div>
         </form>
         {{--cards section--}}
-        <section class="cards">
+        
             @forelse ($destinations as $destination)
+            <a href="{{ route('destination.show', $destination->id) }}" class="card">
                 <div class="card">
                 <div class="card-img">
                 <img src="{{ asset('storage/' . optional($destination->primary_image)->image_url) }}" alt="Destination Image">
@@ -44,8 +52,9 @@
                 </div>
             @empty
                 <p style="text-align:center;">No destinations found.</p>
+             </a>
             @endforelse
-            </section>
+
     </div>
 
 

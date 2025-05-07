@@ -13,15 +13,7 @@
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-7xl">
 
-                                   @if ($errors->any())
-                                           <div class="mb-4 text-red-600">
-                                              <ul class="list-disc list-inside">
-                                               @foreach ($errors->all() as $error)
-                                                     <li>{{ $error }}</li>
-                                                   @endforeach
-                                                    </ul>
-                                                        </div>
-                                                               @endif
+                                   
                     <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
                         @csrf
 
@@ -89,10 +81,18 @@
                             <x-input-error class="mt-2" :messages="$errors->get('primary_image_index')" />
                         </div>
 
-                        <!-- Submit Button -->
-                        <div class="flex items-center justify-end mt-4">
-                            <x-primary-button>{{ __('Create Destination') }}</x-primary-button>
-                        </div>
+                        <div class="flex items-center justify-end mt-4 space-x-3">
+                                <!-- Cancel Button -->
+                                 <a href="{{ route('destination.index') }}"
+                                 class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-black dark:text-white uppercase tracking-widest hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150">
+                                    {{ __('Cancel') }}
+                                           </a>
+                                       <!-- Submit Button -->
+                                          <x-primary-button>
+                                   {{ __('Create Destination') }}
+                                        </x-primary-button>
+                                                 </div>
+     
                     </form>
                 </div>
             </div>
@@ -100,24 +100,42 @@
     </div>
 </x-app-layout>
 
+
 <script>
+let allFiles = [];
+
 function showPrimarySelect(input) {
-    const files = input.files;
+    const newFiles = Array.from(input.files);
+    allFiles = allFiles.concat(newFiles); // نضيف الصور الجديدة بدون حذف القديمة
+
     const select = document.getElementById('primary_image_index');
     const wrapper = document.getElementById('primary-select-wrapper');
 
-    if (files.length > 0) {
-        select.innerHTML = ''; // إزالة الخيارات السابقة
-        wrapper.classList.remove('hidden'); // إظهار القائمة
+    if (allFiles.length > 0) {
+        select.innerHTML = '';
+        wrapper.classList.remove('hidden');
 
-        for (let i = 0; i < files.length; i++) {
+        allFiles.forEach((file, i) => {
             const option = document.createElement('option');
             option.value = i;
-            option.textContent = files[i].name;
+            option.textContent = file.name;
             select.appendChild(option);
-        }
+        });
     } else {
-        wrapper.classList.add('hidden'); // إخفاء القائمة إذا ما في صور
+        wrapper.classList.add('hidden');
     }
+
+    // 👇 تحديث ملفات الفورم المخفية
+    updateFileList(input);
+}
+
+function updateFileList(input) {
+    // إنشاء كائن جديد من نوع DataTransfer لتخزين الملفات كلها
+    const dataTransfer = new DataTransfer();
+    allFiles.forEach(file => dataTransfer.items.add(file));
+    input.files = dataTransfer.files;
 }
 </script>
+
+
+

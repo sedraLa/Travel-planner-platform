@@ -1,8 +1,10 @@
 <x-app-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{asset('css/details.css')}}"
+        <link rel="stylesheet" href="{{asset('css/details.css')}}">
     @endpush
     {{--body content--}}
+
+
     <div class="main-wrapper">
     <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
             <h1>{{$destination->name}}</h1>
@@ -42,3 +44,5 @@
             </div>
         </div>
     </div>
+
+    </x-app-layout>
