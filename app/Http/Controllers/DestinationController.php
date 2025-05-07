@@ -12,8 +12,23 @@ class DestinationController extends Controller
      */
     public function index()
     {
-        //Get all destinations available
-        $destinations = Destination::with('images')->get();
+        
+        $query = Destination::with('images');
+
+        //search by name, location(city, country)
+        if ($request->has('search') && $request->search != '') {
+            $searchTerm = $request->search;
+    
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('name', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('city', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('country', 'like', '%' . $searchTerm . '%');
+            });
+        }
+        
+        $destinations = $query->get();
+
+
         return view('destinations.index',compact('destinations'));
     }
 
