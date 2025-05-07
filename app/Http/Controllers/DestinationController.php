@@ -42,14 +42,14 @@ class DestinationController extends Controller
         
         $request->validate([
             'name' => 'required|unique:destinations,name', // التأكد من اسم الوجهة غير مكرر
-            'description' => 'required',
+            'description' => 'nullable',
             'location_details' => 'required',
             'weather_info' => 'required',
-            'activities' => 'required',
+            'activities' => 'nullable',
             'city' => 'required|string|max:255',
              'country' => 'required|string|max:255',
             // التأكد من أن الصورة الرئيسية هي عدد صحيح
-            'images' => 'nullable|array',
+            'images' => 'required|array',
              'images.*' => 'image|mimes:jpeg,png,jpg,gif',
              'primary_image_index' => 'nullable|integer',
         ]);

@@ -1,10 +1,14 @@
-
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            
-            {{ __('Create New Destination') }}
-        </h2>
+        <div class="flex items-center justify-between">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Create New Destination') }}
+            </h2>
+            <a href="{{ route('destination.index') }}"
+               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                ← Back to Destinations
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -13,7 +17,15 @@
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-7xl">
 
-                                   
+            @if ($errors->any())
+                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+                     <ul class="list-disc pl-5">
+                         @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                         @endforeach
+        </ul>
+    </div>
+@endif
                     <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
                         @csrf
 
@@ -25,7 +37,7 @@
                                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
                             </div>
                             <div class="w-1/2">
-                                <x-input-label for="description" :value="__('Description')" />
+                                <x-input-label for="description" :value="__('Description (Optional)')" />
                                 <textarea id="description" name="description" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('description')" />
                             </div>
@@ -61,14 +73,14 @@
                         <!-- Activities & Images -->
                         <div class="flex space-x-4 mt-4">
                             <div class="w-1/2">
-                                <x-input-label for="activities" :value="__('Available Activities')" />
-                                <textarea id="activities" name="activities" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
+                                <x-input-label for="activities" :value="__('Available Activities (Optional)')" />
+                                <textarea id="activities" name="activities" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('activities')" />
                             </div>
 
                             <!-- Images Upload -->
                             <div class="w-1/2">
-                                <x-input-label for="images" :value="__('Images (Optional)')" />
+                                <x-input-label for="images" :value="__('Images')" />
                                 <input id="images" name="images[]" type="file" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" multiple onchange="showPrimarySelect(this)" />
                                 <x-input-error class="mt-2" :messages="$errors->get('images')" />
                             </div>
