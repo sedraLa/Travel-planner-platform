@@ -13,7 +13,7 @@ class DestinationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         
         $query = Destination::with('images');
