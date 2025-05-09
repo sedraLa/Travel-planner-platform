@@ -129,15 +129,6 @@
     margin-bottom: 10px;
   }
 
-  .weather a {
-    color: var(--grey);
-    font-weight:bold;
-  }
-
-  .weather a:hover {
-    text-decoration: underline;
-  }
-
 
 
   
