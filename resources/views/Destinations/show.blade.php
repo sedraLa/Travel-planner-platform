@@ -43,7 +43,7 @@
 
             <div class="weather">
                 <h1>Weather info</h1>
-                <a href="{{route('weather.forecast',['city'=>$destination->name])}}">Click here to view 5-Day Forecast</a>
+                <p>{{$destination->weather_info}}</p>
             </div>
             </div>
         </div>

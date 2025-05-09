@@ -15,7 +15,7 @@ class Destination extends Model
         'description',
         'location_details',
         'activities',
-       // 'weather_info',
+        'weather_info',
         
     ];
 

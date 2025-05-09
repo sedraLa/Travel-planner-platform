@@ -53,7 +53,7 @@ class DestinationController extends Controller
             'name' => 'required|unique:destinations,name', // التأكد من اسم الوجهة غير مكرر
             'description' => 'nullable',
             'location_details' => 'required',
-           // 'weather_info' => 'required',
+            'weather_info' => 'required',
             'activities' => 'nullable',
             'city' => 'required|string|max:255',
              'country' => 'required|string|max:255',
@@ -68,7 +68,7 @@ class DestinationController extends Controller
         $destination->name = $request->name;
         $destination->description = $request->description;
         $destination->location_details = $request->location_details;
-        //$destination->weather_info = $request->weather_info;
+        $destination->weather_info = $request->weather_info;
         $destination->activities = $request->activities;
         $destination->city = $request->city;
         $destination->country = $request->country ;

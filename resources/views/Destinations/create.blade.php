@@ -50,13 +50,11 @@
                                 <textarea id="location_details" name="location_details"" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('location_details')" />
                             </div>
-                            {{--
                             <div class="w-1/2">
                                 <x-input-label for="weather_info" :value="__('Weather Conditions')" />
                                 <textarea id="weather_info" name="weather_info" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('weather_info')" />
                             </div>
-                            --}}
                         </div>
                                                                                      
 
