@@ -117,7 +117,10 @@ class DestinationController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
+    $destination = Destination::findOrFail($id);
+
+    return view('destinations.edit', compact('destination'));
     }
 
     /**
@@ -125,7 +128,35 @@ class DestinationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+           
+    $destination = Destination::findOrFail($id);
+
+   
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+        'country' => 'required|string|max:255',
+        'location_details' => 'required|string',
+        'description' => 'nullable|string',
+        'activities' => 'nullable|string',
+        'weather_info' => 'required|string',
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // تحقق من الصور
+    ]);
+
+    // تحديث بيانات الـ destination
+    $destination->update($validatedData);
+
+    // التعامل مع رفع الصور الجديدة
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $image) {
+            $path = $image->store('destinations', 'public');  // تخزين الصورة
+            $destination->images()->create(['image_url' => $path, 'is_primary' => false]);  // حفظ الصورة في الـ database
+        }
+    }
+
+    // إعادة التوجيه بعد التحديث
+    return redirect()->route('destination.index')->with('success', 'Destination updated successfully');
+
     }
 
     /**

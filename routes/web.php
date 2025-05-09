@@ -33,8 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
     Route::post('/destinations/store', [DestinationController::class, 'store'])->name('destinations.store');
     Route::get('destinations/{id}', [DestinationController::class, 'show'])->name('destination.show');
+    Route::put('/destinations/{id}', [DestinationController::class, 'update'])->name('destinations.update');
     Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
 });
 
 require __DIR__.'/auth.php';
-
