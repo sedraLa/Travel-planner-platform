@@ -85,7 +85,7 @@ class DestinationController extends Controller
     }
 
     // إعادة التوجيه بعد التحديث
-    return redirect()->route('destinations.index')->with('success', 'Destination updated successfully');
+    return redirect()->route('destination.index')->with('success', 'Destination updated successfully');
 
     }
 
