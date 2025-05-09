@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\weatherController;
 
 
 /*
@@ -28,12 +29,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::get('/destinations', [DestinationController::class, 'index'])->name('destination.index');
+    Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
+    Route::post('/destinations/store', [DestinationController::class, 'store'])->name('destinations.store');
+    Route::get('destinations/{id}', [DestinationController::class, 'show'])->name('destination.show');
+    Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
 });
 
-Route::get('/destinations',[DestinationController::class,'index'])->name('destination.index');
-Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
-Route::post('/destinations/store', [DestinationController::class, 'store'])->name('destinations.store');
-Route::get('destinations/{id}',[DestinationController::class,'show'])->name('destination.show');
 require __DIR__.'/auth.php';
-
 
