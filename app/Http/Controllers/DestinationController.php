@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Destination;
 use App\Models\DestinationImage;
 use App\Services\MediaServices; 
+use Illuminate\Support\Facades\Storage;
+
 
 
 class DestinationController extends Controller
@@ -80,16 +82,8 @@ class DestinationController extends Controller
         if ($request->hasFile('images')) {
             $images = $request->file('images');
     
-            // حفظ الصورة الرئيسية إذا تم تحديدها
-            if ($request->has('primary_image_index')) {
-                $primaryImagePath = MediaServices::save($images[$request->primary_image_index], 'image', 'Destinations');
-                $destination->images()->create([
-                    'image_url' => $primaryImagePath,
-                    'is_primary' => true
-                ]);
-            }
     
-            // حفظ باقي الصور
+            // حفظ الصور
             foreach ($images as $index => $image) {
                 $imagePath = MediaServices::save($image, 'image', 'Destinations');
                 $destination->images()->create([
@@ -162,8 +156,32 @@ class DestinationController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $image = DestinationImage::findOrFail($id);
+    
+        // حذف الصورة من التخزين
+        Storage::delete('public/' . $image->image_url);
+    
+        // حذف السطر من قاعدة البيانات
+        $image->delete();
+    
+        return back()->with('success', 'Image deleted successfully.');
     }
-}
+    
+    public function setPrimary($id)
+    {
+        $image = DestinationImage::findOrFail($id);
+        $destination = $image->destination;
+    
+        // جعل كل الصور غير رئيسية
+        $destination->images()->update(['is_primary' => false]);
+    
+        // جعل هذه الصورة رئيسية
+        $image->is_primary = true;
+        $image->save();
+    
+        return back()->with('success', 'Primary image updated successfully.');
+    }
+    
+}           
