@@ -45,7 +45,8 @@
             <div class="card">
                 <a href="{{ route('destination.show', $destination->id) }}">
                     <div class="card-img">
-                        <img src="{{ asset('storage/' . optional($destination->images->first())->image_url) }}" alt="Destination Image">
+                        <img src="{{ asset('storage/' . optional($destination->images->where('is_primary', true)->first())->image_url) }}" alt="Destination Image">
+
                     </div>
                     <h5>{{ $destination->name }}</h5>
                     <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
