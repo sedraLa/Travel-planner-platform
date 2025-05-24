@@ -132,21 +132,21 @@
 </div>
 
 <!-- Buttons -->
-<div class="flex flex-wrap items-center justify-end mt-6 gap-4">
-    <a href="{{ route('destination.index') }}"
-       class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 text-black dark:text-white font-semibold rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 shadow">
+       <div class="flex flex-wrap items-center justify-end mt-6 gap-4">
+       <a href="{{ route('destination.index') }}"
+          class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 text-black dark:text-white font-semibold rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 shadow">
         {{ __('Cancel') }}
-    </a>
+         </a>
 
-    <x-primary-button>
-        {{ __('Update Destination') }}
-    </x-primary-button>
-</div>
+              <x-primary-button type="submit">
+               {{ __('Update Destination') }}
+              </x-primary-button>
+              </div>
 
                     </form>
-                </div>
-            </div>
-        </div>
+                 </div>
+                 </div>
+          </div>
     </div>
 
     <script>
