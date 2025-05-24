@@ -43,5 +43,4 @@ Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDesti
 // Weather forecast
 Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
 });
-
-require DIR.'/auth.php';
+require __DIR__.'/auth.php';
