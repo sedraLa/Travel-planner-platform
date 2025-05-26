@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Destination;
 use App\Models\DestinationImage;
-use App\Services\MediaServices; 
+use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -17,20 +17,20 @@ class DestinationController extends Controller
      */
     public function index(Request $request)
     {
-        
+
         $query = Destination::with('images');
 
         //search by name, location(city, country)
         if ($request->has('search') && $request->search != '') {
             $searchTerm = $request->search;
-    
+
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name', 'like', '%' . $searchTerm . '%')
                   ->orWhere('city', 'like', '%' . $searchTerm . '%')
                   ->orWhere('country', 'like', '%' . $searchTerm . '%');
             });
         }
- 
+
         $destinations = $query->get();
 
 
@@ -50,7 +50,7 @@ class DestinationController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->validate([
             'name' => 'required|unique:destinations,name', // التأكد من اسم الوجهة غير مكرر
             'description' => 'nullable',
@@ -64,7 +64,7 @@ class DestinationController extends Controller
              'images.*' => 'image|mimes:jpeg,png,jpg,gif',
              'primary_image_index' => 'nullable|integer',
         ]);
-    
+
         // حفظ الوجهة
         $destination = new Destination();
         $destination->name = $request->name;
@@ -76,13 +76,13 @@ class DestinationController extends Controller
         $destination->country = $request->country ;
 
         $destination->save();
-    
+
         // إذا كانت هناك صور تم تحميلها
-       
+
         if ($request->hasFile('images')) {
             $images = $request->file('images');
-    
-    
+
+
             // حفظ الصور
             foreach ($images as $index => $image) {
                 $imagePath = MediaServices::save($image, 'image', 'Destinations');
@@ -92,7 +92,7 @@ class DestinationController extends Controller
                 ]);
             }
         }
-        
+
         // إرجاع إلى صفحة الوجهات مع رسالة نجاح
         return redirect()->route('destination.index')->with('success', 'Destination created successfully!');
     }
@@ -111,7 +111,7 @@ class DestinationController extends Controller
      */
     public function edit(string $id)
     {
-        
+
     $destination = Destination::findOrFail($id);
 
     return view('destinations.edit', compact('destination'));
@@ -122,34 +122,45 @@ class DestinationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-           
+
     $destination = Destination::findOrFail($id);
 
-   
+
     $validatedData = $request->validate([
-        'name' => 'required|string|max:255',
-        'city' => 'required|string|max:255',
-        'country' => 'required|string|max:255',
-        'location_details' => 'required|string',
-        'description' => 'nullable|string',
-        'activities' => 'nullable|string',
-        'weather_info' => 'required|string',
-        'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',  // تحقق من الصور
-    ]);
+    'name' => 'required|string|max:255',
+    'city' => 'required|string|max:255',
+    'country' => 'required|string|max:255',
+    'location_details' => 'required|string',
+    'description' => 'nullable|string',
+    'activities' => 'nullable|string',
+    'images' => 'nullable|array',
+    'images.*' => 'image|mimes:jpeg,png,jpg,gif',
+]);
+
 
     // تحديث بيانات الـ destination
     $destination->update($validatedData);
 
     // التعامل مع رفع الصور الجديدة
     if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('destinations', 'public');  // تخزين الصورة
-            $destination->images()->create(['image_url' => $path, 'is_primary' => false]);  // حفظ الصورة في الـ database
+        $images = $request->file('images');
+        if (!is_array($images)) {
+            $images = [$images]; // ضمان التعامل مع صورة واحدة كمصفوفة
+        }
+
+        foreach ($images as $image) {
+            $imagePath = MediaServices::save($image, 'image', 'Destinations');
+            $destination->images()->create([
+                'image_url' => $imagePath,
+            ]);
         }
     }
 
+
+
     // إعادة التوجيه بعد التحديث
     return redirect()->route('destination.index')->with('success', 'Destination updated successfully');
+
 
     }
 
@@ -157,31 +168,54 @@ class DestinationController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-    {
-        $image = DestinationImage::findOrFail($id);
-    
-        // حذف الصورة من التخزين
-        Storage::delete('public/' . $image->image_url);
-    
-        // حذف السطر من قاعدة البيانات
-        $image->delete();
-    
-        return back()->with('success', 'Image deleted successfully.');
+{
+    $image = DestinationImage::findOrFail($id);
+
+    // تحقق إذا كانت الصورة هي الرئيسية
+    if ($image->is_primary) {
+        return back()->with('error', 'لا يمكن حذف الصورة الرئيسية. يرجى تعيين صورة أخرى كصورة رئيسية أولاً.');
     }
-    
+
+    // حذف الصورة من التخزين
+    Storage::delete('public/' . $image->image_url);
+
+    // حذف السطر من قاعدة البيانات
+    $image->delete();
+
+    return back()->with('success', 'تم حذف الصورة بنجاح.');
+}
+
+
     public function setPrimary($id)
     {
         $image = DestinationImage::findOrFail($id);
         $destination = $image->destination;
-    
+
         // جعل كل الصور غير رئيسية
         $destination->images()->update(['is_primary' => false]);
-    
+
         // جعل هذه الصورة رئيسية
         $image->is_primary = true;
         $image->save();
-    
-        return back()->with('success', 'Primary image updated successfully.');
+        return redirect()->back()->with([
+    'success' => 'Primary image updated successfully.',
+    'from' => 'set_primary' ]);
     }
-    
-}           
+
+    public function destroyDestination($id)
+{
+    $destination = Destination::with('images')->findOrFail($id);
+
+    // delete destination from storage
+    foreach ($destination->images as $image) {
+        Storage::delete('public/' . $image->image_url);
+    }
+
+
+    $destination->delete();
+
+    return redirect()->route('destination.index')->with('success', 'Destination has been deleted successfuly');
+}
+
+
+}
