@@ -52,20 +52,19 @@ class DestinationController extends Controller
     {
 
         $request->validate([
-            'name' => 'required|unique:destinations,name', // التأكد من اسم الوجهة غير مكرر
+            'name' => 'required|unique:destinations,name', // make sure that destination name is unique
             'description' => 'nullable',
             'location_details' => 'required',
            // 'weather_info' => 'required',
             'activities' => 'nullable',
             'city' => 'required|string|max:255',
              'country' => 'required|string|max:255',
-            // التأكد من أن الصورة الرئيسية هي عدد صحيح
             'images' => 'required|array',
              'images.*' => 'image|mimes:jpeg,png,jpg,gif',
              'primary_image_index' => 'nullable|integer',
         ]);
 
-        // حفظ الوجهة
+        // save destination
         $destination = new Destination();
         $destination->name = $request->name;
         $destination->description = $request->description;
@@ -77,23 +76,23 @@ class DestinationController extends Controller
 
         $destination->save();
 
-        // إذا كانت هناك صور تم تحميلها
+        // if there is any loaded images
 
         if ($request->hasFile('images')) {
             $images = $request->file('images');
 
 
-            // حفظ الصور
+            // save images
             foreach ($images as $index => $image) {
                 $imagePath = MediaServices::save($image, 'image', 'Destinations');
                 $destination->images()->create([
                     'image_url' => $imagePath,
-                    'is_primary' => $request->primary_image_index == $index ? true : false, // إذا الصورة هي الرئيسية
+                    'is_primary' => $request->primary_image_index == $index ? true : false, // if image is primary
                 ]);
             }
         }
 
-        // إرجاع إلى صفحة الوجهات مع رسالة نجاح
+       
         return redirect()->route('destination.index')->with('success', 'Destination created successfully!');
     }
     /**
@@ -134,55 +133,53 @@ class DestinationController extends Controller
     'description' => 'nullable|string',
     'activities' => 'nullable|string',
     'images' => 'nullable|array',
-    'images.*' => 'image|mimes:jpeg,png,jpg,gif',
+    'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
 ]);
 
 
-    // تحديث بيانات الـ destination
+    // update destination info
     $destination->update($validatedData);
 
-    // التعامل مع رفع الصور الجديدة
+    // handle loading new images
     if ($request->hasFile('images')) {
-        $images = $request->file('images');
-        if (!is_array($images)) {
-            $images = [$images]; // ضمان التعامل مع صورة واحدة كمصفوفة
-        }
+        foreach ($request->file('images') as $imageFile) {
+            $path = $imageFile->store('destinations', 'public');
 
-        foreach ($images as $image) {
-            $imagePath = MediaServices::save($image, 'image', 'Destinations');
-            $destination->images()->create([
-                'image_url' => $imagePath,
+            DestinationImage::create([
+                'destination_id' => $destination->id,
+                'image_url' => $path,
+                'is_primary' => false,
             ]);
         }
     }
 
 
 
-    // إعادة التوجيه بعد التحديث
-    return redirect()->route('destination.index')->with('success', 'Destination updated successfully');
+
+    return redirect()->route('destination.show', $destination->id)->with('success', 'Destination updated successfully');
 
 
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified image from destination.
      */
     public function destroy($id)
 {
     $image = DestinationImage::findOrFail($id);
 
-    // تحقق إذا كانت الصورة هي الرئيسية
+    // check if image is primary
     if ($image->is_primary) {
-        return back()->with('error', 'لا يمكن حذف الصورة الرئيسية. يرجى تعيين صورة أخرى كصورة رئيسية أولاً.');
+        return redirect()->back()->withErrors(['error' => 'You cannot delete the primary image.']);;
     }
 
-    // حذف الصورة من التخزين
+    // delete image from storage
     Storage::delete('public/' . $image->image_url);
 
-    // حذف السطر من قاعدة البيانات
+    // delete row from db
     $image->delete();
 
-    return back()->with('success', 'تم حذف الصورة بنجاح.');
+    return back()->with('success', 'image seleted successfully');
 }
 
 
@@ -191,10 +188,10 @@ class DestinationController extends Controller
         $image = DestinationImage::findOrFail($id);
         $destination = $image->destination;
 
-        // جعل كل الصور غير رئيسية
+        // make all images not primary
         $destination->images()->update(['is_primary' => false]);
 
-        // جعل هذه الصورة رئيسية
+        // make this image primary
         $image->is_primary = true;
         $image->save();
         return redirect()->back()->with([

@@ -17,11 +17,16 @@
                 <div class="max-w-7xl">
 
                    {{-- Success Message --}}
-                   @if (session('success') && session('from') !== 'set_primary')
+                   @if (session('success') && session('from') === 'set_primary')
+                   <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded">
+                       {{ session('success') }}
+                   </div>
+               @elseif (session('success'))
                    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded">
                        {{ session('success') }}
                    </div>
                @endif
+               
 
                     {{-- Error Messages --}}
                     @if ($errors->any())
@@ -34,21 +39,20 @@
                         </div>
                     @endif
 
-                    <!-- Update Form -->
-    <!-- كل الحقول فقط، بدون جزء الصور -->
-
+                    <!--------------------- Update Form ---------------------------->
 
     <form method="POST" action="{{ route('destinations.update', $destination->id) }}" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-
         <div class="flex space-x-4">
+
+            <!-------------name field------------------>
             <div class="w-1/2">
                 <x-input-label for="name" :value="__('Destination Name')" />
                 <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required value="{{ old('name', $destination->name) }}" />
                 <x-input-error class="mt-2" :messages="$errors->get('name')" />
             </div>
-
+            <!-------------description field------------------>
             <div class="w-1/2">
                 <x-input-label for="description" :value="__('Description (Optional)')" />
                 <textarea id="description" name="description" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300">{{ old('description', $destination->description) }}</textarea>
@@ -57,6 +61,7 @@
         </div>
 
         <div class="flex space-x-4 mt-4">
+            <!-------------location field------------------>
             <div class="w-1/2">
                 <x-input-label for="location_details" :value="__('Location Details')" />
                 <textarea id="location_details" name="location_details" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300" required>{{ old('location_details', $destination->location_details) }}</textarea>
@@ -65,12 +70,13 @@
         </div>
 
         <div class="flex space-x-4 mt-4">
+            <!-------------city field------------------>
             <div class="w-1/2">
                 <x-input-label for="city" :value="__('City')" />
                 <x-text-input id="city" name="city" type="text" class="mt-1 block w-full" required value="{{ old('city', $destination->city) }}" />
                 <x-input-error class="mt-2" :messages="$errors->get('city')" />
             </div>
-
+            <!-------------country field------------------>
             <div class="w-1/2">
                 <x-input-label for="country" :value="__('Country')" />
                 <x-text-input id="country" name="country" type="text" class="mt-1 block w-full" required value="{{ old('country', $destination->country) }}" />
@@ -78,19 +84,24 @@
             </div>
         </div>
 
-        <div class="flex space-x-4 mt-4">
-            <div class="w-1/2">
-                <x-input-label for="activities" :value="__('Available Activities (Optional)')" />
-                <textarea id="activities" name="activities" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300">{{ old('activities', $destination->activities) }}</textarea>
-                <x-input-error class="mt-2" :messages="$errors->get('activities')" />
-            </div>
+       <!-------------name field------------------>
+<div class="mt-4">
+    <x-input-label for="activities" :value="__('Available Activities (Optional)')" />
+    <textarea id="activities" name="activities" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300">{{ old('activities', $destination->activities) }}</textarea>
+    <x-input-error class="mt-2" :messages="$errors->get('activities')" />
+</div>
 
-            <div class="w-1/2">
-                <x-input-label for="images" :value="__('Replace/Add Images')" />
-                <input id="images" name="images[]" type="file" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300" multiple />
-                <x-input-error class="mt-2" :messages="$errors->get('images')" />
-            </div>
-        </div> <!-- تأكد هذي تغلق الـ flex space-x-4 -->
+<!-------------images field------------------>
+<div class="mt-4">
+    <x-input-label for="images" :value="__('Add or Replace Images')" />
+    <input id="images" name="images[]" type="file"
+           class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded"
+           multiple />
+    <x-input-error class="mt-2" :messages="$errors->get('images')" />
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">You can upload multiple images. The primary image can be changed below.</p>
+</div>
+
+<!-------------cancel & update buttons------------------>
 
         <div class="flex items-center justify-end mt-4 space-x-3">
             <a href="{{ route('destination.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-black dark:text-white uppercase tracking-widest hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150">
@@ -103,160 +114,57 @@
     </form>
 
 
-<!-- عرض الصور -->
-@foreach($destination->images as $image)
-    <div class="relative group border rounded shadow overflow-hidden h-32">
-        <img src="{{ asset('storage/' . $image->image_url) }}"
-             class="w-full h-full object-cover" alt="Destination Image">
+{{-- show current images--}}
+@if($destination->images->count())
+    <div class="mt-10">
+        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Current Images</h3>
 
-        <!-- حذف الصورة -->
-        <form action="{{ route('destination-images.destroy', $image->id) }}" method="POST"
-              class="absolute top-2 right-2 z-10">
-            @csrf
-            @method('DELETE')
-            <button type="submit"
-                    class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 shadow transition">
-                ✕
-            </button>
-        </form>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            @foreach($destination->images as $image)
+                <div class="relative group border rounded shadow overflow-hidden h-48 bg-white dark:bg-gray-900">
 
-        <!-- تعيين صورة رئيسية -->
-        @if (!$image->is_primary)
-            <form action="{{ route('destination-images.setPrimary', $image->id) }}" method="POST"
-                  class="absolute bottom-2 left-2 z-10">
-                @csrf
-                <button type="submit"
-                        class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 shadow transition">
-                    Set as Primary
-                </button>
-            </form>
-        @else
-            <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
-                Primary
-            </span>
-        @endif
-    </div>
-@endforeach
+                    <img src="{{ asset('storage/' . $image->image_url) }}"
+                         class="w-full h-full object-cover" alt="Destination Image">
 
-
-
-                    {{--
-
-                    <form method="POST" action="{{ route('destinations.update', $destination->id) }}" enctype="multipart/form-data">
+                    <!-- delete image-->
+                    <form action="{{ route('destination-images.destroy', $image->id) }}" method="POST"
+                          class="absolute top-2 right-2 z-10">
                         @csrf
-                        @method('PUT')
-
-                        <div class="flex space-x-4">
-                            <div class="w-1/2">
-                                <x-input-label for="name" :value="__('Destination Name')" />
-                                <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required value="{{ old('name', $destination->name) }}" />
-                                <x-input-error class="mt-2" :messages="$errors->get('name')" />
-                            </div>
-                            <div class="w-1/2">
-                                <x-input-label for="description" :value="__('Description (Optional)')" />
-                                <textarea id="description" name="description" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300">{{ old('description', $destination->description) }}</textarea>
-                                <x-input-error class="mt-2" :messages="$errors->get('description')" />
-                            </div>
-                        </div>
-
-                        <div class="flex space-x-4 mt-4">
-                            <div class="w-1/2">
-                                <x-input-label for="location_details" :value="__('Location Details')" />
-                                <textarea id="location_details" name="location_details" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300" required>{{ old('location_details', $destination->location_details) }}</textarea>
-                                <x-input-error class="mt-2" :messages="$errors->get('location_details')" />
-                            </div>
-                        </div>
-
-                        <div class="flex space-x-4 mt-4">
-                            <div class="w-1/2">
-                                <x-input-label for="city" :value="__('City')" />
-                                <x-text-input id="city" name="city" type="text" class="mt-1 block w-full" required value="{{ old('city', $destination->city) }}" />
-                                <x-input-error class="mt-2" :messages="$errors->get('city')" />
-                            </div>
-                            <div class="w-1/2">
-                                <x-input-label for="country" :value="__('Country')" />
-                                <x-text-input id="country" name="country" type="text" class="mt-1 block w-full" required value="{{ old('country', $destination->country) }}" />
-                                <x-input-error class="mt-2" :messages="$errors->get('country')" />
-                            </div>
-                        </div>
-
-                        <div class="flex space-x-4 mt-4">
-                            <div class="w-1/2">
-                                <x-input-label for="activities" :value="__('Available Activities (Optional)')" />
-                                <textarea id="activities" name="activities" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300">{{ old('activities', $destination->activities) }}</textarea>
-                                <x-input-error class="mt-2" :messages="$errors->get('activities')" />
-                            </div>
-                            <div class="w-1/2">
-                                <x-input-label for="images" :value="__('Replace/Add Images')" />
-                                <input id="images" name="images[]" type="file" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300" multiple onchange="showPrimarySelect(this)" />
-                                <x-input-error class="mt-2" :messages="$errors->get('images')" />
-                            </div>
-                        </div>
-
-                        <div id="primary-select-wrapper" class="mt-4 hidden">
-                            <x-input-label for="primary_image_index" :value="__('Choose Primary Image')" />
-                            <select name="primary_image_index" id="primary_image_index" class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300"></select>
-                            <x-input-error class="mt-2" :messages="$errors->get('primary_image_index')" />
-                        </div>
-
-<!-- Current Images -->
-<div class="mt-6">
-    <p class="text-sm font-semibold mb-2">{{ __('Current Images:') }}</p>
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        @foreach($destination->images as $image)
-            <div class="relative group border rounded shadow overflow-hidden h-32">
-                <img src="{{ asset('storage/' . $image->image_url) }}"
-                     class="w-full h-full object-cover" alt="Destination Image">
-
-                <!-- Delete Button -->
-                <form action="{{ route('destination-images.destroy', $image->id) }}" method="POST"
-                      class="absolute top-2 right-2 z-10">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 shadow transition">
-                        ✕
-                    </button>
-                </form>
-
-                <!-- Set as Primary -->
-                @if (!$image->is_primary)
-                    <form action="{{ route('destination-images.setPrimary', $image->id) }}" method="POST"
-                          class="absolute bottom-2 left-2 z-10">
-                        @csrf
+                        @method('DELETE')
                         <button type="submit"
-                                class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 shadow transition">
-                            Set as Primary
+                                class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 shadow transition">
+                            ✕
                         </button>
                     </form>
-                @else
-                    <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
-                        Primary
-                    </span>
-                @endif
-            </div>
-        @endforeach
-    </div>
-</div>
 
-<!-- Buttons -->
-<div class="flex flex-wrap items-center justify-end mt-6 gap-4">
-    <a href="{{ route('destination.index') }}"
-       class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 text-black dark:text-white font-semibold rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 shadow">
-        {{ __('Cancel') }}
-    </a>
-
-    <x-primary-button>
-        {{ __('Update Destination') }}
-    </x-primary-button>
-</div>
-
-                    </form>
+                    <!-- set image as primary-->
+                    @if (!$image->is_primary)
+                        <form action="{{ route('destination-images.setPrimary', $image->id) }}" method="POST"
+                              class="absolute bottom-2 left-2 z-10">
+                            @csrf
+                            <button type="submit"
+                                    class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 shadow transition">
+                                Set as Primary
+                            </button>
+                        </form>
+                    @else
+                        <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
+                            Primary
+                        </span>
+                    @endif
                 </div>
-            </div>
+            @endforeach
         </div>
     </div>
---}}
+@endif
+
+
+
+
+
+
+
+
     <script>
         let allFiles = [];
 
