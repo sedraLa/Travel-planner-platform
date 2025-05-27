@@ -29,12 +29,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/destinations', [DestinationController::class, 'index'])->name('destination.index');
-    Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
-    Route::post('/destinations/store', [DestinationController::class, 'store'])->name('destinations.store');
-    Route::get('destinations/{id}', [DestinationController::class, 'show'])->name('destination.show');
-    Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
+    // Destination routes
+Route::get('/destinations', [DestinationController::class, 'index'])->name('destination.index');
+Route::get('/destinations/create', [DestinationController::class, 'create'])->name('destinations.create');
+Route::post('/destinations', [DestinationController::class, 'store'])->name('destinations.store');
+Route::get('/destinations/{id}', [DestinationController::class, 'show'])->name('destination.show');
+Route::get('/destinations/{id}/edit', [DestinationController::class, 'edit'])->name('destinations.edit');
+Route::put('/destinations/{id}', [DestinationController::class, 'update'])->name('destinations.update');
+Route::delete('/destination-images/{id}', [DestinationController::class, 'destroy'])->name('destination-images.destroy');
+Route::post('/destination-images/{id}/set-primary', [DestinationController::class, 'setPrimary'])->name('destination-images.setPrimary');
+Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDestination'])->name('destination.destroy');
+
+// Weather forecast
+Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
 });
 
 require __DIR__.'/auth.php';
-
