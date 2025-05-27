@@ -50,6 +50,11 @@
     </style>
 </head>
 <body>
+    @if ($errorMessage)
+    <div class="bg-red-100 text-red-700 p-3 rounded">
+        {{ $errorMessage }}
+    </div>
+@else
     <h1>5-Day Weather Forecast for {{ $weather['city']['name'] }}</h1>
 
     <table>
@@ -89,5 +94,6 @@
             @endforeach
         </tbody>
     </table>
+    @endif
 </body>
 </html>
