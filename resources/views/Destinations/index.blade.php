@@ -24,7 +24,7 @@
         @endif
     
         <!-- Hero Background (should be visible to all users) -->
-        <div class="hero-background"></div>
+        <div class="hero-background destinations-page"></div>
     
         {{-- Search Form (also visible to all users) --}}
         <form class="search-form" method="GET" action="{{route('destination.index')}}">
