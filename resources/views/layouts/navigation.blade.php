@@ -14,7 +14,7 @@
             <!-- Navigation Links -->
             <ul>
                 <li><a href="{{ route('destination.index') }}" >Destinations</a></li>
-                <li><a href="{{ url('/hotels') }}" >Hotels</a></li>
+                <li><a href="{{ route('hotels.index') }}" >Hotels</a></li>
                 <li><a href="{{ url('/flights') }}" >Flights</a></li>
             </ul>
             <!-- Settings Dropdown -->

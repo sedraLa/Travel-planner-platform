@@ -13,7 +13,7 @@
   --white: #f4f4f4;
   --white2: #f8f8f8;
   --light-grey: #888;
-  --grey:#555;
+  --grey: #555;
   --very-light-grey: #ccc;
 }
 
@@ -42,6 +42,17 @@ body {
   position: absolute;
 }
 
+
+.hero-background.destinations-page {
+  background-image: url('/images/second2.jpg');
+}
+
+.hero-background.hotels-page {
+  background-image: url('/images/h10.jpg');
+}
+
+
+
 .search-form {
   max-width: 500px;
   margin: 0px auto 60px auto;
@@ -55,10 +66,15 @@ body {
   color: var(--white);
   font-size: 28px;
   margin-top: 150px;
-  font-weight:bold;
+  font-weight: bold;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-size: inherit;
   /* font-weight: inherit; */
 }
@@ -107,8 +123,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .search-input:focus {
-  border-color: var(--blue); 
-  outline: none; 
+  border-color: var(--blue);
+  outline: none;
 }
 
 /* Cards Section */
@@ -123,7 +139,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card {
-  flex: 1 1 180px; 
+  flex: 1 1 180px;
   max-width: 300px;
   background-color: var(--white);
   border-radius: 12px;
