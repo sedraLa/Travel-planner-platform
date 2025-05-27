@@ -1,8 +1,9 @@
+@php use App\Enums\UserRole;@endphp
 <x-details-layout>
     @push('styles')
         <link rel="stylesheet" href="{{asset('css/details.css')}}">
     @endpush
-    
+
     {{--body content--}}
 
 
@@ -12,12 +13,40 @@
             <h1>{{$destination->name}}</h1>
             <h3>{{$destination->city}}</h3>
         </div>
-           
-        </div>
-        </div>
 
+        </div>
+        </div>
         <div class="details">
+            @if (session('success'))
+            <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                {{ session('success') }}
+            </div>
+        @endif
             <header>Explore everything about this city</header>
+            @if (Auth::user()->role === UserRole::ADMIN->value)
+            <!-- Create Destination Button -->
+            <div class="flex items-center justify-between">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    {{ __('Edit Destination') }}
+                </h2>
+                <a href="{{ route('destinations.edit', $destination->id) }}"
+
+                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                    Edit
+                </a>
+
+                <form action="{{ route('destination.destroy', $destination->id) }}" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this destination?');">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit"
+                          class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                      Delete
+                  </button>
+              </form>
+            </div>
+
+            @endif
             <div class="cards">
                 @foreach($destination->images as $image)
                     @if(!$image->is_primary)
