@@ -16,8 +16,18 @@ class WeatherController extends Controller
 
     public function show($city)
     {
-        $weatherData = $this->weatherService->getWeather($city);
-
-        return view('weather', ['weather' => $weatherData]);
+        try {
+            $weatherData = $this->weatherService->getWeather($city);
+            return view('weather', [
+                'weather' => $weatherData,
+                'errorMessage' => null
+            ]);
+        } catch (\Exception $e) {
+            return view('weather', [
+                'weather' => null,
+                'errorMessage' => $e->getMessage()
+            ]);
+        }
     }
+    
 }
