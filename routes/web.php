@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\HotelController;
 use App\Http\Controllers\weatherController;
 
 
@@ -39,6 +40,8 @@ Route::put('/destinations/{id}', [DestinationController::class, 'update'])->name
 Route::delete('/destination-images/{id}', [DestinationController::class, 'destroy'])->name('destination-images.destroy');
 Route::post('/destination-images/{id}/set-primary', [DestinationController::class, 'setPrimary'])->name('destination-images.setPrimary');
 Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDestination'])->name('destination.destroy');
+ // Hotel routes
+Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
 
 // Weather forecast
 Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
