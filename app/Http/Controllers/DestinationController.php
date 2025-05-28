@@ -31,7 +31,7 @@ class DestinationController extends Controller
             });
         }
 
-        $destinations = $query->get();
+         $destinations = $query->paginate(8);
 
 
         return view('destinations.index',compact('destinations'));

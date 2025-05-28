@@ -56,6 +56,11 @@
                 <p style="text-align:center;">No destinations found.</p>
             @endforelse
         </div>
+                  <div class="pagination-wrapper">
+                     {{ $destinations->appends(request()->query())->links() }}
+                  </div>
+
+
     </div>
         
 </x-app-layout>

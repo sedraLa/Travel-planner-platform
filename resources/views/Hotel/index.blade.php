@@ -49,12 +49,16 @@
                             <img src="{{ asset('storage/' . optional($hotel->image)->image_url) }}" alt="Hotel Image">
                         </div>
                         <h5>{{ $hotel->name }}</h5>
-                        <p class="overview">{{ Str::limit($hotel->location, 80) }}</p>
+                        <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
                     </a>
                 </div>
             @empty
                 <p style="text-align:center;">No hotels found.</p>
             @endforelse
         </div>
+
+                   <div class="pagination-wrapper">
+                     {{ $hotels->appends(request()->query())->links() }}
+                  </div>
     </div>
 </x-app-layout>
