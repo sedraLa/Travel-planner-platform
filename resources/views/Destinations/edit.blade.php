@@ -137,26 +137,27 @@
                         </button>
                     </form>
 
-                    <!-- set image as primary-->
-                    @if (!$image->is_primary)
-                        <form action="{{ route('destination-images.setPrimary', $image->id) }}" method="POST"
-                              class="absolute bottom-2 left-2 z-10">
-                            @csrf
-                            <button type="submit"
-                                    class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 shadow transition">
-                                Set as Primary
-                            </button>
-                        </form>
-                    @else
-                        <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
-                            Primary
-                        </span>
-                    @endif
-                </div>
-            @endforeach
-        </div>
-    </div>
+<!-- set image as primary-->
+@if (!$image->is_primary)
+    <form action="{{ route('destination-images.setPrimary', $image->id) }}" method="POST"
+          class="absolute bottom-2 left-2 z-10">
+        @csrf
+        <button type="submit"
+                class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 shadow transition">
+            Set as Primary
+        </button>
+    </form>
+@else
+    <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
+        Primary
+    </span>
 @endif
+    </div>
+        @endforeach
+    </div>
+  </div>
+@endif
+
 
 
 
