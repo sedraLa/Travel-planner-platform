@@ -170,3 +170,70 @@ h6 {
   color: var(--grey);
   margin: 0 16px 16px;
 }
+
+/*pagination*/
+
+.pagination-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: -180px;
+  margin-bottom: 60px;
+}
+
+.pagination-wrapper nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  background-color: var(--white2, #f9f9f9);
+  padding: 10px 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-wrapper a,
+.pagination-wrapper span.page-info {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  border-radius: 14px;
+  transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
+  color: var(--indigo, #4b4f97);
+}
+
+.pagination-wrapper a {
+  width: 48px;
+  height: 40px;
+  border: 2px solid var(--very-light-grey, #ddd);
+  background-color: white;
+  cursor: pointer;
+}
+
+.pagination-wrapper a:hover {
+  background-color: var(--light-aqua, #a0e8f9);
+  transform: translateY(-1px);
+  border-color: var(--blue, #007BFF);
+}
+
+.pagination-wrapper a.arrow {
+  /* نفس تصميم الأزرار */
+}
+
+.pagination-wrapper .active span {
+  width: 60px;
+  background-color: var(--blue, #007BFF);
+  color: white;
+  font-weight: bold;
+  border: 2px solid var(--blue, #007BFF);
+  pointer-events: none;
+  box-shadow: 0 0 10px var(--blue, #007BFF);
+  cursor: default;
+}
+
+.pagination-wrapper span.page-info {
+  min-width: 60px;
+  user-select: none;
+  color: var(--indigo, #4b4f97);
+  font-weight: 600;
+}
