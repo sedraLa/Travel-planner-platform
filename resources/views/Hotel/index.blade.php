@@ -9,7 +9,7 @@
         @if (Auth::user()->role === UserRole::ADMIN->value)
             <!-- Create Hotel Button -->
             <div class="flex justify-end mb-4 px-6 pt-6">
-                <a href="{{ url('hotels.create') }}" 
+                <a href="{{ route('hotels.create') }}" 
                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                     + Add New Hotel
                 </a>
