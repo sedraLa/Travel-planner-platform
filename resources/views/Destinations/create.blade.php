@@ -23,9 +23,9 @@
                          @foreach ($errors->all() as $error)
                               <li>{{ $error }}</li>
                          @endforeach
-        </ul>
+                    </ul>
     </div>
-@endif
+            @endif
                     <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
                         @csrf
 
@@ -47,7 +47,7 @@
                         <div class="flex space-x-4 mt-4">
                             <div class="w-1/2">
                                 <x-input-label for="location_details" :value="__('Location Details')" />
-                                <textarea id="location_details" name="location_details"" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
+                                <textarea id="location_details" name="location_details" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('location_details')" />
                             </div>
                             {{--
@@ -59,7 +59,7 @@
                             --}}
                         </div>
                                                                                      
-
+                        <!--city & country-->
                          <div class="flex space-x-4 mt-4">
                                          <div class="w-1/2">
                                      <x-input-label for="city" :value="__('City')" />

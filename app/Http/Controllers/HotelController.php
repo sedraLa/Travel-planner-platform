@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Hotel;
+use App\Models\Destination;
+
 
 
 class HotelController extends Controller
@@ -38,10 +40,15 @@ public function show(string $id)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
     $primaryImage = $hotel->images->where('is_primary', true)->first();
-    return view('hotels.show', compact('hotel', 'primaryImage'));
+    return view('hotel.show', compact('hotel', 'primaryImage'));
 }
 
+///create
 
-
+public function create()
+ {
+    $destinations = Destination::all(); 
+    return view('hotel.create',compact('destinations'));
+ }
 
 }
