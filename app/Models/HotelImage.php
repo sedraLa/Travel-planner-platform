@@ -16,6 +16,8 @@ class HotelImage extends Model
         'hotel_id',
     ];
 
+    public $timestamps = false;
+
     protected $hidden = [
         'created_at', 
         'updated_at'

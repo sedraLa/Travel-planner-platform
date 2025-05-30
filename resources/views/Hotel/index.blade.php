@@ -43,22 +43,21 @@
         <!-- Hotels Cards -->
         <div class="cards">
             @forelse ($hotels as $hotel)
-                <div class="card">
-                    <a href="{{ route('hotel.show', $hotel->id) }}">
-                        <div class="card-img">
-                            <img src="{{ asset('storage/' . optional($hotel->image)->image_url) }}" alt="Hotel Image">
-                        </div>
-                        <h5>{{ $hotel->name }}</h5>
-                        <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
-                    </a>
-                </div>
-            @empty
-                <p style="text-align:center;">No hotels found.</p>
-            @endforelse
-        </div>
-
-                   <div class="pagination-wrapper">
-                     {{ $hotels->appends(request()->query())->links() }}
-                  </div>
+            @php
+                $primaryImage = $hotel->images->where('is_primary', true)->first();
+            @endphp
+            <div class="card">
+                <a href="{{ route('hotel.show', $hotel->id) }}">
+                    <div class="card-img">
+                        <img src="{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : asset('images/default.jpg') }}" alt="Hotel Image">
+                    </div>
+                    <h5>{{ $hotel->name }}</h5>
+                    <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
+                </a>
+            </div>
+        @empty
+            <p style="text-align:center;">No hotels found.</p>
+        @endforelse
+        
     </div>
 </x-app-layout>
