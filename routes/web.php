@@ -40,13 +40,21 @@ Route::put('/destinations/{id}', [DestinationController::class, 'update'])->name
 Route::delete('/destination-images/{id}', [DestinationController::class, 'destroy'])->name('destination-images.destroy');
 Route::post('/destination-images/{id}/set-primary', [DestinationController::class, 'setPrimary'])->name('destination-images.setPrimary');
 Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDestination'])->name('destination.destroy');
+
  // Hotel routes
 Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
 Route::delete('/hotels/{id}', [HotelController::class, 'destroy'])->name('hotels.destroy');
 Route::delete('/hotel-images/{id}', [HotelController::class, 'destroyImage'])->name('hotel-images.destroy');
 
+
 // Weather forecast
 Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
 });
 
+ // Hotel routes
+ Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
+ Route::get('/hotels/create',[HotelController::class,'create'])->name('hotels.create');
+ Route::post('/hotels',[HotelController::class,'store'])->name('hotels.store');
+ Route::get('/hotels/{id}',[HotelController::class,'show'])->name('hotel.show');
+ 
 require __DIR__.'/auth.php';

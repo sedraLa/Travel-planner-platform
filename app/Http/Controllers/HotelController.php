@@ -4,8 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Hotel;
+<<<<<<< HEAD
 use Illuminate\Support\Facades\Storage;
 use App\Models\HotelImage;
+=======
+use App\Models\Destination;
+use App\Models\HotelImage;
+use App\Http\Requests\HotelRequest;
+use App\Services\MediaServices;
+
+>>>>>>> 489e4f5cc9515e0055c2c897693dbfd0cc5c5959
 
 
 class HotelController extends Controller
@@ -14,7 +22,7 @@ class HotelController extends Controller
     ///index
 public function index(Request $request)
 {
-    $query = Hotel::with('image');
+    $query = Hotel::with('images');
 
     // تحقق إن كانت هناك كلمة بحث مدخلة
     if ($request->has('search') && $request->search != '') {
@@ -40,13 +48,14 @@ public function show(string $id)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
     $primaryImage = $hotel->images->where('is_primary', true)->first();
-    return view('hotels.show', compact('hotel', 'primaryImage'));
+    return view('hotel.show', compact('hotel', 'primaryImage'));
 }
 ///deletehotels
 public function destroy($id)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
 
+<<<<<<< HEAD
     // حذف الصور من التخزين
     foreach ($hotel->images as $image) {
         Storage::delete('public/' . $image->image_url);
@@ -75,7 +84,46 @@ public function destroyImage($id)
 
     return back()->with('success', 'Image deleted successfully.');
 }
+=======
+///create
+>>>>>>> 489e4f5cc9515e0055c2c897693dbfd0cc5c5959
 
+public function create()
+ {
+    $destinations = Destination::all(); 
+    return view('hotel.create',compact('destinations'));
+ }
 
+ ///store 
+
+ public function store(HotelRequest $request) {
+    //save hotel details
+    $hotel = Hotel::create([
+        'name' => $request->name,
+        'description' => $request->description,
+        'address' => $request->address,
+        'price_per_night' => $request->price_per_night,
+        'global_rating' => $request->global_rating,
+        'total_rooms' => $request->total_rooms,
+        'destination_id' => $request->destination_id,
+        'city' => $request->city,
+        'country' => $request->country,
+    ]);
+
+    //save images
+
+    if($request->hasFile('images')) {
+        foreach($request->file('images') as $index => $image) {
+            $imagePath = MediaServices::save($image,'image','Hotels');
+
+            $hotel->images()->create([
+                'image_url' => $imagePath,
+                'is_primary' => $request->primary_image_index==$index,
+            ]);
+        }
+    }
+
+    return redirect()->route('hotels.index')->with('success','Hotel has been created successfully');
+ }
 
 }

@@ -17,15 +17,14 @@
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-7xl">
 
-            @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
-                     <ul class="list-disc pl-5">
-                         @foreach ($errors->all() as $error)
-                              <li>{{ $error }}</li>
-                         @endforeach
-        </ul>
-    </div>
-@endif
+                    @if ($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">• {{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+                
                     <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
                         @csrf
 
@@ -47,7 +46,7 @@
                         <div class="flex space-x-4 mt-4">
                             <div class="w-1/2">
                                 <x-input-label for="location_details" :value="__('Location Details')" />
-                                <textarea id="location_details" name="location_details"" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
+                                <textarea id="location_details" name="location_details" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('location_details')" />
                             </div>
                             {{--
@@ -59,7 +58,7 @@
                             --}}
                         </div>
                                                                                      
-
+                        <!--city & country-->
                          <div class="flex space-x-4 mt-4">
                                          <div class="w-1/2">
                                      <x-input-label for="city" :value="__('City')" />
