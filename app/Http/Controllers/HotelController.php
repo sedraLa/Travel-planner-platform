@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Hotel;
+use Illuminate\Support\Facades\Storage;
+use App\Models\HotelImage;
 
 
 class HotelController extends Controller
@@ -40,7 +42,39 @@ public function show(string $id)
     $primaryImage = $hotel->images->where('is_primary', true)->first();
     return view('hotels.show', compact('hotel', 'primaryImage'));
 }
+///deletehotels
+public function destroy($id)
+{
+    $hotel = Hotel::with('images')->findOrFail($id);
 
+    // حذف الصور من التخزين
+    foreach ($hotel->images as $image) {
+        Storage::delete('public/' . $image->image_url);
+    }
+
+    // حذف الفندق من قاعدة البيانات
+    $hotel->delete();
+
+    return redirect()->route('hotels.index')->with('success', 'Hotel has been deleted successfully');
+}
+///deletehotelImage
+public function destroyImage($id)
+{
+    $image = HotelImage::findOrFail($id);
+
+    // تأكد إذا كانت الصورة أساسية
+    if ($image->is_primary) {
+        return redirect()->back()->withErrors(['error' => 'You cannot delete the primary image.']);
+    }
+
+    // حذف الصورة من التخزين
+    Storage::delete('public/' . $image->image_url);
+
+    // حذف السطر من قاعدة البيانات
+    $image->delete();
+
+    return back()->with('success', 'Image deleted successfully.');
+}
 
 
 

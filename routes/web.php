@@ -42,6 +42,8 @@ Route::post('/destination-images/{id}/set-primary', [DestinationController::clas
 Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDestination'])->name('destination.destroy');
  // Hotel routes
 Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
+Route::delete('/hotels/{id}', [HotelController::class, 'destroy'])->name('hotels.destroy');
+Route::delete('/hotel-images/{id}', [HotelController::class, 'destroyImage'])->name('hotel-images.destroy');
 
 // Weather forecast
 Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
