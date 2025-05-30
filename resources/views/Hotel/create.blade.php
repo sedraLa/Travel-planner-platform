@@ -13,20 +13,20 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-7xl">
 
-            @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
-                     <ul class="list-disc pl-5">
-                         @foreach ($errors->all() as $error)
-                              <li>{{ $error }}</li>
-                         @endforeach
-                    </ul>
-    </div>
-            @endif
-
+                    @if ($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">• {{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+                
+                
+                
 
     <!--create form-->
     <div class="py-12">
@@ -82,12 +82,12 @@
         name="destination_id"
         id="destination_id"
         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-        required
-    >
+        required>
+
         <option value="">-- Select the associated destination --</option>
         @foreach($destinations as $destination)
             <option value="{{ $destination->id }}"
-            data-city="{{ $destination->city }}" 
+            data-city="{{ $destination->city }}"
             data-country="{{ $destination->country }}"
                 >{{ $destination->name }}</option>
         @endforeach
@@ -120,7 +120,7 @@
         </div>
         </div>
 
-        
+
 
     <!--image upload-->
 <!-- Input images -->
@@ -141,15 +141,16 @@
     <select
         name="primary_image_index"
         id="primary_image_index"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-    >
+        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
+    </select>
 </div>
 
 <!-- hidden field contain all images-->
 
 <input type="file" id="real-images" name="images[]" multiple hidden />
 
-<<!--cancel & submit button-->
+
+<!--cancel & submit button-->
 <div class="flex items-center justify-end mt-4 space-x-3">
     <!-- Cancel Button -->
      <a href="{{ route('hotels.index') }}"
@@ -164,13 +165,13 @@
 
 
 
-
+                    </form>
 
 
 </div>
 </div>
 </div>
-
+</x-app-layout>
 
 
 
@@ -223,17 +224,3 @@
     });
 </script>
 
-    
-    
-
-
-
-
-
-
-
-
-    </form>
-
-
-</x-app-layout>

@@ -38,7 +38,7 @@
                             class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                         Delete
                     </button>
-                </form>--}} 
+                </form>--}}
             </div>
         @endif
 
@@ -82,7 +82,7 @@
                     Book Now
                 </a>
             </div>--}}
-           
+
 
         </div>
     </div>

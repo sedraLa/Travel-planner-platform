@@ -17,15 +17,14 @@
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-7xl">
 
-            @if ($errors->any())
-                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
-                     <ul class="list-disc pl-5">
-                         @foreach ($errors->all() as $error)
-                              <li>{{ $error }}</li>
-                         @endforeach
-                    </ul>
-    </div>
-            @endif
+                    @if ($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">• {{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+                
                     <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
                         @csrf
 
