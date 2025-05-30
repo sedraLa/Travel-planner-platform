@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Hotel;
 use App\Models\Destination;
+use App\Models\HotelImage;
+use App\Http\Requests\HotelRequest;
+use App\Services\MediaServices;
 
 
 
@@ -14,7 +17,7 @@ class HotelController extends Controller
     ///index
 public function index(Request $request)
 {
-    $query = Hotel::with('image');
+    $query = Hotel::with('images');
 
     // تحقق إن كانت هناك كلمة بحث مدخلة
     if ($request->has('search') && $request->search != '') {
@@ -49,6 +52,38 @@ public function create()
  {
     $destinations = Destination::all(); 
     return view('hotel.create',compact('destinations'));
+ }
+
+ ///store 
+
+ public function store(HotelRequest $request) {
+    //save hotel details
+    $hotel = Hotel::create([
+        'name' => $request->name,
+        'description' => $request->description,
+        'address' => $request->address,
+        'price_per_night' => $request->price_per_night,
+        'global_rating' => $request->global_rating,
+        'total_rooms' => $request->total_rooms,
+        'destination_id' => $request->destination_id,
+        'city' => $request->city,
+        'country' => $request->country,
+    ]);
+
+    //save images
+
+    if($request->hasFile('images')) {
+        foreach($request->file('images') as $index => $image) {
+            $imagePath = MediaServices::save($image,'image','Hotels');
+
+            $hotel->images()->create([
+                'image_url' => $imagePath,
+                'is_primary' => $request->primary_image_index==$index,
+            ]);
+        }
+    }
+
+    return redirect()->route('hotels.index')->with('success','Hotel has been created successfully');
  }
 
 }

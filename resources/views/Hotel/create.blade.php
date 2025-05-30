@@ -11,6 +11,23 @@
         </div>
     </x-slot>
 
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                <div class="max-w-7xl">
+
+            @if ($errors->any())
+                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+                     <ul class="list-disc pl-5">
+                         @foreach ($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                         @endforeach
+                    </ul>
+    </div>
+            @endif
+
+
     <!--create form-->
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -37,7 +54,7 @@
         <div class="flex space-x-4 mt-4">
             <div class="w-1/2">
                <x-input-label for="address" value="Hotel Address"/>
-               <x-text-input id="address" type="text" name="addresss" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required />
+               <x-text-input id="address" type="text" name="address" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required />
             </div>
                     <!--price per night-->
                     <div class="w-1/2">
@@ -125,7 +142,7 @@
         name="primary_image_index"
         id="primary_image_index"
         class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-    ></select>
+    >
 </div>
 
 <!-- hidden field contain all images-->
@@ -189,16 +206,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-
-        // prevent sending if the admin didn't upload at least one image
-
-        document.querySelector('form').addEventListener('submit', function (e) {
-            const imageInput = document.getElementById('real-images');
-            if (imageInput.files.length === 0) {
-                e.preventDefault();
-                alert('please upload at least one image before sending the form');
-            }
-        });
 
         // fill city & country field after choosing the destination
         const destinationSelect = document.getElementById('destination_id');
