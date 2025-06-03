@@ -4,16 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Hotel;
-<<<<<<< HEAD
+
 use Illuminate\Support\Facades\Storage;
 use App\Models\HotelImage;
-=======
+
 use App\Models\Destination;
-use App\Models\HotelImage;
+
 use App\Http\Requests\HotelRequest;
 use App\Services\MediaServices;
 
->>>>>>> 489e4f5cc9515e0055c2c897693dbfd0cc5c5959
+
 
 
 class HotelController extends Controller
@@ -55,7 +55,7 @@ public function destroy($id)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
 
-<<<<<<< HEAD
+
     // حذف الصور من التخزين
     foreach ($hotel->images as $image) {
         Storage::delete('public/' . $image->image_url);
@@ -84,9 +84,9 @@ public function destroyImage($id)
 
     return back()->with('success', 'Image deleted successfully.');
 }
-=======
+
 ///create
->>>>>>> 489e4f5cc9515e0055c2c897693dbfd0cc5c5959
+
 
 public function create()
  {

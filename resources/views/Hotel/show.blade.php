@@ -7,7 +7,8 @@
 
     {{-- Main Wrapper --}}
     <div class="main-wrapper">
-        <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
+        <div class="hero-background"
+            style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
             <div class="headings" style="font-size:32px;">
                 <h1>{{ $hotel->name }}</h1>
                 <h3>{{ $hotel->city }}</h3>
@@ -25,20 +26,20 @@
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     {{ __('Edit Hotel') }}
                 </h2>
-               {{--<a href="{{ route('hotels.edit', $hotel->id) }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                {{--<a href="{{ route('hotels.edit', $hotel->id) }}"
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                     Edit
-                </a>
+                </a>--}}
 
                 <form action="{{ route('hotels.destroy', $hotel->id) }}" method="POST"
-                      onsubmit="return confirm('Are you sure you want to delete this hotel?');">
+                    onsubmit="return confirm('Are you sure you want to delete this hotel?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                         Delete
                     </button>
-                </form>--}}
+                </form>
             </div>
         @endif
 
@@ -75,10 +76,10 @@
                 <h1>Global Rating</h1>
                 <p>{{ $hotel->rating }} / 5</p>
             </div>
-{{-- <div class="booking">
+            {{-- <div class="booking">
                 <h1>Book This Hotel</h1>
                 <a href="{{ route('booking.create', ['hotel_id' => $hotel->id]) }}"
-                   class="text-white bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded shadow transition duration-200">
+                    class="text-white bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded shadow transition duration-200">
                     Book Now
                 </a>
             </div>--}}
