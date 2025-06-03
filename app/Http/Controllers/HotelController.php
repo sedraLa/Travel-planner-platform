@@ -149,6 +149,23 @@ public function setPrimaryImage($id) {
     return back()->with('success', 'Primary image set successfully.');
 
 }
+
+///delete
+public function destroy($id)
+{
+    $hotel = Hotel::with('images')->findOrFail($id);
+
+
+    // حذف الصور من التخزين
+    foreach ($hotel->images as $image) {
+        Storage::delete('public/' . $image->image_url);
+    }
+
+    // حذف الفندق من قاعدة البيانات
+    $hotel->delete();
+
+    return redirect()->route('hotels.index')->with('success', 'Hotel has been deleted successfully');
+}
 }
 
 
