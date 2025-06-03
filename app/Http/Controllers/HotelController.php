@@ -8,6 +8,7 @@ use App\Models\Destination;
 use App\Models\HotelImage;
 use App\Http\Requests\HotelRequest;
 use App\Services\MediaServices;
+use Illuminate\Support\Facades\Storage;
 
 
 
@@ -86,4 +87,69 @@ public function create()
     return redirect()->route('hotels.index')->with('success','Hotel has been created successfully');
  }
 
+ ///edit
+
+ public function edit($id)
+{
+    $hotel = Hotel::with('images')->findOrFail($id);
+    $destinations = Destination::all();
+    return view('hotel.edit', compact('hotel', 'destinations'));
 }
+
+///update
+
+public function update(HotelRequest $request, $id) {
+    $hotel = Hotel::findOrFail($id);
+    $hotel->update($request->validated());
+
+//handle new image upload
+    if ($request->hasFile('images')) {
+        foreach ($request->file('images') as $imageFile) {
+            $path = MediaServices::save($imageFile, 'image', 'hotels');
+
+            HotelImage::create([
+                'hotel_id' => $hotel->id,
+                'image_url' => $path,
+                'is_primary' => false,
+            ]);
+        }
+    }
+
+    return redirect()->route('hotel.show', $hotel->id)->with('success', 'Hotel updated successfully');
+
+}
+
+//delete image
+
+public function destroyImage($id)
+{
+    $image = HotelImage::findOrFail($id);
+
+    if ($image->is_primary) {
+        return redirect()->back()->withErrors(['error' => 'You cannot delete the primary image.']);
+    }
+
+    Storage::delete('public/' . $image->image_url);
+    $image->delete();
+
+    return back()->with('success', 'Image deleted successfully.');
+}
+
+//set primary
+
+public function setPrimaryImage($id) {
+    $image = HotelImage::findOrFail($id);
+    $hotel = $image->hotel;
+
+    $hotel->images()->update(['is_primary' => false]);
+
+    $image->is_primary = true;
+    $image->save();
+
+    return back()->with('success', 'Primary image set successfully.');
+
+}
+}
+
+
+

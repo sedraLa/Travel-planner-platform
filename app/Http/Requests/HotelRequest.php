@@ -22,16 +22,25 @@ class HotelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:hotels,name',
+            'name' => 'required|string|max:255|unique:hotels,name,' . $this->route('id'),
             'description' => 'nullable|string',
             'address' => 'required|string|max:255',
             'price_per_night' => 'required|numeric|min:0',
             'global_rating' => 'nullable|integer|min:1|max:5',
             'total_rooms' => 'required|integer|min:1',
             'destination_id' => 'required|exists:destinations,id',
-            'images' => 'required|array|min:1',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif',
             'primary_image_index' => 'nullable|integer|min:0',
         ];
+
+        if($this->isMethod('post')) {
+            ///create
+            $rules['images'] = 'required|array|min:1';
+            $rules['images.*']  = 'image|mimes:jpeg,png,jpg,gif';
+        } else {
+            ///edit
+            $rules['images'] = 'nullable|array';
+            $rules['images.*'] = 'image|mimes:jpeg,png,jpg,gif';
+        }
+        return $rules;
     }
 }

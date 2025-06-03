@@ -109,8 +109,8 @@
         <!--global rating-->
         <div class="flex space-x-4 mt-4">
             <div class="w-1/2">
-                <x-input-label for="rating" value="Global Rating"/>
-                <input id="rating" type="number" name="rating" step="1" min="1" max="5" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3 text-sm" placeholder="Enter a rating from 1 to 5" />
+                <x-input-label for="global_rating" value="Global Rating"/>
+                <input id="global_rating" type="number" name="global_rating" step="1" min="1" max="5" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3 text-sm" placeholder="Enter a rating from 1 to 5" />
             </div>
 
          <!--total rooms-->
@@ -220,6 +220,9 @@
 
             cityInput.value = city || '';
             countryInput.value = country || '';
+
+            destinationSelect.dispatchEvent(new Event('change'));
+
         });
     });
 </script>
