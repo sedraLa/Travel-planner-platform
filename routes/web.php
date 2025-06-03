@@ -54,6 +54,7 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
  Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update');
  Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
  Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
+ Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
 
 
 require __DIR__.'/auth.php';

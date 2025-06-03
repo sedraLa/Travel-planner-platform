@@ -35,7 +35,7 @@
                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                     Edit
                 </a>
-{{--
+
                 <form action="{{ route('hotels.destroy', $hotel->id) }}" method="POST"
                       onsubmit="return confirm('Are you sure you want to delete this hotel?');">
                     @csrf
@@ -44,7 +44,7 @@
                             class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                         Delete
                     </button>
-                </form>--}}
+                </form>
             </div>
         @endif
 
