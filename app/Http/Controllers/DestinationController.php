@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\DestinationRequest;
 use App\Models\Destination;
 use App\Models\DestinationImage;
 use App\Services\MediaServices;
@@ -48,33 +49,18 @@ class DestinationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DestinationRequest $request)
     {
+        // save destination details
+        $destination = Destination::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'location_details' => $request->location_details,
+            'activities' => $request->location_details,
+            'city' => $request->city,
+            'country' => $request->country,
 
-        $request->validate([
-            'name' => 'required|unique:destinations,name', // make sure that destination name is unique
-            'description' => 'nullable',
-            'location_details' => 'required',
-           // 'weather_info' => 'required',
-            'activities' => 'nullable',
-            'city' => 'required|string|max:255',
-             'country' => 'required|string|max:255',
-            'images' => 'required|array',
-             'images.*' => 'image|mimes:jpeg,png,jpg,gif',
-             'primary_image_index' => 'nullable|integer',
         ]);
-
-        // save destination
-        $destination = new Destination();
-        $destination->name = $request->name;
-        $destination->description = $request->description;
-        $destination->location_details = $request->location_details;
-        //$destination->weather_info = $request->weather_info;
-        $destination->activities = $request->activities;
-        $destination->city = $request->city;
-        $destination->country = $request->country ;
-
-        $destination->save();
 
         // if there is any loaded images
 
@@ -119,26 +105,12 @@ class DestinationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(DestinationRequest $request, string $id)
     {
 
     $destination = Destination::findOrFail($id);
-
-
-    $validatedData = $request->validate([
-    'name' => 'required|string|max:255',
-    'city' => 'required|string|max:255',
-    'country' => 'required|string|max:255',
-    'location_details' => 'required|string',
-    'description' => 'nullable|string',
-    'activities' => 'nullable|string',
-    'images' => 'nullable|array',
-    'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-]);
-
-
     // update destination info
-    $destination->update($validatedData);
+    $destination->update($request->validated());
 
     // handle loading new images
     if ($request->hasFile('images')) {
@@ -179,7 +151,7 @@ class DestinationController extends Controller
     // delete row from db
     $image->delete();
 
-    return back()->with('success', 'image seleted successfully');
+    return back()->with('success', 'image deleted successfully');
 }
 
 
