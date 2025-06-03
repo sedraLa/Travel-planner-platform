@@ -50,5 +50,10 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
  Route::get('/hotels/create',[HotelController::class,'create'])->name('hotels.create');
  Route::post('/hotels',[HotelController::class,'store'])->name('hotels.store');
  Route::get('/hotels/{id}',[HotelController::class,'show'])->name('hotel.show');
- 
+ Route::get('/hotels/{hotel}/edit', [HotelController::class, 'edit'])->name('hotels.edit');
+ Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update');
+ Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
+ Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
+
+
 require __DIR__.'/auth.php';
