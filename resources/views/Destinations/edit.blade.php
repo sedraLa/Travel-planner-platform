@@ -91,13 +91,13 @@
     <x-input-error class="mt-2" :messages="$errors->get('activities')" />
 </div>
 
-<!-------------images field------------------>
-<div class="mt-4">
-    <x-input-label for="images" :value="__('Add or Replace Images')" />
-    <input id="images" name="images[]" type="file"
-           class="mt-1 block w-full dark:bg-gray-900 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded"
-           multiple />
-    <x-input-error class="mt-2" :messages="$errors->get('images')" />
+        <!--image upload-->
+        <!-- upload new images -->
+        <div class="mb-4">
+            <x-input-label value="Upload New Images"/>
+            <div id="image-inputs">
+                <input type="file" name="images[]" onchange="addImageInput()" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" multiple >
+            </div>
     <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">You can upload multiple images. The primary image can be changed below.</p>
 </div>
 
@@ -122,7 +122,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($destination->images as $image)
                 <div class="relative group border rounded shadow overflow-hidden h-48 bg-white dark:bg-gray-900">
-
+                    <!-- show images-->
                     <img src="{{ asset('storage/' . $image->image_url) }}"
                          class="w-full h-full object-cover" alt="Destination Image">
 
@@ -166,34 +166,19 @@
 
 
 
-    <script>
-        let allFiles = [];
+<script>
+    let imageIndex = 0;
+    function addImageInput() {
+    const container = document.getElementById('image-inputs');
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.name = 'images[]';
+    input.onchange = addImageInput;
+    input.classList.add('block', 'mt-2');
+    container.appendChild(input);
 
-        function showPrimarySelect(input) {
-            const newFiles = Array.from(input.files);
-            allFiles = newFiles;
+}
 
-            const select = document.getElementById('primary_image_index');
-            const wrapper = document.getElementById('primary-select-wrapper');
-
-            if (allFiles.length > 0) {
-                select.innerHTML = '';
-                wrapper.classList.remove('hidden');
-
-                allFiles.forEach((file, i) => {
-                    const option = document.createElement('option');
-                    option.value = i;
-                    option.textContent = file.name;
-                    select.appendChild(option);
-                });
-            } else {
-                wrapper.classList.add('hidden');
-            }
-
-            // Preserve the selected files after DOM update
-            const dataTransfer = new DataTransfer();
-            allFiles.forEach(file => dataTransfer.items.add(file));
-            input.files = dataTransfer.files;
-        }
     </script>
+
 </x-app-layout>

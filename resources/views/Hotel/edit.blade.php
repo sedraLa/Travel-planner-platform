@@ -133,6 +133,7 @@
             <div id="image-inputs">
                 <input type="file" name="images[]" onchange="addImageInput()" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" multiple >
             </div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">You can upload multiple images. The primary image can be changed below.</p>
         </div>
 
         <!-------------cancel & update buttons------------------>
@@ -210,7 +211,6 @@
     input.classList.add('block', 'mt-2');
     container.appendChild(input);
 
-    updatePrimarySelect();
 }
 
     </script>
