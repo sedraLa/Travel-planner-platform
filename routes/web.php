@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\weatherController;
+use App\Http\Controllers\ReservationController;
 
 
 /*
@@ -41,6 +42,7 @@ Route::delete('/destination-images/{id}', [DestinationController::class, 'destro
 Route::post('/destination-images/{id}/set-primary', [DestinationController::class, 'setPrimary'])->name('destination-images.setPrimary');
 Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDestination'])->name('destination.destroy');
 
+
 // Weather forecast
 Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather.forecast');
 });
@@ -55,6 +57,8 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
  Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
  Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
  Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
+ Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
+ Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 
 
 require __DIR__.'/auth.php';
