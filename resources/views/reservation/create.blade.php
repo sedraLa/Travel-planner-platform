@@ -27,6 +27,11 @@
                 <form action="{{ route('reservations.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="hotel_id" value="{{ $hotel->id }}">
+                    <div class="mb-6">
+                        <p class="font-semibold text-xl text-indigo-900 leading-tight">
+                            Room price per night in this hotel is {{$hotel->price_per_night}}</p>
+                    </div>
+
 
                     <!-- Guest Count -->
                     <div class="mb-4">
@@ -66,6 +71,7 @@
                             class="form-input w-full" required>
                     </div>
 
+
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                         Confirm Reservation
                     </button>
@@ -74,3 +80,5 @@
         </div>
     </div>
 </x-app-layout>
+
+
