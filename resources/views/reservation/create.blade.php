@@ -7,6 +7,22 @@
 
     <div class="py-8">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+
+            @if ($errors->any())
+            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                @foreach ($errors->all() as $error)
+                    <div class="mb-1">• {{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
+        {{--success message--}}
+        @if (session('success'))
+        <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <form action="{{ route('reservations.store') }}" method="POST">
                     @csrf
