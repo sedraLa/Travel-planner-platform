@@ -57,7 +57,18 @@ public function store(ReservationRequest $request)
         'reservation_status' => 'pending',
     ]);
 
-    return redirect()->route('hotel.show', $request->hotel_id)
-        ->with('success', 'Your reservation has been successfully completed! Total cost: $' . $total_price);
+    return redirect()->route('reservations.pay', $reservation->id)->with('success', 'Thanks, Your reservation now is pending please click on pay. Total cost: $' . $total_price);
 }
+
+//pay
+
+public function pay($reservationId) {
+    $reservation = Reservation::findOrFail($reservationId);
+    if (Auth::id() !== $reservation->user_id) {
+        abort(403,'Unauthorized action');
+    }
+    return view('reservation.pay',compact('reservationId','reservation'));
+}
+
+
 }
