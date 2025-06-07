@@ -6,6 +6,7 @@ use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\weatherController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\paymentController;
 
 
 /*
@@ -57,8 +58,18 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
  Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
  Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
  Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
+
+ //reservation routes
  Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
  Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+ Route::get('/reservations/{id}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
+
+// pay routes
+Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
+
+// Callback PayPal
+Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallback'])->name('payment.paypal.callback');
+    
 
 
 require __DIR__.'/auth.php';
