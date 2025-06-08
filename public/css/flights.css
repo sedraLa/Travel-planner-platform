@@ -1,0 +1,173 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root {
+    --indigo: #052659;
+    --light-aqua: #C1E8FF;
+    --light-blue: #628ECB;
+    --white: #f4f4f4;
+    --grey: #808080;
+    --light-blue-2:#c1e8ff;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--indigo);
+    background-color: var(--white);
+    background-image: none;
+  }
+
+  .main-wrapper {
+    position: relative;
+    z-index: 0;
+    display: flex;
+  }
+  
+  
+  .hero-background {
+    background-image: url('./images/ross-parmly-rf6ywHVkrlY-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 450px;
+    width: 100vw;
+    z-index: -1;
+    position: absolute;
+  }
+
+  .hero-background.flight-page {
+    background-image: url('/images/ross-parmly-rf6ywHVkrlY-unsplash.jpg');
+}
+
+
+  .headings {
+    color: var(--grey);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:50%;
+    margin: 100px auto;
+    flex-direction: column;
+    text-align: center;
+    letter-spacing: 5px;
+    margin-top: 180px;
+    font-weight:bold;
+  }
+
+  .navigation {
+    width: 100%;
+    position:absolute;
+    z-index: 1000;
+    background-color:transparent;
+    margin-top:18px;
+  }
+  
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 30px;
+  }
+  
+  
+
+
+  .main-container {
+    padding: 60px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background-color: #fefefe;
+    border-radius: 30px;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+    width:1000px;
+    margin:480px auto;
+  }
+
+  form {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+  }
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap:10px
+}
+
+  input {
+    width:160px;
+    padding:10px;
+    border-radius: 10px;
+    border: 2px solid var(--indigo);
+    color:var(--grey)
+  }
+
+  input[type="number"] {
+    width:50px;
+    border: 2px solid var(--indigo);
+    color:var(--grey);
+    border-radius: 10px;
+  }
+
+  input[type="date"] {
+    width:150px;
+    border: 2px solid var(--indigo);
+    color:var(--grey);
+    border-radius: 10px;
+  }
+
+  select {
+    width:170px;
+    padding:10px;
+    border-radius: 10px;
+    color:var(--grey);
+    border: 2px solid var(--indigo);
+  }
+
+  label {
+    font-size:18px;
+  }
+
+  .main-container p {
+    font-weight: bold;
+    font-size: 23px;
+  }
+
+  .search-button {
+    padding: 8px 20px;
+    border-radius: 15px;
+    background-color: var(--indigo);
+    color: var(--white);
+    border: none;
+    font-size: 16px;
+    height: auto;
+    width: auto;
+    white-space: nowrap;
+    margin-bottom:5px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .search-button:hover {
+    background-color: transparent;
+    color:var(--indigo);
+    cursor: pointer;
+    border-color: var(--indigo);
+
+  }
+
+  .search-button-wrapper {
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+    width: 100%;
+    height:auto;
+    align-self: flex-end;
+    
+  }
+  
