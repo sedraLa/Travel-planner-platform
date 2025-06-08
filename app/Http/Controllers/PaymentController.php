@@ -7,6 +7,8 @@ use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PaypalPaymentService; 
 use Illuminate\Support\Facades\Session;
+use App\Mail\PaymentConfirmationMail;
+use Illuminate\Support\Facades\Mail;
 
 class PaymentController extends Controller
 {
@@ -57,8 +59,9 @@ class PaymentController extends Controller
             $reservation->save();
 
             //sending email
+            Mail::to($reservation->user->email)->send(new PaymentConfirmationMail($reservation->hotel->name, $reservation));
 
-            return redirect()->route('hotel.show', $reservation->hotel_id)->with('success', 'Payment completed successfully! Your reservation is now confirmed.');
+            return redirect()->route('hotel.show', $reservation->hotel_id)->with('success', "Payment completed successfully! Your reservation is now completed. we'v sent you an email ");
         } else {
             return redirect()->route('reservations.pay', $reservation->id)->withErrors(['Payment failed. Please try again.']);
         }

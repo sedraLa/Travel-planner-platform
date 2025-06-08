@@ -7,17 +7,18 @@ use Illuminate\Support\Facades\Http;
 class PaypalPaymentService
 {
     protected $base_url;
-    protected $header;
+    protected $header; //info we send with each http request/response
 
     public function __construct()
     {
-        $this->base_url = config('services.paypal.base_url'); // من config/services.php
+        $this->base_url = config('services.paypal.base_url');
         $this->header = [
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $this->getAccessToken(),
         ];
     }
 
+        //get access token from paypal
     protected function getAccessToken()
     {
         $response = Http::asForm()->withBasicAuth(
@@ -31,6 +32,7 @@ class PaypalPaymentService
         return $response->json()['access_token'];
     }
 
+    //send request to paypal to create payment order
     public function sendPayment($reservation)
     {
         $data = [
@@ -51,7 +53,8 @@ class PaypalPaymentService
                 'shipping_preference' => 'NO_SHIPPING',
             ],
         ];
-        
+
+        //send request
         $response = Http::withHeaders($this->header)
     ->asJson()
     ->post($this->base_url . '/v2/checkout/orders', $data);
@@ -73,6 +76,7 @@ class PaypalPaymentService
         }
     }
 
+    //send capture request after user approval for payment
     public function callBack($request)
 {
     $token = $request->get('token');
@@ -110,9 +114,9 @@ class PaypalPaymentService
     return ['success' => false, 'message' => 'Payment failed! Status: ' . ($responseData['status'] ?? 'unknown')];
 }
 
-    
 
-    
-    
+
+
+
 
 }
