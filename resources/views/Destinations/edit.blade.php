@@ -84,6 +84,15 @@
             </div>
         </div>
 
+        <!--IATA code field-->
+        <div class="flex space-x-4 mt-4">
+            <div class="w-1/3">
+             <x-input-label for="iata_code" :value="__('IATA Code (for the most famous airport in this destination)')" />
+             <p>you can find the right IATA code here <a target='_blank' href="https://airportcodes.aero/search">IATA-CODES</a></p>
+             <x-text-input id="iata_code" name="iata_code" type="text" class="mt-1 block w-full" maxlength="3" required value="{{old('iata_code', $destination->iata_code)}}" />
+            </div>
+        </div>
+
        <!-------------name field------------------>
 <div class="mt-4">
     <x-input-label for="activities" :value="__('Available Activities (Optional)')" />
