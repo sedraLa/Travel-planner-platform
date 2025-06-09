@@ -15,6 +15,7 @@ class Destination extends Model
         'description',
         'location_details',
         'activities',
+        'iata_code',
        // 'weather_info',
         
     ];

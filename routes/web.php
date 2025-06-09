@@ -7,6 +7,7 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\weatherController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\paymentController;
+use App\Http\Controllers\FlightController;
 
 
 /*
@@ -69,6 +70,12 @@ Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWi
 
 // Callback PayPal
 Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallback'])->name('payment.paypal.callback');
+
+//flight routes
+Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
+Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name('flights.search');
+
+
     
 
 
