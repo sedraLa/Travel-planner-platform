@@ -16,9 +16,10 @@
     
         <div class="main-container">
           <p>Enter your details</p>
+          <span style='font-weight:normal;font-size:15px'>*Fill the Return field only if your trip type is round-trip</span>
           <!--flight form-->
           <div class="form-container">
-            <form action="" method="POST">
+            <form action="{{ route('flights.search') }}" method="POST">
                 @csrf
 
                 <!--where to select-->
@@ -50,6 +51,12 @@
                     <x-input-label for="departure" value="Departure"/>
                     <input id="departure" type="date" name="departure">
                 </div>
+
+                <!--return date-->
+                <div class="container">
+                    <x-input-label for="return" value="Return"/>
+                    <input id="return" type="date" name="return">
+                </div>
                
                 <!--seats number-->
                <div class="container">
@@ -75,5 +82,4 @@
           
         </div>
       </div>
-
 </x-app-layout>

@@ -83,20 +83,21 @@
     background-color: #fefefe;
     border-radius: 30px;
     box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
-    width:1000px;
+    width:1090px;
     margin:480px auto;
   }
 
   form {
     display: flex;
     justify-content: space-between;
-    gap: 18px;
+    gap: 10px;
   }
 
 .container {
     display: flex;
     flex-direction: column;
-    gap:10px
+    gap:10px;
+
 }
 
   input {

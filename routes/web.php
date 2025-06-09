@@ -72,8 +72,8 @@ Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWi
 Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallback'])->name('payment.paypal.callback');
 
 //flight routes
-Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.search');
-
+Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
+Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name('flights.search');
 
 
     
