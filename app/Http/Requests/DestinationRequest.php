@@ -29,6 +29,7 @@ class DestinationRequest extends FormRequest
             'activities' => 'nullable',
             'city' => 'required|string|max:255',
              'country' => 'required|string|max:255',
+             'iata_code' => 'required|string|size:3|alpha',
              'primary_image_index' => 'nullable|integer',
         ];
 

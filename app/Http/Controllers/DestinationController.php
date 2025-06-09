@@ -59,6 +59,7 @@ class DestinationController extends Controller
             'activities' => $request->location_details,
             'city' => $request->city,
             'country' => $request->country,
+            'iata_code' => strtoupper($request['iata_code']),
 
         ]);
 
