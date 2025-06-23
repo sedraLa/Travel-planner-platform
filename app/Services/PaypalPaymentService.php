@@ -108,7 +108,11 @@ class PaypalPaymentService
         isset($responseData['status']) &&
         $responseData['status'] === 'COMPLETED'
     ) {
-        return ['success' => true, 'message' => 'Payment completed successfully!'];
+        return [
+            'success' => true, 
+            'message' => 'Payment completed successfully!',
+            'transaction_id' => $responseData['id'] ?? null,    
+        ];
     }
 
     return ['success' => false, 'message' => 'Payment failed! Status: ' . ($responseData['status'] ?? 'unknown')];
