@@ -64,8 +64,8 @@ class PaymentController extends Controller
                 'reservation_id' => $reservation->id,
                 'user_id' => $reservation->user_id,
                 'amount' => $reservation->total_price,
-                'status' => 'completed', // أو أي حالة بتناسبك: completed, paid...
-                'transaction_id' => $response['transaction_id'] ?? null, // إذا عندك ID من PayPal
+                'status' => 'completed', 
+                'transaction_id' => $response['transaction_id'] ?? null,
                 'payment_date' => now(),
             ]);
 
