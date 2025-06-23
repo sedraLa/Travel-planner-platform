@@ -66,7 +66,7 @@
             @endif
 
             <div class="back-btn-wrapper">
-                <a href="{{ route('flights.search') }}" class="btn-back">Back to search</a>
+                <a href="{{ route('flight.show') }}" class="btn-back">Back to search</a>
             </div>
         </div>
     </div>
