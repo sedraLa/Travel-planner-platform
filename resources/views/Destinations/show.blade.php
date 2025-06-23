@@ -24,7 +24,7 @@
         @endif
             <header>Explore everything about this city</header>
             @if (Auth::user()->role === UserRole::ADMIN->value)
-            <!-- Create Destination Button -->
+            <!-- Edit Destination Button -->
             <div class="flex items-center justify-between">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     {{ __('Edit Destination') }}
@@ -72,7 +72,7 @@
 
             <div class="weather">
                 <h1>Weather info</h1>
-                <a href="{{route('weather.forecast',['city'=>$destination->name])}}">Click here to view 5-Day Forecast</a>
+                <a  href="{{route('weather.forecast',['city'=>$destination->name])}}">Click here to view 5-Day Forecast</a>
             </div>
             </div>
         </div>

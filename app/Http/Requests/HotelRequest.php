@@ -43,4 +43,9 @@ class HotelRequest extends FormRequest
         }
         return $rules;
     }
+    /**public function messages():array{
+     * return [
+     * 'name.required'=>''
+     * ]
+    } */
 }
