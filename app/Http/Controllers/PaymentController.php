@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use App\Services\PaypalPaymentService; 
 use Illuminate\Support\Facades\Session;
@@ -57,6 +58,16 @@ class PaymentController extends Controller
             
             $reservation->reservation_status = 'paid';
             $reservation->save();
+
+            //store payment process
+            Payment::create([
+                'reservation_id' => $reservation->id,
+                'user_id' => $reservation->user_id,
+                'amount' => $reservation->total_price,
+                'status' => 'completed', // أو أي حالة بتناسبك: completed, paid...
+                'transaction_id' => $response['transaction_id'] ?? null, // إذا عندك ID من PayPal
+                'payment_date' => now(),
+            ]);
 
             //sending email
             Mail::to($reservation->user->email)->send(new PaymentConfirmationMail($reservation->hotel->name, $reservation));

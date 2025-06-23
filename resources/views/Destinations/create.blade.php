@@ -100,6 +100,7 @@
                         <!-- Primary Image -->
                         <div id="primary-select-wrapper" class="mt-4 hidden">
                             <x-input-label for="primary_image_index" :value="__('Choose Primary Image')" />
+                            <!--select primary image-->
                             <select name="primary_image_index" id="primary_image_index" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></select>
                             <x-input-error class="mt-2" :messages="$errors->get('primary_image_index')" />
                         </div>
