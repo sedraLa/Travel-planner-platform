@@ -221,9 +221,10 @@
             cityInput.value = city || '';
             countryInput.value = country || '';
 
-            destinationSelect.dispatchEvent(new Event('change'));
+            
 
         });
+        
     });
 </script>
 

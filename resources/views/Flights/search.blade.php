@@ -17,6 +17,17 @@
         <div class="main-container">
           <p>Enter your details</p>
           <span style='font-weight:normal;font-size:15px'>*Fill the Return field only if your trip type is round-trip</span>
+          {{-- Error Messages --}}
+          @if ($errors->any())
+          <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+              <ul class="list-disc pl-5">
+                  @foreach ($errors->all() as $error)
+                      <li>{{ $error }}</li>
+                  @endforeach
+              </ul>
+          </div>
+      @endif
+
           <!--flight form-->
           <div class="form-container">
             <form action="{{ route('flights.search') }}" method="POST">

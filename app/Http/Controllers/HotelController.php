@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Hotel;
 use App\Models\Destination;
 use App\Models\HotelImage;
+use App\Models\Reservation;
 use App\Http\Requests\HotelRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +21,7 @@ public function index(Request $request)
 {
     $query = Hotel::with('images');
 
-    // تحقق إن كانت هناك كلمة بحث مدخلة
+    // check if there is a search word from the user
     if ($request->has('search') && $request->search != '') {
         $searchTerm = $request->search;
 
@@ -28,7 +29,7 @@ public function index(Request $request)
             $q->where('name', 'like', '%' . $searchTerm . '%')
               ->orWhere('city', 'like', '%' . $searchTerm . '%')
               ->orWhere('country', 'like', '%' . $searchTerm . '%')
-              ->orWhere('global_rating', 'like', '%' . $searchTerm . '%'); // مضاف: البحث بالفئة
+              ->orWhere('global_rating', 'like', '%' . $searchTerm . '%');
         });
     }
 
@@ -51,11 +52,12 @@ public function show(string $id)
 
 public function create()
  {
-    $destinations = Destination::all(); 
+    //get destinations for select
+    $destinations = Destination::all();
     return view('hotel.create',compact('destinations'));
  }
 
- ///store 
+ ///store
 
  public function store(HotelRequest $request) {
     //save hotel details
@@ -154,14 +156,18 @@ public function setPrimaryImage($id) {
 public function destroy($id)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
+    $reservations = $hotel->reservations;
+    if ($hotel->reservations->count()) {
+        return redirect()->back()->withErrors(['error' => 'You cannot delete this hotel, it has reservations.']);
+    }
 
 
-    // حذف الصور من التخزين
+    // delete images from storage
     foreach ($hotel->images as $image) {
         Storage::delete('public/' . $image->image_url);
     }
 
-    // حذف الفندق من قاعدة البيانات
+    // delete hotel from db
     $hotel->delete();
 
     return redirect()->route('hotels.index')->with('success', 'Hotel has been deleted successfully');

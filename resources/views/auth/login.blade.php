@@ -33,28 +33,29 @@
         </div>
 
         <!-- Remember Me -->
-        <div>
+        {{--<div>
             <label for="remember_me">
                 <input id="remember_me" type="checkbox" name="remember">
                 <span>{{ __('Remember me') }}</span>
             </label>
         </div>
+        --}}
 
-        <div>
+       {{-- <div>
             @if (Route::has('password.request'))
                 <a href="{{ route('password.request') }}">
                     {{ __('Forgot your password?') }}
                 </a>
-            @endif
-            
+            @endif--}}
+
                 <div>
                     <x-primary-button>
                         {{ __('Log in') }}
                     </x-primary-button>
                 </div>
-            
+
             <a href="{{ route('register') }}">
-                {{ __("Don't have an account?") }}
+                {{ __("Create a new account") }}
             </a>
         </div>
     </form>

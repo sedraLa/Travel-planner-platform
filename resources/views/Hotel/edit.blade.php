@@ -201,17 +201,36 @@
 </x-app-layout>
 
 <script>
-    let imageIndex = 0;
+
+    //fill city and country field
+    document.addEventListener('DOMContentLoaded', function () {
+        const destinationSelect = document.getElementById('destination_id');
+        const cityInput = document.getElementById('city');
+        const countryInput = document.getElementById('country');
+
+        
+        destinationSelect.addEventListener('change', function () {
+            const selectedOption = this.options[this.selectedIndex];
+            const city = selectedOption.getAttribute('data-city');
+            const country = selectedOption.getAttribute('data-country');
+
+            cityInput.value = city || '';
+            countryInput.value = country || '';
+        });
+
+       
+        destinationSelect.dispatchEvent(new Event('change'));
+    });
+
+   
     function addImageInput() {
-    const container = document.getElementById('image-inputs');
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.name = 'images[]';
-    input.onchange = addImageInput;
-    input.classList.add('block', 'mt-2');
-    container.appendChild(input);
-
-}
-
-    </script>
+        const container = document.getElementById('image-inputs');
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.name = 'images[]';
+        input.onchange = addImageInput;
+        input.classList.add('block', 'mt-2');
+        container.appendChild(input);
+    }
+</script>
 

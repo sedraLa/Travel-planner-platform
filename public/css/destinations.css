@@ -139,7 +139,7 @@ h6 {
 }
 
 .card {
-  flex: 1 1 180px;
+  flex: 1 1 180px;  /*grow shrink basis*/
   max-width: 300px;
   background-color: var(--white);
   border-radius: 12px;
@@ -217,7 +217,7 @@ h6 {
 }
 
 .pagination-wrapper a.arrow {
-  /* نفس تصميم الأزرار */
+
 }
 
 .pagination-wrapper .active span {

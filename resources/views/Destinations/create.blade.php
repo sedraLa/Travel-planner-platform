@@ -13,7 +13,7 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            
+
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-7xl">
 
@@ -24,7 +24,7 @@
                         @endforeach
                     </div>
                 @endif
-                
+
                     <form method="post" action="{{ route('destinations.store') }}" enctype="multipart/form-data">
                         @csrf
 
@@ -57,7 +57,7 @@
                             </div>
                             --}}
                         </div>
-                                                                                     
+
                         <!--city & country-->
                          <div class="flex space-x-4 mt-4">
                                          <div class="w-1/2">
@@ -115,7 +115,7 @@
                                    {{ __('Create Destination') }}
                                         </x-primary-button>
                                                  </div>
-     
+
                     </form>
                 </div>
             </div>
@@ -129,7 +129,7 @@ let allFiles = [];
 
 function showPrimarySelect(input) {
     const newFiles = Array.from(input.files);
-    allFiles = allFiles.concat(newFiles); // نضيف الصور الجديدة بدون حذف القديمة
+    allFiles = allFiles.concat(newFiles); // Add new images without deleting old ones
 
     const select = document.getElementById('primary_image_index');
     const wrapper = document.getElementById('primary-select-wrapper');
@@ -148,7 +148,7 @@ function showPrimarySelect(input) {
         wrapper.classList.add('hidden');
     }
 
-    // 👇 تحديث ملفات الفورم المخفية
+    //  تحديث ملفات الفورم المخفية
     updateFileList(input);
 }
 

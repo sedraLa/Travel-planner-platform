@@ -15,18 +15,18 @@
                     + Add New Destination
                 </a>
             </div>
-    
+
             @if (session('success'))
                 <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
                     {{ session('success') }}
                 </div>
             @endif
         @endif
-    
-        <!-- Hero Background (should be visible to all users) -->
+
+        <!-- Hero Background -->
         <div class="hero-background destinations-page"></div>
-    
-        {{-- Search Form (also visible to all users) --}}
+
+        {{-- Search Form  --}}
         <form class="search-form" method="GET" action="{{route('destination.index')}}">
             <h1>Search your next destination</h1>
             <div class="search-container">
@@ -38,13 +38,14 @@
                 <button type="submit" class="search-button">Search</button>
             </div>
         </form>
-    
+
         {{-- Cards Section --}}
         <div class='cards'>
             @forelse ($destinations as $destination)
             <div class="card">
                 <a href="{{ route('destination.show', $destination->id) }}">
                     <div class="card-img">
+                        {{-- get the first primary image --}}
                         <img src="{{ asset('storage/' . optional($destination->images->where('is_primary', true)->first())->image_url) }}" alt="Destination Image">
 
                     </div>
@@ -62,5 +63,5 @@
 
 
     </div>
-        
+
 </x-app-layout>

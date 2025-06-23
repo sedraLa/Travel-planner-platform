@@ -67,12 +67,12 @@
             </tr>
         </thead>
         <tbody>
-            @php $datesShown = []; @endphp
+            @php $datesShown = []; @endphp <!--store shown dates so that we don't repeat them-->
 
             @foreach ($weather['list'] as $entry)
-                @php $date = explode(' ', $entry['dt_txt'])[0]; @endphp
+                @php $date = explode(' ', $entry['dt_txt'])[0]; @endphp <!--to take dates only without hours-->
 
-                @if (!in_array($date, $datesShown))
+                @if (!in_array($date, $datesShown)) <!--check if this date has been shown earlier-->
                     @php $datesShown[] = $date; @endphp
                     <tr>
                         <td>{{ $date }}</td>

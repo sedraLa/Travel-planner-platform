@@ -37,12 +37,13 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+    /*try to log in*/
     public function authenticate(): void
     {
-        $this->ensureIsNotRateLimited();
+        $this->ensureIsNotRateLimited(); //user didnt do too many attempts
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+            RateLimiter::hit($this->throttleKey()); //increase failed attempts
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -80,6 +81,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip()); //ensure no strange char
     }
 }

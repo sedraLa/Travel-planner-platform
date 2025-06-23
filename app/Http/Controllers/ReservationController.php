@@ -27,9 +27,9 @@ public function store(ReservationRequest $request)
     $overlappingReservations = Reservation::where('hotel_id', $hotel->id)
         ->where(function ($query) use ($checkIn, $checkOut) {
             $query->where('check_in_date', '<', $checkOut)
-                  ->where('check_out_date', '>', $checkIn);
+                  ->where('check_out_date', '>', $checkIn);   //old reservation overlapped with new one
         })
-        ->sum('rooms_count');
+        ->sum('rooms_count');   //reserved rooms count
 
     // available rooms in this period
     $availableRooms = $hotel->total_rooms - $overlappingReservations;

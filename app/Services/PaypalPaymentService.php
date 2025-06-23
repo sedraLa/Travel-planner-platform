@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 
 class PaypalPaymentService
 {
-    protected $base_url;
+    protected $base_url;   //api url
     protected $header; //info we send with each http request/response
 
     public function __construct()

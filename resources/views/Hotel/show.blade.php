@@ -24,6 +24,16 @@
                 {{ session('success') }}
             </div>
         @endif
+
+        @if ($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">• {{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
+
+
         <header>Explore everything about this hotel</header>
 
         @if (Auth::user()->role === UserRole::ADMIN->value)
@@ -69,7 +79,7 @@
             </div>
 
             <div class="address">
-                <h1>Adress</h1>
+                <h1>Address</h1>
                 <p>{{ $hotel->address}}</p>
             </div>
 
