@@ -126,40 +126,40 @@
 
 
 <script>
-let allFiles = [];
+    let allFiles = [];
 
-function showPrimarySelect(input) {
-    const newFiles = Array.from(input.files);
-    allFiles = allFiles.concat(newFiles); // Add new images without deleting old ones
+    function showPrimarySelect(input) {
+        const newFiles = Array.from(input.files);
+        allFiles = allFiles.concat(newFiles); // نضيف الصور الجديدة بدون حذف القديمة
 
-    const select = document.getElementById('primary_image_index');
-    const wrapper = document.getElementById('primary-select-wrapper');
+        const select = document.getElementById('primary_image_index');
+        const wrapper = document.getElementById('primary-select-wrapper');
 
-    if (allFiles.length > 0) {
-        select.innerHTML = '';
-        wrapper.classList.remove('hidden');
+        if (allFiles.length > 0) {
+            select.innerHTML = '';
+            wrapper.classList.remove('hidden');
 
-        allFiles.forEach((file, i) => {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = file.name;
-            select.appendChild(option);
-        });
-    } else {
-        wrapper.classList.add('hidden');
+            allFiles.forEach((file, i) => {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = file.name;
+                select.appendChild(option);
+            });
+        } else {
+            wrapper.classList.add('hidden');
+        }
+
+        //  تحديث ملفات الفورم المخفية
+        updateFileList(input);
     }
 
-    //  تحديث ملفات الفورم المخفية
-    updateFileList(input);
-}
-
-function updateFileList(input) {
-    // إنشاء كائن جديد من نوع DataTransfer لتخزين الملفات كلها
-    const dataTransfer = new DataTransfer();
-    allFiles.forEach(file => dataTransfer.items.add(file));
-    input.files = dataTransfer.files;
-}
-</script>
+    function updateFileList(input) {
+        // إنشاء كائن جديد من نوع DataTransfer لتخزين الملفات كلها
+        const dataTransfer = new DataTransfer();
+        allFiles.forEach(file => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+    }
+    </script>
 
 
 
