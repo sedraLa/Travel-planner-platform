@@ -107,18 +107,22 @@
 
         {{-- Hotel Info --}}
         <div class="container">
+           
+            <div class="address">
+                <h1>Address</h1>
+                <p>{{ $hotel->address }}</p>
+                {{-- Map --}}
+             <div id="hotel-map"></div>
+            </div>
+             
+
             <div class="description">
                 <h1>Hotel Description</h1>
                 <p>{{ $hotel->description }}</p>
             </div>
 
-            <div class="address">
-                <h1>Address</h1>
-                <p>{{ $hotel->address }}</p>
-            </div>
 
-            {{-- Map --}}
-            <div id="hotel-map"></div>
+           
 
             <div class="city">
                 <h1>City</h1>
