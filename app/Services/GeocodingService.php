@@ -8,16 +8,16 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 
-class GeocodingService 
+class GeocodingService
 {
     protected $baseUrl = 'https://nominatim.openstreetmap.org/search';
     protected $userAgent;
-    
+
 
     public function geocodeAddress(string $fullAddress) : ?array
     {
         $cacheKey  = 'geocode_' . md5($fullAddress);
-            
+
         //try to get data from cache first
 
         $cachedCoords = Cache::get($cacheKey);
@@ -39,7 +39,7 @@ class GeocodingService
 
 
             if (! $data || count($data) === 0) {
-                return null; 
+                return null;
             }
 
             $coords = [
@@ -53,12 +53,12 @@ class GeocodingService
             Cache::put($cacheKey,$coords,now()->addDays(30));
             return $coords;
 
-        } catch (ConnectException $e) {
+        } catch (ConnectionException $e) {
             Log::error('Connection error: ' . $e->getMessage());
-            throw new \Exception('Failed to connect to the geocoding service. Please check your internet connection.');
+            return null;
         } catch (RequestException $e) {
             Log::error('Request error: ' . $e->getMessage());
-            throw new \Exception('An error occurred while fetching geocoding data. Please try again later.');
+            return null;
         }
     }
 }
