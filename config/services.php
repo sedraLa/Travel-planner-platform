@@ -42,5 +42,9 @@ return [
     'client_secret' => env('AMADEUS_CLIENT_SECRET'),
 ],
 
+'nominatim' => [
+    'user_agent' => env('NOMINATIM_USER_AGENT'),
+],
+
 
 ];
