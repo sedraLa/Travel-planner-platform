@@ -10,7 +10,7 @@ use App\Models\Reservation;
 use App\Http\Requests\HotelRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
-
+use App\Services\GeocodingService;
 
 
 class HotelController extends Controller
@@ -41,11 +41,17 @@ public function index(Request $request)
 
 ////show
 
-public function show(string $id)
+public function show(string $id, GeocodingService $geo)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
     $primaryImage = $hotel->images->where('is_primary', true)->first();
-    return view('hotel.show', compact('hotel', 'primaryImage'));
+    $fullAddress = implode(', ', array_filter([
+        $hotel->address,
+        $hotel->city,
+        $hotel->country
+    ]));
+    $coords = $geo->geocodeAddress($fullAddress);
+    return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));
 }
 
 ///create
