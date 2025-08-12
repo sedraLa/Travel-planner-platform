@@ -12,6 +12,7 @@ class GeocodingService
 {
     protected $baseUrl = 'https://nominatim.openstreetmap.org/search';
     protected $userAgent;
+    
 
     public function geocodeAddress(string $fullAddress) : ?array
     {
@@ -25,8 +26,9 @@ class GeocodingService
         }
             //If not exist in cache send request
         try {
+            $this->userAgent = config('services.nominatim.user_agent', 'MyTravelPlanningApp (default@example.com)');
             $response = Http::withHeaders([
-                $this->userAgent = config('services.nominatim.user_agent', 'MyTravelPlanningApp (default@example.com)');
+                'User-Agent' => $this->userAgent
             ])->get($this->baseUrl, [
                 'format' => 'json',
                 'q' => $fullAddress,
@@ -34,6 +36,7 @@ class GeocodingService
             ]);
 
             $data = $response->json();
+
 
             if (! $data || count($data) === 0) {
                 return null; 
