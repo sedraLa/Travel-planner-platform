@@ -12,6 +12,7 @@ class Payment extends Model
 
     protected $fillable = [
         'reservation_id',
+        'transport_reservation_id',
         'user_id',
         'amount',
         'status',
@@ -35,6 +36,11 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function transportReservation()
+{
+    return $this->belongsTo(TransportReservation::class, 'transport_reservation_id');
+}
 
 
 

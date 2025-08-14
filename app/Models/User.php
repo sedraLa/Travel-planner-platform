@@ -20,7 +20,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
+        'phone_number',
+        'country',
         'password',
     ];
 
@@ -53,6 +56,10 @@ class User extends Authenticatable
     public function reservations()
     {
         return $this->hasMany(Reservation::class, 'user_id', 'id');
+    }
+
+    public function transport_reservations() {
+        return $this->hasMany(TransportReservation::class);
     }
     
 }
