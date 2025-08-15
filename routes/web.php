@@ -50,20 +50,22 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
 });
 
  // Hotel routes
- Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
- Route::get('/hotels/create',[HotelController::class,'create'])->name('hotels.create');
- Route::post('/hotels',[HotelController::class,'store'])->name('hotels.store');
- Route::get('/hotels/{id}',[HotelController::class,'show'])->name('hotel.show');
- Route::get('/hotels/{hotel}/edit', [HotelController::class, 'edit'])->name('hotels.edit');
- Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update');
- Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
- Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
- Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
+Route::get('/hotels', [HotelController::class, 'index'])->name('hotels.index');
+Route::get('/hotels/create',[HotelController::class,'create'])->name('hotels.create');
+Route::post('/hotels',[HotelController::class,'store'])->name('hotels.store');
+Route::get('/hotels/{id}',[HotelController::class,'show'])->name('hotel.show');
+Route::get('/hotels/{hotel}/edit', [HotelController::class, 'edit'])->name('hotels.edit');
+Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update');
+Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
+Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
+Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
 
  //reservation routes
- Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
- Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
- Route::get('/reservations/{id}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
+Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
+Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+Route::get('/reservations/{id}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
+Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
+
 
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
@@ -76,7 +78,7 @@ Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('
 Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name('flights.search');
 
 
-    
+
 
 
 require __DIR__.'/auth.php';

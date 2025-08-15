@@ -61,5 +61,9 @@ class User extends Authenticatable
     public function transport_reservations() {
         return $this->hasMany(TransportReservation::class);
     }
-    
+    public function getFullNameAttribute(): string
+{
+    return trim($this->name.' '.($this->last_name ?? ''));
+}
+
 }

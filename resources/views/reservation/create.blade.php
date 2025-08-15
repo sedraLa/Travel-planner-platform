@@ -9,19 +9,19 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
 
             @if ($errors->any())
-            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
-                @foreach ($errors->all() as $error)
-                    <div class="mb-1">• {{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
+                <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                    @foreach ($errors->all() as $error)
+                        <div class="mb-1">• {{ $error }}</div>
+                    @endforeach
+                </div>
+            @endif
 
-        {{--success message--}}
-        @if (session('success'))
-        <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
-            {{ session('success') }}
-        </div>
-    @endif
+            {{--success message--}}
+            @if (session('success'))
+                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <div class="bg-white shadow-sm sm:rounded-lg p-6">
                 <form action="{{ route('reservations.store') }}" method="POST">
@@ -59,15 +59,34 @@
 
                     <!-- Name -->
                     <div class="mb-4">
-                        <label class="block text-gray-700">Full Name</label>
+                        <label class="block text-gray-700">First Name</label>
                         <input type="text" name="name" value="{{ Auth::user()->name ?? '' }}" class="form-input w-full"
                             required>
                     </div>
+                    <!-- last_Name -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Last Name</label>
+                        <input type="text" name="last_name" value="{{ Auth::user()->last_name ?? '' }}"
+                            class="form-input w-full" required>
+                    </div>
+                    <!-- country -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Country</label>
+                        <input type="text" name="country" value="{{ Auth::user()->country ?? '' }}"
+                            class="form-input w-full" required>
+                    </div>
+
 
                     <!-- Email -->
                     <div class="mb-4">
                         <label class="block text-gray-700">Email</label>
                         <input type="email" name="email" value="{{ Auth::user()->email ?? '' }}"
+                            class="form-input w-full" required>
+                    </div>
+                    <!-- phone_number -->
+                    <div class="mb-4">
+                        <label class="block text-gray-700">Phone Number</label>
+                        <input type="text" name="phone_number" value="{{ Auth::user()->phone_number ?? '' }}"
                             class="form-input w-full" required>
                     </div>
 
@@ -80,5 +99,3 @@
         </div>
     </div>
 </x-app-layout>
-
-
