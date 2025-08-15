@@ -18,6 +18,7 @@ class ReservationController extends Controller
 }
 public function store(ReservationRequest $request)
 {
+
     $hotel = Hotel::findOrFail($request->hotel_id);
 
     $checkIn = Carbon::parse($request->check_in_date);
@@ -45,6 +46,26 @@ public function store(ReservationRequest $request)
     $room_price = $hotel->price_per_night;
     $total_price = $days * $request->rooms_count * $room_price;
 
+    /** @var \App\Models\User|null $user */
+$user = Auth::user();
+if ($user) {
+    // عبّي القيم لو وصلت من الفورم
+    foreach (['last_name','phone_number','country'] as $k) {
+        if ($request->filled($k)) {
+            $user->{$k} = $request->input($k);
+        }
+    }
+
+    // احفظ بس إذا صار تغيير فعلي (وبيسكت الـ IDE)
+    if ($user->isDirty(['last_name','phone_number','country'])) {
+        $user->save();
+        // اختياري: تحقّق سريع
+        // dump($user->only(['last_name','phone_number','country']));
+    }
+}
+
+
+
     // create the reservation
     $reservation = Reservation::create([
         'user_id' => Auth::check() ? Auth::id() : null,
@@ -57,6 +78,8 @@ public function store(ReservationRequest $request)
         'reservation_status' => 'pending',
     ]);
 
+
+
     return redirect()->route('reservations.pay', $reservation->id)->with('success', 'Thanks, Your reservation now is pending please click on pay. Total cost: $' . $total_price);
 }
 
@@ -68,6 +91,16 @@ public function pay($reservationId) {
         abort(403,'Unauthorized action');
     }
     return view('reservation.pay',compact('reservationId','reservation'));
+}
+public function index()
+{
+    $reservations = Reservation::with(['hotel', 'user'])
+        ->when(Auth::user()->role !== 'admin', function($query) {
+            $query->where('user_id', Auth::id());
+        })
+        ->get();
+
+    return view('reservation.index', compact('reservations'));
 }
 
 
