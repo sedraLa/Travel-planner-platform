@@ -46,25 +46,6 @@ public function store(ReservationRequest $request)
     $room_price = $hotel->price_per_night;
     $total_price = $days * $request->rooms_count * $room_price;
 
-    /** @var \App\Models\User|null $user */
-$user = Auth::user();
-if ($user) {
-    // عبّي القيم لو وصلت من الفورم
-    foreach (['last_name','phone_number','country'] as $k) {
-        if ($request->filled($k)) {
-            $user->{$k} = $request->input($k);
-        }
-    }
-
-    // احفظ بس إذا صار تغيير فعلي (وبيسكت الـ IDE)
-    if ($user->isDirty(['last_name','phone_number','country'])) {
-        $user->save();
-        // اختياري: تحقّق سريع
-        // dump($user->only(['last_name','phone_number','country']));
-    }
-}
-
-
 
     // create the reservation
     $reservation = Reservation::create([
@@ -101,68 +82,67 @@ public function index(Request $request)
         $query->where('user_id', Auth::id());
     }
 
-    // بحث للأدمن فقط
-    if (Auth::check() && Auth::user()->role === 'admin' && $request->filled('search')) {
-        $term = trim($request->search);
+    // فلترة/بحث
+    if ($request->filled('search')) {
+        $term  = trim($request->search);
+        $month = null;
+        $year  = null;
 
-        // === التعرف على "شهر" للـ check-in (3 صيغ مدعومة) ===
-        // 1) YYYY-MM  مثل 2025-08  => سنة + شهر
-        // 2) MM فقط   مثل 08 / 8   => شهر فقط
-        // 3) اسم شهر  مثل August   => شهر فقط
-        $month = null; $year = null;
-
-        if (preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $term)) {
-            [$year, $m] = explode('-', $term);
-            $month = (int) $m;
-            $year  = (int) $year;
-        } elseif (preg_match('/^(0?[1-9]|1[0-2])$/', $term)) {
-            $month = (int) $term;
-        } else {
-            // اسم شهر (English) مثل August / Sep ...
+        // 1) سنة فقط: 4 أرقام
+        if (ctype_digit($term) && strlen($term) === 4) {
+            $year = (int) $term;
+        }
+        // 2) شهر بس: رقم 1–2
+        elseif (ctype_digit($term) && strlen($term) <= 2) {
+            $month = (int) $term; // 1..12
+        }
+        // 3) شهر + سنة: فيه فاصل - أو / (مثل 2025-08 أو 2025/08) أو اسم شهر مع رقم
+        elseif (strpos($term, '-') !== false || strpos($term, '/') !== false) {
             try {
-                if (preg_match('/[A-Za-z]+/', $term)) {
-                    $month = Carbon::parse('1 '.$term.' 2000')->month; // يعطي رقم الشهر
-                }
-            } catch (\Throwable $e) {
-                // تجاهل إذا ما قدر يparse
-            }
+                $dt    = Carbon::parse("1 $term");
+                $month = $dt->month;
+                $year  = $dt->year;
+            } catch (\Throwable $e) {}
+        }
+        // 4) اسم شهر فقط (August / Sep ...)
+        else {
+            try {
+                $dt    = Carbon::parse("1 $term");
+                $month = $dt->month;
+                // ما مناخد السنة هون
+            } catch (\Throwable $e) {}
         }
 
         $query->where(function ($q) use ($term, $month, $year) {
-            // فندق بالاسم
-            $q->whereHas('hotel', function ($h) use ($term) {
-                $h->where('name', 'like', "%{$term}%");
-            })
+            // بحث نصّي
+            $q->whereHas('hotel', fn($h) =>
+                $h->where('name','like',"%{$term}%")
+            )
+            ->orWhereHas('hotel.destination', fn($d) =>
+                $d->where('name','like',"%{$term}%")
 
-            // مدينة/دولة/اسم الوجهة عبر destination
-            ->orWhereHas('hotel.destination', function ($d) use ($term) {
-                $d->where('city', 'like', "%{$term}%")
-                  ->orWhere('country', 'like', "%{$term}%")
-                  ->orWhere('name', 'like', "%{$term}%"); // 👈 اسم الـ destination
-            })
+            )
+            ->orWhereHas('user', fn($u) =>
+                $u->where('name','like',"%{$term}%")
+                  ->orWhere('last_name','like',"%{$term}%")
+                  ->orWhere('email','like',"%{$term}%")
+            );
 
-            // مستخدم: الاسم المركّب (first + last) أو الإيميل أو name إن وُجد
-            ->orWhereHas('user', function ($u) use ($term) {
-                $u->whereRaw("CONCAT(COALESCE(name,''), ' ', COALESCE(last_name,'')) LIKE ?", ["%{$term}%"])
-                  ->orWhere('email', 'like', "%{$term}%")
-                  ->orWhere('name',  'like', "%{$term}%"); // لو عندك عمود name
-            });
-
-            // 🔎 بحث شهر check-in حصراً (OR مع الشروط السابقة)
-            if ($month) {
+            // فلترة التاريخ
+            if ($month !== null && $year !== null) {
                 $q->orWhere(function($qq) use ($month, $year) {
-                    $qq->whereMonth('check_in_date', $month);
-                    if ($year) {
-                        $qq->whereYear('check_in_date', $year);
-                    }
+                    $qq->whereMonth('check_in_date', $month)
+                       ->whereYear('check_in_date',  $year);
                 });
+            } elseif ($month !== null) {
+                $q->orWhereMonth('check_in_date', $month); // بأي سنة
+            } elseif ($year !== null) {
+                $q->orWhereYear('check_in_date',  $year);  // سنة كاملة
             }
         });
     }
 
-    // نفس أسلوبك: بدون paginate
     $reservations = $query->get();
-
     return view('reservation.index', compact('reservations'));
 }
 
