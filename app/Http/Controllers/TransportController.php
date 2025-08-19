@@ -1,0 +1,74 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Transport;
+use App\Http\Requests\TransportRequest;
+use App\Services\MediaServices;
+
+class TransportController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $transports=Transport::all();
+        return view('transport.index',compact('transports'));
+
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(TransportRequest $request)
+    {
+        //save image
+        $imagePath = MediaServices::save($request->file('image'), 'image', 'Transports');
+
+        $transport = Transport::create([
+            'name'=>$request->name,
+            'description'=>$request->description,
+            'image' => $imagePath,
+            'price'=>$request->price,
+            'type'=>$request->type,
+            'max_passengers'=>$request->max_passengers,
+        ]);
+        return redirect()->route('transport.index')->with('success','Transport created successfully');
+        
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}

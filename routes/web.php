@@ -8,6 +8,7 @@ use App\Http\Controllers\weatherController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\paymentController;
 use App\Http\Controllers\FlightController;
+use App\Http\Controllers\TransportController;
 
 
 /*
@@ -75,8 +76,10 @@ Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallbac
 Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
 Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name('flights.search');
 
+//transport routes
+Route::get('/transports',[TransportController::class,'index'])->name('transport.index');
+Route::post('/transports',[TransportController::class,'store'])->name('transport.store');
 
-    
 
 
 require __DIR__.'/auth.php';
