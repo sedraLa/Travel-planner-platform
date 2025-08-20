@@ -55,6 +55,7 @@
                         <h5>{{ $destination->name }}</h5>
                         <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
                     </a>
+
                 </div>
             @empty
                 <p style="text-align:center;">No destinations found.</p>
