@@ -9,7 +9,6 @@
                 autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" />
         </div>
-
         <!-- Last Name -->
         <div class="mt-4">
             <x-input-label for="last_name" :value="('Last Name')" />
@@ -17,6 +16,7 @@
                 autocomplete="family-name" />
             <x-input-error :messages="$errors->get('last_name')" />
         </div>
+
 
         <!-- Email Address -->
         <div class="mt-4">
@@ -28,28 +28,44 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="('Password')" />
+
             <x-text-input id="password" type="password" name="password" required autocomplete="new-password" />
+
             <x-input-error :messages="$errors->get('password')" />
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
             <x-input-label for="password_confirmation" :value="('Confirm Password')" />
+
             <x-text-input id="password_confirmation" type="password" name="password_confirmation" required
                 autocomplete="new-password" />
+
             <x-input-error :messages="$errors->get('password_confirmation')" />
         </div>
-
         <!-- Country -->
         <div class="mt-4">
             <x-input-label for="country" :value="('Country')" />
-            <select id="country" name="country"
-                class="block mt-1 w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                required>
-                <option value="">-- Select your country --</option>
+            <select id="country" name="country" class="crs-country block mt-1 w-full rounded-md border border-gray-300 bg-white shadow-sm
+               focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-10"
+                data-default-option="Select your country">
             </select>
             <x-input-error :messages="$errors->get('country')" />
         </div>
+        <script src="{{ asset('js/crs.min.js') }}"></script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const el = document.getElementById("country");
+                if (!el) return;
+
+                if (window.crs && typeof window.crs.init === "function") {
+                    window.crs.init(); // تعبّي كل select.crs-country
+                } else if (window.crs && window.crs.CountrySelect) {
+                    new window.crs.CountrySelect(el);
+                }
+            });
+        </script>
 
         <!-- Phone Number -->
         <div class="mt-4">
@@ -59,7 +75,7 @@
             <x-input-error :messages="$errors->get('phone_number')" />
         </div>
 
-        <div class="mt-4">
+        <div>
             <x-primary-button>
                 {{ ('Register') }}
             </x-primary-button>
@@ -68,28 +84,4 @@
             </a>
         </div>
     </form>
-
-    <!-- سكربت الدول -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const countries = [
-                "Lebanon", "France", "United States", "Canada",
-                "Germany", "Italy", "United Kingdom", "Bahrain"
-            ];
-
-            let countrySelect = document.getElementById("country");
-            countries.forEach(c => {
-                let opt = document.createElement("option");
-                opt.value = c;
-                opt.textContent = c;
-                countrySelect.appendChild(opt);
-            });
-
-            // رجوع old value إذا موجود
-            let oldVal = "{{ old('country') }}";
-            if (oldVal) {
-                countrySelect.value = oldVal;
-            }
-        });
-    </script>
 </x-guest-layout>
