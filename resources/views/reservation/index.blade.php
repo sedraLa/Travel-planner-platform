@@ -4,8 +4,9 @@
             {{ __('My Reservations') }}
         </h2>
     </x-slot>
-    {{-- 🔎 Admin-only Search (فقط بحث) --}}
+    {{-- 🔎 Search --}}
     @if(Auth::check() && Auth::user()->role === 'admin')
+        {{-- الأدمن: بحث شامل --}}
         <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
             <div class="flex gap-3">
                 <input type="search" name="search" value="{{ request('search') }}"
@@ -13,8 +14,17 @@
                 <button class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
             </div>
         </form>
+    @else
+        {{-- المستخدم العادي: بحث بالتاريخ فقط --}}
+        <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
+            <div class="flex gap-3">
+                <input type="date" name="search" value="{{ request('search') }}" placeholder="Search by Check-in Date"
+                    class="border p-2 rounded w-full" />
+                <button class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
+            </div>
+        </form>
     @endif
-    {{-- /Admin-only Search --}}
+
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -61,10 +71,10 @@
                                     <td class="p-3 border">
                                         <span
                                             class="px-2 py-1 rounded
-                                                                                                                                                                                                            @if($reservation->reservation_status == 'pending') bg-yellow-100 text-yellow-700
-                                                                                                                                                                                                            @elseif($reservation->reservation_status == 'confirmed') bg-green-100 text-green-700
-                                                                                                                                                                                                            @elseif($reservation->reservation_status == 'cancelled') bg-red-100 text-red-700
-                                                                                                                                                                                                            @endif">
+                                                                                                                                                                                                                    @if($reservation->reservation_status == 'pending') bg-yellow-100 text-yellow-700
+                                                                                                                                                                                                                    @elseif($reservation->reservation_status == 'confirmed') bg-green-100 text-green-700
+                                                                                                                                                                                                                    @elseif($reservation->reservation_status == 'cancelled') bg-red-100 text-red-700
+                                                                                                                                                                                                                    @endif">
                                             {{ ucfirst($reservation->reservation_status) }}
                                         </span>
                                     </td>
