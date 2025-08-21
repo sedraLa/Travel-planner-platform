@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Favorite;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Hotel extends Model
@@ -42,6 +44,10 @@ class Hotel extends Model
     public function reservations() {
         return $this->hasMany(Reservation::class,'hotel_id');
     }
+    public function favorites()
+{
+    return $this->morphMany(Favorite::class, 'favoritable');
+}
 
 
 }
