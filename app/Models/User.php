@@ -54,5 +54,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reservation::class, 'user_id', 'id');
     }
-    
+   public function favorites()
+{
+    return $this->hasMany(Favorite::class);
+}
+
+// وجهات مفضلة
+public function favoriteDestinations()
+{
+    return $this->morphedByMany(Destination::class, 'favoritable', 'favorites');
+}
+
+// فنادق مفضلة
+public function favoriteHotels()
+{
+    return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
+}
 }

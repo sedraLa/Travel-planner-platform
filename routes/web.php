@@ -8,6 +8,7 @@ use App\Http\Controllers\weatherController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\paymentController;
 use App\Http\Controllers\FlightController;
+use App\Http\Controllers\FavoriteController;
 
 
 /*
@@ -75,8 +76,13 @@ Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallbac
 Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
 Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name('flights.search');
 
+//favoritefeture routes
+Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
 
-    
+Route::post('/favorites/{type}/{id}', [FavoriteController::class, 'store'])
+    ->name('favorites.add')
+    ->middleware('auth');
+
 
 
 require __DIR__.'/auth.php';
