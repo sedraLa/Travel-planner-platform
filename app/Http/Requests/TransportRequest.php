@@ -16,9 +16,7 @@ class TransportRequest extends FormRequest
         $rules = [
             'name'           => 'required|string|max:255|unique:transports,name,' . $this->id,
             'description'    => 'required|string',
-            'price'          => 'required|numeric|min:0',
             'type'           => 'required|string|max:100',
-            'max_passengers' => 'required|integer|min:1',
         ];
 
         if ($this->isMethod('post')) {

@@ -32,9 +32,7 @@ class TransportController extends Controller
             'name'=>$request->name,
             'description'=>$request->description,
             'image' => $imagePath,
-            'price'=>$request->price,
             'type'=>$request->type,
-            'max_passengers'=>$request->max_passengers,
         ]);
         return redirect()->route('transport.index')->with('success','Transport created successfully');
         
