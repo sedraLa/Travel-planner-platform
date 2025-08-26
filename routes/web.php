@@ -79,6 +79,7 @@ Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name
 //transport routes
 Route::get('/transports',[TransportController::class,'index'])->name('transport.index');
 Route::post('/transports',[TransportController::class,'store'])->name('transport.store');
+Route::put('/transports/{id}',[TransportController::Class,'update'])->name('transport.update');
 
 
 
