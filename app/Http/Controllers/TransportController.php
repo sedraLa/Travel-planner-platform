@@ -35,7 +35,7 @@ class TransportController extends Controller
             'type'=>$request->type,
         ]);
         return redirect()->route('transport.index')->with('success','Transport created successfully');
-        
+
     }
 
     /**
@@ -57,9 +57,11 @@ class TransportController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TransportRequest $request, string $id)
     {
-        //
+        $transport=Transport::findOrFail($id);
+        $transport->update($request->validated());
+        return redirect()->route('transport.index')->with('success','Transport updated successfully');
     }
 
     /**
@@ -67,6 +69,8 @@ class TransportController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $transport=Transport::findOrFail($id);
+        $transport->delete();
+        return redirect()->back()->with('success','Transport deleted successfully');
     }
 }

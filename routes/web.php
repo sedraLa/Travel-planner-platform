@@ -80,7 +80,7 @@ Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name
 Route::get('/transports',[TransportController::class,'index'])->name('transport.index');
 Route::post('/transports',[TransportController::class,'store'])->name('transport.store');
 Route::put('/transports/{id}',[TransportController::Class,'update'])->name('transport.update');
-
+Route::delete('/transports/{id}',[TransportController::class,'destroy'])->name('transport.destroy');
 
 
 require __DIR__.'/auth.php';
