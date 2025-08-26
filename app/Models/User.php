@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Enums\UserRole;
+use App\Models\Favorite;
+use App\Models\Destination;
+use App\Models\Hotel;
 
 class User extends Authenticatable
 {
@@ -41,8 +42,8 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-        'role' => 'string',
+        'password'          => 'hashed',
+        'role'              => 'string',
     ];
 
     public function payments()
@@ -54,20 +55,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(Reservation::class, 'user_id', 'id');
     }
-   public function favorites()
-{
-    return $this->hasMany(Favorite::class);
-}
 
-// وجهات مفضلة
-public function favoriteDestinations()
-{
-    return $this->morphedByMany(Destination::class, 'favoritable', 'favorites');
-}
+    // كل المفضلات
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 
-// فنادق مفضلة
-public function favoriteHotels()
-{
-    return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
-}
+    // وجهات مفضلة
+    public function favoriteDestinations()
+    {
+        return $this->morphedByMany(Destination::class, 'favoritable', 'favorites');
+    }
+
+    // فنادق مفضلة
+    public function favoriteHotels()
+    {
+        return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
+    }
 }
