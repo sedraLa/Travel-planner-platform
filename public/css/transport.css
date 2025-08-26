@@ -30,10 +30,16 @@ body {
 
 
 /* Heading */
-.heading
-, .bottom-section {
+.bottom-section {
     width: 90%;
     margin: 40px auto 20px;
+}
+
+.heading {
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
 }
 
 .header {
@@ -330,4 +336,39 @@ select{
 .manage-btn {
   display:flex;
   gap:5px;
+}
+
+.add-btn:hover {
+  color:white;
+  background-color:transparent;
+} 
+
+/*Transport index*/
+.heading {
+  position: absolute;
+  top: 30%;              
+  left: 50%;             
+  transform: translate(-50%, -50%);
+  z-index: 2;            
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+.add-btn {
+  color: #3d3d92;
+  background-color: white;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  border: none;
+  transition: 0.3s;
+  border: 2px solid transparent;
+}
+
+.add-btn:hover {
+  color: white;
+  background-color: transparent;
+  cursor: pointer;
+  border: 2px solid white;
 }
