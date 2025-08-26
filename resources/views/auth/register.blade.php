@@ -43,29 +43,17 @@
 
             <x-input-error :messages="$errors->get('password_confirmation')" />
         </div>
+
         <!-- Country -->
         <div class="mt-4">
-            <x-input-label for="country" :value="('Country')" />
+            <x-input-label for="country" :value="__('Country')" />
             <select id="country" name="country" class="crs-country block mt-1 w-full rounded-md border border-gray-300 bg-white shadow-sm
-               focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-10"
+        focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-10" data-region-id="region"
                 data-default-option="Select your country">
             </select>
             <x-input-error :messages="$errors->get('country')" />
         </div>
-        <script src="{{ asset('js/crs.min.js') }}"></script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const el = document.getElementById("country");
-                if (!el) return;
-
-                if (window.crs && typeof window.crs.init === "function") {
-                    window.crs.init(); // تعبّي كل select.crs-country
-                } else if (window.crs && window.crs.CountrySelect) {
-                    new window.crs.CountrySelect(el);
-                }
-            });
-        </script>
 
         <!-- Phone Number -->
         <div class="mt-4">
@@ -84,4 +72,5 @@
             </a>
         </div>
     </form>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-selector/0.4.1/crs.min.js"></script>
 </x-guest-layout>
