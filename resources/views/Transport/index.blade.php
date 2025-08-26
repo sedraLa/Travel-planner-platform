@@ -3,32 +3,40 @@
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
     @endpush
-
-    <div class="heading">
-        <div class="header" style="width: 100%; justify-content: space-between; align-items: center;">
-            <div style="display: flex; gap: 5px; align-items: center;">
-                <img id="head-icon" src="{{ asset('images/icons/car-side-solid-full.svg') }}" alt="icon">
-                <h2>Transport Services</h2>
+    @push('styles')
+    <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
+    @endpush
+    <div class="main-wrapper">
+        @if(session('success'))
+        <div class="mb-4 px-4 py-3 bg-green-200 text-green-800 rounded">
+            {{ session('success') }}
+        </div>
+    @endif
+        <div class="hero-background transport-page">
+            <div class="heading">
+                <div class="header">
+                    <div style="display: flex; gap: 5px; align-items: center;">
+                        <h2 style="font-size:80px;font-weight:500">Transport Services</h2>
+                    </div>
+                    
+                </div>
+        
+                <p style="color:white;font-size:20px;width:50%">choose from our curated selection of premium tranportation options each designed to evelate your travel experience</p>
+                <div class="flex justify-end mb-4 px-6 pt-6">
+                @if (Auth::user()->role === UserRole::ADMIN->value)
+                        <button class="add-btn" id="popup-btn">+ Add New Service</button>
+                    @endif
+                </div>
+               
             </div>
-            @if (Auth::user()->role === UserRole::ADMIN->value)
-                <button class="add-btn" id="popup-btn">+ Add New Service</button>
-            @endif
         </div>
 
-        <p>We offer the best transport services with the best prices</p>
-
-        @if(session('success'))
-            <div class="mb-4 px-4 py-3 bg-green-200 text-green-800 rounded">
-                {{ session('success') }}
-            </div>
-        @endif
-    </div>
 
     <div class="main">
         <div class="transport-container">
-            <div class="cards">
+            <div class="cards" style="margin: 100px auto;">
                 @foreach ($transports as $transport)
-                    <div class="card">
+                    <div class="card" >
                         <div class="service-image">
                             <img src="{{ asset('storage/' . $transport->image) }}" alt="transport service">
                         </div>
@@ -69,7 +77,7 @@
                                             onsubmit="return confirm('Are you sure you want to delete this transport?');">
                                             @csrf
                                             @method('DELETE')
-                                        <button type="submit" class="order-btn" style="background-color:red;">Delete</button>
+                                        <button type="submit" class="order-btn" style="background-color:#de2222;">Delete</button>
                                         </form>
                                     </div>
                                 
@@ -84,6 +92,7 @@
         </div>
     </div>
 
+</div>
     <!-- Add/Edit Popup Overlay -->
     <div id="popup-overlay" style="display: {{ $errors->any() ? 'flex' : 'none' }};">
         <div class="popup">
