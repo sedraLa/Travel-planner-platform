@@ -2,14 +2,18 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="('Name')" />
-            <x-text-input id="name" type="text" name="name" :value="old('name')" required autofocus
-                autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" />
-        </div>
-        <!-- Last Name -->
+        
+        <div class="container">
+            <!-- Name -->
+
+            <div>
+                <x-input-label for="name" :value="('Name')" />
+                <x-text-input id="name" type="text" name="name" :value="old('name')" required autofocus
+                    autocomplete="name" />
+                <x-input-error :messages="$errors->get('name')" />
+            </div>
+
+             <!-- Last Name -->
         <div class="mt-4">
             <x-input-label for="last_name" :value="('Last Name')" />
             <x-text-input id="last_name" type="text" name="last_name" :value="old('last_name')" required
@@ -17,6 +21,9 @@
             <x-input-error :messages="$errors->get('last_name')" />
         </div>
 
+        </div>
+       
+       
 
         <!-- Email Address -->
         <div class="mt-4">
@@ -25,7 +32,8 @@
             <x-input-error :messages="$errors->get('email')" />
         </div>
 
-        <!-- Password -->
+        <div class="container">
+             <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="('Password')" />
 
@@ -43,7 +51,10 @@
 
             <x-input-error :messages="$errors->get('password_confirmation')" />
         </div>
+        </div>
 
+       
+        
         <!-- Country -->
         <div class="mt-4">
             <x-input-label for="country" :value="__('Country')" />
