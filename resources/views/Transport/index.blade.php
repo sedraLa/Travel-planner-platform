@@ -79,12 +79,17 @@
                                             @method('DELETE')
                                         <button type="submit" class="order-btn" style="background-color:#de2222;">Delete</button>
                                         </form>
+                                      
                                     </div>
                                 
                                 @else
                                     <button class="order-btn">order car</button>
                                 @endif
                             </div>
+                            <!--Add vehicles button-->
+                            <a href="{{route('vehicle.create')}}">
+                                <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
+                            </a>
                         </div>
                     </div>
                 @endforeach
