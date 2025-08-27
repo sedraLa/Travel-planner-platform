@@ -355,7 +355,8 @@ select{
   width: 100%;
 }
 
-.add-btn {
+.add-btn,
+.add-vehicle-btn {
   color: #3d3d92;
   background-color: white;
   font-weight: bold;

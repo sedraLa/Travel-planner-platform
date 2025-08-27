@@ -9,6 +9,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\paymentController;
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\TransportController;
+use App\Http\Controllers\VehicleController;
 
 
 /*
@@ -81,6 +82,10 @@ Route::get('/transports',[TransportController::class,'index'])->name('transport.
 Route::post('/transports',[TransportController::class,'store'])->name('transport.store');
 Route::put('/transports/{id}',[TransportController::Class,'update'])->name('transport.update');
 Route::delete('/transports/{id}',[TransportController::class,'destroy'])->name('transport.destroy');
+
+//vehicles routes
+Route::get('/vehicle/create',[VehicleController::class,'create'])->name('vehicle.create');
+Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.store');
 
 
 require __DIR__.'/auth.php';

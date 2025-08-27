@@ -9,11 +9,17 @@ class TransportVehicle extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'transport_id',
-        'car_model',
-        'plate_number',
-        'driver_name',
-        'driver_contact'];
+       'transport_id',
+    'car_model',
+    'plate_number',
+    'driver_name',
+    'driver_contact',
+    'max_passengers',
+    'base_price',
+    'price_per_km',
+    'category',
+    'image',
+];
         
     protected $hidden = [
         'created_at', 
