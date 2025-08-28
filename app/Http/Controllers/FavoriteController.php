@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Destination;
 use App\Models\Hotel;
 use App\Models\Favorite;
+use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
@@ -43,5 +44,20 @@ class FavoriteController extends Controller
         }
 
         return back()->with('status', "Favorite $status successfully.");
+    }
+     public function showFavorites()
+    {
+        $user = Auth::user();
+
+        // Step 1: Get the user's favorite destinations and hotels
+        // We will load the 'images' relationship for each of them.
+        $favoriteDestinations = $user->favoriteDestinations()->with('images')->get();
+        $favoriteHotels = $user->favoriteHotels()->with('images')->get();
+
+        // Step 2: Pass these collections to the view
+        return view('favorites.index', [
+            'destinations' => $favoriteDestinations,
+            'hotels'       => $favoriteHotels,
+        ]);
     }
 }
