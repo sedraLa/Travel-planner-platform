@@ -82,6 +82,8 @@ Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.
 Route::post('/favorites/{type}/{id}', [FavoriteController::class, 'store'])
     ->name('favorites.add')
     ->middleware('auth');
+    // Route to show the user's favorites page
+Route::get('/show-favourite', [FavoriteController::class, 'showFavorites'])->name('favorites.show')->middleware('auth');
 
 
 
