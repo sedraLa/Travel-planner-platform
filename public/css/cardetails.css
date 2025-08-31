@@ -1,0 +1,250 @@
+/* -------------------- RESET -------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* -------------------- VARIABLES -------------------- */
+:root {
+  --indigo: #052659;
+  --light-aqua: #C1E8FF;
+  --light-blue: #628ECB;
+  --white: #f4f4f4;
+  --grey: #808080;
+}
+
+/* -------------------- BODY -------------------- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--indigo);
+  background-image: none;
+  background-color: var(--white);
+}
+
+/* -------------------- MAIN CONTAINER -------------------- */
+.main-container {
+  width: 70vw;
+  margin: 40px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.back {
+  padding: 6px;
+  width: 95px;
+  height: 39px;
+  border: 2px solid var(--indigo);
+  color: var(--indigo);
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+/* -------------------- MIDDLE SECTION -------------------- */
+.middle-section {
+  display: flex;
+  gap: 30px;
+}
+
+.overview, 
+.map {
+  flex: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.overview {
+  background-color: #c1e8ff2f;
+}
+
+.map img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* -------------------- TRIP OVERVIEW -------------------- */
+.trip-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 40px;
+}
+
+.trip-overview h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.trip-overview img.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.trip-list {
+    margin-left:48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    list-style-type:circle;
+}
+
+.align {
+  display: flex;
+}
+
+.align p {
+  margin-left: 5px;
+  margin-top: 2px;
+}
+
+/* -------------------- CARDS -------------------- */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.card {
+  display: flex;
+  gap: 20px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  min-height: 250px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.car-image {
+  flex: 0 0 250px;  /* fixed width */
+  display: flex;
+  height: auto;
+}
+
+.car-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 7px;
+}
+
+/* -------------------- CARD INFO -------------------- */
+.details {
+  flex: 1;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-direction: column;
+}
+
+.category span {
+  background-color: #ffbe0094;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* -------------------- DRIVER & PRICE -------------------- */
+.driver-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px solid var(--indigo);
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-left: 25px;
+}
+
+.price-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #c1e8ff58;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 10px;
+  margin-left: 25px;
+}
+
+.price-section .left, 
+.price-section .right {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* -------------------- BOOK BUTTON -------------------- */
+.book-car {
+  margin-top: 10px;
+  margin-left: 25px;
+}
+
+.book-car button {
+  padding: 10px 15px;
+  background-color: var(--indigo);
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  border: 2px solid transparent;
+  transition: all 0.5s ease-in-out;
+}
+
+.book-car button:hover {
+  background-color: transparent;
+  color: var(--indigo);
+  border: 2px solid var(--indigo);
+}
+
+/* -------------------- ICONS -------------------- */
+.icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-size: 20px;
+  font-weight: bold;
+}

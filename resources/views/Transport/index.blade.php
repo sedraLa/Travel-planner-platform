@@ -87,9 +87,14 @@
                                 @endif
                             </div>
                             <!--Add vehicles button-->
-                            <a href="{{route('vehicle.create')}}">
+                            <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
                                 <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
                             </a>
+
+                            <a href="{{ route('transport.show', $transport->id) }}">
+                                <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">View Vehicles</button>
+                            </a>
+                            
                         </div>
                     </div>
                 @endforeach
@@ -107,7 +112,7 @@
                 @csrf
                 @if ($errors->any())
     <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
-        <ul class="list-disc list-inside">
+        <ul class="list-disc list-inside" style="display:flex;flex-direction:column">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
