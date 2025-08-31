@@ -15,17 +15,19 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        //
+        $vehicle=TransportVehicle::all();
+        return view('vehicles.index',compact('vehicle'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        $transports= Transport::all();
-        return view('vehicles.create',compact('transports'));
-    }
+    public function create(Request $request)
+{
+    $transportId = $request->get('transport_id'); 
+    return view('vehicles.create', compact('transportId'));
+}
+
 
     /**
      * Store a newly created resource in storage.

@@ -40,10 +40,13 @@ class TransportController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
-    }
+ public function show(string $id)
+{
+    $transport = Transport::with('vehicles')->findOrFail($id);
+    $vehicles = $transport->vehicles;
+    return view('vehicles.index', compact('transport', 'vehicles'));
+}
+
 
     /**
      * Show the form for editing the specified resource.

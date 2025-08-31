@@ -1,7 +1,7 @@
 <x-app-layout>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}"><!-- ملف خاص بالفورم العادي -->
+        <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
     @endpush
 
     <div class="vehicle-form-container">
@@ -21,13 +21,8 @@
             @endif
 
             <!-- Transport -->
-            <x-input-label for="transport_id" value="Transport"/>
-            <select name="transport_id" id="transport_id" required>
-                <option value="">-- Select Transport --</option>
-                @foreach($transports as $transport)
-                    <option value="{{ $transport->id }}">{{ $transport->name }}</option>
-                @endforeach
-            </select>
+            <input type="hidden" name="transport_id" value="{{ $transportId }}">
+      
 
             <div class="first-section">
                 <div class="left">
