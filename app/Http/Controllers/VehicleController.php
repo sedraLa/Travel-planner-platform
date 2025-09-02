@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\MediaServices;
 use App\Models\Transport;
-use App\Models\TransportVehicle; 
+use App\Models\TransportVehicle;
 use App\Http\Requests\VehicleRequest;
+use Illuminate\Support\Facades\Storage;
 
 class VehicleController extends Controller
 {
@@ -24,7 +25,7 @@ class VehicleController extends Controller
      */
     public function create(Request $request)
 {
-    $transportId = $request->get('transport_id'); 
+    $transportId = $request->get('transport_id');
     return view('vehicles.create', compact('transportId'));
 }
 
@@ -66,22 +67,74 @@ class VehicleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+         // البحث عن المركبة المراد تعديلها
+        $vehicle = TransportVehicle::findOrFail($id);
+
+        // إرجاع عرض (view) يحتوي على نموذج التعديل مع بيانات المركبة
+        return view('vehicles.edit', compact('vehicle'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(VehicleRequest $request, string $id)
     {
-        //
-    }
+        // البحث عن المركبة
+        $vehicle = TransportVehicle::findOrFail($id);
 
+        // الحصول على مسار الصورة القديمة
+        $oldImagePath = $vehicle->image;
+
+        // التحقق مما إذا كان المستخدم قد قام بتحميل صورة جديدة
+        if ($request->hasFile('image')) {
+            // حفظ الصورة الجديدة
+            $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
+
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
+        } else {
+            // إذا لم يتم تحميل صورة جديدة، احتفظ بالصورة القديمة
+            $imagePath = $oldImagePath;
+        }
+
+        // تحديث بيانات المركبة
+        $vehicle->update([
+            'transport_id'   => $request->transport_id,
+            'car_model'      => $request->car_model,
+            'plate_number'   => $request->plate_number,
+            'driver_name'    => $request->driver_name,
+            'driver_contact' => $request->driver_contact,
+            'max_passengers' => $request->max_passengers,
+            'base_price'     => $request->base_price,
+            'price_per_km'   => $request->price_per_km,
+            'category'       => $request->category,
+            'image'          => $imagePath,
+        ]);
+
+        // إعادة التوجيه إلى صفحة قائمة المركبات مع رسالة نجاح
+        return redirect()->route('transport.index')->with('success', 'Vehicle updated successfully');
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        // البحث عن المركبة
+        $vehicle = TransportVehicle::findOrFail($id);
+
+        // حذف الصورة المرتبطة بالمركبة من التخزين
+        if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
+            Storage::disk('public')->delete($vehicle->image);
+        }
+
+        // حذف سجل المركبة من قاعدة البيانات
+        $vehicle->delete();
+
+        // إعادة التوجيه إلى صفحة القائمة مع رسالة نجاح
+        return redirect()->route('transport.index')->with('success', 'Vehicle deleted successfully');
     }
 }
+
+

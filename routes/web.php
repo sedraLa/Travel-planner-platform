@@ -89,7 +89,9 @@ Route::get('/transports/{id}', [TransportController::class, 'show'])->name('tran
 Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.index');
 Route::get('/vehicle/create',[VehicleController::class,'create'])->name('vehicle.create');
 Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.store');
-Route::get('vehicel/edit',[VehicleController::class,'edit'])->name('vehicle.edit');
+Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');
+Route::put('/vehicle/{id}/update', [VehicleController::class, 'update'])->name('vehicle.update');
+Route::delete('/vehicle/{id}/destroy', [VehicleController::class, 'destroy'])->name('vehicle.destroy');
 
 
 require __DIR__.'/auth.php';
