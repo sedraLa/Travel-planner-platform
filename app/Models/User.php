@@ -59,12 +59,12 @@ class User extends Authenticatable
         return $this->hasMany(Reservation::class, 'user_id', 'id');
     }
 
-<<<<<<< HEAD
+
     public function transport_reservations() {
         return $this->hasMany(TransportReservation::class);
     }
     
-=======
+
     // كل المفضلات
     public function favorites()
     {
@@ -82,5 +82,5 @@ class User extends Authenticatable
     {
         return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
     }
->>>>>>> 0fca50dd5d8d68955b00f7a5b050f997c89d1a0d
+
 }

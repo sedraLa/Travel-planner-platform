@@ -10,7 +10,7 @@
                 </div>
             </a>
 
-<<<<<<< HEAD
+
             </div>
             <!-- Navigation Links -->
             <ul>
@@ -20,16 +20,7 @@
                 <li><a href="{{route('transport.index')}}">Transport</a></li>
             </ul>
             <!-- Settings Dropdown -->
-=======
-        </div>
-        <!-- Navigation Links -->
-        <ul>
-            <li><a href="{{ route('destination.index') }}">Destinations</a></li>
-            <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
-            <li><a href="{{ route('flight.show') }}">Flights</a></li>
-        </ul>
-        <!-- Settings Dropdown -->
->>>>>>> 0fca50dd5d8d68955b00f7a5b050f997c89d1a0d
+       
         <div class="hidden sm:flex sm:items-center sm:ms-6">
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
