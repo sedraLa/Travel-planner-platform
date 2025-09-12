@@ -12,17 +12,17 @@
 
                     <!-- Favorite Destinations Section -->
                     <div class="mb-12">
-                        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">Favorite
-                            Destinations</h3>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
+                            Favorite Destinations
+                        </h3>
 
                         @if($destinations->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 @foreach ($destinations as $destination)
-                                    <div
-                                        class="bg-gray-50 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                                    <a href="{{ route('destination.show', $destination->id) }}"
+                                        class="bg-gray-50 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 block">
 
                                         @php
-                                            // Find the primary image from the 'images' collection, exactly like your example
                                             $primaryImage = $destination->images->where('is_primary', true)->first();
                                         @endphp
 
@@ -32,10 +32,8 @@
                                         <div class="p-4">
                                             <h4 class="text-lg font-semibold text-gray-900">{{ $destination->name }}</h4>
                                             <p class="text-sm text-gray-600 mt-1">{{ $destination->city ?? 'Explore now' }}</p>
-
-
                                         </div>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @else
@@ -45,29 +43,27 @@
 
                     <!-- Favorite Hotels Section -->
                     <div>
-                        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">Favorite
-                            Hotels</h3>
-
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
+                            Favorite Hotels
+                        </h3>
                         @if($hotels->isNotEmpty())
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 @foreach ($hotels as $hotel)
-                                    <div
-                                        class="bg-gray-50 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                                    <a href="{{ route('hotel.show', $hotel->id) }}"
+                                        class="bg-gray-50 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 block">
 
                                         @php
-                                            // Find the primary image from the 'images' collection
                                             $primaryImage = $hotel->images->where('is_primary', true)->first();
                                         @endphp
+
                                         <img src="{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : 'https://via.placeholder.com/400x250.png/00529b/ffffff?text=Hotel' }}"
                                             alt="{{ $hotel->name }}" class="w-full h-48 object-cover">
 
                                         <div class="p-4">
                                             <h4 class="text-lg font-semibold text-gray-900">{{ $hotel->name }}</h4>
                                             <p class="text-sm text-gray-600 mt-1">{{ $hotel->city ?? 'Book now' }}</p>
-
-
                                         </div>
-                                    </div>
+                                    </a>
                                 @endforeach
                             </div>
                         @else
