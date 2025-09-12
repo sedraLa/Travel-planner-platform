@@ -3,28 +3,28 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VehicleRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $vehicleId = $this->route('id'); // اسم الباراميتر بالـ route
+
         return [
             'transport_id'   => 'required|exists:transports,id',
             'car_model'      => 'required|string|max:255',
-            'plate_number'   => 'required|string|max:50|unique:transport_vehicles,plate_number',
+            'plate_number'   => [
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('transport_vehicles', 'plate_number')->ignore($vehicleId),
+            ],
             'driver_name'    => 'required|string|max:255',
             'driver_contact' => 'required|string|max:20',
             'max_passengers' => 'required|integer|min:1',
