@@ -18,16 +18,16 @@
                     <div style="display: flex; gap: 5px; align-items: center;">
                         <h2 style="font-size:80px;font-weight:500">Transport Services</h2>
                     </div>
-                    
+
                 </div>
-        
+
                 <p style="color:white;font-size:20px;width:50%">choose from our curated selection of premium tranportation options each designed to evelate your travel experience</p>
                 <div class="flex justify-end mb-4 px-6 pt-6">
                 @if (Auth::user()->role === UserRole::ADMIN->value)
                         <button class="add-btn" id="popup-btn">+ Add New Service</button>
                     @endif
                 </div>
-               
+
             </div>
         </div>
 
@@ -72,20 +72,21 @@
                                             data-description="{{ $transport->description }}">
                                             Edit
                                         </button>
-                                        
+
                                         <form action="{{route('transport.destroy',$transport->id)}}" method="post"
                                             onsubmit="return confirm('Are you sure you want to delete this transport?');">
                                             @csrf
                                             @method('DELETE')
                                         <button type="submit" class="order-btn" style="background-color:#de2222;">Delete</button>
                                         </form>
-                                      
+
                                     </div>
-                                
+
                                 @else
                                     <button class="order-btn">order car</button>
                                 @endif
                             </div>
+                            @if(Auth::user()->role === UserRole::ADMIN->value)
                             <!--Add vehicles button-->
                             <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
                                 <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
@@ -94,7 +95,8 @@
                             <a href="{{ route('transport.show', $transport->id) }}">
                                 <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">View Vehicles</button>
                             </a>
-                            
+                            @endif
+
                         </div>
                     </div>
                 @endforeach
@@ -148,7 +150,7 @@
         </div>
     </div>
 
-    
+
 
 </x-app-layout>
 
