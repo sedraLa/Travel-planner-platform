@@ -83,7 +83,9 @@
                                     </div>
 
                                 @else
+                                <a href="{{route('vehicle.order', $transport->id)}}">
                                     <button class="order-btn">order car</button>
+                                </a>
                                 @endif
                             </div>
                             @if(Auth::user()->role === UserRole::ADMIN->value)

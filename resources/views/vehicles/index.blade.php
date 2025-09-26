@@ -1,3 +1,4 @@
+@php use App\Enums\UserRole; @endphp
 <x-app-layout>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/cardetails.css') }}">
@@ -14,7 +15,10 @@
             </a>
             <div class="head">
                 <h1>Available cars</h1>
+                @if (Auth::user()->role === UserRole::ADMIN->value)
                 <p>Manage Vehicles For This Transport Service</p>
+                @endif
+                <p>{{$pickup_datetime}}</p>
             </div>
         </header>
 
@@ -29,8 +33,10 @@
                     </div>
 
                     <ul class="trip-list">
-                        <li>Pickup Location:LosAngelous</li>
-                        <li>Destination Location:Newyork</li>
+                        <li>Pickup Location: {{$pickup_location}}</li>
+                        <li>Destination Location: {{$dropoff_location}}</li>
+                        <li>Passengers: {{$passengers}}<li>
+                        <li>Date & Time: {{$pickup_datetime}}<li>
                     </ul>
                 </div>
 
@@ -42,7 +48,7 @@
 
         <!--cards-->
         <div class="cards">
-            @foreach($vehicles as $vehicle)
+            @foreach($availableVehicles as $vehicle)
                 <div class="card">
                     <div class="car-image">
                         <img src="{{asset('storage/' . $vehicle->image)}}" alt="car image" class="car-img">
@@ -85,9 +91,16 @@
                             </div>
 
                         </div>
-                        <div class="book-car">
-                            <button type="submit">Book This Car</button>
-                        </div>
+                        <a href="{{ route('vehicle.reservation', [
+                            'id' => $vehicle->id,
+                            'pickup_location' => $pickup_location,
+                            'dropoff_location' => $dropoff_location,
+                            'pickup_datetime' => $pickup_datetime,
+                            'passengers' => $passengers
+                        ]) }}">
+                            Reserve
+                        </a>
+                        
 
                         <a href="{{ route('vehicle.edit', $vehicle->id) }}" class="edit-btn">Edit</a>
 

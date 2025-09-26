@@ -10,6 +10,8 @@ use App\Http\Controllers\paymentController;
 use App\Http\Controllers\FlightController;
 use App\Http\Controllers\TransportController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\VehicleOrderController;
+use App\Http\Controllers\TransportReservationController;
 
 
 /*
@@ -92,6 +94,19 @@ Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.
 Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');
 Route::put('/vehicle/{id}/update', [VehicleController::class, 'update'])->name('vehicle.update');
 Route::delete('/vehicle/{id}/destroy', [VehicleController::class, 'destroy'])->name('vehicle.destroy');
+//order vehicles
+Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->name('vehicle.order');
+Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
+    ->name('vehicle.search');
+    
+Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
+
+Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
+    [TransportReservationController::class, 'store']
+)->name('vehicleReservation.store');
+
+Route::get('/vehicle/reservation/{id}/pay', [TransportReservationController::class, 'pay'])
+    ->name('vehicles.pay');
 
 
 require __DIR__.'/auth.php';
