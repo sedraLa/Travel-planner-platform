@@ -1,0 +1,227 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  :root {
+    --indigo: #052659;
+    --light-aqua: #C1E8FF;
+    --light-blue: #628ECB;
+    --white: #f4f4f4;
+    --grey: #808080;
+    --light-blue-2:#c1e8ff;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--indigo);
+    background-color: var(--white);
+    background-image: none;
+  }
+
+  .main-wrapper {
+    position: relative;
+    z-index: 0;
+    display: flex;
+  }
+  
+  
+  .hero-background {
+    background-image: url('/images/tristan-basic-P4LyNNxZQDs-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 450px;
+    width: 100vw;
+    z-index: -1;
+    position: absolute;
+    
+  }
+
+  .headings {
+    color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:50%;
+    margin: 100px auto;
+    flex-direction: column;
+    text-align: center;
+    font-size:35px;
+  }
+  .headings h1 {
+    width:60%;
+  }
+
+  .headings span {
+    color:#628ECB;
+    font-size:60px;
+    font-weight:bold;
+  }
+
+  .headings p {
+    font-size:25px;
+    word-spacing:10;
+  }
+
+  .navigation {
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    
+  }
+  
+
+  .main-container {
+    padding: 30px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    background-color: #fefefe;
+    border-radius: 30px;
+    box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+    width:1000px;
+    margin:420px auto;
+  }
+
+  .icon {
+    width: 25px;
+    height: 29px;
+    margin-bottom: 10px
+  }
+
+  .form-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    word-spacing: 5;
+    gap:8px;
+  }
+  form {
+    display: flex;
+    justify-content: space-between;
+    align-items:center;
+    flex-direction: column;
+    width: 1033px;
+  }
+
+  .first-section ,
+  .second-section{
+    display: flex;
+    justify-content: space-around;
+    width: 800px;
+    margin:20px auto;
+    gap:25px;
+  }
+
+  form input{
+  width: 300px;
+  padding: 15px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+label {
+    font-size:20px;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+}
+
+.order-car {
+    padding:10px;
+    width:62%;
+    background-color: #052659;
+    color:white;
+    font-size: 20px;
+    font-weight: 500;
+    border: 2px solid transparent;
+    border-radius:5px;
+    margin-right: 111px;
+}
+
+.order-car:hover {
+    color:#052659;
+    background-color: transparent;
+    border:2px solid #052659;
+    transition: color 0.2 ease-out;
+    transition: background-color 0.3s ease-in-out;
+}
+
+h2{
+    font-size:30px;
+    font-weight:bold;
+}
+
+h1 {
+    font-size:61px;
+    font-weight:bold;
+}
+
+
+.overview,  {
+  flex: 1;
+  width:50%;
+  height:200px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.overview {
+  background-color: #c1e8ff2f;
+}
+
+.map img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* -------------------- TRIP OVERVIEW -------------------- */
+.trip-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding: 40px;
+}
+
+.trip-overview h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.trip-overview img.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.trip-list {
+    margin-left:48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+    list-style-type:circle;
+}
+
+.align {
+  display: flex;
+}
+
+.align p {
+  margin-left: 5px;
+  margin-top: 2px;
+}
+
