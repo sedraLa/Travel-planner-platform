@@ -53,7 +53,7 @@ header {
   gap: 30px;
 }
 
-.overview, 
+.overview,
 .map {
   flex: 1;
   border-radius: 10px;
@@ -201,7 +201,7 @@ header {
   margin-left: 25px;
 }
 
-.price-section .left, 
+.price-section .left,
 .price-section .right {
   display: flex;
   flex-direction: column;
@@ -247,4 +247,12 @@ h5,
 h6 {
   font-size: 20px;
   font-weight: bold;
+}
+
+#route-map {
+  height: 400px;
+  border-radius: 15px;
+  overflow: hidden;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }

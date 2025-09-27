@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\TransportVehicle;
 use App\Models\Transport;
 use App\Models\TransportReservation;
-use Illuminate\Support\Facades\Auth;;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\VehicleOrderRequest;
 
 
