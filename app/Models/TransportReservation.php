@@ -14,6 +14,7 @@ class TransportReservation extends Model
         'pickup_location',
         'dropoff_location',
         'pickup_datetime',
+        'dropoff_datetime',
         'passengers',
         'total_price',
         'status',
@@ -21,7 +22,7 @@ class TransportReservation extends Model
     ];
 
     protected $hidden = [
-        'created_at', 
+        'created_at',
         'updated_at'
     ];
 
