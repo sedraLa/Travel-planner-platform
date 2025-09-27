@@ -27,22 +27,33 @@ class VehicleOrderController extends Controller
 
         $availableVehicles=$transport->vehicles()
         ->where('max_passengers', '>=', $requiredPassengers)
-        ->whereDoesntHave('reservations', function($q) use ($pickupDatetime) {    
+        ->whereDoesntHave('reservations', function($q) use ($pickupDatetime) {
                 $q->where('pickup_datetime', $pickupDatetime);
+
         })->get();
 
         if ($availableVehicles->isEmpty()) {
-            
+
             return view('transport.index')
                 ->with('error', 'No available vehicles for the selected time.');
         }
-        
+
+        //geocodeing service for pickup and dropoff locations
+
+        $geocoding = app(\App\Services\GeocodingService::class);
+        $pickupCoords=$geocoding->geocodeAddress($request->pickup_location);
+        $dropoffCoords=$geocoding->geocodeAddress($request->dropoff_location);
+    
+
+
         return view('vehicles.index', [
             'availableVehicles' => $availableVehicles,
             'pickup_location' => $request->pickup_location,
             'dropoff_location' => $request->dropoff_location,
             'pickup_datetime' => $pickupDatetime,
             'passengers' => $requiredPassengers,
+            'pickupCoords' => $pickupCoords,
+            'dropoffCoords' => $dropoffCoords,
         ]);
     }
 
