@@ -3,14 +3,15 @@
     <link rel="stylesheet" href="{{asset("css/ordercar.css")}}">
     @endpush
   <div class="main-wrapper">
-      
+
           <div class="hero-background">
             <div class="headings">
               <h1>Complete your reservation</h1>
               <p>Just a few more details and you are all set</p>
+
             </div>
           </div>
-  
+
           <div class="main-container">
               @if ($errors->any())
               <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
@@ -26,17 +27,18 @@
               <div class="form-header">
                   <h2>Contact Information</h2>
                   <p>We'll use this information to confirm your booking</p>
+                  <p><strong>Total Price: ${{ number_format($total_price, 2) }}</strong></p>
               </div>
               <div class="form-container">
-                <form action="{{ route('vehicleReservation.store', ['transportId' => $vehicle->transport_id, 'vehicleId' => $vehicle->id]) }}" method="POST">
-                  @csrf
-
-                  <!--inputs from pevious page-->
-                <input type="hidden" name="pickup_location" value="{{ $pickup_location }}">
-                <input type="hidden" name="dropoff_location" value="{{ $dropoff_location }}">
-                <input type="hidden" name="pickup_datetime" value="{{ $pickup_datetime }}">
-                <input type="hidden" name="passengers" value="{{ $passengers }}">
-
+                <form id="reservation-form" action="{{ route('vehicleReservation.store', ['transportId' => $vehicle->transport_id, 'vehicleId' => $vehicle->id]) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="pickup_location" value="{{ $pickup_location }}">
+                    <input type="hidden" name="dropoff_location" value="{{ $dropoff_location }}">
+                    <input type="hidden" name="pickup_datetime" value="{{ $pickup_datetime }}">
+                    <input type="hidden" name="passengers" value="{{ $passengers }}">
+                    <input type="hidden" name="distance" value="{{ $distance }}">
+                    <input type="hidden" name="duration" value="{{ $duration }}">
+                    <input type="hidden" name="total_price" value="{{ $total_price }}">
                   <div class="first-section">
                     <!--First name-->
                     <div class="container">
@@ -56,9 +58,9 @@
                       <x-text-input type="text" name="last_name" id="last_name" placeholder="Enter Last Name" value="{{ Auth::user()->last_name ?? '' }}"/>
                       </div>
                   </div>
-  
+
                   <!--Phone number-->
-                  
+
                   <div class="second-section">
                      <!--Phone Number-->
                     <div class="container">
@@ -79,14 +81,14 @@
                       <x-text-input type="email" name="Email" id="Email" placeholder="Enter your Email" value="{{Auth::user()->email ?? ''}}"/>
                     </div>
                 </div>
-               
+
                   <button class="order-car" type="submit">Continue to payment</button>
-  
-  
+
+
                   </form>
               </div>
-  
+
             </div>
-  
+
   </x-app-layout>
-  
+
