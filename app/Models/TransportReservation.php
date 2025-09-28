@@ -42,4 +42,8 @@ class TransportReservation extends Model
     {
         return $this->hasOne(Payment::class);
     }
+      public function driver()
+    {
+        return $this->belongsTo(Driver::class);
+    }
 }
