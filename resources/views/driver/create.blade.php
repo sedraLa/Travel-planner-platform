@@ -52,9 +52,14 @@
                     <x-input-label for="date_of_hire" value="Date of Hire" />
                     <x-text-input id="date_of_hire" type="date" name="date_of_hire" :value="old('date_of_hire')" />
 
+
                     <x-input-label for="license_category" value="License Category" />
-                    <x-text-input id="license_category" type="text" name="license_category"
-                        :value="old('license_category')" placeholder="e.g. A,B " />
+                    <select id="license_category" name="license_category"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <option value="">-- Select Category --</option>
+                        <option value="A" @selected(old('license_category') == 'A')>Category A </option>
+                        <option value="B" @selected(old('license_category') == 'B')>Category B </option>
+                    </select>
 
                     <x-input-label for="experience" value="Experience" />
                     <textarea id="experience" name="experience"

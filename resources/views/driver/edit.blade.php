@@ -44,20 +44,25 @@
             <x-input-label for="date_of_hire" value="Date of Hire" />
             <x-text-input id="date_of_hire" type="date" name="date_of_hire" :value="old('date_of_hire', $driver->date_of_hire)" />
 
+
             <x-input-label for="license_category" value="License Category" />
-            <x-text-input id="license_category" type="text" name="license_category" :value="old('license_category', $driver->license_category)" />
-
-            <x-input-label for="experience" value="Experience" />
-            <textarea id="experience" name="experience"
-                class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                rows="3">{{ old('experience', $driver->experience) }}</textarea>
-
-            <x-input-label for="status" value="Status" />
-            <select id="status" name="status"
+            <select id="license_category" name="license_category"
                 class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                <option value="active" @selected(old('status', $driver->status) == 'active')>Available</option>
-                <option value="inactive" @selected(old('status', $driver->status) == 'inactive')>Unavailable</option>
-            </select>
+                <option value="">-- Select Category --</option>
+                <option value="A" @selected(old('license_category') == 'A')>Category A </option>
+                <option value="B" @selected(old('license_category') == 'B')>Category B </option>
+
+                <x-input-label for="experience" value="Experience" />
+                <textarea id="experience" name="experience"
+                    class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                    rows="3">{{ old('experience', $driver->experience) }}</textarea>
+
+                <x-input-label for="status" value="Status" />
+                <select id="status" name="status"
+                    class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                    <option value="active" @selected(old('status', $driver->status) == 'active')>Available</option>
+                    <option value="inactive" @selected(old('status', $driver->status) == 'inactive')>Unavailable</option>
+                </select>
         </div>
     </div>
 

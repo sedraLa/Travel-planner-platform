@@ -1,3 +1,4 @@
+@php use App\Enums\UserRole; @endphp
 <!-- Primary Navigation Menu -->
 <div class="navigation">
     <nav x-data="{ open: false }">
@@ -17,7 +18,9 @@
             <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
             <li><a href="{{ route('flight.show') }}">Flights</a></li>
             <li><a href="{{route('transport.index')}}">Transport</a></li>
-            <li><a href="{{route('drivers.index')}}">Drivers</a></li>
+            @if (auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
+                <li><a href="{{route('drivers.index')}}">Drivers</a></li>
+            @endif
         </ul>
         <!-- Settings Dropdown -->
         <div class="hidden sm:flex sm:items-center sm:ms-6">
