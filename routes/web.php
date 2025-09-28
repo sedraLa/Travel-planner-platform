@@ -12,6 +12,7 @@ use App\Http\Controllers\TransportController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleOrderController;
 use App\Http\Controllers\TransportReservationController;
+use App\Http\Controllers\DriverController;
 
 
 /*
@@ -98,7 +99,7 @@ Route::delete('/vehicle/{id}/destroy', [VehicleController::class, 'destroy'])->n
 Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->name('vehicle.order');
 Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
     ->name('vehicle.search');
-    
+
 Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
 
 Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
@@ -107,6 +108,17 @@ Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
 
 Route::get('/vehicle/reservation/{id}/pay', [TransportReservationController::class, 'pay'])
     ->name('vehicles.pay');
+
+ //Drivers Routes
+Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
+Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
+Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show'); // <-- دالة show
+Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
+Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
+Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
+
+
 
 
 require __DIR__.'/auth.php';
