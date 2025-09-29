@@ -58,7 +58,7 @@
         </div>
 
         <div class="cards">
-            @foreach($availableVehicles as $vehicle)
+            @forelse($availableVehicles as $vehicle)
                 <div class="card">
                     <div class="car-image">
                         <img src="{{asset('storage/' . $vehicle->image)}}" alt="car image" class="car-img">
@@ -76,25 +76,22 @@
                                 <span>{{$vehicle->category}}</span>
                             </div>
                         </div>
-
+        
                         <div class="driver-section">
-                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver}}</span></h4>
+                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver ? $vehicle->driver->name : 'No driver assigned'}}</span></h4>
                             <div class="align">
                                 <img src="{{asset('images/icons/phone-solid-full.svg')}}" class="icon">
-                                <p>{{$driver->phone}}</p>
+                                <p>{{$vehicle->driver ? $vehicle->driver->phone : 'No driver assigned'}}</p>
                             </div>
                         </div>
-
+        
                         <div class="price-section">
                             <div class="left">
                                 <h4>Base Price : {{$vehicle->base_price}}$</h4>
                                 <p>+ ${{$vehicle->price_per_km}}/km</p>
                             </div>
-                            <div class="right">
-
-                            </div>
                         </div>
-
+        
                         <form action="{{ route('vehicle.reservation', $vehicle->id) }}" method="GET">
                             <input type="hidden" name="pickup_location" value="{{ $pickup_location }}">
                             <input type="hidden" name="dropoff_location" value="{{ $dropoff_location }}">
@@ -105,11 +102,15 @@
                             <input type="hidden" name="vehicle_id" value="{{ $vehicle->id }}">
                             <button type="submit">Reserve</button>
                         </form>
-
                     </div>
                 </div>
-            @endforeach
+            @empty
+                <p style="text-align:center;font-size:20px;margin-top:40px;">
+                    🚘 No vehicles found for your selection
+                </p>
+            @endforelse
         </div>
+        
     </div>
 
     @push('scripts')

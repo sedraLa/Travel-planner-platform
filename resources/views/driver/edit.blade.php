@@ -7,10 +7,10 @@
     <div class="vehicle-form-container">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Driver Details</h2>
 
-        {{-- الفورم يرسل إلى دالة update مع استخدام_method('PUT') --}}
+       
         <form action="{{ route('drivers.update', $driver->id) }}" method="post" enctype="multipart/form-data">
             @csrf
-            @method('PUT') {{-- <-- هام جداً لعملية التحديث --}} @if ($errors->any()) <div
+            @method('PUT')  @if ($errors->any()) <div
                             class="mb-4 p-4 bg-red-100 border border-red-200 text-red-800 rounded-lg">
                             <p class="font-bold">Please fix the following errors:</p>
                             <ul class="list-disc list-inside mt-2">
@@ -24,7 +24,7 @@
     <div class="first-section">
         <div class="left">
             <x-input-label for="name" value="Full Name" />
-            {{-- القيمة تأتي من old() أولاً، وإذا لم تكن موجودة، تأتي من $driver --}}
+         
             <x-text-input id="name" type="text" name="name" :value="old('name', $driver->name)" required />
 
             <x-input-label for="email" value="Email Address" />
@@ -48,9 +48,9 @@
             <x-input-label for="license_category" value="License Category" />
             <select id="license_category" name="license_category"
                 class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                <option value="">-- Select Category --</option>
                 <option value="A" @selected(old('license_category') == 'A')>Category A </option>
                 <option value="B" @selected(old('license_category') == 'B')>Category B </option>
+            </select>
 
                 <x-input-label for="experience" value="Experience" />
                 <textarea id="experience" name="experience"

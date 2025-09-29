@@ -44,12 +44,12 @@ class DriverRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'          => 'اسم السائق مطلوب',
-            'license_image.required' => 'صورة الرخصة مطلوبة عند إضافة سائق جديد',
-            'email.required'         => 'البريد الإلكتروني مطلوب',
-            'email.email'            => 'صيغة البريد الإلكتروني غير صحيحة',
-            'email.unique'           => 'هذا البريد مسجل مسبقاً',
-            'phone.required'         => 'رقم الهاتف مطلوب',
+            'name.required'          => 'Driver name is required',
+            'license_image.required' => 'License image is required',
+            'email.required'         => 'Email is required',
+            'email.email'            => 'Email form is not correct',
+            'email.unique'           => 'This email already exist',
+            'phone.required'         => 'Phone number is required',
         ];
     }
 }

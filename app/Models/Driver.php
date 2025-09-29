@@ -18,12 +18,14 @@ class Driver extends Model
         'email',
         'phone',
         'license_category',
+        'date_of_hire',
+        'status',
     ];
 
     // علاقة One-to-One مع السيارة
     public function vehicle()
     {
-        return $this->hasOne(Vehicle::class);
+        return $this->hasOne(TransportVehicle::class);
     }
 
     // علاقة One-to-Many مع الحجوزات مباشرة

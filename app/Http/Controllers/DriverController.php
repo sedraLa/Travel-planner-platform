@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class DriverController extends Controller
 {
     /**
-     * عرض قائمة بجميع السائقين
+     
      */
     public function index()
     {
@@ -19,7 +19,7 @@ class DriverController extends Controller
     }
 
     /**
-     * عرض نموذج إنشاء سائق جديد
+     
      */
     public function create()
     {
@@ -27,7 +27,7 @@ class DriverController extends Controller
     }
 
     /**
-     * تخزين سائق جديد في قاعدة البيانات
+     
      */
     public function store(DriverRequest $request)
     {
@@ -46,11 +46,11 @@ class DriverController extends Controller
             'phone'            => $request->phone,
         ]);
 
-        return redirect()->route('drivers.index')->with('success', 'تم إنشاء السائق بنجاح.');
+        return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
     }
 
     /**
-     * عرض تفاصيل سائق محدد
+     
      */
     public function show(string $id)
     {
@@ -59,7 +59,7 @@ class DriverController extends Controller
     }
 
     /**
-     * عرض نموذج تعديل بيانات السائق
+    
      */
     public function edit(string $id)
     {
@@ -68,7 +68,7 @@ class DriverController extends Controller
     }
 
     /**
-     * تحديث بيانات السائق في قاعدة البيانات
+     
      */
     public function update(DriverRequest $request, string $id)
     {
@@ -91,11 +91,11 @@ class DriverController extends Controller
             ['license_image' => $licensePath]
         ));
 
-        return redirect()->route('drivers.index')->with('success', 'تم تحديث بيانات السائق بنجاح.');
+        return redirect()->route('drivers.index')->with('success', 'Driver informations updated successfully');
     }
 
     /**
-     * حذف سائق من قاعدة البيانات
+   
      */
     public function destroy(string $id)
     {
@@ -107,6 +107,6 @@ class DriverController extends Controller
 
         $driver->delete();
 
-        return redirect()->route('drivers.index')->with('success', 'تم حذف السائق بنجاح.');
+        return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
     }
 }

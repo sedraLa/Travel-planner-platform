@@ -32,10 +32,10 @@
                     <x-text-input id="plate_number" type="text" name="plate_number" :value="old('plate_number')"
                         required placeholder="Enter plate number" />
 
-                    {{-- ===== بداية التعديل ===== --}}
+                    
 
                     <x-input-label for="driver_id" value="Select Driver" />
-                    <select id="driver_id"
+                    <select id="driver_id" name="driver_id"
                         class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                         <option value="">-- Choose a driver --</option>
                         @foreach ($drivers as $driver)
@@ -46,7 +46,7 @@
                         @endforeach
                     </select>
 
-                    {{-- حقول مخفية لإرسال الاسم ورقم الهاتف مع الفورم --}}
+                    
                     <input type="hidden" id="driver_name" name="driver_name">
                     <input type="hidden" id="driver_contact" name="driver_contact">
 
@@ -83,7 +83,6 @@
         </form>
     </div>
 
-    {{-- ===== بداية كود JavaScript ===== --}}
     @push('scripts')
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -112,6 +111,6 @@
             });
         </script>
     @endpush
-    {{-- ===== نهاية كود JavaScript ===== --}}
+   
 
 </x-app-layout>

@@ -31,80 +31,80 @@
             </div>
         </div>
 
-
-    <div class="main">
-        <div class="transport-container">
-            <div class="cards" style="margin: 100px auto;">
-                @foreach ($transports as $transport)
-                    <div class="card" >
-                        <div class="service-image">
-                            <img src="{{ asset('storage/' . $transport->image) }}" alt="transport service">
-                        </div>
-                        <h3>{{ $transport->name }}</h3>
-                        <p>{{ $transport->description }}</p>
-
-                        <div class="information">
-                            <div class="top">
-                                <div class="content">
-                                    <img class="icon" src="{{ asset('images/icons/user-group-solid-full.svg') }}">
-                                    <span class="card-span">{{ $transport->type }}</span>
-                                </div>
-                                <div class="content">
-                                    <img class="icon" src="{{ asset('images/icons/clock-regular-full.svg') }}">
-                                    <span class="card-span">Available 24/7</span>
-                                </div>
+        <div class="main">
+            <div class="transport-container">
+                <div class="cards" style="margin: 100px auto;">
+                    @forelse ($transports as $transport)
+                        <div class="card">
+                            <div class="service-image">
+                                <img src="{{ asset('storage/' . $transport->image) }}" alt="transport service">
                             </div>
-                            <div class="bottom">
-                                @if(Auth::user()->role === UserRole::ADMIN->value)
-                                <p class="options">Manage this Transport</p>
-                                @else
-                                <p class="options">See vehicle options</p>
-                                @endif
-
-
-                                @if(Auth::user()->role === UserRole::ADMIN->value)
-                                    <div class="manage-btn">
-                                        <button class="order-btn edit-btn"
-                                            data-id="{{ $transport->id }}"
-                                            data-edit-id="{{ $transport->id }}"
-                                            data-name="{{ $transport->name }}"
-                                            data-type="{{ $transport->type }}"
-                                            data-description="{{ $transport->description }}">
-                                            Edit
-                                        </button>
-
-                                        <form action="{{route('transport.destroy',$transport->id)}}" method="post"
-                                            onsubmit="return confirm('Are you sure you want to delete this transport?');">
-                                            @csrf
-                                            @method('DELETE')
-                                        <button type="submit" class="order-btn" style="background-color:#de2222;">Delete</button>
-                                        </form>
-
+                            <h3>{{ $transport->name }}</h3>
+                            <p>{{ $transport->description }}</p>
+        
+                            <div class="information">
+                                <div class="top">
+                                    <div class="content">
+                                        <img class="icon" src="{{ asset('images/icons/user-group-solid-full.svg') }}">
+                                        <span class="card-span">{{ $transport->type }}</span>
                                     </div>
-
-                                @else
-                                <a href="{{route('vehicle.order', $transport->id)}}">
-                                    <button class="order-btn">order car</button>
-                                </a>
+                                    <div class="content">
+                                        <img class="icon" src="{{ asset('images/icons/clock-regular-full.svg') }}">
+                                        <span class="card-span">Available 24/7</span>
+                                    </div>
+                                </div>
+                                <div class="bottom">
+                                    @if(Auth::user()->role === UserRole::ADMIN->value)
+                                        <p class="options">Manage this Transport</p>
+                                    @else
+                                        <p class="options">See vehicle options</p>
+                                    @endif
+        
+                                    @if(Auth::user()->role === UserRole::ADMIN->value)
+                                        <div class="manage-btn">
+                                            <button class="order-btn edit-btn"
+                                                data-id="{{ $transport->id }}"
+                                                data-edit-id="{{ $transport->id }}"
+                                                data-name="{{ $transport->name }}"
+                                                data-type="{{ $transport->type }}"
+                                                data-description="{{ $transport->description }}">
+                                                Edit
+                                            </button>
+        
+                                            <form action="{{route('transport.destroy',$transport->id)}}" method="post"
+                                                onsubmit="return confirm('Are you sure you want to delete this transport?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="order-btn" style="background-color:#de2222;">Delete</button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <a href="{{route('vehicle.order', $transport->id)}}">
+                                            <button class="order-btn">order car</button>
+                                        </a>
+                                    @endif
+                                </div>
+        
+                                @if(Auth::user()->role === UserRole::ADMIN->value)
+                                    <!--Add vehicles button-->
+                                    <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
+                                        <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
+                                    </a>
+                                    <a href="{{ route('transport.show', $transport->id) }}">
+                                        <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">View Vehicles</button>
+                                    </a>
                                 @endif
                             </div>
-                            @if(Auth::user()->role === UserRole::ADMIN->value)
-                            <!--Add vehicles button-->
-                            <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
-                                <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
-                            </a>
-
-                            <a href="{{ route('transport.show', $transport->id) }}">
-                                <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">View Vehicles</button>
-                            </a>
-                            @endif
-
                         </div>
-                    </div>
-                @endforeach
+                    @empty
+                        <p style="color:white;font-size:20px;text-align:center;margin-top:50px;">
+                            🚗 No transport services available yet
+                        </p>
+                    @endforelse
+                </div>
             </div>
         </div>
-    </div>
+        
 
 </div>
     <!-- Add/Edit Popup Overlay -->
