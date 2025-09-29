@@ -113,7 +113,7 @@ Route::get('/vehicle/reservation/{id}/pay', [TransportReservationController::cla
 Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
 Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
 Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
-Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show'); // <-- دالة show
+Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show');
 Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
 Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
 Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');

@@ -1,17 +1,11 @@
-@php
-    // يمكنك استيراد أي Enums تحتاجها هنا، مثل حالة السائق إذا كانت موجودة
-    // use App\Enums\DriverStatus;
-@endphp
-
+@push('styles')
+<link rel="stylesheet" href="{{asset('css/vehicles.css')}}">
+<link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+@endpush
 <x-app-layout>
-    {{-- يمكنك إضافة ملف CSS مخصص للسائقين إذا احتجت --}}
-    {{-- @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/drivers.css') }}">
-    @endpush --}}
+    <div class="main-wrapper p-6 md:p-8"> 
 
-    <div class="main-wrapper p-6 md:p-8"> {{-- استخدام padding لترك مسافة من الحواف --}}
-
-        {{-- زر إضافة سائق جديد --}}
+        {{-- Add new driver button--}}
         <div class="flex justify-end mb-6">
             <a href="{{ route('drivers.create') }}"
                 class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center">
@@ -24,14 +18,14 @@
             </a>
         </div>
 
-        {{-- رسالة النجاح --}}
+        {{--Success messages--}}
         @if (session('success'))
             <div class="mb-6 px-4 py-3 bg-green-100 border border-green-200 text-green-800 rounded-lg">
                 {{ session('success') }}
             </div>
         @endif
 
-        {{-- جدول عرض السائقين --}}
+        {{--Drivers list --}}
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="p-6 border-b border-gray-200">
                 <h2 class="text-2xl font-bold text-gray-800">Driver List</h2>
@@ -45,9 +39,15 @@
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Name</th>
+                                <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Contact</th>
+                                <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Address</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status</th>
@@ -64,21 +64,20 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        {{-- يمكنك إضافة صورة للسائق هنا إذا أردت --}}
-                                        {{-- <div class="flex-shrink-0 h-10 w-10">
-                                            <img class="h-10 w-10 rounded-full"
-                                                src="{{ $driver->profile_photo_url ?? asset('images/default-avatar.png') }}"
-                                                alt="{{ $driver->name }}">
-                                        </div> --}}
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900">{{ $driver->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ $driver->email }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm text-gray-900">{{ $driver->phone }}</div>
-                                    <div class="text-sm text-gray-500">{{ $driver->address ?? 'No address' }}</div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $driver->email }}</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $driver->phone }}</div>
+                                    
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $driver->address ?? 'No address' }}</div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     @if($driver->status == 'active')
@@ -94,7 +93,7 @@
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $driver->date_of_hire ? \Carbon\Carbon::parse($driver->date_of_hire)->toFormattedDateString() : 'N/A' }}
+                                    {{ $driver->date_of_hire ? \Carbon\Carbon::parse($driver->date_of_hire)->format('d-m-Y') : 'N/A' }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <a href="{{ route('drivers.edit', $driver->id) }}"
