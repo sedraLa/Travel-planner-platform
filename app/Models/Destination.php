@@ -33,5 +33,9 @@ class Destination extends Model
         return $this->hasMany(Hotel::class);
     }
 
+    public function activities() {
+        return $this->hasMany(Activity::class);
+    }
+
 
 }
