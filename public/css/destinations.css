@@ -135,11 +135,12 @@ h6 {
   gap: 20px;
   padding: 40px;
   max-width: 900px;
-  margin: 180px auto;
+  margin: 200px auto;
 }
 
 .card {
-  flex: 1 1 180px;  /*grow shrink basis*/
+  flex: 1 1 180px;
+  /*grow shrink basis*/
   max-width: 300px;
   background-color: var(--white);
   border-radius: 12px;
@@ -176,7 +177,7 @@ h6 {
 .pagination-wrapper {
   display: flex;
   justify-content: center;
-  margin-top: -180px;
+  margin-top: -200px;
   margin-bottom: 60px;
 }
 
@@ -216,9 +217,7 @@ h6 {
   border-color: var(--blue, #007BFF);
 }
 
-.pagination-wrapper a.arrow {
-
-}
+.pagination-wrapper a.arrow {}
 
 .pagination-wrapper .active span {
   width: 60px;

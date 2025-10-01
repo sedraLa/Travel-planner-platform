@@ -21,22 +21,31 @@ public function index(Request $request)
 {
     $query = Hotel::with('images');
 
-    // check if there is a search word from the user
-    if ($request->has('search') && $request->search != '') {
+    // filter
+    if ($request->filled('search')) {
         $searchTerm = $request->search;
-
         $query->where(function ($q) use ($searchTerm) {
             $q->where('name', 'like', '%' . $searchTerm . '%')
               ->orWhere('city', 'like', '%' . $searchTerm . '%')
-              ->orWhere('country', 'like', '%' . $searchTerm . '%')
-              ->orWhere('global_rating', 'like', '%' . $searchTerm . '%');
+              ->orWhere('country', 'like', '%' . $searchTerm . '%');
         });
     }
 
-    $hotels = $query->paginate(8);
+    // 
+    if ($request->filled('rating')) {
+        $query->where('global_rating', $request->rating);
+    }
+
+    
+    if ($request->filled('price_per_night')) {
+        $query->where('price_per_night', '<=', $request->price_per_night);
+    }
+
+    $hotels = $query->paginate(8)->appends($request->query());
 
     return view('hotel.index', compact('hotels'));
 }
+
 
 
 ////show
