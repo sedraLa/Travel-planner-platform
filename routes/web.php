@@ -13,6 +13,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleOrderController;
 use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\TripController;
 
 
 /*
@@ -117,6 +118,9 @@ Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('driver
 Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
 Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
 Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
+
+//Trip routes
+Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
 
 
 
