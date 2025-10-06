@@ -13,7 +13,7 @@
             </div>
         </header>
         <div class="main-section">
-            <a href="manual.html" class="card-link">
+            <a href="{{route('manual.create')}}" class="card-link">
                 <div class="manual cardd">
                     <img src="{{asset('/images/ChatGPT Image Oct 1, 2025, 01_34_32 PM.png')}}" alt="icon" class="icon">
                     <div class="plan-heading">
