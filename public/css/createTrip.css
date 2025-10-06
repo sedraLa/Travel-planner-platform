@@ -38,9 +38,9 @@
 
   .main-section {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 15px;           
+    justify-content: center;
+    align-items: center;
+    gap: 35px;           
     flex-wrap: wrap;     
     margin-top: 50px;
   }

@@ -22,6 +22,13 @@ class TripController extends Controller
         return view('trips.view');
     }
 
+
+    /*show view to create a manual trip plan */
+
+    public function createManual() {
+        return view('trips.manual.create');
+    }
+
     /**
      * Store a newly created resource in storage.
      */

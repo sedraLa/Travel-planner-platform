@@ -121,7 +121,7 @@ Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->nam
 
 //Trip routes
 Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
-
+Route::get('/trip/manual/create',[TripController::class,'createManual'])->name('manual.create');
 
 
 

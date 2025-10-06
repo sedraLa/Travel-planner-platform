@@ -20,8 +20,6 @@ class Trip extends Model
         'budget',
         'start_date',
         'end_date',
-        'hotel_booked',
-        'transport_booked',
         'flight_number',
         'airline',
         'departure_airport',
@@ -43,5 +41,5 @@ class Trip extends Model
         return $this->hasMany(TripDay::class);
     }
 
-    
+
 }

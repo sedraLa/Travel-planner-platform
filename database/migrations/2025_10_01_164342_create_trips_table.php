@@ -33,9 +33,6 @@ return new class extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
 
-            //booking
-            $table->boolean('hotel_booked')->default(false);
-            $table->boolean('transport_booked')->default(false);
 
             //user's flight
             $table->string('flight_number')->nullable();
