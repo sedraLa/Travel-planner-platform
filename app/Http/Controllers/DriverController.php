@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Driver;
+use Illuminate\Http\Request;
 use App\Http\Requests\DriverRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
@@ -12,11 +13,29 @@ class DriverController extends Controller
     /**
      
      */
-    public function index()
-    {
-        $drivers = Driver::all();
-        return view('driver.index', compact('drivers'));
+public function index(Request $request)
+{
+    $query = Driver::query();
+
+    if ($request->filled('search')) {
+        $searchTerm = $request->search;
+
+        // إذا البحث A أو B → ابحث بالفئة فقط
+        if (in_array(strtoupper($searchTerm), ['A', 'B'])) {
+            $query->where('license_category', strtoupper($searchTerm));
+        } else {
+            // خلاف ذلك → ابحث بالاسم فقط
+            $query->where('name', 'like', "%{$searchTerm}%");
+        }
     }
+
+    $drivers = $query->get();
+
+    return view('driver.index', compact('drivers'));
+}
+
+
+
 
     /**
      
