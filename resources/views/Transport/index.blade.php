@@ -90,7 +90,7 @@
                                     <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
                                         <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
                                     </a>
-                                    <a href="{{ route('transport.show', $transport->id) }}">
+                                    <a href="{{ route('vehicle.show', $transport->id) }}">
                                         <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">View Vehicles</button>
                                     </a>
                                 @endif

@@ -104,6 +104,9 @@
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
                                     </form>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <a href="{{ route('drivers.show', $driver->id) }}"
+                                        class="text-green-600 hover:green-600 -900 mr-4 text-sm">View Reservations</a>
                                 </td>
                             </tr>
                         @empty

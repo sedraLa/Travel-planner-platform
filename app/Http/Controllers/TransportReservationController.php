@@ -82,6 +82,7 @@ class TransportReservationController extends Controller
             'passengers'           => $passengers,
             'status'               => 'pending',
             'total_price'          => $total_price,
+            'driver_id'            => $request->driver_id, 
         ]);
 
         return redirect()->route('vehicles.pay', $reservation->id)
