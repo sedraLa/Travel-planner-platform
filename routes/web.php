@@ -90,6 +90,7 @@ Route::get('/transports/{id}', [TransportController::class, 'show'])->name('tran
 
 //vehicles routes
 Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.index');
+Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.show');
 Route::get('/vehicle/create',[VehicleController::class,'create'])->name('vehicle.create');
 Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.store');
 Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');

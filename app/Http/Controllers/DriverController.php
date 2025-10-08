@@ -55,7 +55,9 @@ class DriverController extends Controller
     public function show(string $id)
     {
         $driver = Driver::findOrFail($id);
-        return view('driver.show', compact('driver'));
+        $reservations = $driver->reservations()->with('vehicle')->get();
+
+          return view('driver.show', compact('driver', 'reservations'));
     }
 
     /**
