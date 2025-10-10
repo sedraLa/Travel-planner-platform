@@ -23,7 +23,7 @@ class Driver extends Model
     // علاقة One-to-One مع السيارة
     public function vehicle()
     {
-        return $this->hasOne(Vehicle::class);
+        return $this->hasOne(transportVehicle::class);
     }
 
     // علاقة One-to-Many مع الحجوزات مباشرة

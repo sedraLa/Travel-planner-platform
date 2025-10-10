@@ -78,10 +78,10 @@
                         </div>
 
                         <div class="driver-section">
-                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver}}</span></h4>
+                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver->name}}</span></h4>
                             <div class="align">
                                 <img src="{{asset('images/icons/phone-solid-full.svg')}}" class="icon">
-                                <p>{{$driver->phone}}</p>
+                                <p>{{$vehicle->driver->phone}}</p>
                             </div>
                         </div>
 
