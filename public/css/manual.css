@@ -21,7 +21,7 @@ body {
     background: linear-gradient(135deg, #c1e8ff, #628ecb, #052659) fixed center/cover;
 
   }
-  
+
 
 
 h1,
@@ -31,8 +31,9 @@ h4,
 h5,
 h6 {
     font-size: 22px;
-    font-weight: bold; 
+    font-weight: bold;
 }
+
 
 /* -------------------- HEADER & MAIN -------------------- */
 header {
@@ -44,15 +45,15 @@ header {
 .main-container {
     width: 80vw;
     max-width: 1100px;
-    margin: 40px auto;
+    margin: 80px auto;
     display: flex;
     flex-direction: column;
-  
+
     justify-content: center;
     gap: 30px;
 
   }
-  
+
 
 /* -------------------- PLAN SECTION -------------------- */
 .plan {
@@ -144,9 +145,6 @@ form input {
   border-radius: 6px;
 }
 
-label {
-  font-size: 20px;
-}
 
 .container {
   display: flex;
@@ -162,7 +160,7 @@ label {
     margin: -38px auto 60px;
     width: 1000px;
   }
-  
+
 
 #next-btn,
 #pre-btn,
