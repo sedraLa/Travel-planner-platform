@@ -14,6 +14,7 @@ use App\Http\Controllers\VehicleOrderController;
 use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\ActivityController;
 
 
 /*
@@ -122,6 +123,9 @@ Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->nam
 //Trip routes
 Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
 Route::get('/trip/manual/create',[TripController::class,'createManual'])->name('manual.create');
+
+//Activities routes
+Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
 
 
 

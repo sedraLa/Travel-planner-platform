@@ -18,6 +18,7 @@
             <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
             <li><a href="{{ route('flight.show') }}">Flights</a></li>
             <li><a href="{{route('transport.index')}}">Transport</a></li>
+            <li><a href="{{route('activities.index')}}">Activities</a></li>
             <li> 
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">

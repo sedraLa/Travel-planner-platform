@@ -30,7 +30,7 @@
   /* -------------------- MAIN CONTAINER -------------------- */
   .main-container {
     width: 70vw;
-    margin: 40px auto;
+    margin: 77px auto;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -44,6 +44,8 @@
     flex-wrap: wrap;     
     margin-top: 50px;
   }
+
+
 
   /* -------------------- CARDS -------------------- */
 .manual,
