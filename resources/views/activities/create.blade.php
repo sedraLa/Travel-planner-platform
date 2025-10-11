@@ -28,11 +28,12 @@
 
                     <x-input-label for="destination_id" value="Select Destination" />
                     <select id="destination_id" name="destination_id"
-                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                        required>
+                        class="block w-full border-gray-300 rounded-md shadow-sm" required>
                         <option value="">-- Choose a destination --</option>
                         @foreach ($destinations as $destination)
-                            <option value="{{ $destination->id }}">{{ $destination->name }}</option>
+                            <option value="{{ $destination->id }}" {{ old('destination_id') == $destination->id ? 'selected' : '' }}>
+                                {{ $destination->name }}
+                            </option>
                         @endforeach
                     </select>
 
@@ -42,12 +43,42 @@
 
                     <x-input-label for="duration_unit" value="Duration Unit" />
                     <select id="duration_unit" name="duration_unit"
-                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
-                        required>
-                        <option value="minutes">Minutes</option>
-                        <option value="hours" selected>Hours</option>
-                        <option value="days">Days</option>
+                        class="block w-full border-gray-300 rounded-md shadow-sm" required>
+                        <option value="minutes" {{ old('duration_unit') == 'minutes' ? 'selected' : '' }}>Minutes</option>
+                        <option value="hours" {{ old('duration_unit', 'hours') == 'hours' ? 'selected' : '' }}>Hours
+                        </option>
+                        <option value="days" {{ old('duration_unit') == 'days' ? 'selected' : '' }}>Days</option>
                     </select>
+
+                    <x-input-label for="start_time" value="Start Time" />
+                    <x-text-input id="start_time" type="time" name="start_time" :value="old('start_time')" />
+
+                    <x-input-label for="end_time" value="End Time" />
+                    <x-text-input id="end_time" type="time" name="end_time" :value="old('end_time')" />
+
+                    <x-input-label for="start_date" value="Start Date" />
+                    <x-text-input id="start_date" type="date" name="start_date" :value="old('start_date')" />
+
+                    <x-input-label for="end_date" value="End Date" />
+                    <x-text-input id="end_date" type="date" name="end_date" :value="old('end_date')" />
+
+                    <x-input-label for="availability" value="Availability" />
+                    <x-text-input id="availability" type="text" name="availability" :value="old('availability')"
+                        required />
+
+                    <x-input-label for="guide_name" value="Guide Name" />
+                    <x-text-input id="guide_name" type="text" name="guide_name" :value="old('guide_name')" />
+
+                    <x-input-label for="guide_language" value="Guide Language" />
+                    <x-text-input id="guide_language" type="text" name="guide_language"
+                        :value="old('guide_language')" />
+
+                    <x-input-label for="contact_number" value="Contact Number" />
+                    <x-text-input id="contact_number" type="text" name="contact_number"
+                        :value="old('contact_number')" />
+                    <x-input-label for="requirements" value="Requirements" />
+                    <textarea id="requirements" name="requirements"
+                        class="block w-full border-gray-300 rounded-md shadow-sm">{{ old('requirements') }}</textarea>
                 </div>
 
                 <div class="right">
@@ -55,7 +86,9 @@
                     <x-text-input id="price" type="number" step="0.01" name="price" :value="old('price')"
                         placeholder="e.g. 50.00" />
 
-                    <select id="category" name="category" required>
+                    <x-input-label for="category" value="Category" />
+                    <select id="category" name="category" class="block w-full border-gray-300 rounded-md shadow-sm"
+                        required>
                         <option value="">-- Choose category --</option>
                         @foreach (\App\Enums\Category::cases() as $cat)
                             <option value="{{ $cat->value }}" {{ old('category') == $cat->value ? 'selected' : '' }}>
@@ -65,21 +98,84 @@
                     </select>
 
                     <x-input-label for="is_active" value="Is Active" />
-                    <select id="is_active" name="is_active"
-                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="1" selected>Active</option>
-                        <option value="0">Inactive</option>
+                    <select id="is_active" name="is_active" class="block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active</option>
+                        <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Inactive</option>
                     </select>
+
+                    <x-input-label for="difficulty_level" value="Difficulty Level" />
+                    <select id="difficulty_level" name="difficulty_level"
+                        class="block w-full border-gray-300 rounded-md shadow-sm">
+                        <option value="">-- Select --</option>
+                        @foreach(['easy', 'moderate', 'hard'] as $level)
+                            <option value="{{ $level }}" {{ old('difficulty_level') == $level ? 'selected' : '' }}>
+                                {{ ucfirst($level) }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <x-input-label for="amenities" value="Amenities" />
+                    <select name="amenities[]" id="amenities" class="block w-full border-gray-300 rounded-md shadow-sm"
+                        multiple>
+                        @foreach(['WiFi', 'Parking', 'Pool', 'Restaurant', 'Bar'] as $amenity)
+                            <option value="{{ $amenity }}" {{ collect(old('amenities'))->contains($amenity) ? 'selected' : '' }}>
+                                {{ $amenity }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <x-input-label for="address" value="Address" />
+                    <x-text-input id="address" type="text" name="address" :value="old('address')" required />
+
+                    <x-input-label for="requires_booking" value="Requires Booking?" />
+                    <div class="flex items-center space-x-4 mb-2">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="requires_booking" value="1" {{ old('requires_booking') === '1' ? 'checked' : '' }} class="hidden">
+                            <span
+                                class="px-3 py-1 {{ old('requires_booking') === '1' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800' }}">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="requires_booking" value="0" {{ old('requires_booking') === '0' ? 'checked' : '' }} class="hidden">
+                            <span
+                                class="px-3 py-1 {{ old('requires_booking') === '0' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-800' }}">No</span>
+                        </label>
+                    </div>
+
+                    <x-input-label for="pets_allowed" value="Pets Allowed?" />
+                    <div class="flex items-center space-x-4 mb-2">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="pets_allowed" value="1" {{ old('pets_allowed') === '1' ? 'checked' : '' }} class="hidden">
+                            <span
+                                class="px-3 py-1 {{ old('pets_allowed') === '1' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800' }}">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="radio" name="pets_allowed" value="0" {{ old('pets_allowed') === '0' ? 'checked' : '' }} class="hidden">
+                            <span
+                                class="px-3 py-1 {{ old('pets_allowed') === '0' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-800' }}">No</span>
+                        </label>
+                    </div>
+
+
+
+
+                    <x-input-label for="family_friendly" value="Family Friendly" />
+                    <select id="family_friendly" name="family_friendly"
+                        class="block w-full border-gray-300 rounded-md shadow-sm" required>
+                        @foreach(['all_ages', 'adults_only', 'families'] as $option)
+                            <option value="{{ $option }}" {{ old('family_friendly') == $option ? 'selected' : '' }}>
+                                {{ ucwords(str_replace('_', ' ', $option)) }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <x-input-label for="highlights" value="Highlights" />
+                    <textarea id="highlights" name="highlights"
+                        class="block w-full border-gray-300 rounded-md shadow-sm">{{ old('highlights') }}</textarea>
+
+                    <x-input-label for="image" value="Activity Image" />
+                    <input type="file" id="image" name="image" accept="image/*">
                 </div>
             </div>
-
-            <x-input-label for="description" value="Description" />
-            <textarea id="description" name="description" rows="4"
-                class="block w-full border-gray-300 rounded-md shadow-sm"
-                placeholder="Enter activity description">{{ old('description') }}</textarea>
-
-            <x-input-label for="image" value="Activity Image" />
-            <input type="file" id="image" name="image" accept="image/*">
 
             <div class="popup-buttons mt-4">
                 <button type="submit" class="btn btn-primary">Save</button>
