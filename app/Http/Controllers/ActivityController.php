@@ -1,24 +1,22 @@
 <?php
 
 namespace App\Http\Controllers;
-
-
 use Illuminate\Http\Request;
 use App\Models\Destination;
 use App\Http\Requests\ActivityRequest;
 use App\Models\Activity;
-
 
 class ActivityController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-public function index()
-{
-    $activities = Activity::with('destination')->get(); // جلب كل النشاطات مع الوجهة
-    return view('activities.index', compact('activities'));
-}
+    public function index()
+    {
+        $activities = Activity::with('destination')->get(); // جلب كل النشاطات مع الوجهة
+        return view('activities.index', compact('activities'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -47,12 +45,15 @@ public function index()
     /**
      * Display the specified resource.
      */
-   public function show(Activity $activity)
-{
-    // يجيب الـ activity مع الـ destination
-    $activity->load('destination');
-    return view('activities.show', compact('activity'));
-}
+       public function show(Activity $activity) // استخدام Route Model Binding
+    {
+        // تحميل الوجهة المرتبطة بالنشاط لتجنب استعلامات إضافية
+        $activity->load('destination');
+
+        // إرجاع صفحة العرض مع تمرير بيانات النشاط
+        return view('activities.show', compact('activity'));
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
