@@ -18,13 +18,10 @@
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="p-6 border-b border-gray-200">
 
-                 @if (Auth::user()->role === \App\Enums\UserRole::DRIVER->value)
-                 <h2 class="text-2xl font-bold text-gray-800">  My completed Reservations</h2>
+                 
+                 <h2 class="text-2xl font-bold text-gray-800">  My Reservations</h2>
                 <p class="text-gray-500 mt-1">A list of all my reservations.</p>
-                  @else
-                <h2 class="text-2xl font-bold text-gray-800">Reservations {{ $driver->user->name }} </h2>
-                <p class="text-gray-500 mt-1">A list of all the reservations in your system for a driver.</p>
-                 @endif
+                 
             </div>
 
             <div class="overflow-x-auto">
@@ -75,10 +72,8 @@
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->distance }} km</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->duration }} min</td>
                         <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->total_price }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Completetd</td>
-                     
-                                     
-                      
+                        <td class="px-6 py-4 text-sm text-gray-900"  class="hidden">Pendding</td>
+                                 
 
                     </tr>
                 @empty

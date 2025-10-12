@@ -14,6 +14,13 @@
         </div>
         <!-- Navigation Links -->
         <ul>
+            @if(auth()->check() && auth()->user()->role === UserRole::DRIVER->value)
+        <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
+        <li><a href="{{ route('driverscompleted.show')}}">
+               My Completed Bookings  </a> </li>
+                                     
+        @else
+
             <li><a href="{{ route('destination.index') }}">Destinations</a></li>
             <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
             <li><a href="{{ route('flight.show') }}">Flights</a></li>
@@ -21,6 +28,8 @@
             @if (auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                 <li><a href="{{route('drivers.index')}}">Drivers</a></li>
             @endif
+
+  @endif
         </ul>
         <!-- Settings Dropdown -->
         <div class="hidden sm:flex sm:items-center sm:ms-6">
