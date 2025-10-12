@@ -15,6 +15,7 @@ use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\ManualTripController;
 
 
 /*
@@ -122,7 +123,11 @@ Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->nam
 
 //Trip routes
 Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
-Route::get('/trip/manual/create',[TripController::class,'createManual'])->name('manual.create');
+//manual trips routes
+Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
+Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
+Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
+
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');

@@ -9,10 +9,10 @@
     </a>
       <div class="head">
         <h1>Create New Trip Plan</h1>
-        <p>Choose how you'd like to create your perfect itinerary</p>
+        <!--<p>Choose how you'd like to create your perfect itinerary</p>-->
+        <p>Manual planning — step: {{ $currentStep }}</p>
       </div>
     </header>
-
     <div class="plan">
       <h2>Manual Planning</h2>
     </div>
@@ -32,8 +32,11 @@
     </div>
 
     <!-- Form containing all steps -->
-    <form id="trip-form">
-      <!-- Step 1 -->
+    <form id="trip-form" method="POST" action="{{route('manual.step')}}">
+      @csrf
+      <input type="hidden" name="step" id="step-input" value="1">
+
+      <!-- Step 1 Basic trip info -->
       <div class="bottom-container step">
         <div class="form-header">
           <h2>Basic Trip Information</h2>
@@ -43,35 +46,42 @@
           <div class="first-section">
             <div class="container">
               <label for="trip-name">Trip Name</label>
-              <input type="text" name="trip-name" id="trip-name" placeholder="e.g., European Adventure 2024">
+              <input type="text" name="name" id="name" value="{{old('name',$data['basic']['name'] ?? '')}}" placeholder="e.g., European Adventure 2024">
+              @error('name') <div class="error">{{ $message }}</div> @enderror
             </div>
             <div class="container">
               <label for="description">Description</label>
-              <input type="text" name="description" id="description" placeholder="Brief description of your trip ... ">
+              <input type="text" name="description" id="description" value="{{old('description',$data['basic']['description'] ?? '')}}" placeholder="Brief description of your trip ... ">
+              @error('description') <div class="error">{{ $message }}</div> @enderror
             </div>
           </div>
           <div class="second-section">
             <div class="container">
-              <label for="start-date">Start Date</label>
-              <input type="date" name="start-date" id="start-date">
+              <label for="start_date">Start Date</label>
+              <input type="date" name="start_date" id="start_date" value="{{old('start_date',$data['basic']['start_date'] ?? '')}}">
+              @error('start_date') <div class="error">{{ $message }}</div> @enderror
             </div>
             <div class="container">
-              <label for="end-date">End Date</label>
-              <input type="date" name="end-date" id="end-date">
+              <label for="end_date">End Date</label>
+              <input type="date" name="end_date" id="end_date" value="{{old('end_date',$data['basic']['end_date'] ?? '')}}">
+              @error('end_date') <div class="error">{{ $message }}</div> @enderror
             </div>
           </div>
           <div class="second-section">
             <div class="container">
               <label for="travelers">Number of Travelers</label>
-              <input type="number" name="travelers" id="travelers" min="1" placeholder="Enter number of Travelers">
+              <input type="number" name="travelers" id="travelers" min="1" placeholder="Enter number of Travelers" value="{{old('travelers',$data['basic']['travelers'] ?? '')}}">
+              @error('travelers') <div class="error">{{ $message }}</div> @enderror
             </div>
             <div class="container">
               <label for="budget">Estimated Budget $</label>
-              <input type="text" name="budget" id="budget" placeholder="Enter your Budget">
+              <input type="text" name="budget" id="budget" placeholder="Enter your Budget" value="{{old('budget',$data['basic']['budget'] ?? '')}}">
+              @error('budget') <div class="error">{{ $message }}</div> @enderror
             </div>
           </div>
         </div>
       </div>
+      
 
      
  <!-- Step 2 -->
@@ -441,63 +451,72 @@
 
 </div>
 
-      <!-- Navigation Buttons -->
+
+     <!-- Navigation Buttons  -->
       <div class="next-pre-buttons">
         <button type="button" id="pre-btn">Previous Step</button>
-        <button type="button" id="next-btn">Next Step</button>
+        <button type="submit" id="next-btn">Next Step</button>
       </div>
     </form>
+ 
   </div>
 
-</x-app-layout>
+
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const steps = document.querySelectorAll(".step");
-      const circles = document.querySelectorAll(".circle");
-      const nextBtn = document.getElementById("next-btn");
-      const prevBtn = document.getElementById("pre-btn");
+//here
 
-      let currentStep = 0;
+document.addEventListener("DOMContentLoaded", function () {
+  const stepInput = document.getElementById("step-input");
+  const currentStep = {{ $currentStep }};
+  stepInput.value = currentStep;
 
-      function updateSteps() {
-        steps.forEach((step, index) => step.style.display = index === currentStep ? "block" : "none");
+  const steps = document.querySelectorAll(".step");
+  const circles = document.querySelectorAll(".circle");
+  const nextBtn = document.getElementById("next-btn");
+  const prevBtn = document.getElementById("pre-btn");
 
-        circles.forEach((circle, index) => {
-          if (index === currentStep) {
-            circle.style.backgroundColor = "#628ECB";
-            circle.style.color = "white";
-            circle.style.border = "2px solid #628ECB";
-          } else {
-            circle.style.backgroundColor = "white";
-            circle.style.color = "#052659";
-            circle.style.border = "2px solid #628ECB";
-          }
-        });
+  let currentStepIndex = currentStep - 1;
 
-        prevBtn.style.display = currentStep === 0 ? "none" : "inline-block";
-        nextBtn.textContent = currentStep === steps.length - 1 ? "Finish" : "Next Step";
+
+  function updateSteps() {
+    steps.forEach((step, index) => step.style.display = index === currentStepIndex ? "block" : "none");
+
+    circles.forEach((circle, index) => {
+      if (index === currentStepIndex) {
+        circle.style.backgroundColor = "#628ECB";
+        circle.style.color = "white";
+        circle.style.border = "2px solid #628ECB";
+      } else {
+        circle.style.backgroundColor = "white";
+        circle.style.color = "#052659";
+        circle.style.border = "2px solid #628ECB";
       }
-
-      nextBtn.addEventListener("click", function () {
-        if (currentStep < steps.length - 1) {
-          currentStep++;
-          updateSteps();
-        } else {
-          document.getElementById("trip-form").submit();
-        }
-      });
-
-      prevBtn.addEventListener("click", function () {
-        if (currentStep > 0) {
-          currentStep--;
-          updateSteps();
-        }
-      });
-
-      updateSteps();
     });
 
+    prevBtn.style.display = currentStepIndex === 0 ? "none" : "inline-block";
+    nextBtn.textContent = currentStepIndex === steps.length - 1 ? "Finish" : "Next Step";
+  }
+
+  nextBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  stepInput.value = currentStepIndex + 1;
+  console.log("Submitting with step:", stepInput.value);
+  document.getElementById("trip-form").submit();
+});
+
+
+  prevBtn.addEventListener("click", function () {
+    if (currentStepIndex > 0) {
+      currentStepIndex--;
+      updateSteps();
+    }
+  });
+
+  updateSteps();
+});
+
+/*
     // Handle selecting destination
 const selectedDestinations = [];
 
@@ -522,7 +541,8 @@ document.querySelectorAll('.add-btn').forEach(btn => {
     console.log("Selected Destinations:", selectedDestinations);
   });
 });
-
+*/
 
   </script>
 
+</x-app-layout>
