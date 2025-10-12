@@ -4,19 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
 class Driver extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        'user_id',
         'age',
         'address',
         'license_image',
         'experience',
-        'email',
-        'phone',
         'license_category',
         'date_of_hire',
         'status',
@@ -33,4 +32,12 @@ class Driver extends Model
     {
         return $this->hasMany(TransportReservation::class);
     }
+
+
+     public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+
 }

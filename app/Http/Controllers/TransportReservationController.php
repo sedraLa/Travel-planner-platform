@@ -66,6 +66,7 @@ class TransportReservationController extends Controller
         $dropoffDatetime = $pickupDatetime->copy()->addMinutes($durationMinutes);
         $passengers = $request->passengers;
         $distance = (float) $request->distance;
+        $status = $dropoffDatetime->isPast() ? 'completed' : 'pending';
 
         // Calculate total price
         $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
@@ -80,7 +81,7 @@ class TransportReservationController extends Controller
             'pickup_datetime'      => $pickupDatetime,   // Stored as Carbon -> DB
             'dropoff_datetime'     => $dropoffDatetime,  // Stored as Carbon -> DB
             'passengers'           => $passengers,
-            'status'               => 'pending',
+            'status'               => $status,
             'total_price'          => $total_price,
             'driver_id'            => $request->driver_id, 
         ]);

@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 use App\Models\Driver;
 use Illuminate\Http\Request;
 use App\Http\Requests\DriverRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
+use App\Enums\UserRole;
 
 class DriverController extends Controller
 {
@@ -50,10 +55,23 @@ public function index(Request $request)
      */
     public function store(DriverRequest $request)
     {
+
+        $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password), 
+        'last_name' => $request->last_name,
+        'phone_number' => $request->phone_number,
+        'country' => $request->country,
+        'role' => 'driver', 
+    ]);
+
+
+
         $licensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
 
         Driver::create([
-            'name'             => $request->name,
+            'user_id'          => $user->id,
             'age'              => $request->age,
             'address'          => $request->address,
             'license_image'    => $licensePath,
@@ -61,8 +79,7 @@ public function index(Request $request)
             'status'           => $request->status,
             'date_of_hire'     => $request->date_of_hire,
             'experience'       => $request->experience,
-            'email'            => $request->email,
-            'phone'            => $request->phone,
+          
         ]);
 
         return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
@@ -71,10 +88,34 @@ public function index(Request $request)
     /**
      
      */
-    public function show(string $id)
+    public function show(string $id = null)
     {
+
+
+       $user = auth()->user();
+
+    if ($user->role === 'driver') {
+        $driver = $user->driver;
+    } elseif ($user->role === 'admin') {
+        if (!$id) abort(400, 'Driver ID required for admin');
         $driver = Driver::findOrFail($id);
-        $reservations = $driver->reservations()->with('vehicle')->get();
+    } else {
+        abort(403, 'Unauthorized');
+    }
+
+
+        // تحديث الحجوزات الغير مكتملة التي انتهت بالفعل
+       $driver->reservations()->where('status', 'pending')->get()->each(function ($reservation) {
+            if ($reservation->dropoff_datetime->isPast()) {
+            $reservation->update(['status' => 'completed']);
+            }
+         });
+
+
+        $reservations = $driver->reservations()
+        ->where('status', 'completed')
+        ->with('vehicle')
+        ->get();
 
           return view('driver.show', compact('driver', 'reservations'));
     }
@@ -82,6 +123,34 @@ public function index(Request $request)
     /**
     
      */
+
+
+
+     public function pendingBookings()
+      {
+          $driver = auth()->user()->driver;
+          // تحديث الحجوزات الغير مكتملة التي انتهت بالفعل
+        $driver->reservations()->where('status', 'pending')->get()->each(function ($reservation) {
+        if ($reservation->dropoff_datetime->isPast()) {
+            $reservation->update(['status' => 'completed']);
+        }
+    });
+
+       
+         $reservations = $driver->reservations()
+            ->where('status', 'pending')
+            ->with('vehicle')
+            ->get();
+
+    return view('driver.pendingbooking', compact('driver', 'reservations'));
+    
+}
+
+
+    /**
+    
+     */
+
     public function edit(string $id)
     {
         $driver = Driver::findOrFail($id);

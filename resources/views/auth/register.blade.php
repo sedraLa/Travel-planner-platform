@@ -9,6 +9,29 @@
             <x-input-error :messages="$errors->get('name')"/>
         </div>
 
+
+        <!-- lastName -->
+        <div>
+            <x-input-label for="las_tname" :value="__('last_name')" />
+            <x-text-input id="last_name" type="text" name="last_name" :value="old('last_name')" required autofocus autocomplete="last_name" />
+            <x-input-error :messages="$errors->get('last_name')"/>
+        </div>
+
+        <!-- phone number-->
+        <div>
+            <x-input-label for="phone_number" :value="__('phone_number')" />
+            <x-text-input id="phone_number" type="text" name="phone_number" :value="old('phone_number')"  />
+            <x-input-error :messages="$errors->get('phone_number')"/>
+        </div>
+
+        <!-- country-->
+        <div>
+            <x-input-label for="country" :value="__('country')" />
+            <x-text-input id="country" type="text" name="country" :value="old('country')"  />
+            <x-input-error :messages="$errors->get('country')"/>
+        </div>
+
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />

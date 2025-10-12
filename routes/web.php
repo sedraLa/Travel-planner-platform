@@ -114,10 +114,24 @@ Route::get('/vehicle/reservation/{id}/pay', [TransportReservationController::cla
 Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
 Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
 Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
-Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show');
+// للسائق (بدون ID)
+Route::get('/driver/show', [DriverController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('driverscompleted.show');
+
+// للأدمن (مع ID)
+Route::get('/admin/driver/{id}/show', [DriverController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('drivers.show');
+
+
+
 Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
 Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
 Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
+Route::get('/driver/bookings/pending', [DriverController::class, 'pendingBookings'])
+        ->name('bookings.pending');
+
 
 
 
