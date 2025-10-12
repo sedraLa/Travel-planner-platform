@@ -53,6 +53,27 @@
                             data-image="{{ asset('storage/' . $activity->image) }}">
                             More Details
                         </button>
+
+                        @if(Auth::user()->role === UserRole::ADMIN->value)
+                            <div class="card-actions"
+                                style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
+                                <a href="{{ route('activities.edit', $activity->id) }}" class="edit-btn"
+                                    style="background-color:#ffffff;color:rgb(18, 8, 84);padding:5px 10px;border-radius:8px;text-decoration:none;">
+                                    Edit
+                                </a>
+
+                                <form action="{{ route('activities.destroy', $activity->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        onclick="return confirm('Are you sure you want to delete this activity?');"
+                                        style="background-color:#ffffff;color:rgb(251, 2, 2);padding:5px 10px;border-radius:8px;border:none;cursor:pointer;">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        @endif
                     </div>
                 @empty
                     <p>No activities found.</p>
@@ -239,7 +260,7 @@
                     font-weight: bold;
                     transition: all 0.3s ease;
                     margin-top: 10px;
-                    margin-bottom: 40px;
+                    margin-bottom: 10px;
                 }
 
                 .exp-card button:hover {
@@ -258,7 +279,6 @@
                 document.addEventListener('DOMContentLoaded', () => {
                     const modal = document.getElementById('activityModal');
                     const closeBtn = document.querySelector('.close');
-
                     const title = document.getElementById('modalTitle');
                     const description = document.getElementById('modalDescription');
                     const destination = document.getElementById('modalDestination');
