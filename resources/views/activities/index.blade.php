@@ -56,9 +56,9 @@
 
                         @if(Auth::user()->role === UserRole::ADMIN->value)
                             <div class="card-actions"
-                                style="margin-top: 10px; display: flex; gap: 10px; justify-content: center;">
+                                style="margin-top: -6px; display: flex; gap: 10px; justify-content: center;">
                                 <a href="{{ route('activities.edit', $activity->id) }}" class="edit-btn"
-                                    style="background-color:#ffffff;color:rgb(18, 8, 84);padding:5px 10px;border-radius:8px;text-decoration:none;">
+                                    style="background-color:#ffffff;color:rgb(18, 8, 84);padding:5px 10px;border-radius:8px;text-decoration:none;margin-top: 7px;">
                                     Edit
                                 </a>
 
@@ -68,7 +68,8 @@
                                     @method('DELETE')
                                     <button type="submit"
                                         onclick="return confirm('Are you sure you want to delete this activity?');"
-                                        style="background-color:#ffffff;color:rgb(251, 2, 2);padding:5px 10px;border-radius:8px;border:none;cursor:pointer;">
+                                        style="background-color:#ffffff;color:rgb(251, 2, 2);padding:5px 10px;border-radius:8px;border:none;cursor:pointer;margin-top: 5px;"
+                                        ;>
                                         Delete
                                     </button>
                                 </form>
