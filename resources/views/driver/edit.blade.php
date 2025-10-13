@@ -25,13 +25,13 @@
         <div class="left">
             <x-input-label for="name" value="Full Name" />
          
-            <x-text-input id="name" type="text" name="name" :value="old('name', $driver->name)" required />
+            <x-text-input id="name" type="text" name="name" :value="old('name', $driver->user->name)" required />
 
             <x-input-label for="email" value="Email Address" />
-            <x-text-input id="email" type="email" name="email" :value="old('email', $driver->email)" required />
+            <x-text-input id="email" type="email" name="email" :value="old('email', $driver->user->email)" required />
 
             <x-input-label for="phone" value="Phone Number" />
-            <x-text-input id="phone" type="text" name="phone" :value="old('phone', $driver->phone)" required />
+            <x-text-input id="phone" type="text" name="phone" :value="old('phone', $driver->user->phone_number)" required />
 
             <x-input-label for="address" value="Address" />
             <x-text-input id="address" type="text" name="address" :value="old('address', $driver->address)" />
