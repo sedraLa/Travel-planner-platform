@@ -39,9 +39,9 @@
                         class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                         <option value="">-- Choose a driver --</option>
                         @foreach ($drivers as $driver)
-                            <option value="{{ $driver->id }}" data-name="{{ $driver->name }}"
-                                data-phone="{{ $driver->phone }}">
-                                {{ $driver->name }}
+                            <option value="{{ $driver->id}}" data-name="{{ $driver->user->name }}"
+                                data-phone="{{ $driver->user->phone_number}}">
+                                {{ $driver->user->name }}
                             </option>
                         @endforeach
                     </select>
