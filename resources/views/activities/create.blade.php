@@ -113,47 +113,66 @@
                             </option>
                         @endforeach
                     </select>
+<x-input-label for="amenities" value="Amenities" />
 
-                    <x-input-label for="amenities" value="Amenities" />
-                    <select name="amenities[]" id="amenities" class="block w-full border-gray-300 rounded-md shadow-sm"
-                        multiple>
-                        @foreach(['WiFi', 'Parking', 'Pool', 'Restaurant', 'Bar'] as $amenity)
-                            <option value="{{ $amenity }}" {{ collect(old('amenities'))->contains($amenity) ? 'selected' : '' }}>
-                                {{ $amenity }}
-                            </option>
-                        @endforeach
-                    </select>
+<div class="flex flex-wrap gap-3 mt-2">
+    @foreach(['WiFi', 'Parking', 'Pool', 'Restaurant', 'Bar'] as $amenity)
+        <label class="custom-checkbox">
+            <input type="checkbox" name="amenities[]" value="{{ $amenity }}"
+                {{ collect(old('amenities'))->contains($amenity) ? 'checked' : '' }}>
+            <span>{{ $amenity }}</span>
+        </label>
+    @endforeach
+</div>
 
                     <x-input-label for="address" value="Address" />
                     <x-text-input id="address" type="text" name="address" :value="old('address')" required />
 
-                    <x-input-label for="requires_booking" value="Requires Booking?" />
-                    <div class="flex items-center space-x-4 mb-2">
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="radio" name="requires_booking" value="1" {{ old('requires_booking') === '1' ? 'checked' : '' }} class="hidden">
-                            <span
-                                class="px-3 py-1 {{ old('requires_booking') === '1' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800' }}">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="radio" name="requires_booking" value="0" {{ old('requires_booking') === '0' ? 'checked' : '' }} class="hidden">
-                            <span
-                                class="px-3 py-1 {{ old('requires_booking') === '0' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-800' }}">No</span>
-                        </label>
-                    </div>
+                   <x-input-label for="requires_booking" value="Requires Booking?" />
+<div class="flex items-center space-x-4 mb-2">
+    <label class="inline-flex items-center cursor-pointer">
+        <input type="radio" name="requires_booking" value="1"
+               class="hidden peer"
+               {{ old('requires_booking') == '1' ? 'checked' : '' }}>
+        <span
+            class="px-3 py-1 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 peer-checked:bg-green-500 peer-checked:text-white transition-all duration-200">
+            Yes
+        </span>
+    </label>
+
+    <label class="inline-flex items-center cursor-pointer">
+        <input type="radio" name="requires_booking" value="0"
+               class="hidden peer"
+               {{ old('requires_booking') == '0' ? 'checked' : '' }}>
+        <span
+            class="px-3 py-1 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 peer-checked:bg-red-500 peer-checked:text-white transition-all duration-200">
+            No
+        </span>
+    </label>
+</div>
 
                     <x-input-label for="pets_allowed" value="Pets Allowed?" />
-                    <div class="flex items-center space-x-4 mb-2">
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="radio" name="pets_allowed" value="1" {{ old('pets_allowed') === '1' ? 'checked' : '' }} class="hidden">
-                            <span
-                                class="px-3 py-1 {{ old('pets_allowed') === '1' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-800' }}">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="radio" name="pets_allowed" value="0" {{ old('pets_allowed') === '0' ? 'checked' : '' }} class="hidden">
-                            <span
-                                class="px-3 py-1 {{ old('pets_allowed') === '0' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-800' }}">No</span>
-                        </label>
-                    </div>
+<div class="flex items-center space-x-4 mb-2">
+    <label class="inline-flex items-center cursor-pointer">
+        <input type="radio" name="pets_allowed" value="1"
+               class="hidden peer"
+               {{ old('pets_allowed') == '1' ? 'checked' : '' }}>
+        <span
+            class="px-3 py-1 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 peer-checked:bg-green-500 peer-checked:text-white transition-all duration-200">
+            Yes
+        </span>
+    </label>
+
+    <label class="inline-flex items-center cursor-pointer">
+        <input type="radio" name="pets_allowed" value="0"
+               class="hidden peer"
+               {{ old('pets_allowed') == '0' ? 'checked' : '' }}>
+        <span
+            class="px-3 py-1 rounded-lg border border-gray-300 bg-gray-100 text-gray-700 peer-checked:bg-red-500 peer-checked:text-white transition-all duration-200">
+            No
+        </span>
+    </label>
+</div>
 
 
 
@@ -183,4 +202,50 @@
             </div>
         </form>
     </div>
+    <style>
+    .custom-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    font-weight: 500;
+}
+
+.custom-checkbox:hover {
+    background: #f3f4f6;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #9ca3af;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.custom-checkbox input[type="checkbox"]:checked {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.custom-checkbox input[type="checkbox"]:checked::after {
+    content: '✔️';
+    position: absolute;
+    color: white;
+    font-size: 13px;
+    left: 2px;
+    top: -1px;
+}
+</style>
 </x-app-layout>
+
