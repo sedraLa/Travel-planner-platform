@@ -29,7 +29,7 @@
 
           {{-- Search Form  --}}
         <form class="search-form" method="GET" action="{{route('drivers.index')}}">
-            <h1>Search  for a driver by name</h1>
+            <h1>Search  for a driver by Name or Category</h1>
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -164,8 +164,9 @@
             </button>
             <!-- الصورة -->
             @if($driver->license_image)
-    <img src="{{ asset('storage/drivers/' . $driver->license_image) }}" 
-         alt="License Photo" class="w-full h-auto rounded">
+<img src="{{ asset('storage/' . $driver->license_image) }}" 
+alt="License Photo" class="w-full h-auto rounded">
+
 @else
     <p class="text-center text-gray-500">No license photo available</p>
 @endif

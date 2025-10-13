@@ -161,28 +161,46 @@ public function index(Request $request)
      
      */
     public function update(DriverRequest $request, string $id)
-    {
-        $driver = Driver::findOrFail($id);
+{
+    $driver = Driver::findOrFail($id);
+    $user = $driver->user;
 
-        $licensePath = $driver->license_image;
+    // ✅ تحديث بيانات المستخدم المرتبط
+    $user->update([
+        'name'         => $request->name,
+        'last_name'    => $request->last_name,
+        'email'        => $request->email,
+        'phone_number' => $request->phone_number,
+        'country'      => $request->country,
+    ]);
 
-        if ($request->hasFile('license_image')) {
-            $newLicensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
+    // ✅ تحديث صورة الرخصة بطريقة أبسط
+    $licensePath = $driver->license_image;
 
-            if ($licensePath && Storage::disk('public')->exists($licensePath)) {
-                Storage::disk('public')->delete($licensePath);
-            }
-
-            $licensePath = $newLicensePath;
+    if ($request->hasFile('license_image')) {
+        // حذف الصورة القديمة فقط إن وُجدت
+        if ($licensePath && Storage::disk('public')->exists($licensePath)) {
+            Storage::disk('public')->delete($licensePath);
         }
 
-        $driver->update(array_merge(
-            $request->except(['_token', '_method', 'license_image']),
-            ['license_image' => $licensePath]
-        ));
-
-        return redirect()->route('drivers.index')->with('success', 'Driver informations updated successfully');
+        // حفظ الصورة الجديدة
+        $licensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
     }
+
+    // ✅ تحديث بيانات الـ Driver
+    $driver->update([
+        'age'              => $request->age,
+        'address'          => $request->address,
+        'license_image'    => $licensePath,
+        'license_category' => $request->license_category,
+        'status'           => $request->status,
+        'date_of_hire'     => $request->date_of_hire,
+        'experience'       => $request->experience,
+    ]);
+
+    return redirect()->route('drivers.index')->with('success', 'Driver information updated successfully.');
+}
+
 
     /**
    
