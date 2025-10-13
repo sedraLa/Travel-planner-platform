@@ -12,11 +12,21 @@ class ActivityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $activities = Activity::with('destination')->get(); // جلب كل النشاطات مع الوجهة
-        return view('activities.index', compact('activities'));
+    public function index(Request $request)
+{
+    $query = Activity::with('destination');
+
+    if ($request->has('search') && !empty($request->search)) {
+        $search = $request->search;
+        $query->where('name', 'like', "%{$search}%")
+              ->orWhereHas('destination', function($q) use ($search) {
+                  $q->where('name', 'like', "%{$search}%");
+              });
     }
+
+    $activities = $query->get(); // جلب النشاطات بناءً على البحث
+    return view('activities.index', compact('activities'));
+}
 
     /**
      * Show the form for creating a new resource.

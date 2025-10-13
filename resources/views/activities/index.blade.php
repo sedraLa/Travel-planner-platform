@@ -19,6 +19,18 @@
                     experience
                 </p>
 
+                <div class="search-bar" style="margin: 15px 0; text-align:center; position: relative;">
+                    <form method="GET" action="{{ route('activities.index') }}">
+                        <input type="text" name="search" placeholder="Search by activity or destination"
+                            value="{{ request('search') }}" style="padding:10px 15px; width:300px; border-radius:8px; border:1px solid rgba(255,255,255,0.5);
+                      background-color: rgba(255, 255, 255, 0.2); color: white; outline:none;">
+                        <button type="submit" style="padding:10px 20px; border-radius:8px; border:none; background-color: rgba(255,255,255,0.3);
+                       color:white; cursor:pointer; font-weight:bold;">
+                            Search
+                        </button>
+                    </form>
+                </div>
+
                 <div class="flex justify-end mb-4 px-6 pt-6">
                     @if (Auth::user()->role === UserRole::ADMIN->value)
                         <a href="{{ route('activities.create') }}" class="add-btn">+ Add New Activity</a>
@@ -26,6 +38,7 @@
                 </div>
             </div>
         </div>
+
 
         <div class="main">
             <!--Activities cards-->
