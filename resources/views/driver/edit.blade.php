@@ -23,15 +23,21 @@
 
     <div class="first-section">
         <div class="left">
-            <x-input-label for="name" value="Full Name" />
-         
+            <x-input-label for="name" value="Name" />
             <x-text-input id="name" type="text" name="name" :value="old('name', $driver->user->name)" required />
+
+
+            <x-input-label for="last_name" value="Last name" />
+             <x-text-input id="last_name" type="text" name="last_name" :value="old('last_name', $driver->user->last_name)" required/>
 
             <x-input-label for="email" value="Email Address" />
             <x-text-input id="email" type="email" name="email" :value="old('email', $driver->user->email)" required />
 
-            <x-input-label for="phone" value="Phone Number" />
-            <x-text-input id="phone" type="text" name="phone" :value="old('phone', $driver->user->phone_number)" required />
+            <x-input-label for="phone_number" value="Phone Number" />
+            <x-text-input id="phone_number" type="text" name="phone_number" :value="old('phone', $driver->user->phone_number)" required />
+
+            <x-input-label for="country" value="Country" />
+            <x-text-input id="country" type="text" name="country" :value="old('country',$driver->user->country)" required/>
 
             <x-input-label for="address" value="Address" />
             <x-text-input id="address" type="text" name="address" :value="old('address', $driver->address)" />
