@@ -81,9 +81,9 @@
           </div>
         </div>
       </div>
-      
 
-     
+
+
  <!-- Step 2 -->
 <div class="bottom-container step">
   <div class="form-header">
@@ -148,7 +148,7 @@
         <label for="custom-destination">Destination Name :</label>
        <input type="text" id="custom-destination" name="custom-destination" placeholder="Custom Your Destination Name" style="border-color: #052659;">
       </div>
-      
+
     </form>
 
   </div>
@@ -312,7 +312,7 @@
           <p>Explore the city's landmarks with a guided tour.</p>
         </div>
       </div>
-    
+
       <div class="activity-card" data-id="2">
         <img src="images/boat-cruise.jpg" alt="Boat Cruise">
         <div class="content">
@@ -320,7 +320,7 @@
           <p>Enjoy a relaxing cruise along the river or coast.</p>
         </div>
       </div>
-    
+
       <div class="activity-card" data-id="3">
         <img src="./images/aldrin-rachman-pradana-xdtXX5_iAdA-unsplash.jpg" alt="Cooking Class">
         <div class="content">
@@ -328,7 +328,7 @@
           <p>Learn to prepare traditional dishes with local chefs.</p>
         </div>
       </div>
-    
+
       <div class="activity-card" data-id="4">
         <img src="./images/atul-vinayak-NQOA7YlcyF8-unsplash.jpg" alt="Hiking Adventure">
         <div class="content">
@@ -337,7 +337,7 @@
         </div>
       </div>
     </div>
-    
+
   </div>
 
   <!-- Assign Activities to days -->
@@ -458,7 +458,7 @@
         <button type="submit" id="next-btn">Next Step</button>
       </div>
     </form>
- 
+
   </div>
 
 
@@ -467,8 +467,11 @@
 //here
 
 document.addEventListener("DOMContentLoaded", function () {
+//store current step number
   const stepInput = document.getElementById("step-input");
+  //step number from server
   const currentStep = {{ $currentStep }};
+  //sync 
   stepInput.value = currentStep;
 
   const steps = document.querySelectorAll(".step");
@@ -476,12 +479,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const nextBtn = document.getElementById("next-btn");
   const prevBtn = document.getElementById("pre-btn");
 
+  //calculate current index
   let currentStepIndex = currentStep - 1;
 
 
   function updateSteps() {
     steps.forEach((step, index) => step.style.display = index === currentStepIndex ? "block" : "none");
 
+    //coloring circles
     circles.forEach((circle, index) => {
       if (index === currentStepIndex) {
         circle.style.backgroundColor = "#628ECB";
@@ -498,14 +503,15 @@ document.addEventListener("DOMContentLoaded", function () {
     nextBtn.textContent = currentStepIndex === steps.length - 1 ? "Finish" : "Next Step";
   }
 
+  //click on Next event 
   nextBtn.addEventListener("click", function (e) {
-  e.preventDefault();
-  stepInput.value = currentStepIndex + 1;
+  e.preventDefault(); // prevent automatic submit
+  stepInput.value = currentStepIndex + 1; //update step
   console.log("Submitting with step:", stepInput.value);
-  document.getElementById("trip-form").submit();
+  document.getElementById("trip-form").submit(); // submit
 });
 
-
+//click on previous event
   prevBtn.addEventListener("click", function () {
     if (currentStepIndex > 0) {
       currentStepIndex--;
@@ -522,7 +528,7 @@ const selectedDestinations = [];
 
 document.querySelectorAll('.add-btn').forEach(btn => {
   btn.addEventListener('click', function (e) {
-    e.preventDefault(); 
+    e.preventDefault();
 
     const card = this.closest('.dist-card');
     const destId = card.dataset.id;
