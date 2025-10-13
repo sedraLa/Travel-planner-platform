@@ -83,11 +83,11 @@
                 </div>
                         <!-- Activities & Images -->
                         <div class="flex space-x-4 mt-4">
-                            <div class="w-1/2">
+                           <!-- <div class="w-1/2">
                                 <x-input-label for="activities" :value="__('Available Activities (Optional)')" />
                                 <textarea id="activities" name="activities" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></textarea>
                                 <x-input-error class="mt-2" :messages="$errors->get('activities')" />
-                            </div>
+                            </div>-->
 
                             <!-- Images Upload -->
                             <div class="w-1/2">

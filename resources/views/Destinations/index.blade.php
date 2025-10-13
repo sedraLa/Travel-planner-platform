@@ -39,6 +39,27 @@
             </div>
         </form>
 
+        {{--popular destinations--}}
+        @if(isset($popularDestinations) && $popularDestinations->count() > 0)
+<div class="popular-section px-6 py-8">
+    <h2 class="text-2xl font-bold mb-4 text-center">🔥 Popular Destinations</h2>
+    <div class="cards">
+        @foreach ($popularDestinations as $destination)
+        <div class="card">
+            <a href="{{ route('destination.show', $destination->id) }}">
+                <div class="card-img">
+                    <img src="{{ asset('storage/' . optional($destination->images->where('is_primary', true)->first())->image_url) }}" alt="Destination Image">
+                </div>
+                <h5>{{ $destination->name }}</h5>
+                <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
+                <p class="text-sm text-gray-600 mt-1">Clicks: {{ $destination->clicks }}</p>
+            </a>
+        </div>
+        @endforeach
+    </div>
+</div>
+@endif
+
         {{-- Cards Section --}}
         <div class='cards'>
             @forelse ($destinations as $destination)

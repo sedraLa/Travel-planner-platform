@@ -8,6 +8,7 @@ use App\Models\Destination;
 use App\Models\DestinationImage;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
+use App\Events\DestinationViewed;
 
 
 
@@ -34,8 +35,14 @@ class DestinationController extends Controller
 
          $destinations = $query->paginate(8);
 
+         //show popular destinations
+         $popularDestinations = Destination::with('images')
+         ->orderByDesc('clicks')
+         ->take(6)
+         ->get();
 
-        return view('destinations.index',compact('destinations'));
+
+        return view('destinations.index',compact('destinations','popularDestinations'));
     }
 
     /**
@@ -56,7 +63,7 @@ class DestinationController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'location_details' => $request->location_details,
-            'activities' => $request->location_details,
+            //'activities' => $request->location_details,
             'city' => $request->city,
             'country' => $request->country,
             'iata_code' => strtoupper($request['iata_code']),
@@ -89,6 +96,9 @@ class DestinationController extends Controller
     {
         $destination = Destination::with('images')->findOrFail($id);
         $primaryImage = $destination->images->where('is_primary', true)->first();
+
+        //event to increment clicks
+        event(new DestinationViewed($destination));
         return view('destinations.show', compact('destination', 'primaryImage'));
     }
 
