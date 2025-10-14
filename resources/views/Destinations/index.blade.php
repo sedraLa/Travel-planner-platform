@@ -42,7 +42,6 @@
         {{--popular destinations--}}
         @if(isset($popularDestinations) && $popularDestinations->count() > 0)
 <div class="popular-section px-6 py-8">
-    <h2 class="text-2xl font-bold mb-4 text-center">🔥 Popular Destinations</h2>
     <div class="cards">
         @foreach ($popularDestinations as $destination)
         <div class="card">
