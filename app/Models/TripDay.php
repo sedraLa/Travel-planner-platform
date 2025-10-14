@@ -8,23 +8,34 @@ use Illuminate\Database\Eloquent\Model;
 class TripDay extends Model
 {
     use HasFactory;
+
     protected $fillable = [
         'trip_id',
         'day_number',
+        'hotel_id',
+        'custom_hotel_name',
     ];
 
-    protected $hidden = [
-        'created_at',
-        'updated_at',
-    ];
-
-    public function trip() {
+    public function trip()
+    {
         return $this->belongsTo(Trip::class);
     }
 
-    public function activities() {
+    public function activities()
+    {
         return $this->hasMany(DayActivity::class);
     }
 
-    
+    public function hotel()
+    {
+        return $this->belongsTo(Hotel::class);
+    }
+
+    public function daysWithHotels()
+{
+    return $this->hasMany(TripDay::class)->with('hotel');
 }
+
+}
+
+

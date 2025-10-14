@@ -9,6 +9,7 @@ use App\Models\TripDay;
 use App\Models\DayActivity;
 use Illuminate\Support\Facades\DB;
 use App\Models\Hotel;
+use Carbon\Carbon;
 
 class ManualTripController extends Controller
 {
@@ -25,7 +26,7 @@ class ManualTripController extends Controller
 
         $popular = Destination::with('images')->orderByDesc('clicks')->take(10)->get();
 
-       / //get hotels related to the selected destinations from the user
+        //get hotels related to the selected destinations from the user
         $hotels = [];
         if (isset($data['destination']['destination_id'])) {
             $hotels = Hotel::with('images')
@@ -33,9 +34,24 @@ class ManualTripController extends Controller
                 ->get();
         }
 
+        //calculate user's trip days
+        $days_count = 0;
+
+        if (
+            isset($data['basic']['start_date']) &&
+            isset($data['basic']['end_date']) &&
+            !empty($data['basic']['start_date']) &&
+            !empty($data['basic']['end_date'])
+        ) {
+    $start = Carbon::parse($data['basic']['start_date']);
+    $end = Carbon::parse($data['basic']['end_date']);
+    $days_count = $start->diffInDays($end) + 1;
+        }
+
+
 
         //send data and current step to the view
-        return view('trips.manual.create',compact('data','currentStep','popular','hotels'));
+        return view('trips.manual.create',compact('data','currentStep','popular','hotels','days_count'));
  }
 
     // get data send from form for each step and deal with it
@@ -85,7 +101,27 @@ class ManualTripController extends Controller
 
             return redirect()->route('manual.create');
 
-       
+            //step 3
+            case 3:
+                $validated = $request->validate([
+                    'hotel_name' => 'nullable|array',
+                    'hotel_id'=> 'nullable|array'
+                ]);
+
+                $data['hotels'] =[
+                    'selected'=>$validated['hotel_id'] ?? [],
+                    'custom'=>$validated['hotel_name'] ?? [],
+                ];
+
+                $data['step'] = 4;
+                session(['trip_manual' => $data]);
+                dd(session('trip_manual'));
+
+
+                return redirect()->route('manual.create');
+
+
+
     }
 }
 

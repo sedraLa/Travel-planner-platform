@@ -122,143 +122,74 @@
 
 
 
-      <!-- Step 3 -->
-      <!-- Step 3 -->
+<!-- Step 3 -->
 <div class="bottom-container step">
-  <div class="form-header">
-    <h2>Choose Your Hotels</h2>
-    <p>Select accommodations for each day of your trip</p>
-  </div>
+    <div class="form-header">
+      <h2>Choose Your Hotels</h2>
+      <p>Select accommodations for each day of your trip</p>
+    </div>
 
-  <div class="destinations-container">
-    <h3 class="dest-title">🏨 Available Hotels</h3>
+    <div class="destinations-container">
+      <h3 class="dest-title">🏨 Available Hotels</h3>
 
-    <div class="destination-cards">
-      <!-- Hotel cards-->
-      @foreach ( $hotels as $hotel )
-      <div class="hotel-card" data-id="1">
-        <img src="{{ asset('storage/' . optional($hotel->images->where('is_primary', true)->first())->image_url) }}">
-
-        <div class="hotel-info">
-          <h4>{{$hotel->name}}</h4>
-
-          <div class="rating-price">
-            <span class="rating">
-              ⭐ {{$hotel->global_rating}}
-            </span>
-            <span class="price">${{$hotel->price_per_night}} / night</span>
-          </div>
-
-          <div class="services">
-            <span>🛜 Free Wi-Fi</span>
-            <span>🍳 Breakfast included</span>
-            <span>🏊 Pool access</span>
+      <div class="destination-cards">
+        @foreach ( $hotels as $hotel )
+        <div class="hotel-card" data-id="{{ $hotel->id }}">
+          <img src="{{ asset('storage/' . optional($hotel->images->where('is_primary', true)->first())->image_url) }}">
+          <div class="hotel-info">
+            <h4>{{$hotel->name}}</h4>
+            <div class="rating-price">
+              <span class="rating">⭐ {{$hotel->global_rating}}</span>
+              <span class="price">${{$hotel->price_per_night}} / night</span>
+            </div>
+            <div class="services">
+              <span>🛜 Free Wi-Fi</span>
+              <span>🍳 Breakfast included</span>
+              <span>🏊 🚗 🏋 Pool access</span>
+            </div>
           </div>
         </div>
+        @endforeach
       </div>
-      @endforeach
-      <div class="hotel-card" data-id="2">
-        <img src="./images/hotel2.jpg" alt="Skyline Resort">
+    </div>
+    <button type="submit" class="next-btn">Next Step</button>
 
-        <div class="hotel-info">
-          <h4>Skyline Resort</h4>
 
-          <div class="rating-price">
-            <span class="rating">⭐ 4.2</span>
-            <span class="price">$145 / night</span>
-          </div>
+    {{-- Assign hotels per days --}}
+    <div class="days-container">
+      <h3 class="dest-title" style="margin-top:30px;">Assign Hotels to Days</h3>
+      <p>Select which hotel you’ll stay at for each day:</p>
 
-          <div class="services">
-            <span>🛜 Free Wi-Fi</span>
-            <span>🚗 Parking</span>
-            <span>🏋 Gym</span>
-          </div>
+      <div class="days-selection">
+        @for($i=1; $i<=$days_count; $i++)
+            <div class="day">
+            <label>Day {{$i}}</label>
+            <select name="hotel_id[day_{{$i}}]" class="hotel-select">
+            <option value="">-- Select Hotel --</option>
+            @foreach ($hotels as $hotel)
+                <option value="{{ $hotel->id }}">{{ $hotel->name }}</option>
+            @endforeach
+            </select>
         </div>
-      </div>
+@endfor
 
-      <div class="hotel-card" data-id="3">
-        <img src="./images/atul-vinayak-NQOA7YlcyF8-unsplash.jpg" alt="Coastal View Inn">
-
-        <div class="hotel-info" style="padding: 12px 14px;">
-          <h4 style="  font-size: 19px;
-                        font-weight: 600;
-                         color: var(--indigo);
-                         margin-bottom: 6px;">
-                         Coastal View Inn</h4>
-
-          <div class="rating-price">
-            <span class="rating" >⭐ 4.8</span>
-            <span class="price">$220 / night</span>
-          </div>
-
-          <div class="services">
-            <span>🛜 Wi-Fi</span>
-            <span>🍽 Restaurant</span>
-            <span>🌅 Sea view</span>
-          </div>
-        </div>
       </div>
     </div>
+
+    <div class="assign-section">
+      <h3 style="margin-top: 35px; margin-bottom: 15px;font-size: 25px;">Assign Custom Hotels To Days</h3>
+      <p style="margin-bottom: 25px;">You can custom your hotels and assign them to your trip's days</p>
+      @for ($i=1; $i<=$days_count; $i++)
+  <div class="day-input">
+    <label>Day {{$i}}:</label>
+    <input type="text" name="hotel_name[day_{{$i}}]" placeholder="Enter hotel name for Day {{$i}}">
   </div>
+@endfor
 
-  <div class="days-container">
-    <h3 class="dest-title" style="margin-top:30px;">Assign Hotels to Days</h3>
-    <p>Select which hotel you’ll stay at for each day:</p>
-
-    <div class="days-selection">
-      <div class="day">
-        <label>Day 1</label>
-        <select name="day_1_hotel" class="hotel-select">
-          <option value="">-- Select Hotel --</option>
-          <option value="1">Grand Plaza Hotel</option>
-          <option value="2">Skyline Resort</option>
-          <option value="3">Coastal View Inn</option>
-        </select>
-      </div>
-
-      <div class="day">
-        <label>Day 2</label>
-        <select name="day_2_hotel" class="hotel-select">
-          <option value="">-- Select Hotel --</option>
-          <option value="1">Grand Plaza Hotel</option>
-          <option value="2">Skyline Resort</option>
-          <option value="3">Coastal View Inn</option>
-        </select>
-      </div>
-
-      <div class="day">
-        <label>Day 3</label>
-        <select name="day_3_hotel" class="hotel-select">
-          <option value="">-- Select Hotel --</option>
-          <option value="1">Grand Plaza Hotel</option>
-          <option value="2">Skyline Resort</option>
-          <option value="3">Coastal View Inn</option>
-        </select>
-      </div>
     </div>
-  </div>
+  </div> <!--  close bottom-container (Step 3) -->
 
-  <!-- Assign hotels to days   -->
-  <div class="assign-section">
-    <h3 style="margin-top: 35px; margin-bottom: 15px;font-size: 25px;">Assign Custom Hotels To Days</h3>
-    <p style="margin-bottom: 25px;">You can custom your hotels and assign them to your trip's days</p>
 
-    <div class="day-input">
-      <label>Day 1:</label>
-      <input type="text" placeholder="Enter hotel name for Day 1">
-    </div>
-
-    <div class="day-input">
-      <label>Day 2:</label>
-      <input type="text" placeholder="Enter hotel name for Day 2">
-    </div>
-
-    <div class="day-input">
-      <label>Day 3:</label>
-      <input type="text" placeholder="Enter hotel name for Day 3">
-    </div>
-  </div>
-</div>
 
 
 <!-- Step 4 -->
@@ -501,7 +432,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const selectedDestinations = [];
   const hiddenInput = document.getElementById("selected_destination");
 
-  // get selected id from + button  
+  // get selected id from + button
   document.querySelectorAll(".add-btn").forEach(btn => {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
@@ -511,7 +442,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (!selectedDestinations.includes(destId)) {
         selectedDestinations.push(destId);
         this.textContent = "✔";
-        this.style.backgroundColor = "#2e8b57"; 
+        this.style.backgroundColor = "#2e8b57";
         this.style.color = "white";
       } else {
         // delete it if it was selected before
