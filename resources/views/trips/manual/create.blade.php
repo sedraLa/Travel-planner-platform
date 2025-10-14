@@ -69,9 +69,9 @@
           </div>
           <div class="second-section">
             <div class="container">
-              <label for="travelers">Number of Travelers</label>
-              <input type="number" name="travelers" id="travelers" min="1" placeholder="Enter number of Travelers" value="{{old('travelers',$data['basic']['travelers'] ?? '')}}">
-              @error('travelers') <div class="error">{{ $message }}</div> @enderror
+              <label for="travelers_number">Number of Travelers</label>
+              <input type="number" name="travelers_number" id="travelers_number" min="1" placeholder="Enter number of Travelers" value="{{old('travelers_number',$data['basic']['travelers_number'] ?? '')}}">
+              @error('travelers_number') <div class="error">{{ $message }}</div> @enderror
             </div>
             <div class="container">
               <label for="budget">Estimated Budget $</label>
@@ -86,73 +86,40 @@
 
  <!-- Step 2 -->
 <div class="bottom-container step">
-  <div class="form-header">
-    <h2>Choose Destination</h2>
-    <p>Select the city or country you plan to visit</p>
-  </div>
-
-  <div class="destinations-container">
-    <h3 class="dest-title">🌍 Popular Destinations</h3>
-
-    <div class="destination-cards">
-      <div class="dist-card" data-id="1">
-        <div class="content">
-          <img src="{{asset('/images/ChatGPT Image Oct 1, 2025, 01_37_30 PM.png')}}" alt="Paris">
-          <div class="info">
-            <h4>Paris</h4>
-            <span>France</span>
-          </div>
-          <button class="add-btn">+</button>
-        </div>
+      <div class="form-header">
+        <h2>Choose Destination</h2>
+        <p>Select the city or country you plan to visit</p>
       </div>
 
-      <div class="dist-card" data-id="2">
-        <div class="content">
-          <img src="./images/atul-vinayak-NQOA7YlcyF8-unsplash.jpg" alt="Rome">
-          <div class="info">
-            <h4>Rome</h4>
-            <span>Italy</span>
-          </div>
-          <button class="add-btn">+</button>
+      <div class="destinations-container">
+        <h3 class="dest-title">🌍 Popular Destinations</h3>
+        <div class="destination-cards">
+            @foreach ($popular as $destination)
+              <div class="dist-card" data-id="{{ $destination->id }}">
+                <div class="content">
+                  <img src="{{ asset('storage/' . optional($destination->images->where('is_primary', true)->first())->image_url) }}">
+                  <div class="info">
+                    <h4>{{ $destination->name }}</h4>
+                    <span>{{ $destination->country }}</span>
+                  </div>
+                  <button type="button" class="add-btn" data-id="{{ $destination->id }}">+</button>
+                </div>
+              </div>
+            @endforeach
         </div>
+
+        <input type="hidden" name="destination_id" id="selected_destination">
       </div>
 
-      <div class="dist-card" data-id="3">
-        <div class="content">
-          <img src="./images/cari-kolipoki-rEmiiyRZi8g-unsplash.jpg" alt="London">
-          <div class="info">
-            <h4>London</h4>
-            <span>United Kingdom</span>
-          </div>
-          <button class="add-btn">+</button>
-        </div>
-      </div>
-
-      <div class="dist-card" data-id="4">
-        <div class="content">
-          <img src="./images/erik-mclean-egb4W5T7dGA-unsplash.jpg" alt="Tokyo">
-          <div class="info">
-            <h4>Tokyo</h4>
-            <span>Japan</span>
-          </div>
-          <button class="add-btn">+</button>
-        </div>
-      </div>
-    </div>
-</div>
-
-
-    <h3 class="dest-title" style="margin-top:20px;">Custom Destination</h3>
-    <form>
+      <h3 class="dest-title" style="margin-top:20px;">Custom Destination</h3>
       <div class="custom" style="display: flex; gap:20px;">
-        <label for="custom-destination">Destination Name :</label>
-       <input type="text" id="custom-destination" name="custom-destination" placeholder="Custom Your Destination Name" style="border-color: #052659;">
+        <label for="custom-destination">Destination Name:</label>
+        <input type="text" id="custom-destination" name="destination_name" placeholder="Enter a custom destination" style="border-color: #052659;">
       </div>
 
-    </form>
+      <button type="submit" class="next-btn">Next Step</button>
+    </div>
 
-  </div>
-</div>
 
 
       <!-- Step 3 -->
@@ -168,17 +135,18 @@
 
     <div class="destination-cards">
       <!-- Hotel cards-->
+      @foreach ( $hotels as $hotel )
       <div class="hotel-card" data-id="1">
-        <img src="./images/hotel1.jpg" alt="Grand Plaza Hotel">
+        <img src="{{ asset('storage/' . optional($hotel->images->where('is_primary', true)->first())->image_url) }}">
 
         <div class="hotel-info">
-          <h4>Grand Plaza Hotel</h4>
+          <h4>{{$hotel->name}}</h4>
 
           <div class="rating-price">
             <span class="rating">
-              ⭐ 4.6
+              ⭐ {{$hotel->global_rating}}
             </span>
-            <span class="price">$180 / night</span>
+            <span class="price">${{$hotel->price_per_night}} / night</span>
           </div>
 
           <div class="services">
@@ -188,7 +156,7 @@
           </div>
         </div>
       </div>
-
+      @endforeach
       <div class="hotel-card" data-id="2">
         <img src="./images/hotel2.jpg" alt="Skyline Resort">
 
@@ -454,8 +422,8 @@
 
      <!-- Navigation Buttons  -->
       <div class="next-pre-buttons">
-        <button type="button" id="pre-btn">Previous Step</button>
-        <button type="submit" id="next-btn">Next Step</button>
+        <button type="button" name="previous" id="pre-btn">Previous Step</button>
+        <button type="submit" name="next" id="next-btn">Next Step</button>
       </div>
     </form>
 
@@ -467,12 +435,14 @@
 //here
 
 document.addEventListener("DOMContentLoaded", function () {
-//store current step number
+//store current step number (hidden input)
   const stepInput = document.getElementById("step-input");
   //step number from server
-  const currentStep = {{ $currentStep }};
-  //sync 
+  let currentStep = {{ $currentStep }};
+  //sync
   stepInput.value = currentStep;
+
+  const form = document.getElementById('trip-form');
 
   const steps = document.querySelectorAll(".step");
   const circles = document.querySelectorAll(".circle");
@@ -503,24 +473,63 @@ document.addEventListener("DOMContentLoaded", function () {
     nextBtn.textContent = currentStepIndex === steps.length - 1 ? "Finish" : "Next Step";
   }
 
-  //click on Next event 
+  //click on Next event
   nextBtn.addEventListener("click", function (e) {
   e.preventDefault(); // prevent automatic submit
-  stepInput.value = currentStepIndex + 1; //update step
-  console.log("Submitting with step:", stepInput.value);
-  document.getElementById("trip-form").submit(); // submit
+  stepInput.value = currentStepIndex + 1;  // send step number to server
+  form.submit(); //send data to server
+
 });
 
 //click on previous event
   prevBtn.addEventListener("click", function () {
     if (currentStepIndex > 0) {
-      currentStepIndex--;
-      updateSteps();
-    }
+    currentStepIndex--;
+    stepInput.value = currentStepIndex + 1;  // reverse current step
+    updateSteps();               // update view
+  }
   });
 
+    // store selected id's before sending form
+    form.addEventListener("submit", function () {
+    hiddenInput.value = selectedDestinations.join(",");
+  });
   updateSteps();
 });
+
+//handling selected ID's
+  const selectedDestinations = [];
+  const hiddenInput = document.getElementById("selected_destination");
+
+  // get selected id from + button  
+  document.querySelectorAll(".add-btn").forEach(btn => {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const destId = this.dataset.id;
+
+      // add selected destination if it's not selected before
+      if (!selectedDestinations.includes(destId)) {
+        selectedDestinations.push(destId);
+        this.textContent = "✔";
+        this.style.backgroundColor = "#2e8b57"; 
+        this.style.color = "white";
+      } else {
+        // delete it if it was selected before
+        const index = selectedDestinations.indexOf(destId);
+        selectedDestinations.splice(index, 1);
+        this.textContent = "+";
+        this.style.backgroundColor = "var(--light-blue)";
+        this.style.color = "#052659";
+      }
+
+      // update hidden input with new values
+      hiddenInput.value = selectedDestinations.join(",");
+
+      console.log("Selected Destinations:", selectedDestinations);
+    });
+  });
+
+
 
 /*
     // Handle selecting destination
