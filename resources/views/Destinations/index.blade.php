@@ -52,10 +52,29 @@
                     <h5>{{ $destination->name }}</h5>
                     <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
                 </a>
+
+            @if(Auth::user()->role === UserRole::ADMIN->value)
+                                        <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4" >
+                                            <a href="{{route('destinations.edit',['id'=> $destination->id])}}">
+                                            <button class="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition duration-200 text-sm shadow-sm">Edit </button></a>
+
+
+                                            <form action="{{route('destination.destroy',$destination->id)}}" method="post"
+                                                onsubmit="return confirm('Are you sure you want to delete this transport?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"  class="px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition duration-200 text-sm shadow-sm" >Delete</button>
+                                            </form>
+                                        </div>
+                                    @endif
+
+
+                
             </div>
             @empty
                 <p style="text-align:center;">No destinations found.</p>
             @endforelse
+
         </div>
                   <div class="pagination-wrapper">
                      {{ $destinations->appends(request()->query())->links() }}
