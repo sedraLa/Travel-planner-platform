@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+
 class Destination extends Model
 {
     use HasFactory;
@@ -17,6 +18,13 @@ class Destination extends Model
         'activities',
         'iata_code',
        // 'weather_info',
+        'timezone',
+        'language',
+        'currency',
+        'nearest_airport',
+        'best_time_to_visit',
+        'emergency_numbers',
+        'local_tip',
         
     ];
 
@@ -37,5 +45,8 @@ class Destination extends Model
         return $this->hasMany(Activity::class);
     }
 
-
+    public function highlights()
+    {
+    return $this->hasMany(Highlight::class);
+    }
 }
