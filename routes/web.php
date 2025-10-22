@@ -30,9 +30,15 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
+// صفحة اختيار نوع التسجيل
+Route::get('/register/select-role', function () {
+    return view('auth.selectRole');
+})->name('register.select-role');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'check.driver.status'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
