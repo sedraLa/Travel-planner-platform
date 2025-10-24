@@ -6,6 +6,11 @@
     @endpush
 
     <div class="main-wrapper">
+        @if (session('success'))
+                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
         <div class="hero-background activity-page">
             <div class="heading">
                 <div class="header" style="margin-top:55px;">
@@ -23,7 +28,7 @@
                     <form method="GET" action="{{ route('activities.index') }}">
                         <input type="text" name="search" placeholder="Search by activity or destination"
                             value="{{ request('search') }}" style="padding:10px 15px; width:300px; border-radius:8px; border:1px solid rgba(255,255,255,0.5);
-                      background-color: rgba(255, 255, 255, 0.2); color: white; outline:none;">
+                      background-color: rgba(255, 255, 255, 0.2); color:white; outline:none;">
                         <button type="submit" style="padding:10px 20px; border-radius:8px; border:none; background-color: rgba(255,255,255,0.3);
                        color:white; cursor:pointer; font-weight:bold;">
                             Search
