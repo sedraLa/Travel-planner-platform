@@ -15,7 +15,7 @@ class ActivityRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp',
             'destination_id' => 'required|exists:destinations,id',
             'description' => 'nullable|string',
             'duration' => 'nullable|numeric|min:0',

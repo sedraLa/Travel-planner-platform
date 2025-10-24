@@ -26,6 +26,11 @@
                     <x-text-input id="name" type="text" name="name" :value="old('name')" required
                         placeholder="Enter activity name" />
 
+                    <x-input-label for="description" value="description" />
+                    <x-text-input id="description" type="text" name="description" :value="old('description')"
+                        placeholder="Enter activity description" />
+
+
                     <x-input-label for="destination_id" value="Select Destination" />
                     <select id="destination_id" name="destination_id"
                         class="block w-full border-gray-300 rounded-md shadow-sm" required>
@@ -62,9 +67,13 @@
                     <x-input-label for="end_date" value="End Date" />
                     <x-text-input id="end_date" type="date" name="end_date" :value="old('end_date')" />
 
-                    <x-input-label for="availability" value="Availability" />
-                    <x-text-input id="availability" type="text" name="availability" :value="old('availability')"
-                        required />
+                        <x-input-label for="availability" value=" Availability" />
+                        <select id="availability" name="availability"
+                            class="block w-full border-gray-300 rounded-md shadow-sm" required>
+                            <option value="Available" {{ old('availability') == 'Available' ? 'selected' : '' }}>Available</option>
+                            <option value="Not available" {{ old('availability') == 'Not available' ? 'selected' : '' }}>Not Available
+                            </option>
+                        </select>
 
                     <x-input-label for="guide_name" value="Guide Name" />
                     <x-text-input id="guide_name" type="text" name="guide_name" :value="old('guide_name')" />
