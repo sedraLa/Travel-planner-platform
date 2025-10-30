@@ -22,6 +22,7 @@ return new class extends Migration
             $table->enum('duration_unit', ['minutes', 'hours', 'days'])->default('hours');
             $table->decimal('price', 8, 2);
             $table->enum('category', [
+
                 Category::CULTURE->value,
                 Category::NATURE->value,
                 Category::SHOPPING->value,

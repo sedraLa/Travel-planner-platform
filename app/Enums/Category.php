@@ -5,6 +5,6 @@ enum Category: string {
     case NATURE = 'nature';
     case SHOPPING = 'shopping';
     case SPORTS = 'sports';
-    case ENTERTAINMENT = 'entertainment'; 
+    case ENTERTAINMENT = 'entertainment';
 }
 
