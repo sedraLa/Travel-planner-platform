@@ -152,8 +152,7 @@
         @endforeach
       </div>
     </div>
-    <button type="submit" class="next-btn">Next Step</button>
-
+    
 
     {{-- Assign hotels per days --}}
     <div class="days-container">
@@ -204,103 +203,54 @@
     <h3 class="dest-title"> Available Activities</h3>
 
     <div class="destination-cards">
+        @foreach($activities as $activity)
       <div class="activity-card" data-id="1">
-        <img src="images/city-tour.jpg" alt="City Tour">
+        <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->name }}">
         <div class="content">
-          <h4>City Walking Tour</h4>
-          <p>Explore the city's landmarks with a guided tour.</p>
+          <h4>{{$activity->name}}</h4>
+          <p>{{$activity->description}}</p>
         </div>
       </div>
+      @endforeach
 
-      <div class="activity-card" data-id="2">
-        <img src="images/boat-cruise.jpg" alt="Boat Cruise">
-        <div class="content">
-          <h4>Boat Cruise</h4>
-          <p>Enjoy a relaxing cruise along the river or coast.</p>
-        </div>
-      </div>
-
-      <div class="activity-card" data-id="3">
-        <img src="./images/aldrin-rachman-pradana-xdtXX5_iAdA-unsplash.jpg" alt="Cooking Class">
-        <div class="content">
-          <h4>Cooking Class</h4>
-          <p>Learn to prepare traditional dishes with local chefs.</p>
-        </div>
-      </div>
-
-      <div class="activity-card" data-id="4">
-        <img src="./images/atul-vinayak-NQOA7YlcyF8-unsplash.jpg" alt="Hiking Adventure">
-        <div class="content">
-          <h4>Hiking Adventure</h4>
-          <p>Discover nature trails and breathtaking views.</p>
-        </div>
-      </div>
     </div>
 
   </div>
 
-  <!-- Assign Activities to days -->
+  {{-- Assign hotels per days --}}
   <div class="days-container">
-    <h3 class="dest-title" style="margin-top:30px;">Assign Activities to Days</h3>
-    <p>Select which activity you’ll do each day:</p>
+    <h3 class="dest-title" style="margin-top:30px;">Assign Hotels to Days</h3>
+    <p>Select which hotel you’ll stay at for each day:</p>
 
     <div class="days-selection">
-      <div class="day">
-        <label>Day 1</label>
-        <select name="day_1_activity" class="activity-select">
+      @for($i=1; $i<=$days_count; $i++)
+          <div class="day">
+          <label>Day {{$i}}</label>
+          <select name="activity_id[day_{{$i}}]" class="hotel-select">
           <option value="">-- Select Activity --</option>
-          <option value="1">City Walking Tour</option>
-          <option value="2">Boat Cruise</option>
-          <option value="3">Cooking Class</option>
-          <option value="4">Hiking Adventure</option>
-        </select>
+          @foreach ($activities as $activity)
+              <option value="{{ $activity->id }}">{{ $activity->name }}</option>
+          @endforeach
+          </select>
       </div>
+@endfor
 
-      <div class="day">
-        <label>Day 2</label>
-        <select name="day_2_activity" class="activity-select">
-          <option value="">-- Select Activity --</option>
-          <option value="1">City Walking Tour</option>
-          <option value="2">Boat Cruise</option>
-          <option value="3">Cooking Class</option>
-          <option value="4">Hiking Adventure</option>
-        </select>
-      </div>
-
-      <div class="day">
-        <label>Day 3</label>
-        <select name="day_3_activity" class="activity-select">
-          <option value="">-- Select Activity --</option>
-          <option value="1">City Walking Tour</option>
-          <option value="2">Boat Cruise</option>
-          <option value="3">Cooking Class</option>
-          <option value="4">Hiking Adventure</option>
-        </select>
-      </div>
     </div>
   </div>
 
-  <!-- Custom activities -->
   <div class="assign-section">
     <h3 style="margin-top: 35px; margin-bottom: 15px;font-size: 25px;">Assign Custom Activities To Days</h3>
-    <p style="margin-bottom: 25px;">You can add your own activities and assign them to your trip days</p>
-
-    <div class="day-input">
-      <label>Day 1:</label>
-      <input type="text" placeholder="Enter custom activity for Day 1">
-    </div>
-
-    <div class="day-input">
-      <label>Day 2:</label>
-      <input type="text" placeholder="Enter custom activity for Day 2">
-    </div>
-
-    <div class="day-input">
-      <label>Day 3:</label>
-      <input type="text" placeholder="Enter custom activity for Day 3">
-    </div>
-  </div>
+    <p style="margin-bottom: 25px;">You can custom your activities and assign them to your trip's days</p>
+    @for ($i=1; $i<=$days_count; $i++)
+<div class="day-input">
+  <label>Day {{$i}}:</label>
+  <input type="text" name="activity_name[day_{{$i}}]" placeholder="Enter activity name for Day {{$i}}">
 </div>
+@endfor
+
+  </div>
+</div> <!--  close bottom-container (Step 3) -->
+
 
  <!-- Step 5 / flights  -->
  <div class="bottom-container step">
@@ -315,36 +265,39 @@
         <input type="text" id="airline" placeholder="e.g., American Airlines" name="airline">
       </div>
       <div class="container">
-        <label for="flight-number">Flight Number</label>
-        <input type="text" id="flight-number" placeholder="e.g., AA123" name="flight-number">
+        <label for="flight_number">Flight Number</label>
+        <input type="text" id="flight_number" placeholder="e.g., AA123" name="flight_number">
       </div>
     </div>
 
     <div class="second-section">
-      <div class="container">
-        <label for="from">From</label>
-        <input type="text" id="from" placeholder="e.g., New York (JFK)" name="from">
+        <div class="container">
+            <label for="departure_airport">Departure Airport</label>
+            <input type="text" id="departure_airport" placeholder="e.g., Paris (CDG)" name="departure_airport">
+        </div>
+        <div class="container">
+        <label for="arrival_airport">Arrival Airport</label>
+        <input type="text" id="arrival_airport" placeholder="e.g., New York (JFK)" name="arrival_airport">
       </div>
-      <div class="container">
-        <label for="to">To</label>
-        <input type="text" id="to" placeholder="e.g., Paris (CDG)" name="to">
-      </div>
+      
     </div>
 
     <div class="second-section">
+        <div class="container">
+            <label for="departure-time">Departure Date & Time</label>
+            <input type="datetime-local" id="departure_time" name="departure_time">
+          </div>
       <div class="container">
-        <label for="flight-date">Flight Date</label>
-        <input type="date" id="flight-date" name="flight-date">
+        <label for="arrival_time">Arrival Date & Time</label>
+        <input type="datetime-local" id="arrival_time" name="arrival_time">
       </div>
-      <div class="container">
-        <label for="departure-date">Departure Date</label>
-        <input type="time" id="departure-date" name="departure-date">
-      </div>
+      
 
-      <div class="container">
+      <!--<div class="container">
         <label for="price">Price</label>
-        <input type="number" id="price" name="price">
+        <input type="number" id="price" name="price" step="0.5" style="width:163px;">
       </div>
+    -->
     </div>
   </div>
 

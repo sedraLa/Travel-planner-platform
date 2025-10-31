@@ -9,6 +9,7 @@ use App\Models\TripDay;
 use App\Models\DayActivity;
 use Illuminate\Support\Facades\DB;
 use App\Models\Hotel;
+use App\Models\Activity;
 use Carbon\Carbon;
 
 class ManualTripController extends Controller
@@ -48,10 +49,16 @@ class ManualTripController extends Controller
     $days_count = $start->diffInDays($end) + 1;
         }
 
+        //get activities related to selected destintion
+        $activities= [];
+        if (isset($data['destination']['destination_id'])) {
+            $activities = Activity::where('destination_id',$data['destination']['destination_id'])
+            ->get();
+        }
 
 
         //send data and current step to the view
-        return view('trips.manual.create',compact('data','currentStep','popular','hotels','days_count'));
+        return view('trips.manual.create',compact('data','currentStep','popular','hotels','days_count','activities'));
  }
 
     // get data send from form for each step and deal with it
@@ -115,7 +122,40 @@ class ManualTripController extends Controller
 
                 $data['step'] = 4;
                 session(['trip_manual' => $data]);
+            
+
+            //step 4
+            case 4:
+                $validated = $request->validate([
+                    'activity_name' => 'nullable|array',
+                    'activity_id'=>'nullable|array'
+                ]);
+                $data['activities'] = [
+                    'selected'=>$validated['activity_id'] ?? [],
+                    'custom' =>$validated['activity_name'] ?? [],
+                ];
+                $data['step'] = 5;
+                session(['trip_manual' => $data]);
+                //dd(session('trip_manual'));
+            //step 5 
+            case 5:
+                $validated = $request->validate([
+                'flight_number' => 'nullable|string|max:20',
+                'airline' => 'nullable|string|max:50',
+                'departure_airport' => 'nullable|string|max:100',
+                'arrival_airport' => 'nullable|string|max:100',
+                'departure_time' => 'nullable|after:now',
+                'arrival_time' => 'nullable|after:departure_time',
+                ]);
+
+                
+                $data['flight'] = $validated;
+                //update step
+                $data['step'] = 5;
+                //update session array
+                session(['trip_manual' => $data]);
                 dd(session('trip_manual'));
+
 
 
                 return redirect()->route('manual.create');
