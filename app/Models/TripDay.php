@@ -13,7 +13,7 @@ class TripDay extends Model
         'trip_id',
         'day_number',
         'hotel_id',
-        'custom_hotel_name',
+        'custom_hotel',
     ];
 
     public function trip()
