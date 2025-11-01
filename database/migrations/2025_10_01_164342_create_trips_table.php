@@ -21,10 +21,7 @@ return new class extends Migration
             $table->string('destination_name')->nullable();   //custom
             $table->foreignId('destination_id')->nullable()->constrained()->nullOnDelete();  //choosen from the system
 
-            // hotel
-            $table->string('hotel_name')->nullable();
-            $table->foreignId('hotel_id')->nullable()->constrained()->nullOnDelete();
-
+           
             // trip details
             $table->string('name');
             $table->text('description')->nullable();
