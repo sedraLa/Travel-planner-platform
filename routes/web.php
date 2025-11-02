@@ -137,6 +137,7 @@ Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('dr
 Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
 Route::get('/driver/bookings/pending', [DriverController::class, 'pendingBookings'])
         ->name('bookings.pending');
+Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
 
 
 
