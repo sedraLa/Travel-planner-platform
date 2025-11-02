@@ -19,15 +19,38 @@ class CheckDriverStatus
          if (auth()->check() && auth()->user()->role === UserRole::DRIVER->value) {
         $driver = auth()->user()->driver;
 
-        // لو ما في صف driver أو الحالة مش approved
-        if (! $driver || $driver->status !== 'approved') {
-            auth()->logout();
 
-            return redirect()->route('login')->withErrors([
-                'email' => 'حسابك تحت المراجعة أو مرفوض. سيتم إبلاغك بعد الموافقة.',
-            ]);
+
+        if (! $driver) {
+                auth()->logout();
+                return redirect()->route('login')->withErrors([
+                    'email' => 'No driver profile found.',
+                ]);
+            }
+
+
+
+       switch ($driver->status) {
+                case 'pending':
+                    auth()->logout();
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Your account is under review. Please check your email.',
+                    ]);
+                case 'rejected':
+                    auth()->logout();
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Your account request has been rejected.',
+                    ]);
+                case 'approved':
+                    // يسمح بالدخول
+                    break;
+                default:
+                    auth()->logout();
+                    return redirect()->route('login')->withErrors([
+                        'email' => 'Your account status is invalid.',
+                    ]);
+            }
         }
-    }
         return $next($request);
     }
 }

@@ -12,6 +12,10 @@ use App\Http\Requests\DriverRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\UserRole;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DriverStatusMail;
+use Carbon\Carbon;
+
 
 class DriverController extends Controller
 {
@@ -217,4 +221,48 @@ public function index(Request $request)
 
         return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
     }
+
+
+
+
+
+    public function updateStatus(DriverRequest $request, Driver $driver)
+{
+   
+
+    if (auth()->user()->role !== 'admin') {
+        abort(403, 'Unauthorized');
+    }
+
+
+     $validated = $request->validated();
+
+   
+   $updateData = ['status' => $validated['status']];
+
+          if ($validated['status'] === 'approved') {
+             $updateData['date_of_hire'] = Carbon::now();
+            }
+
+   $driver->update($updateData);
+
+  
+    $status = $validated['status'];
+    $message = match ($status) {
+        'approved' => 'Your account has been approved! You can now log in to the system.',
+        'rejected' => 'Sorry, your account has been rejected after review of the information.',
+        default => 'Your account status has been changed to under review.',
+    };
+
+
+    Mail::to($driver->user->email)->send(new DriverStatusMail($driver->user->name, $status, $message));
+
+    return redirect()->back()->with('success', 'Driver status updated and email sent successfully.');
+  } 
+
+
+
+
 }
+
+
