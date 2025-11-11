@@ -38,6 +38,15 @@
 
       <!-- Step 1 Basic trip info -->
       <div class="bottom-container step">
+        @if ($errors->any())
+        <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
         <div class="form-header">
           <h2>Basic Trip Information</h2>
           <p>Let's start with essentials</p>
@@ -263,10 +272,12 @@
       <div class="container">
         <label for="airline">Airline</label>
         <input type="text" id="airline" placeholder="e.g., American Airlines" name="airline">
+        @error('airline') <div class="error">{{ $message }}</div> @enderror
       </div>
       <div class="container">
         <label for="flight_number">Flight Number</label>
         <input type="text" id="flight_number" placeholder="e.g., AA123" name="flight_number">
+        @error('flight_number') <div class="error">{{ $message }}</div> @enderror
       </div>
     </div>
 
@@ -274,10 +285,12 @@
         <div class="container">
             <label for="departure_airport">Departure Airport</label>
             <input type="text" id="departure_airport" placeholder="e.g., Paris (CDG)" name="departure_airport">
+            @error('departure_airport') <div class="error">{{ $message }}</div> @enderror
         </div>
         <div class="container">
         <label for="arrival_airport">Arrival Airport</label>
         <input type="text" id="arrival_airport" placeholder="e.g., New York (JFK)" name="arrival_airport">
+        @error('arrival_airport') <div class="error" style="color:red">{{ $message }}</div> @enderror
       </div>
       
     </div>
@@ -286,10 +299,12 @@
         <div class="container">
             <label for="departure-time">Departure Date & Time</label>
             <input type="datetime-local" id="departure_time" name="departure_time">
+            @error('departure_time') <div class="error" style="color:red">{{ $message }}</div> @enderror
           </div>
       <div class="container">
         <label for="arrival_time">Arrival Date & Time</label>
         <input type="datetime-local" id="arrival_time" name="arrival_time">
+        @error('arrival_time') <div class="error">{{ $message }}</div> @enderror
       </div>
       
 

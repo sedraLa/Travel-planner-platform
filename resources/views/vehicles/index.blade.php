@@ -32,7 +32,7 @@
                 @if (Auth::user()->role === UserRole::ADMIN->value)
                     <p>Manage Vehicles For This Transport Service</p>
                 @endif
-                <p>{{$pickup_datetime}}</p>
+                {{--<p>{{$pickup_datetime}}</p>--}}
             </div>
         </header>
 
