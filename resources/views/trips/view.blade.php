@@ -8,8 +8,14 @@
             <button class="back">Back</button>
             </a>
             <div class="head">
+               
                 <h1>Create New Trip Plan</h1>
                 <p>Choose how you'd like to create your perfect itinerary</p>
+                @if (session('success'))
+                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
             </div>
         </header>
         <div class="main-section">
