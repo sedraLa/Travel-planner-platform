@@ -43,8 +43,8 @@ class TransportController extends Controller
  public function show(string $id)
 {
     $transport = Transport::with('vehicles')->findOrFail($id);
-    $vehicles = $transport->vehicles;
-    return view('vehicles.index', compact('transport', 'vehicles'));
+    $Vehicles = $transport->vehicles;
+    return view('transport.vehicles', compact('transport', 'Vehicles'));
 }
 
 
