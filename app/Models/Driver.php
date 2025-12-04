@@ -10,13 +10,13 @@ class Driver extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name',
+        /*'name',*/
         'age',
         'address',
         'license_image',
         'experience',
-        'email',
-        'phone',
+        /*'email',*/
+        /*'phone',*/
         'license_category',
         'date_of_hire',
         'status',

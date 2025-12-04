@@ -18,7 +18,7 @@ class VehicleRequest extends FormRequest
 
         return [
             'transport_id'   => 'required|exists:transports,id',
-            'driver_id'   => 'required|exists:drivers,id',
+            /*'driver_id'   => 'required|exists:drivers,id',*/
             'car_model'      => 'required|string|max:255',
             'plate_number'   => [
                 'required',

@@ -34,7 +34,7 @@ class DriverController extends Controller
         $licensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
 
         Driver::create([
-            'name'             => $request->name,
+            /*'name'             => $request->name,*/
             'age'              => $request->age,
             'address'          => $request->address,
             'license_image'    => $licensePath,
@@ -42,7 +42,7 @@ class DriverController extends Controller
             'status'           => $request->status,
             'date_of_hire'     => $request->date_of_hire,
             'experience'       => $request->experience,
-            'email'            => $request->email,
+           /* 'email'            => $request->email,*/
             'phone'            => $request->phone,
         ]);
 

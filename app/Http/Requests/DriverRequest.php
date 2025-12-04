@@ -21,7 +21,7 @@ class DriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'             => 'required|string|max:255',
+            /*'name'             => 'required|string|max:255',*/
             'age'              => 'nullable|integer|min:18|max:100',
             'address'          => 'nullable|string|max:255',
             'license_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048',
@@ -29,12 +29,12 @@ class DriverRequest extends FormRequest
             'status'           => 'nullable|string|in:active,inactive',
             'date_of_hire'     => 'nullable|date',
             'experience'       => 'nullable|string',
-            'phone'            => 'required|string|max:20',
-            'email'            => [
+            /*'phone'            => 'required|string|max:20',*/
+            /*'email'            => [
                 'required',
                 'email',
                 Rule::unique('drivers', 'email')->ignore($this->route('id')),
-            ],
+            ],*/
         ];
     }
 
