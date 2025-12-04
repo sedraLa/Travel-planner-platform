@@ -2,8 +2,37 @@
 
 <x-app-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
-    @endpush
+    <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
+    <style>
+        /* تمركز زر القلب فوق الصورة */
+        .card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-img {
+            position: relative;
+        }
+
+        .fav-form {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
+        .fav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .fav-btn:hover {
+            transform: scale(1.1);
+        }
+    </style>
+@endpush
 
     <div class="main-wrapper">
         @if (Auth::user()->role === UserRole::ADMIN->value)
@@ -43,25 +72,18 @@
         <div class="cards">
             @forelse ($hotels as $hotel)
                 <div class="card">
-                    <a href="{{ route('hotel.show', $hotel->id) }}">
-                        @php
-                            $primaryImage = $hotel->images->where('is_primary', true)->first();
-                        @endphp
+                    
                         <div class="card-img">
-                            <img src="{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : asset('images/default.jpg') }}"
-                                alt="Hotel Image">
-                        </div>
-                        <h5>{{ $hotel->name }}</h5>
-                        <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
-                    </a>
-
-                    {{-- ========================================================== --}}
+                            {{-- ========================================================== --}}
                     {{-- هنا تمت إضافة زر القلب للفنادق بنفس منطق الوجهات --}}
                     {{-- ========================================================== --}}
+                    @if (Auth::user()->role === UserRole::USER->value)
+
                     <form action="{{ route('favorites.add', ['type' => 'hotel', 'id' => $hotel->id]) }}" method="POST"
                         class="fav-form">
                         @csrf
-                        <button type="submit" class="fav-btn">
+
+                        <button type="submit" class="fav-btn m-3">
                             {{-- إذا كان عند المستخدم هالفندق بالمفضلة --}}
                             @if(auth()->user()->favoriteHotels->contains('id', $hotel->id))
                                 {{-- قلب أحمر ممتلئ (كبير) --}}
@@ -80,10 +102,20 @@
                                 </svg>
                             @endif
                         </button>
+
                     </form>
-                    {{-- ========================================================== --}}
-                    {{-- نهاية كود زر القلب --}}
-                    {{-- ========================================================== --}}
+                @endif
+
+                {{-- ========================================================== --}}
+                {{-- نهاية كود زر القلب --}}
+                {{-- ========================================================== --}}
+                <a href="{{ route('hotel.show', $hotel->id) }}">
+                    <img src="{{ asset('storage/' . optional($hotel->images->where('is_primary', true)->first())->image_url) }}">
+                        <h5>{{ $hotel->name }}</h5>
+                        <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
+                    </a>
+
+                    
 
                 </div>
             @empty
