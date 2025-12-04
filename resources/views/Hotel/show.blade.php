@@ -46,7 +46,7 @@
     {{-- Main Wrapper --}}
     <div class="main-wrapper">
         <div class="hero-background"
-             style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
+            style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
             <div class="headings" style="font-size:32px;">
                 <h1>{{ $hotel->name }}</h1>
                 <h3>{{ $hotel->city }}</h3>
@@ -79,15 +79,15 @@
                     {{ __('Edit Hotel') }}
                 </h2>
                 <a href="{{ route('hotels.edit', $hotel->id) }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                     Edit
                 </a>
                 <form action="{{ route('hotels.destroy', $hotel->id) }}" method="POST"
-                      onsubmit="return confirm('Are you sure you want to delete this hotel?');">
+                    onsubmit="return confirm('Are you sure you want to delete this hotel?');">
                     @csrf
                     @method('DELETE')
                     <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
                         Delete
                     </button>
                 </form>
@@ -107,14 +107,14 @@
 
         {{-- Hotel Info --}}
         <div class="container">
-           
+
             <div class="address">
                 <h1>Address</h1>
                 <p>{{ $hotel->address }}</p>
                 {{-- Map --}}
-             <div id="hotel-map"></div>
+                <div id="hotel-map"></div>
             </div>
-             
+
 
             <div class="description">
                 <h1>Hotel Description</h1>
@@ -122,7 +122,7 @@
             </div>
 
 
-           
+
 
             <div class="city">
                 <h1>City</h1>
@@ -148,7 +148,7 @@
                 <div class="booking">
                     <h1>Book This Hotel</h1>
                     <a href="{{ route('reservations.form', ['id' => $hotel->id]) }}"
-                       class="text-white bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded shadow transition duration-200">
+                        class="text-white bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded shadow transition duration-200">
                         Book Now
                     </a>
                 </div>
