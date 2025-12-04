@@ -3,35 +3,6 @@
 <x-app-layout>
     @push('styles')
     <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
-    <style>
-        /* تمركز زر القلب فوق الصورة */
-        .card {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card-img {
-            position: relative;
-        }
-
-        .fav-form {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 10;
-        }
-
-        .fav-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .fav-btn:hover {
-            transform: scale(1.1);
-        }
-    </style>
 @endpush
 
     <div class="main-wrapper">
@@ -72,21 +43,16 @@
         <div class="cards">
             @forelse ($hotels as $hotel)
                 <div class="card">
-                    
                         <div class="card-img">
-                            {{-- ========================================================== --}}
-                    {{-- هنا تمت إضافة زر القلب للفنادق بنفس منطق الوجهات --}}
-                    {{-- ========================================================== --}}
+                    {{-- Add heart button to add to favourites--}}
                     @if (Auth::user()->role === UserRole::USER->value)
-
                     <form action="{{ route('favorites.add', ['type' => 'hotel', 'id' => $hotel->id]) }}" method="POST"
                         class="fav-form">
                         @csrf
-
                         <button type="submit" class="fav-btn m-3">
-                            {{-- إذا كان عند المستخدم هالفندق بالمفضلة --}}
+                            {{-- if this is one of user's favourites--}}
                             @if(auth()->user()->favoriteHotels->contains('id', $hotel->id))
-                                {{-- قلب أحمر ممتلئ (كبير) --}}
+                                {{-- red heart--}}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" viewBox="0 0 20 20"
                                     fill="currentColor">
                                     <path fill-rule="evenodd"
@@ -94,7 +60,7 @@
                                         clip-rule="evenodd" />
                                 </svg>
                             @else
-                                {{-- قلب فارغ (كبير) --}}
+                                {{--empty heart --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-500" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -105,18 +71,11 @@
 
                     </form>
                 @endif
-
-                {{-- ========================================================== --}}
-                {{-- نهاية كود زر القلب --}}
-                {{-- ========================================================== --}}
                 <a href="{{ route('hotel.show', $hotel->id) }}">
                     <img src="{{ asset('storage/' . optional($hotel->images->where('is_primary', true)->first())->image_url) }}">
                         <h5>{{ $hotel->name }}</h5>
                         <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
                     </a>
-
-                    
-
                 </div>
             @empty
                 <p style="text-align:center;">No hotels found.</p>
