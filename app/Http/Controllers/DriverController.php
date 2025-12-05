@@ -257,6 +257,17 @@ public function index(Request $request)
 
     Mail::to($driver->user->email)->send(new DriverStatusMail($driver->user->name, $status, $message));
 
+
+
+    if ($status === 'rejected') {
+        if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
+            \Storage::disk('public')->delete($driver->license_image);
+        }
+        $driver->delete();
+
+        return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
+    }
+    
     return redirect()->back()->with('success', 'Driver status updated and email sent successfully.');
   } 
 
