@@ -137,16 +137,16 @@ class DestinationController extends Controller
     $destination->update($request->validated());
 
 
-    if ($request->filled('highlights')) {
-    foreach ($request->highlights as $highlightData) {
-        if (!empty($highlightData['title'])) {
-            $destination->highlights()->updateOrCreate(
-                ['id' => $highlightData['id'] ?? null],
-                ['title' => $highlightData['title']]
-            );
+    if ($request->filled('highlight')) {
+    foreach ($request->highlight as $highlightText) {
+        if (!empty($highlightText)) {
+            $destination->highlights()->create([
+                'title' => $highlightText
+            ]);
         }
     }
 }
+
 
 
     // handle loading new images
@@ -163,7 +163,7 @@ class DestinationController extends Controller
     }
 
 
-    return redirect()->route('destination.show', $destination->id)->with('success', 'Destination updated successfully');
+    return redirect()->route('destination.index', $destination->id)->with('success', 'Destination updated successfully');
 
 
     }
