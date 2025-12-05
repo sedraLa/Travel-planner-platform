@@ -27,7 +27,10 @@ class ReservationRequest extends FormRequest
             'check_in_date' => 'required|date|after_or_equal:today',
             'check_out_date' => 'required|date|after:check_in_date',
             'name' => 'required|string',
+            'last_name' => 'nullable|string',
             'email' => 'required|email',
+            'phone_number' => 'nullable|string',
+            'country' => 'nullable|string',
         ];
     }
 }

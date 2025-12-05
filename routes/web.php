@@ -67,6 +67,7 @@ Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.d
 Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
 Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 Route::get('/reservations/{id}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
+Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
 
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');

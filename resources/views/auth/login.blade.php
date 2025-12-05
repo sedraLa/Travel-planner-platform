@@ -59,4 +59,26 @@
             </a>
         </div>
     </form>
+
+    <style>
+        .form-login{
+            max-width:326px;
+        }
+
+        .login-container{
+            max-width:1072px;
+            gap:80px;
+            min-height:540px;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            width: 283px;
+            padding: 7px;
+        }
+
+        a {
+            margin-left:78px;
+        }
+        </style>
 </x-guest-layout>
