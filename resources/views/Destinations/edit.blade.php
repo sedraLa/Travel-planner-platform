@@ -31,7 +31,7 @@
 
 
                     <x-input-label for="city" value="City" />
-                    <x-text-input id="city" type="text" name="city" :value="old('city,$destination->city')" required
+                    <x-text-input id="city" type="text" name="city" :value="old('city',$destination->city)" required
                         placeholder="Entre City" />
 
                     <x-input-label for="country" value="Country" />
@@ -114,17 +114,42 @@
                     <div class="mt-6">
                      <x-input-label for="highlight"  required value="Highlight" />
 
-                      <div id="highlights-wrapper">
-                      <div class="highlight-item flex items-center mb-2">
-                       <input type="text" name="highlight[]" 
-                            class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
-                            placeholder="Enter a highlight (e.g., Famous landmark)"   >
-                          <button type="button" onclick="addHighlightField()" 
-                          class="ml-2 px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">+</button>
-                         </div>
-                        </div>
 
-                      <p class="text-sm text-gray-500 mt-1">Click (+) to add more highlights</p>
+
+
+
+
+
+
+
+
+@php
+    // نجلب النصوص من العلاقة ونحولها لمصفوفة
+$existingHighlights = old('highlight', $destination->highlights->pluck('title')->toArray() ?? []);
+
+@endphp
+
+<div id="highlights-wrapper">
+    @foreach ($existingHighlights as $highlight)
+        <div class="highlight-item flex items-center mb-2">
+            <input type="text" name="highlight[]" 
+                   class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                   value="{{ $highlight }}"
+                   placeholder="Enter a highlight (e.g., Famous landmark)">
+            <button type="button" onclick="removeHighlightField(this)" 
+                    class="ml-2 px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">−</button>
+        </div>
+    @endforeach
+</div>
+
+<p class="text-sm text-gray-500 mt-1">Click (+) to add more highlights</p>
+
+<button type="button" onclick="addHighlightField()" 
+        class="mt-2 px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">+</button>
+
+
+
+
                     
                  </div>
                  
@@ -205,13 +230,13 @@
         const div = document.createElement('div');
         div.classList.add('highlight-item', 'flex', 'items-center', 'mb-2');
 
-        div.innerHTML = 
-            <input type="text" name="highlights[]" 
+        div.innerHTML = `
+            <input type="text" name="highlight[]" 
                    class="block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
                    placeholder="Enter another highlight">
             <button type="button" onclick="removeHighlightField(this)" 
                     class="ml-2 px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">−</button>
-        ;
+        `;
 
         wrapper.appendChild(div);
     }
@@ -220,7 +245,6 @@
         button.parentElement.remove();
     }
 </script>
-
 
 <script>
     let imageIndex = 0;
