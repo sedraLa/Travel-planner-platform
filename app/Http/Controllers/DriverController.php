@@ -44,6 +44,7 @@ public function index(Request $request)
         }
 
     }
+ $query->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')");
 
     $drivers = $query->get();
 
