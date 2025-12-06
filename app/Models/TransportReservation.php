@@ -19,6 +19,7 @@ class TransportReservation extends Model
         'total_price',
         'status',
         'transport_vehicle_id',
+        'driver_id'
     ];
 
     protected $hidden = [
@@ -41,5 +42,9 @@ class TransportReservation extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class);
+    }
+      public function driver()
+    {
+        return $this->belongsTo(Driver::class);
     }
 }
