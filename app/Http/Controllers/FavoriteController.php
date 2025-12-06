@@ -11,16 +11,7 @@ use Illuminate\Support\Facades\Auth;
 class FavoriteController extends Controller
 {
     // عرض كل المفضلات
-    public function index()
-    {
-        $user = auth()->user();
-
-        return view('favorites.index', [
-            'destinations' => $user->favoriteDestinations,
-            'hotels'       => $user->favoriteHotels,
-        ]);
-    }
-
+    
     // إضافة مفضلة
     public function store($type, $id)
     {
@@ -43,7 +34,9 @@ class FavoriteController extends Controller
             $status = 'added';
         }
 
-        return back()->with('status', "Favorite $status successfully.");
+         return response()->json([
+        'status' => $status
+    ]);
     }
      public function showFavorites()
     {
