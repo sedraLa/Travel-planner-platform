@@ -18,6 +18,7 @@ class VehicleRequest extends FormRequest
 
         return [
             'transport_id'   => 'required|exists:transports,id',
+            'driver_id'   => 'required|exists:drivers,id',
             'car_model'      => 'required|string|max:255',
             'plate_number'   => [
                 'required',
@@ -25,8 +26,7 @@ class VehicleRequest extends FormRequest
                 'max:50',
                 Rule::unique('transport_vehicles', 'plate_number')->ignore($vehicleId),
             ],
-            'driver_name'    => 'required|string|max:255',
-            'driver_contact' => 'required|string|max:20',
+
             'max_passengers' => 'required|integer|min:1',
             'base_price'     => 'required|numeric|min:0',
             'price_per_km'   => 'required|numeric|min:0',

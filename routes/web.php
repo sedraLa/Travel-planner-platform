@@ -12,6 +12,7 @@ use App\Http\Controllers\TransportController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\VehicleOrderController;
 use App\Http\Controllers\TransportReservationController;
+use App\Http\Controllers\DriverController;
 
 
 /*
@@ -89,6 +90,7 @@ Route::get('/transports/{id}', [TransportController::class, 'show'])->name('tran
 
 //vehicles routes
 Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.index');
+Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.show');
 Route::get('/vehicle/create',[VehicleController::class,'create'])->name('vehicle.create');
 Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.store');
 Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');
@@ -98,7 +100,7 @@ Route::delete('/vehicle/{id}/destroy', [VehicleController::class, 'destroy'])->n
 Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->name('vehicle.order');
 Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
     ->name('vehicle.search');
-    
+
 Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
 
 Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
@@ -107,6 +109,31 @@ Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
 
 Route::get('/vehicle/reservation/{id}/pay', [TransportReservationController::class, 'pay'])
     ->name('vehicles.pay');
+
+ //Drivers Routes
+Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
+Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
+// للسائق (بدون ID)
+Route::get('/driver/show', [DriverController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('driverscompleted.show');
+
+// للأدمن (مع ID)
+Route::get('/admin/driver/{id}/show', [DriverController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('drivers.show');
+
+
+
+Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
+Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
+Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
+Route::get('/driver/bookings/pending', [DriverController::class, 'pendingBookings'])
+        ->name('bookings.pending');
+
+
+
 
 
 require __DIR__.'/auth.php';

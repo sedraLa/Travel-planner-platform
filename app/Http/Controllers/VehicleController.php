@@ -8,6 +8,7 @@ use App\Models\Transport;
 use App\Models\TransportVehicle;
 use App\Http\Requests\VehicleRequest;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Driver; // <-- إضافة استدعاء موديل السائق
 
 class VehicleController extends Controller
 {
@@ -16,18 +17,19 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        $vehicle=TransportVehicle::all();
-        return view('vehicles.index',compact('vehicle'));
+        $availableVehicles=TransportVehicle::all();
+        return view('vehicles.show',compact('availableVehicles'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-{
-    $transportId = $request->get('transport_id');
-    return view('vehicles.create', compact('transportId'));
-}
+    {
+        $transportId = $request->get('transport_id');
+        $drivers = Driver::with('user')->whereDoesntHave('vehicle') ->get();// <-- جلب جميع السائقين
+        return view('vehicles.create', compact('transportId', 'drivers')); // <-- تمريرهم إلى الواجهة
+    }
 
 
     /**
@@ -35,15 +37,16 @@ class VehicleController extends Controller
      */
     public function store(VehicleRequest $request)
     {
+
+
         //save image
         $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
 
         $vehicle= TransportVehicle::create([
             'transport_id'   => $request->transport_id,
+            'driver_id' => $request->driver_id,
             'car_model'=>$request->car_model,
             'plate_number'=>$request->plate_number,
-            'driver_name'=> $request->driver_name,
-            'driver_contact'=>$request->driver_contact,
             'max_passengers' => $request->max_passengers ,
             'base_price'     => $request->base_price ,
             'price_per_km'   => $request->price_per_km,
@@ -51,7 +54,7 @@ class VehicleController extends Controller
             'image'          => $imagePath ,
         ]);
 
-        return redirect()->route('transport.index')->with('success','Vehicle created successfully');
+        return redirect()->route('vehicle.show')->with('success','Vehicle created successfully');
     }
 
     /**
@@ -69,9 +72,9 @@ class VehicleController extends Controller
     {
          // البحث عن المركبة المراد تعديلها
         $vehicle = TransportVehicle::findOrFail($id);
-
+         $drivers = Driver::with('user')->whereDoesntHave('vehicle') ->get();
         // إرجاع عرض (view) يحتوي على نموذج التعديل مع بيانات المركبة
-        return view('vehicles.edit', compact('vehicle'));
+        return view('vehicles.edit', compact('vehicle','drivers'));
     }
 
     /**
@@ -102,6 +105,7 @@ class VehicleController extends Controller
         // تحديث بيانات المركبة
         $vehicle->update([
             'transport_id'   => $request->transport_id,
+            'driver_id' => $request->driver_id,
             'car_model'      => $request->car_model,
             'plate_number'   => $request->plate_number,
             'driver_name'    => $request->driver_name,
@@ -114,7 +118,7 @@ class VehicleController extends Controller
         ]);
 
         // إعادة التوجيه إلى صفحة قائمة المركبات مع رسالة نجاح
-        return redirect()->route('transport.index')->with('success', 'Vehicle updated successfully');
+return redirect()->route('vehicle.show')->with('success', 'Vehicle updated successfully');
     }
     /**
      * Remove the specified resource from storage.
@@ -124,7 +128,7 @@ class VehicleController extends Controller
         // البحث عن المركبة
         $vehicle = TransportVehicle::findOrFail($id);
 
-        // حذف الصورة المرتبطة بالمركبة من التخزين
+// حذف الصورة المرتبطة بالمركبة من التخزين
         if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
             Storage::disk('public')->delete($vehicle->image);
         }
@@ -133,7 +137,7 @@ class VehicleController extends Controller
         $vehicle->delete();
 
         // إعادة التوجيه إلى صفحة القائمة مع رسالة نجاح
-        return redirect()->route('transport.index')->with('success', 'Vehicle deleted successfully');
+        return redirect()->route('vehicle.show')->with('success', 'Vehicle deleted successfully');
     }
 }
 

@@ -25,6 +25,7 @@ class User extends Authenticatable
         'phone_number',
         'country',
         'password',
+        'role',
     ];
 
     /**
@@ -62,4 +63,8 @@ class User extends Authenticatable
         return $this->hasMany(TransportReservation::class);
     }
     
+     public function driver()
+    {
+        return $this->hasOne(Driver::class);
+    }
 }
