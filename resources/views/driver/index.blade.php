@@ -60,19 +60,20 @@
                                 Address</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Date of Hire</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 License Category</th>
 
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     
                                  Photo of license</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Status</th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date of Hire</th>
 
+                            
                             <th scope="col" class="relative px-6 py-3">
                                 <span class="sr-only">Actions</span>
                             </th>
@@ -110,6 +111,43 @@
                                     <div class="text-sm font-medium text-gray-900">{{ $driver->address ?? 'No address' }}</div>
                                 </td>
 
+                                <td class="px-6 py-4 whitespace-nowrap  text-center">
+                                    <div class="text-sm font-medium text-gray-900">{{ $driver->license_category }}</div>
+                                    
+                                </td>
+
+
+                                 <td class="px-6 py-4 whitespace-nowrap text-center">
+                               <!-- زر عرض الصورة -->
+                         <button 
+                              onclick="document.getElementById('license-modal-{{ $driver->id }}').classList.remove('hidden')"
+                              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">
+                                      View License
+                          </button>
+
+                                            <!-- Modal -->
+                           <div id="license-modal-{{ $driver->id }}" 
+                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+                            <div class="bg-white p-4 rounded shadow-lg relative max-w-lg w-full">
+                                          <!-- زر إغلاق -->
+                             <button 
+                                     onclick="document.getElementById('license-modal-{{ $driver->id }}').classList.add('hidden')"
+                                     class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-2xl">
+                                     &times;
+                              </button>
+                                         <!-- الصورة -->
+                                   @if($driver->license_image)
+                     <img src="{{ asset('storage/' . $driver->license_image) }}" 
+                      alt="License Photo" class="w-full h-auto rounded">
+
+                        @else
+                         <p class="text-center text-gray-500">No license photo available</p>
+                        @endif
+
+                       </div>
+                     </div>
+                    </td>
+
 
                             <td class="px-6 py-4 whitespace-nowrap">
                                  <form method="POST" action="{{ route('drivers.updateStatus', $driver->id) }}">
@@ -143,45 +181,6 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $driver->date_of_hire ? \Carbon\Carbon::parse($driver->date_of_hire)->format('d-m-Y') : 'N/A' }}
                                 </td>
-                                
-                                 <td class="px-6 py-4 whitespace-nowrap  text-center">
-                                    <div class="text-sm font-medium text-gray-900">{{ $driver->license_category }}</div>
-                                    
-                                </td>
-                               
-
-                      <td class="px-6 py-4 whitespace-nowrap text-center">
-                               <!-- زر عرض الصورة -->
-                         <button 
-                              onclick="document.getElementById('license-modal-{{ $driver->id }}').classList.remove('hidden')"
-                              class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">
-                                      View License
-                          </button>
-
-                                            <!-- Modal -->
-                           <div id="license-modal-{{ $driver->id }}" 
-                            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-                            <div class="bg-white p-4 rounded shadow-lg relative max-w-lg w-full">
-                                          <!-- زر إغلاق -->
-                             <button 
-                                     onclick="document.getElementById('license-modal-{{ $driver->id }}').classList.add('hidden')"
-                                     class="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-2xl">
-                                     &times;
-                              </button>
-                                         <!-- الصورة -->
-                                   @if($driver->license_image)
-                     <img src="{{ asset('storage/' . $driver->license_image) }}" 
-                      alt="License Photo" class="w-full h-auto rounded">
-
-                        @else
-                         <p class="text-center text-gray-500">No license photo available</p>
-                        @endif
-
-                       </div>
-                     </div>
-                    </td>
-
-
                                 
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
