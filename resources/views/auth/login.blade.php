@@ -1,4 +1,14 @@
 <x-guest-layout>
+             {{-- Success Message --}}
+                   @if (session('success') && session('from') === 'set_primary')
+                   <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded">
+                       {{ session('success') }}
+                   </div>
+               @elseif (session('success'))
+                   <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-800 rounded">
+                       {{ session('success') }}
+                   </div>
+               @endif
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
@@ -54,7 +64,7 @@
                     </x-primary-button>
                 </div>
 
-            <a href="{{ route('register') }}">
+            <a href="{{ route('register.select-role') }}">
                 {{ __("Create a new account") }}
             </a>
         </div>

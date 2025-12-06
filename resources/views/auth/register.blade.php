@@ -1,5 +1,8 @@
+@php
+    use App\Enums\UserRole;
+@endphp
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
 
         <!-- Name -->
@@ -62,6 +65,37 @@
             <x-input-error :messages="$errors->get('password_confirmation')" />
         </div>
 
+<!--driver fields-->
+@if(request('role') === UserRole::DRIVER->value)
+<div>
+    <x-input-label for="license_image" :value="__('License Image')" />
+    <input id="license_image" type="file" name="license_image" />
+    <x-input-error :messages="$errors->get('license_image')" />
+  </div>
+
+  <div>
+    <x-input-label for="license_category" value="License Category" />
+                    <select id="license_category" name="license_category"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <option value="">-- Select Category --</option>
+                        <option value="A" @selected(old('license_category') == 'A')>Category A </option>
+                        <option value="B" @selected(old('license_category') == 'B')>Category B </option>
+                    </select>
+
+                    <x-input-label for="experience" value="Experience" />
+                    <textarea id="experience" name="experience"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                        rows="3" placeholder="Describe driver's experience">{{ old('experience') }}</textarea>
+                        <x-input-label for="address" value="Address" />
+                    <x-text-input id="address" type="text" name="address" :value="old('address')"
+                        placeholder="Enter driver's address" />
+
+                    <x-input-label for="age" value="Age" />
+                    <x-text-input id="age" type="number" name="age" :value="old('age')" placeholder="e.g. 25" />
+  </div>
+  @endif
+
+
         <div>
             <x-primary-button>
                 {{ __('Register') }}
@@ -69,6 +103,13 @@
             <a href="{{ route('login') }}">
                 {{ __('Already registered?') }}
             </a>
+            <input type="hidden" name="role" value="{{ request('role', UserRole::USER->value) }}">
+            @if(request('role') === UserRole::DRIVER->value)
+  <p style="color: #ffd966; font-weight:600;">
+    ملاحظة: تسجيل السائق سيُرسل لطلب مراجعة من الإدارة. لن تتمكن من الدخول حتى يتم الموافقة.
+  </p>
+@endif
         </div>
+        
     </form>
 </x-guest-layout>

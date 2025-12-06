@@ -1,4 +1,4 @@
-<x-app-layout>
+<!--<x-app-layout>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
         <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
@@ -95,4 +95,4 @@
     </div>
     </form>
     </div>
-</x-app-layout>
+</x-app-layout>-->

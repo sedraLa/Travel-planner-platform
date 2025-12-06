@@ -25,7 +25,7 @@ class DriverRequest extends FormRequest
             'address'          => 'nullable|string|max:255',
             'license_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048',
             'license_category' => 'nullable|string|max:255',
-            'status'           => 'nullable|string|in:active,inactive',
+            'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',
             'experience'       => 'nullable|string',
             
