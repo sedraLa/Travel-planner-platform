@@ -73,13 +73,16 @@
                 @endif
                 <a href="{{ route('hotel.show', $hotel->id) }}">
                     <img src="{{ asset('storage/' . optional($hotel->images->where('is_primary', true)->first())->image_url) }}">
-                        <h5>{{ $hotel->name }}</h5>
-                        <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
                     </a>
                 </div>
+
+                <a href="{{ route('hotel.show', $hotel->id) }}">
+                    <h5>{{ $hotel->name }}</h5>
+                    <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
+                </a>
+            </div>
             @empty
                 <p style="text-align:center;">No hotels found.</p>
             @endforelse
         </div>
-    </div>
 </x-app-layout>
