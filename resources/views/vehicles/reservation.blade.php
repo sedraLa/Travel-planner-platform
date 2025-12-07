@@ -30,7 +30,7 @@
                   <p><strong>Total Price: ${{ number_format($total_price, 2) }}</strong></p>
               </div>
               <div class="form-container">
-                <form id="reservation-form" action="{{ route('vehicleReservation.store', ['transportId' => $vehicle->transport_id, 'vehicleId' => $vehicle->id]) }}" method="POST">
+                <form id="reservation-form" action="{{ route('vehicleReservation.store', ['transportId' => $vehicle->transport_id, 'vehicleId' => $vehicle->id, 'driver_id' => $vehicle->driver_id]) }}" method="POST">
                     @csrf
                     <input type="hidden" name="pickup_location" value="{{ $pickup_location }}">
                     <input type="hidden" name="dropoff_location" value="{{ $dropoff_location }}">

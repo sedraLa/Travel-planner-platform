@@ -48,6 +48,7 @@
                     {{ $vehicle->driver_id == $driver->id ? 'selected' : '' }}
                     data-name="{{ $driver->user->name }}"
                     data-phone="{{ $driver->user->phone_number }}">
+                    
                     {{ $driver->user->name }}
                 </option>
             @endforeach

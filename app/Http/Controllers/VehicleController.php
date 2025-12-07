@@ -72,7 +72,7 @@ class VehicleController extends Controller
     {
          // البحث عن المركبة المراد تعديلها
         $vehicle = TransportVehicle::findOrFail($id);
-         $drivers = Driver::with('user')->whereDoesntHave('vehicle') ->get();
+         $drivers = Driver::with('user')->get();
         // إرجاع عرض (view) يحتوي على نموذج التعديل مع بيانات المركبة
         return view('vehicles.edit', compact('vehicle','drivers'));
     }
@@ -102,6 +102,16 @@ class VehicleController extends Controller
             $imagePath = $oldImagePath;
         }
 
+        if ($request->driver_id) {
+            $driver = Driver::with('vehicle')->find($request->driver_id);
+        
+            
+            if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
+                return back()->withErrors("You can't choose this driver, it's already assigned to another vehicle");
+            }
+        }
+        
+        
         // تحديث بيانات المركبة
         $vehicle->update([
             'transport_id'   => $request->transport_id,
@@ -125,20 +135,25 @@ return redirect()->route('vehicle.show')->with('success', 'Vehicle updated succe
      */
     public function destroy(string $id)
     {
-        // البحث عن المركبة
-        $vehicle = TransportVehicle::findOrFail($id);
-
-// حذف الصورة المرتبطة بالمركبة من التخزين
+        
+        $vehicle = TransportVehicle::with('reservations')->findOrFail($id);
+    
+        
+        if ($vehicle->reservations()->exists()) {
+            return back()->withErrors("You can't delete this vehicle because it has reservations");
+        }
+    
+        
         if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
             Storage::disk('public')->delete($vehicle->image);
         }
-
-        // حذف سجل المركبة من قاعدة البيانات
+    
+       
         $vehicle->delete();
-
-        // إعادة التوجيه إلى صفحة القائمة مع رسالة نجاح
+    
         return redirect()->route('vehicle.show')->with('success', 'Vehicle deleted successfully');
     }
+    
 }
 
 
