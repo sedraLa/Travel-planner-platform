@@ -87,7 +87,7 @@ public function index(Request $request)
         $term = trim($request->input('search'));
 
         if (Auth::check() && Auth::user()->role === 'admin') {
-            // ===== بحث الأدمن (كما كان مع تصحيحات بسيطة) =====
+            // ===== بحث الأدمن =====
             $month = null;
             $year  = null;
 
@@ -95,43 +95,53 @@ public function index(Request $request)
             if (ctype_digit($term) && strlen($term) === 4) {
                 $year = (int) $term;
             }
-            // 2) شهر فقط: رقم 1–2
+            // 2) شهر فقط
             elseif (ctype_digit($term) && strlen($term) <= 2) {
-                $month = (int) $term; // 1..12
+                $month = (int) $term;
             }
-            // 3) شهر + سنة: وجود - أو / (2025-08 / 2025/08) أو اسم شهر مع سنة
+            // 3) شهر + سنة
             elseif (strpos($term, '-') !== false || strpos($term, '/') !== false) {
                 try {
                     $dt    = Carbon::parse("1 $term");
                     $month = $dt->month;
                     $year  = $dt->year;
-                } catch (\Throwable $e) {
-                    // تجاهل لو ما انقرأ
-                }
+                } catch (\Throwable $e) {}
             }
-            // 4) اسم شهر فقط (August / Sep ...)
+            // 4) اسم شهر فقط
             else {
                 try {
                     $dt    = Carbon::parse("1 $term");
                     $month = $dt->month;
-                } catch (\Throwable $e) {
-                    // تجاهل
-                }
+                } catch (\Throwable $e) {}
             }
 
             $query->where(function ($q) use ($term, $month, $year) {
-                // نصّي: فندق/واجهة/مستخدم
+
+                // فندق
                 $q->whereHas('hotel', fn($h) =>
                         $h->where('name', 'like', "%{$term}%")
                   )
+
+                // وجهة
                   ->orWhereHas('hotel.destination', fn($d) =>
                         $d->where('name', 'like', "%{$term}%")
                   )
-                  ->orWhereHas('user', fn($u) =>
+
+                // مستخدم (المهم: اسم أول + اسم آخر + كامل)
+                  ->orWhereHas('user', function ($u) use ($term) {
+
+                        // بحث على الحقول المفردة
                         $u->where('name', 'like', "%{$term}%")
                           ->orWhere('last_name', 'like', "%{$term}%")
-                          ->orWhere('email', 'like', "%{$term}%")
-                  );
+                          ->orWhere('email', 'like', "%{$term}%");
+
+                        // بحث على الاسم الكامل (Full Name)
+                        $u->orWhereRaw("CONCAT(name, ' ', last_name) LIKE ?", ["%{$term}%"]);
+                        $u->orWhereRaw("CONCAT(last_name, ' ', name) LIKE ?", ["%{$term}%"]);
+                  })
+
+                // بحث الحالة
+                  ->orWhere('reservation_status', 'like', "%{$term}%");
 
                 // التاريخ
                 if ($month !== null && $year !== null) {
@@ -140,28 +150,38 @@ public function index(Request $request)
                            ->whereYear('check_in_date',  $year);
                     });
                 } elseif ($month !== null) {
-                    $q->orWhereMonth('check_in_date', $month); // بأي سنة
+                    $q->orWhereMonth('check_in_date', $month);
                 } elseif ($year !== null) {
-                    $q->orWhereYear('check_in_date',  $year);  // سنة كاملة
+                    $q->orWhereYear('check_in_date',  $year);
                 }
             });
             // ===== /بحث الأدمن =====
 
         } else {
-            // ===== المستخدم العادي: فلترة بالتاريخ فقط =====
-            // نتوقع input[type=date] → YYYY-MM-DD، ولو كتب شي تاني منجرّب نقرأه
-            try {
-                $date = Carbon::parse($term)->toDateString(); // Y-m-d
-                $query->whereDate('check_in_date', $date);
-            } catch (\Throwable $e) {
-                // إذا مش تاريخ صالح، ما نفلتر (نرجع حجوزات المستخدم كلها)
-            }
+            // ===== المستخدم العادي: بحث فندق/وجهة/تاريخ =====
+            $query->where(function ($q) use ($term) {
+
+                // فندق
+                $q->whereHas('hotel', fn($h) =>
+                        $h->where('name', 'like', "%{$term}%")
+                  )
+
+                // وجهة
+                  ->orWhereHas('hotel.destination', fn($d) =>
+                        $d->where('name', 'like', "%{$term}%")
+                  );
+
+                // تاريخ
+                try {
+                    $date = Carbon::parse($term)->toDateString();
+                    $q->orWhereDate('check_in_date', $date);
+                } catch (\Throwable $e) {}
+            });
             // ===== /المستخدم العادي =====
         }
     }
 
-    $reservations = $query->get(); // إن بدك pagination: ->paginate(15)
+    $reservations = $query->get();
     return view('reservation.index', compact('reservations'));
 }
-
 }
