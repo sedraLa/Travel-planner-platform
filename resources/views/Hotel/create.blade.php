@@ -1,177 +1,201 @@
+
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Create New Hotel') }}
-            </h2>
-            <a href="{{ route('hotels.index') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
-                ← Back to hotels
-            </a>
-        </div>
-    </x-slot>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/transport.css') }}"> 
+        <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+       
+    @endpush
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-7xl">
+    <div class="vehicle-form-container"> 
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Hotel</h2>
 
-                    @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+        <form action="{{ route('hotels.store') }}" method="post" enctype="multipart/form-data">
+            @csrf
+
+           
+            @if ($errors->any())
+                <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+                    <ul class="list-disc list-inside">
                         @foreach ($errors->all() as $error)
-                            <div class="mb-1">• {{ $error }}</div>
+                            <li>{{ $error }}</li>
                         @endforeach
-                    </div>
-                @endif
+                    </ul>
+                </div>
+            @endif
+
+            <div class="first-section"> 
+
                 
-                
-                
+                <div class="left">
+                    <x-input-label for="name" value="Hotel Name" />
+                    <x-text-input id="name" type="text" name="name" :value="old('name')" required
+                        placeholder="Enter Hotel name" />
 
-    <!--create form-->
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                           
+                        <div class="mt-4">
+                         <x-input-label for="destination_id" value="Associated destination" />
+                              <select name="destination_id"  id="destination_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                 <option value="">-- Select the associated destination --</option>
+                                    @foreach($destinations as $destination)
+                                     <option value="{{ $destination->id }}"
+                                       data-city="{{ $destination->city }}"
+                                        data-country="{{ $destination->country }}"
+                                      >{{ $destination->name }}</option>
+                                    @endforeach
+                                </select>
+                        </div>
 
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                    <x-input-label for="city" value="City" />
+                    <x-text-input id="city" type="text" name="city" :value="old('city')" required/>
+                       
 
-    <form action="{{route('hotels.store')}}" method="post" enctype="multipart/form-data">
-        @csrf
+                    <x-input-label for="country" value="Country" />
+                    <x-text-input id="country" type="text" name="country" :value="old('country')" required/>
+                        
 
-        <!--fields-->
-        <div class="flex space-x-4">
-            <div class="w-1/2">
-        <!--hotel name & description-->
-        <x-input-label for="name"  value="Hotel Name"/>
-        <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" required autofocus />
+
+
+                    <x-input-label for="description" value="Description" />
+                    <x-text-input id="description" type="text" name="description" :value="old('description')" required
+                        placeholder="write a description" />
+
+                    <x-input-label for="address" value="address" />
+                    <x-text-input id="address" type="text" name="address" :value="old('address')" required
+                        placeholder="Enter address" />
+
+                     <x-input-label for="global_rating" value="global_rating" />
+                    <x-text-input id="global_rating" type="text" name="global_rating" :value="old('global_rating')" required
+                        placeholder="Enter global_rating(max:5)" />
+
+                     <x-input-label for="price_per_night" value="price_per_night" />
+                     <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm">$</span>
+                    <x-text-input id="price_per_night"  type="number" name="price_per_night" :value="old('price_per_night')" required
+                         step="0.01" placeholder="Enter price_per_night $" />
+                    
+                    <x-input-label for="total_rooms" value="total_rooms" />
+                    <x-text-input id="total_rooms" type="number" name="total_rooms" step="1" min="0"  :value="old('total_rooms')" required
+                        placeholder="Enter total_rooms" />
+
+                    <x-input-label for="stars" value="stars" />
+                    <select id="stars" name="stars" class="block w-full mt-1 border-gray-300 rounded-md" required>
+                           <option value="" disabled  selected>Select how many stars stars</option>
+                           <option value="1" {{ old('stars') == 1 ? 'selected' : '' }}>🌟 Star</option>
+                           <option value="2" {{ old('stars') == 2 ? 'selected' : '' }}> 🌟🌟Stars</option>
+                           <option value="3" {{ old('stars') == 3 ? 'selected' : '' }}>🌟🌟🌟 Stars</option>
+                           <option value="4" {{ old('stars') == 4 ? 'selected' : '' }}>🌟🌟🌟🌟Stars</option>
+                           <option value="5" {{ old('stars') == 5 ? 'selected' : '' }}>🌟🌟🌟🌟🌟Stars</option>
+                    </select>
+
+
+                   
+
+
+                     <div class="flex space-x-4 mt-4">
+                   <!-- Images Upload -->
+                   <div class="mt-6">
+                   <x-input-label for="images" :value="__('Images')" />
+                   <input id="images" name="images[]" type="file" class="mt-1 block w-full text-sm text-gray-500
+                    file:mr-4 file:py-2 file:px-4
+                    file:rounded-full file:border-0
+                    file:text-sm file:font-semibold
+                    file:bg-blue-50 file:text-blue-700
+                    hover:file:bg-blue-100"  multiple onchange="showPrimarySelect(this)" />
+                   <x-input-error class="mt-2" :messages="$errors->get('images')" />
+                   </div>
+                   </div>
+
+                   <!-- Primary Image -->
+                   <div id="primary-select-wrapper" class="mt-4 hidden">
+                   <x-input-label for="primary_image_index" :value="__('Choose Primary Image')" />
+                   <!--select primary image-->
+                   <select name="primary_image_index" id="primary_image_index" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></select>
+                   <x-input-error class="mt-2" :messages="$errors->get('primary_image_index')" />
+                   </div>
+
+
+                     
+                </div>
+
+               
+                <div class="right">
+
+
+                    <x-input-label for="pets_allowed" value="Pets Allowed" />
+                    <select id="pets_allowed" name="pets_allowed" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                           <option value=""  disabled  selected>-- Select --</option>
+                           <option value="allowed" {{ old('pets_allowed') == 'allowed' ? 'selected' : '' }}>pets allowed</option>
+                           <option value="not_allowed" {{ old('pets_allowed') == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
+                    </select>
+                    
+                    <x-input-label for="check_in_time" value="check_in_time" />
+                    <x-text-input id="check_in_time" type="time" name="check_in_time" :value="old('check_in_time')" required
+                        placeholder="Enter check in time" />
+
+
+                    <x-input-label for="check_out_time" value="check_out_time" />
+                    <x-text-input id="check_out_time" type="time" name="check_out_time" :value="old('check_out_time')" required
+                        placeholder="Enter check out time" />
+
+                    <x-input-label for="policies" value="policies" />
+                    <x-text-input id="policies" type="text" name="policies" :value="old('policies')" required
+                        placeholder=" Enter policies" />
+
+                    <x-input-label for="phone_number" value="phone_number" />
+                    <x-text-input id="phone_number" type="number" name="phone_number" :value="old('phone_number')" required
+                        placeholder="phone_number" />
+
+
+                    <x-input-label for="email" value="email" />
+                    <x-text-input id="email" type="email" name="" :value="old('email')" required
+                        placeholder="Enter @email.com" />
+
+
+
+                   <x-input-label for="website" value="website" />
+                    <x-text-input id="website" type="url" name="website" :value="old('website')" required
+                        placeholder="Enter A website" />
+
+
+                    <x-input-label for="nearby_landmarks" value="nearby_landmarks" />
+                    <x-text-input id="nearby_landmarks" type="text" name="nearby_landmarks" :value="old('nearby_landmarks')" required
+                        placeholder="Enter nearby landmarks" />
+
+
+                    <x-input-label for="amenities" value="Amenities" />
+
+                        <div >
+                             @php
+                                  $options = ['Wifi','Parking','Pool','Spa','Restaurant','Gym','Laundry','Air Condition','Free Breakfast'];
+                                  $oldAmenities = old('amenities', []);
+                             @endphp
+
+                                @foreach($options as $option)
+                                    <label >
+                                     <input type="checkbox" name="amenities[]" value="{{ $option }}" 
+                                     class="custom-checkbox"
+                                     {{ in_array($option, $oldAmenities) ? 'checked' : '' }}>
+                                      <span >{{ $option }}</span>
+                                    </label>
+                                @endforeach
+                        </div>
+
+                 
+                </div>
+
             </div>
-            <div class="w-1/2">
-                <x-input-label for="description" value="Hotel Descreption (optional)" />
-                <textarea id="description" name="description" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></textarea>
-            </div>
-        </div>
-
-        <!--address-->
-        <div class="flex space-x-4 mt-4">
-            <div class="w-1/2">
-               <x-input-label for="address" value="Hotel Address"/>
-               <x-text-input id="address" type="text" name="address" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm" required />
-            </div>
-                    <!--price per night-->
-                    <div class="w-1/2">
-                        <x-input-label for="price_per_night" value="Price Per Night" />
-                        <div class="relative">
-                         <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm">$</span>
-                         <input
-                             type="number"
-                             name="price_per_night"
-                             id="price_per_night"
-                             step="0.01"
-                             required
-                             placeholder="Enter price in $"
-                             class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-200 focus:ring focus:ring-opacity-50 text-sm"
-                         />
-                 </div>
-             </div>
-        </div>
-
-
-       <!-- choose destination-->
-<div class="mt-4">
-    <x-input-label for="destination_id" value="Associated destination" />
-    <select
-        name="destination_id"
-        id="destination_id"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-        required>
-
-        <option value="">-- Select the associated destination --</option>
-        @foreach($destinations as $destination)
-            <option value="{{ $destination->id }}"
-            data-city="{{ $destination->city }}"
-            data-country="{{ $destination->country }}"
-                >{{ $destination->name }}</option>
-        @endforeach
-    </select>
-</div>
-
-        <!--city & country-->
-        <div class="flex space-x-4 mt-4">
-            <div class="w-1/2">
-        <x-input-label for="city" value="City" />
-           <x-text-input id="city" name="city" type="text" class="mt-1 block w-full" required />
-             </div>
-              <div class="w-1/2">
-                <x-input-label for="country" value="Country" />
-          <x-text-input id="country" name="country" type="text" class="mt-1 block w-full" required />
-                  </div>
-             </div>
-
-        <!--global rating-->
-        <div class="flex space-x-4 mt-4">
-            <div class="w-1/2">
-                <x-input-label for="global_rating" value="Global Rating"/>
-                <input id="global_rating" type="number" name="global_rating" step="1" min="1" max="5" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3 text-sm" placeholder="Enter a rating from 1 to 5" />
-            </div>
-
-         <!--total rooms-->
-        <div class="w-1/2">
-            <x-input-label for="total_rooms" value="Total Rooms" />
-            <input id="total_rooms" type="number" name="total_rooms" step="1" min="0" required class="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3 text-sm" placeholder="Enter number of total rooms of the hotel" />
-        </div>
-        </div>
-
-
-
-    <!--image upload-->
-<!-- Input images -->
-<div class="mb-4">
-    <x-input-label for="images" value="Hotel Images" />
-    <input
-        id="images"
-        type="file"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-        multiple
-        onchange="handleFileSelect(event)"
-    />
-</div>
-
-<!-- choose primary image-->
-<div id="primary-select-wrapper" class="mt-4 hidden">
-    <x-input-label for="primary_image_index" value="Choose primary image" />
-    <select
-        name="primary_image_index"
-        id="primary_image_index"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-    </select>
-</div>
-
-<!-- hidden field contain all images-->
-
-<input type="file" id="real-images" name="images[]" multiple hidden />
-
-
-<!--cancel & submit button-->
-<div class="flex items-center justify-end mt-4 space-x-3">
-    <!-- Cancel Button -->
-     <a href="{{ route('hotels.index') }}"
-     class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-black dark:text-white uppercase tracking-widest hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150">
-        {{ __('Cancel') }}
-               </a>
-           <!-- Submit Button -->
-              <x-primary-button>
-       {{ __('Create Hotel') }}
-            </x-primary-button>
-                     </div>
-
-
-
-                    </form>
-
-
-</div>
-</div>
-</div>
+             
+                   <div class="popup-buttons mt-8">
+                   <button type="submit" class="btn btn-primary">Create</button>
+                   <a href="{{ route('hotels.index') }}" class="cancel-btn">Cancel</a>
+                   </div>
+        </form>
+    </div>
 </x-app-layout>
+
+
+
+
 
 
 
@@ -179,52 +203,61 @@
 <script>
     let allFiles = [];
 
-    function handleFileSelect(event) {
-        const input = event.target;
+    function showPrimarySelect(input) {
         const newFiles = Array.from(input.files);
+        allFiles = allFiles.concat(newFiles); // نضيف الصور الجديدة بدون حذف القديمة
 
-        // Combine old with new images
-        allFiles = [...allFiles, ...newFiles];
-
-        // Update hidden input to be sent with the form
-        const dataTransfer = new DataTransfer();
-        allFiles.forEach(file => dataTransfer.items.add(file));
-        document.getElementById('real-images').files = dataTransfer.files;
-
-        // Update select menu
         const select = document.getElementById('primary_image_index');
         const wrapper = document.getElementById('primary-select-wrapper');
-        select.innerHTML = "";
 
-        allFiles.forEach((file, index) => {
-            const option = document.createElement('option');
-            option.value = index;
-            option.text = `image ${index + 1} - ${file.name}`;
-            select.appendChild(option);
-        });
+        if (allFiles.length > 0) {
+            select.innerHTML = '';
+            wrapper.classList.remove('hidden');
 
-        wrapper.classList.remove('hidden');
+            allFiles.forEach((file, i) => {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = file.name;
+                select.appendChild(option);
+            });
+        } else {
+            wrapper.classList.add('hidden');
+        }
+
+        //  تحديث ملفات الفورم المخفية
+        updateFileList(input);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function updateFileList(input) {
+        // إنشاء كائن جديد من نوع DataTransfer لتخزين الملفات كلها
+        const dataTransfer = new DataTransfer();
+        allFiles.forEach(file => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
+    }
+    </script>
 
-        // fill city & country field after choosing the destination
-        const destinationSelect = document.getElementById('destination_id');
-        const cityInput = document.getElementById('city');
-        const countryInput = document.getElementById('country');
 
-        destinationSelect.addEventListener('change', function () {
-            const selectedOption = this.options[this.selectedIndex];
-            const city = selectedOption.getAttribute('data-city');
-            const country = selectedOption.getAttribute('data-country');
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const destinationSelect = document.getElementById('destination_id');
+    const cityInput = document.getElementById('city');
+    const countryInput = document.getElementById('country');
 
-            cityInput.value = city || '';
-            countryInput.value = country || '';
-
-            
-
-        });
-        
+    destinationSelect.addEventListener('change', function() {
+        // لا تغير القيم لو في old
+        if(!cityInput.value) {
+            cityInput.value = this.selectedOptions[0].dataset.city || '';
+        }
+        if(!countryInput.value) {
+            countryInput.value = this.selectedOptions[0].dataset.country || '';
+        }
     });
-</script>
 
+    // إذا فيه old قيم مسبقة، خلي الـ inputs فيها بدل تغييرهم
+    if(cityInput.value === '' && destinationSelect.value) {
+        const selected = destinationSelect.selectedOptions[0];
+        cityInput.value = selected.dataset.city || '';
+        countryInput.value = selected.dataset.country || '';
+    }
+});
+</script>

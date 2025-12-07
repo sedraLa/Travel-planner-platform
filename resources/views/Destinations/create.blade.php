@@ -136,7 +136,7 @@
             
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Create Destination</button>
-                   <a href="{{ route('drivers.index') }}" class="cancel-btn">Cancel</a>
+                   <a href="{{ route('destination.index') }}" class="cancel-btn">Cancel</a>
                    </div>
         </form>
     </div>

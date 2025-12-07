@@ -1,7 +1,7 @@
 @php use App\Enums\UserRole; @endphp
+<x-app-layout>
 
-<x-details-layout>
-    {{-- Styles --}}
+ {{-- Styles --}}
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/details.css') }}">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -17,7 +17,35 @@
     @endpush
 
     {{-- Scripts --}}
-    @push('scripts')
+    
+    <!--Hero background-->
+     <div class="main-wrapper">
+        <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">>
+        <div class="headings" >
+            <h1>{{$hotel->name}}</h1>
+            <p style="letter-spacing: normal; font-size: 18px;">{{$hotel->description}} </p>
+            <div class="rating-location">
+                <div class="location">
+                    <img src="/images/icons/location-dot-solid-full (4).svg" class="heading-icon">
+                    <h5>{{$hotel->destination->city}},{{$hotel->destination->country}} </h5>
+                </div>
+                <a style="color:#f4f4f4;" href="">
+                <div class="rating">
+                    <span >⭐ 4.8 (12487 reviews)</span>
+                </div>
+            </a>
+
+
+              </div>
+        </div>
+    </div>
+
+</div>
+    <!--Main page-->
+    <div class="main-container">
+
+          <!--Maps section-->
+@push('scripts')
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -43,116 +71,216 @@
         </script>
     @endpush
 
-    {{-- Main Wrapper --}}
-    <div class="main-wrapper">
-        <div class="hero-background"
-             style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
-            <div class="headings" style="font-size:32px;">
-                <h1>{{ $hotel->name }}</h1>
-                <h3>{{ $hotel->city }}</h3>
+        <!--Highlights section-->
+        <div class="highlights-container">
+            <div class="highlights-header">
+                <h1>Must-See Amenities</h1>
+                <p>The absolute essentials that defines this Hotel</p>
             </div>
+
+
+            @php
+              $amenities = $hotel->amenities ?? [];
+            @endphp
+            <!--Highlight cards-->
+            <div class="highlights-cards">
+                  
+    @forelse ($amenities as $amenity)
+        <div class="highlight-card">
+            <span>✓</span>
+           <p>{{ $amenity }}</p>
         </div>
-    </div>
-
-    {{-- Details Section --}}
-    <div class="details">
-        @if (session('success'))
-            <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
-                @foreach ($errors->all() as $error)
-                    <div class="mb-1">• {{ $error }}</div>
-                @endforeach
-            </div>
-        @endif
-
-        <header>Explore everything about this hotel</header>
-
-        @if (Auth::user()->role === UserRole::ADMIN->value)
-            <!-- Admin Controls -->
-            <div class="flex items-center justify-between">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ __('Edit Hotel') }}
-                </h2>
-                <a href="{{ route('hotels.edit', $hotel->id) }}"
-                   class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
-                    Edit
-                </a>
-                <form action="{{ route('hotels.destroy', $hotel->id) }}" method="POST"
-                      onsubmit="return confirm('Are you sure you want to delete this hotel?');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit"
-                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
-                        Delete
-                    </button>
-                </form>
-            </div>
-        @endif
-
-        {{-- Other Hotel Images --}}
-        <div class="cards">
-            @foreach($hotel->images as $image)
-                @if(!$image->is_primary)
-                    <div class="card">
-                        <img src="{{ asset('storage/' . $image->image_url) }}" alt="Hotel Image">
-                    </div>
-                @endif
-            @endforeach
+    @empty
+        <p>No Amenities  available for this destination.</p>
+    @endforelse
+</div>
         </div>
 
-        {{-- Hotel Info --}}
-        <div class="container">
-           
-            <div class="address">
-                <h1>Address</h1>
-                <p>{{ $hotel->address }}</p>
-                {{-- Map --}}
-             <div id="hotel-map"></div>
-            </div>
-             
+        
 
-            <div class="description">
-                <h1>Hotel Description</h1>
-                <p>{{ $hotel->description }}</p>
-            </div>
+        <!--Essential info-->
+        <div class="highlights-header" style="text-align: center;">
+            <h1>Essential Information</h1>
+            <p>Everything you need to know before you book</p>
+        </div>
+        <div class="info-combined-card">
+            <div class="info-sections">
 
+              <!-- Getting Around -->
+              <div class="info-section">
+                <h3><img src="/images/icons/building-solid.svg" alt=""> General Info</h3>
+                <div class="info-grid two-col">
+                  <div>
+                    <span>ADDRESS</span>
+                    <p>{{$hotel->address}}</p>
+                  </div>
+                  
+                  <div>
+                    <span>Nearby landmarks</span>
+                    <p>{{$hotel->nearby_landmarks}}</p>
+                  </div>
 
-           
-
-            <div class="city">
-                <h1>City</h1>
-                <p>{{ $hotel->destination->city }}</p>
-            </div>
-
-            <div class="country">
-                <h1>Country</h1>
-                <p>{{ $hotel->destination->country }}</p>
-            </div>
-
-            <div class="price">
-                <h1>Room Price</h1>
-                <p>${{ number_format($hotel->price_per_night, 2) }} per night</p>
-            </div>
-
-            <div class="rating">
-                <h1>Global Rating</h1>
-                <p>{{ $hotel->global_rating }} / 5</p>
-            </div>
-
-            @if(Auth::check() && Auth::user()->role == 'user')
-                <div class="booking">
-                    <h1>Book This Hotel</h1>
-                    <a href="{{ route('reservations.form', ['id' => $hotel->id]) }}"
-                       class="text-white bg-green-600 hover:bg-green-700 font-semibold py-2 px-4 rounded shadow transition duration-200">
-                        Book Now
-                    </a>
                 </div>
-            @endif
+              </div>
+
+              <hr>
+
+              <!-- Ratings & Rooms -->
+              <div class="info-section">
+                <h3><img src="/images/icons/star-solid.svg" alt="">Ratings & RoomsRatings & Rooms</h3>
+                <div class="info-grid two-col">
+                  <div>
+                    <span>STARS</span>
+                    <p>{{$hotel->stars}}</p>
+                  </div>
+
+                  <div>
+                    <span>GLOBAL RATING</span>
+                    <p>{{$hotel->global_rating}}</p>
+                  </div>
+
+                  <div>
+                    <span>TOTAL ROOMS</span>
+                    <p>{{$hotel->total_rooms}}</p>
+                  </div>
+
+                  <div>
+                    <span>PRICE PER TIME</span>
+                    <p>{{$hotel->price_per_night}}</p>
+                  </div>
+
+                </div>
+              </div>
+
+                  <hr>
+
+
+              <!-- Policies & Pets -->
+
+               <div class="info-section">
+                <h3><img src="/images/icons/paw-solid.svg" alt=""> Policies & Pets</h3>
+                <div class="info-grid two-col">
+                  <div>
+                    <span>PET (ALLOWED OR NOT ALLOWED)</span>
+                    <p> {{ $hotel->pets_allowed }}</p>
+                  </div>
+                  <div>
+                    <span>CHECK IN TIME</span>
+                    <p>{{$hotel->check_in_time}}</p>
+                  </div>
+                  <div>
+                    <span>CHECK OUT TIME</span>
+                    <p>{{$hotel->check_out_time}}</p>
+                  </div>
+                  
+
+                  <div>
+                    <span>POLICIES</span>
+                    <p>{{$hotel->policies}}</p>
+                  </div>
+
+                </div>
+              </div>
+                 <hr>
+
+
+              <!-- Contact & Website -->
+
+               <div class="info-section">
+                <h3> <img src="/images/icons/phone-solid.svg" alt=""> Contact & Website</h3>
+                <div class="info-grid two-col">
+                  <div>
+                    <span>PHONE NUMBER</span>
+                    <p>{{$hotel->phone_number}}</p>
+                  </div>
+                  <div>
+                    <span>EMAIL</span>
+                    <p>{{$hotel->email}}</p>
+                  </div>
+                  <div>
+                    <span>WEBSITE</span>
+                    <p>{{$hotel->website}}</p>
+                  </div>
+                </div>
+              </div>
+ 
+            </div>
+          </div>
+
+
+                  <!--Photo Gallery-->
+        <div class="highlights-header" style="text-align: center; margin-top:65px;margin-bottom:-60px">
+            <h1>Photo Gallery</h1>
+            <p>Discover  {{$hotel->name}} hotel through stunning imagery </p>
         </div>
+        <div class="photo-gallery">
+            <div class="photo-gallery">
+                @forelse ($hotel->images as $image)
+                   <div class="photo">
+                          <img src="{{ asset('storage/' . $image->image_url) }}" class="photo" alt="Hotel photo">
+                    </div>
+                @empty
+                  <p>No photos available for this hotel.</p>
+                @endforelse
+              </div>
+
+        </div>
+
     </div>
-</x-details-layout>
+
+
+    <!-- Image Popup Overlay -->
+<div id="image-popup" class="popup-overlay">
+    <span class="close-btn">&times;</span>
+    <img id="popup-image" src="" alt="Large View">
+    <div class="arrow left">&#10094;</div>
+    <div class="arrow right">&#10095;</div>
+  </div>
+
+
+
+</x-app-layout>
+  <script>
+    const images = document.querySelectorAll('.photo-gallery img');
+    const popup = document.getElementById('image-popup');
+    const popupImage = document.getElementById('popup-image');
+    const closeBtn = document.querySelector('.close-btn');
+    const leftArrow = document.querySelector('.arrow.left');
+    const rightArrow = document.querySelector('.arrow.right');
+
+    let currentIndex = 0;
+
+    // Show popup when clicking image
+    images.forEach((img, index) => {
+      img.addEventListener('click', () => {
+        popup.style.display = 'flex';
+        popupImage.src = img.src;
+        currentIndex = index;
+      });
+    });
+
+    // Close popup
+    closeBtn.addEventListener('click', () => {
+      popup.style.display = 'none';
+    });
+
+    // Navigate left/right
+    leftArrow.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      popupImage.src = images[currentIndex].src;
+    });
+
+    rightArrow.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % images.length;
+      popupImage.src = images[currentIndex].src;
+    });
+
+    // Close when clicking outside image
+    popup.addEventListener('click', (e) => {
+      if (e.target === popup) popup.style.display = 'none';
+    });
+  </script>
+
+
+
+

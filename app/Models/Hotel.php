@@ -10,14 +10,24 @@ class Hotel extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'description',
-        'address',
         'city',
         'country',
+        'description',
+        'address',
         'global_rating',
         'price_per_night',
         'total_rooms',
         'destination_id',
+        'stars',
+        'amenities',
+        'pets_allowed',
+        'check_in_time',
+        'check_out_time',
+        'policies',
+        'phone_number',
+        'email',
+        'website',
+        'nearby_landmarks',
     ];
 
 
@@ -25,6 +35,12 @@ class Hotel extends Model
         'created_at',
         'updated_at'
     ];
+
+    protected $casts = [
+    'check_in_time' => 'datetime:H:i',
+    'check_out_time' => 'datetime:H:i',
+    'amenities' => 'array',
+];
 
 
 

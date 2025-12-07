@@ -30,6 +30,18 @@ class HotelRequest extends FormRequest
             'total_rooms' => 'required|integer|min:1',
             'destination_id' => 'required|exists:destinations,id',
             'primary_image_index' => 'nullable|integer|min:0',
+            'stars'             => 'nullable|in:1,2,3,4,5',
+            'pets_allowed'       => 'nullable|in:allowed,not_allowed',
+            'check_in_time'     => 'nullable|date_format:H:i',
+            'check_out_time'    => 'nullable|date_format:H:i|after:check_in_time', 
+            'policies'          => 'nullable|string',
+            'phone_number'      => 'nullable|string|max:20',
+            'email'             => 'nullable|email|max:255',
+            'website'           => 'nullable|url|max:255',
+            'nearby_landmarks'  => 'nullable|string',
+            'amenities'   => 'nullable|array',
+            'amenities.*' => 'string|in:Wifi,Parking,Pool,Spa,Restaurant,Gym,Laundry,Air Condition,Free Breakfast',
+
         ];
 
         if($this->isMethod('post')) {

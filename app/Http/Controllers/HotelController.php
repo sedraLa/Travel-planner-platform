@@ -77,6 +77,15 @@ public function create()
         'destination_id' => $request->destination_id,
         'city' => $request->city,
         'country' => $request->country,
+        'stars'            => $request->stars,
+        'pets_allowed' => $request->pets_allowed === 'allowed' ? 1 : 0,
+        'check_out_time'   => $request->check_out_time,    
+        'policies'         => $request->policies,  
+        'phone_number'     => $request->phone_number,  
+        'email'            => $request->email,     
+        'website'          => $request->website, 
+        'nearby_landmarks' => $request->nearby_landmarks,    
+        'amenities'        => $request->amenities, 
     ]);
 
     //save images
