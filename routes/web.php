@@ -78,6 +78,7 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
 
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
+Route::post('/payment/paypal/{transportReservationId}', [PaymentController::class, 'payWithPayPal'])->name('transportPayment.paypal');
 
 // Callback PayPal
 Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallback'])->name('payment.paypal.callback');
