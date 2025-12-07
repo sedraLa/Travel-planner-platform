@@ -4,27 +4,27 @@
             {{ __('My Reservations') }}
         </h2>
     </x-slot>
+
     {{-- 🔎 Search --}}
     @if(Auth::check() && Auth::user()->role === 'admin')
         {{-- الأدمن: بحث شامل --}}
         <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
             <div class="flex gap-3">
                 <input type="search" name="search" value="{{ request('search') }}"
-                    placeholder="Search by Hotel / City / Country / User" class="border p-2 rounded w-full" />
+                    placeholder="Search by Hotel / Destination / User / Status / Date" class="border p-2 rounded w-full" />
                 <button class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
             </div>
         </form>
     @else
-        {{-- المستخدم العادي: بحث بالتاريخ فقط --}}
+        {{-- المستخدم العادي: بحث (فندق، وجهة، تاريخ) --}}
         <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
             <div class="flex gap-3">
-                <input type="date" name="search" value="{{ request('search') }}" placeholder="Search by Check-in Date"
-                    class="border p-2 rounded w-full" />
+                <input type="search" name="search" value="{{ request('search') }}"
+                    placeholder="Search by Hotel / Destination / Check-in Date" class="border p-2 rounded w-full" />
                 <button class="px-4 py-2 bg-blue-600 text-white rounded">Search</button>
             </div>
         </form>
     @endif
-
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -47,9 +47,6 @@
                                 <th class="p-3 border">Guests</th>
                                 <th class="p-3 border">Total Price</th>
                                 <th class="p-3 border">Status</th>
-                                @if(Auth::user()->role === 'admin')
-                                    <th class="p-3 border text-center">Actions</th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody class="text-gray-800">
@@ -60,31 +57,27 @@
                                             {{ $reservation->user?->full_name ?? 'N/A' }}
                                         </td>
                                     @endif
+
                                     <td class="p-3 border">{{ $reservation->hotel->name ?? 'N/A' }}</td>
                                     <td class="p-3 border">{{ $reservation->check_in_date }}</td>
                                     <td class="p-3 border">{{ $reservation->check_out_date }}</td>
+
                                     <td class="p-3 border text-center">{{ $reservation->rooms_count }}</td>
                                     <td class="p-3 border text-center">{{ $reservation->guest_count }}</td>
+
                                     <td class="p-3 border font-semibold text-green-600">
                                         ${{ number_format($reservation->total_price, 2) }}
                                     </td>
                                     <td class="p-3 border">
-                                        <span
-                                            class="px-2 py-1 rounded
-                                                                                                                                                                                                                    @if($reservation->reservation_status == 'pending') bg-yellow-100 text-yellow-700
-                                                                                                                                                                                                                    @elseif($reservation->reservation_status == 'confirmed') bg-green-100 text-green-700
-                                                                                                                                                                                                                    @elseif($reservation->reservation_status == 'cancelled') bg-red-100 text-red-700
-                                                                                                                                                                                                                    @endif">
+                                        <span class="px-2 py-1 rounded
+                                                                    @if($reservation->reservation_status == 'pending') bg-yellow-100 text-yellow-700
+                                                                    @elseif($reservation->reservation_status == 'confirmed') bg-green-100 text-green-700
+                                                                    @elseif($reservation->reservation_status == 'cancelled') bg-red-100 text-red-700
+                                                                    @endif">
                                             {{ ucfirst($reservation->reservation_status) }}
                                         </span>
                                     </td>
-                                    @if(Auth::user()->role === 'admin')
-                                        <td class="p-3 border text-center">
-                                            <a href="#" class="text-blue-500 hover:underline text-sm mr-2">View</a>
-                                            <a href="#" class="text-green-500 hover:underline text-sm mr-2">Edit</a>
-                                            <a href="#" class="text-red-500 hover:underline text-sm">Delete</a>
-                                        </td>
-                                    @endif
+
                                 </tr>
                             @endforeach
                         </tbody>
