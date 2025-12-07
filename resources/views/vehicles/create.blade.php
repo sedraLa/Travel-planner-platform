@@ -68,8 +68,13 @@
                         :value="old('price_per_km')" required placeholder="e.g. 5.00" />
 
                     <x-input-label for="category" value="Category" />
-                    <x-text-input id="category" type="text" name="category" :value="old('category')"
-                        placeholder="Optional" />
+                    <select id="category" name="category"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <option value="">-- Choose a category 'optional' --</option>
+                            <option value="luxury">LUXURY</option>
+                            <option value="standard">STANDARD</option>
+                            <option value="premium">PREMIUM</option>     
+                    </select>
                 </div>
             </div>
 
