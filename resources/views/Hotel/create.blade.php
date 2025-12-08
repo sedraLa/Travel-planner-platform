@@ -7,6 +7,8 @@
        
     @endpush
 
+
+    
     <div class="vehicle-form-container"> 
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Hotel</h2>
 
@@ -65,7 +67,7 @@
                         placeholder="Enter address" />
 
                      <x-input-label for="global_rating" value="global_rating" />
-                    <x-text-input id="global_rating" type="text" name="global_rating" :value="old('global_rating')" required
+                    <x-text-input id="global_rating" type="number" name="global_rating"  min="0"  max="5"  step="0.5" :value="old('global_rating')" required
                         placeholder="Enter global_rating(max:5)" />
 
                      <x-input-label for="price_per_night" value="price_per_night" />
@@ -147,7 +149,7 @@
 
 
                     <x-input-label for="email" value="email" />
-                    <x-text-input id="email" type="email" name="" :value="old('email')" required
+                    <x-text-input id="email" type="email" name="email" :value="old('email')" required
                         placeholder="Enter @email.com" />
 
 
@@ -162,25 +164,21 @@
                         placeholder="Enter nearby landmarks" />
 
 
-                    <x-input-label for="amenities" value="Amenities" />
+                    
+                        <x-input-label for="amenities" value="Amenities" />
+                                   @php
+                                        $options = ['Wifi', 'Parking', 'Pool', 'Spa', 'Restaurant', 'Gym', 'Laundry', 'Air Condition', 'Free Breakfast'];
+                                        $oldAmenities = old('amenities', []);
+                                   @endphp
 
-                        <div >
-                             @php
-                                  $options = ['Wifi','Parking','Pool','Spa','Restaurant','Gym','Laundry','Air Condition','Free Breakfast'];
-                                  $oldAmenities = old('amenities', []);
-                             @endphp
-
-                                @foreach($options as $option)
-                                    <label >
-                                     <input type="checkbox" name="amenities[]" value="{{ $option }}" 
-                                     class="custom-checkbox"
-                                     {{ in_array($option, $oldAmenities) ? 'checked' : '' }}>
-                                      <span >{{ $option }}</span>
-                                    </label>
-                                @endforeach
-                        </div>
-
-                 
+                                <div class="amenities-container">
+                                    @foreach($options as $option)
+                                        <label class="custom-option">
+                                          <input type="checkbox" name="amenities[]" value="{{ $option }}"{{ in_array($option, $oldAmenities) ? 'checked' : '' }} >
+                                            <span>{{ $option }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
                 </div>
 
             </div>
@@ -243,21 +241,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const cityInput = document.getElementById('city');
     const countryInput = document.getElementById('country');
 
+    // عند تغيير الـ select
     destinationSelect.addEventListener('change', function() {
-        // لا تغير القيم لو في old
-        if(!cityInput.value) {
+        // عبّي الحقول فقط إذا فارغة
+        if (!cityInput.value) {
             cityInput.value = this.selectedOptions[0].dataset.city || '';
         }
-        if(!countryInput.value) {
+        if (!countryInput.value) {
             countryInput.value = this.selectedOptions[0].dataset.country || '';
         }
     });
 
-    // إذا فيه old قيم مسبقة، خلي الـ inputs فيها بدل تغييرهم
-    if(cityInput.value === '' && destinationSelect.value) {
-        const selected = destinationSelect.selectedOptions[0];
-        cityInput.value = selected.dataset.city || '';
-        countryInput.value = selected.dataset.country || '';
-    }
+    // تعيين القيم الأولية عند التحميل
+    const oldCity = "{{ old('city', $hotel->city ?? '') }}";
+    const oldCountry = "{{ old('country', $hotel->country ?? '') }}";
+
+    cityInput.value = oldCity;
+    countryInput.value = oldCountry;
 });
+
 </script>

@@ -17,10 +17,38 @@
     @endpush
 
     {{-- Scripts --}}
+
+
+    @push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    var lat = parseFloat(@json($coords['latitude']));
+    var lon = parseFloat(@json($coords['longitude']));
+    console.log("lat:", lat, "lon:", lon);
+
+    if (lat && lon) {
+        var map = L.map('hotel-map').setView([lat, lon], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([lat, lon]).addTo(map)
+            .bindPopup("{{ addslashes($hotel->name) }}")
+            .openPopup();
+    } else {
+        document.getElementById('hotel-map').innerHTML = "<p style='padding:20px;text-align:center;'>Map data not available</p>";
+    }
+});
+</script>
+@endpush
+
     
     <!--Hero background-->
      <div class="main-wrapper">
-        <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">>
+      <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">
         <div class="headings" >
             <h1>{{$hotel->name}}</h1>
             <p style="letter-spacing: normal; font-size: 18px;">{{$hotel->description}} </p>
@@ -31,7 +59,7 @@
                 </div>
                 <a style="color:#f4f4f4;" href="">
                 <div class="rating">
-                    <span >⭐ 4.8 (12487 reviews)</span>
+                    <span >GLOBAL RATING: {{$hotel->global_rating}} ⭐</span>
                 </div>
             </a>
 
@@ -45,31 +73,7 @@
     <div class="main-container">
 
           <!--Maps section-->
-@push('scripts')
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var lat = @json($coords['latitude'] ?? null);
-                var lon = @json($coords['longitude'] ?? null);
-                console.log("Latitude:", lat, "Longitude:", lon);
-
-                if (lat && lon) {
-                    var map = L.map('hotel-map').setView([lat, lon], 13);
-
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                        maxZoom: 19,
-                        attribution: '&copy; OpenStreetMap contributors'
-                    }).addTo(map);
-
-                    L.marker([lat, lon]).addTo(map)
-                        .bindPopup("{{ addslashes($hotel->name) }}")
-                        .openPopup();
-                } else {
-                    document.getElementById('hotel-map').innerHTML = "<p style='padding:20px;text-align:center;'>Map data not available</p>";
-                }
-            });
-        </script>
-    @endpush
+<div id="hotel-map" style="width: 100%; height: 400px; margin: 20px 0; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
 
         <!--Highlights section-->
         <div class="highlights-container">
@@ -108,10 +112,10 @@
 
               <!-- Getting Around -->
               <div class="info-section">
-                <h3><img src="/images/icons/building-solid.svg" alt=""> General Info</h3>
+                <h3><img src="{{ asset('images/icons/star-icon.png') }}" alt=""> General Info</h3>
                 <div class="info-grid two-col">
                   <div>
-                    <span>ADDRESS</span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"><img src="{{ asset('images/icons/address.png') }}" alt=""   style="width:20px; height:20px;">  ADDRESS</span>
                     <p>{{$hotel->address}}</p>
                   </div>
                   
@@ -127,26 +131,34 @@
 
               <!-- Ratings & Rooms -->
               <div class="info-section">
-                <h3><img src="/images/icons/star-solid.svg" alt="">Ratings & RoomsRatings & Rooms</h3>
+                <h3><img src="/images/icons/hotel.png" alt="">Ratings & RoomsRatings</h3>
                 <div class="info-grid two-col">
                   <div>
                     <span>STARS</span>
-                    <p>{{$hotel->stars}}</p>
+                        @php
+                            $stars = $hotel->stars;
+                        @endphp
+                      <p>
+                         @for ($i = 0; $i < $stars; $i++)
+                             🌟
+                          @endfor
+                        </p>
                   </div>
 
+
                   <div>
-                    <span>GLOBAL RATING</span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/rating.png') }}" alt=""  style="width:25px; height:25px;">GLOBAL RATING</span>
                     <p>{{$hotel->global_rating}}</p>
                   </div>
 
                   <div>
-                    <span>TOTAL ROOMS</span>
+                    <span  style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/room.png') }}" alt=""  style="width:25px; height:25px;">TOTAL ROOMS</span>
                     <p>{{$hotel->total_rooms}}</p>
                   </div>
 
                   <div>
-                    <span>PRICE PER TIME</span>
-                    <p>{{$hotel->price_per_night}}</p>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/dollar.png') }}" alt=""  style="width:25px; height:25px;">PRICE PER TIME</span>
+                    <p>${{ number_format($hotel->price_per_night, 2) }}</p>
                   </div>
 
                 </div>
@@ -158,24 +170,32 @@
               <!-- Policies & Pets -->
 
                <div class="info-section">
-                <h3><img src="/images/icons/paw-solid.svg" alt=""> Policies & Pets</h3>
+                <h3><img src="{{ asset('images/icons/alert.png') }}" alt="">
+                    <img src="{{ asset('images/icons/alert1.png') }}" alt="">
+                      Policies & Pets</h3>
                 <div class="info-grid two-col">
+
+                
                   <div>
-                    <span>PET (ALLOWED OR NOT ALLOWED)</span>
-                    <p> {{ $hotel->pets_allowed }}</p>
+                    <span  style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/pets.png') }}" alt=""  style="width:25px; height:25px;">PETS</span>
+                    <p>{{$hotel->pets_allowed }}</p>
                   </div>
+
+                  
+
                   <div>
-                    <span>CHECK IN TIME</span>
-                    <p>{{$hotel->check_in_time}}</p>
-                  </div>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"><img src="{{ asset('images/icons/in.png') }}" alt=""  style="width:25px; height:25px;">CHECK IN TIME</span>
+                   <p>{{ $hotel->check_in_time ? \Carbon\Carbon::parse($hotel->check_in_time)->format('h:i A') : '' }}</p>
+                   </div>
+
                   <div>
-                    <span>CHECK OUT TIME</span>
-                    <p>{{$hotel->check_out_time}}</p>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"><img src="{{ asset('images/icons/out.png') }}" alt=""  style="width:25px; height:25px;">CHECK OUT TIME</span>
+                    <p> {{ $hotel->check_out_time ? \Carbon\Carbon::parse($hotel->check_out_time)->format('h:i A') : '' }}</p>
                   </div>
                   
 
                   <div>
-                    <span>POLICIES</span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/policies.png') }}" alt=""  style="width:25px; height:25px;">POLICIES</span>
                     <p>{{$hotel->policies}}</p>
                   </div>
 
@@ -187,19 +207,19 @@
               <!-- Contact & Website -->
 
                <div class="info-section">
-                <h3> <img src="/images/icons/phone-solid.svg" alt=""> Contact & Website</h3>
+                <h3> <img src="{{ asset('images/icons/world.png') }}" alt=""> Contact & Website</h3>
                 <div class="info-grid two-col">
                   <div>
-                    <span>PHONE NUMBER</span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"><img src="{{ asset('images/icons/tel.png') }}" alt=""  style="width:25px; height:25px;">PHONE NUMBER</span>
                     <p>{{$hotel->phone_number}}</p>
                   </div>
                   <div>
-                    <span>EMAIL</span>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/email.png') }}" alt=""  style="width:25px; height:25px;">EMAIL</span>
                     <p>{{$hotel->email}}</p>
                   </div>
                   <div>
-                    <span>WEBSITE</span>
-                    <p>{{$hotel->website}}</p>
+                    <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/web.png') }}" alt=""  style="width:25px; height:25px;">WEBSITE</span>
+                     <p>{!! $hotel->website !!}</p>
                   </div>
                 </div>
               </div>

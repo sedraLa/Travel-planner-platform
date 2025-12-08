@@ -1,152 +1,168 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                {{ __('Edit Hotel') }}
-            </h2>
-            <a href="{{ route('hotels.index') }}"
-               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
-                ← Back to Hotels
-            </a>
-        </div>
-    </x-slot>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/transport.css') }}"> 
+        <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
+    @endpush
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                <div class="max-w-7xl">
-                    @if ($errors->any())
-                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
-                        @foreach ($errors->all() as $error)
-                            <div class="mb-1">• {{ $error }}</div>
-                        @endforeach
-                    </div>
-                @endif
-                {{--success message--}}
-                @if (session('success'))
-                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
-                    {{ session('success') }}
-                </div>
-            @endif
-                
-        {{--update form--}}
 
-        <form method="POST" action="{{route('hotels.update',$hotel->id)}}" enctype="multipart/form-data">
+    <div class="vehicle-form-container"> 
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Hotel</h2>
+
+        <form action="{{ route('hotels.update', $hotel) }}" method="post" enctype="multipart/form-data">
             @csrf
-            @method('PUT')
-
-            <!--fields-->
-            <div class="flex space-x-4">
-                <div class="w-1/2">
-                    <!--hotel name -->
-                    <x-input-label for="name" value="Hotel Name"/>
-                    <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
-                                  value="{{ old('name', $hotel->name) }}" required/>
+       @method('PUT')
+           
+            @if ($errors->any())
+                <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+                    <ul class="list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
-
-                <div class="w-1/2">
-                    <!--hotel description -->
-                    <x-input-label for="description" value="Hotel Description (optional)"/>
-                    <textarea  id="description" name="description"  class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm">{{old('description',$hotel->description) }}</textarea>
-
-                </div>
-            </div>
-
-             <!--address-->
-        <div class="flex space-x-4 mt-4">
-            <div class="w-1/2">
-                <x-input-label for="address" value="Address"/>
-                <x-text-input id="address" name="address" type="text" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"
-                              value="{{ old('address', $hotel->address) }}" required/>
-            </div>
-
-            <!--price per night-->
-            <div class="w-1/2">
-                <x-input-label for="price_per_night" value="Price Per Night" />
-                <div class="relative">
-                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm">$</span>
-                 <input
-                     type="number"
-                     name="price_per_night"
-                     id="price_per_night"
-                     step="0.01"
-                     required
-                     placeholder="Enter price in $"
-                     class="pl-8 pr-4 py-2 w-full border border-gray-300 rounded-xl shadow-sm focus:border-indigo-500 focus:ring-indigo-200 focus:ring focus:ring-opacity-50 text-sm"
-                     value= "{{old('price_per_night', $hotel->price_per_night)}}"
-                 />
-            </div>
-        </div>
-    </div>
-             <!-- choose destination-->
-    <div class="mt-4">
-    <x-input-label for="destination_id" value="Associated destination" />
-    <select
-        name="destination_id"
-        id="destination_id"
-        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-        required>
-
-        <option value="">-- Select the associated destination --</option>
-        @foreach($destinations as $destination)
-            <option value="{{ $destination->id }}"
-            data-city="{{ $destination->city }}"
-            data-country="{{ $destination->country }}"
-            @if(old('destination_id',$hotel->destination_id) == $destination->id)
-            selected
             @endif
-                >{{ $destination->name }}</option>
-        @endforeach
-    </select>
+
+            <div class="first-section"> 
+
+                
+                <div class="left">
+                    <x-input-label for="name" value="Hotel Name" />
+                    <x-text-input id="name" type="text" name="name" :value="old('name', $hotel->name)" required
+                        placeholder="Enter  hotel name" />
+
+
+                    <div class="mt-4">
+                         <x-input-label for="destination_id" value="Associated destination" />
+                              <select name="destination_id"  id="destination_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                 <option value="">-- Select the associated destination --</option>
+                                    @foreach($destinations as $destination)
+                                     <option value="{{ $destination->id }}"
+                                       data-city="{{ $destination->city }}"
+                                        data-country="{{ $destination->country }}"
+                                        {{ old('destination_id', $hotel->destination_id) == $destination->id ? 'selected' : '' }}
+                                      >{{ $destination->name }}</option>
+                                    @endforeach
+                                </select>
+                        </div>    
+                    <x-input-label for="city" value="City" />
+                    <x-text-input id="city" type="text" name="city" :value="old('city',$hotel->city)" required
+                        placeholder="Entre City" />
+
+                    <x-input-label for="country" value="Country" />
+                    <x-text-input id="country" type="text" name="country" :value="old('country', $hotel->country)" required
+                        placeholder="Enter country" />
+
+
+                    <x-input-label for="description" value="Description" />
+                    <x-text-input id="description" type="text" name="description" :value="old('description', $hotel->description)" required
+                        placeholder="write a description" />
+
+                    <x-input-label for="address" value="address" />
+                    <x-text-input id="address" type="text" name="address" :value="old('address', $hotel->address)" required
+                        placeholder="address" />
+
+
+                    <x-input-label for="global_rating" value="global_rating" />
+                    <x-text-input id="global_rating" type="number" name="global_rating"  min="0"  max="5"  step="0.5"  :value="old('global_rating', $hotel->global_rating)" required
+                        placeholder=" global_rating (max:5) " />
+
+                    <x-input-label for="price_per_night" value="price_per_night" />
+                    <x-text-input id="price_per_night" type="number" name="price_per_night"  min="0"  step="0.01"   :value="old('price_per_night', $hotel->price_per_night)" required
+                        placeholder=" price_per_night" />
+
+
+                    <x-input-label for="total_rooms" value="total_rooms" />
+                    <x-text-input id="total_rooms" type="number" name="total_rooms"  min="0"  :value="old('total_rooms', $hotel->total_rooms)" required
+                    placeholder=" total_rooms" />
+
+
+                    <x-input-label for="stars" value="stars" />
+                    <select id="stars" name="stars" class="block w-full mt-1 border-gray-300 rounded-md" required>
+                           <option value="" disabled  selected>Select how many stars stars</option>
+                           <option value="1" {{ old('stars', $hotel->stars) == 1 ? 'selected' : '' }}>🌟 Star</option>
+                           <option value="2" {{ old('stars', $hotel->stars) == 2 ? 'selected' : '' }}> 🌟🌟Stars</option>
+                           <option value="3" {{ old('stars', $hotel->stars) == 3 ? 'selected' : '' }}>🌟🌟🌟 Stars</option>
+                           <option value="4" {{ old('stars', $hotel->stars) == 4 ? 'selected' : '' }}>🌟🌟🌟🌟Stars</option>
+                           <option value="5" {{ old('stars', $hotel->stars) == 5 ? 'selected' : '' }}>🌟🌟🌟🌟🌟Stars</option>
+                    </select>
+
+                      <!--image upload-->
+                 
+                 <div class="mt-6">
+    <x-input-label for="images" :value="__('Images')" />
+
+    <input id="images" name="images[]" type="file"
+        class="mt-1 block w-full text-sm text-gray-500
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-full file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100"
+        multiple onchange="addFilesToInput(this)" />
+
+    <x-input-error class="mt-2" :messages="$errors->get('images')" />
 </div>
 
-<!--city & country-->
-<div class="flex space-x-4 mt-4">
-    <div class="w-1/2">
-<x-input-label for="city" value="City" />
-   <x-text-input id="city" name="city" type="text" class="mt-1 block w-full" value="{{old('city',$hotel->destination->city ?? '')}}" required />
-     </div>
-      <div class="w-1/2">
-        <x-input-label for="country" value="Country" />
-  <x-text-input id="country" name="country" type="text" class="mt-1 block w-full" value="{{old('country',$hotel->destination->country ?? '')}}" required />
-          </div>
-     </div>
 
-     <!--global rating-->
-     <div class="flex space-x-4 mt-4">
-        <div class="w-1/2">
-            <x-input-label for="global_rating" value="Global Rating"/>
-            <input id="global_rating" type="number" name="global_rating" step="1" min="1" max="5" value="{{old('global_rating',$hotel->global_rating)}}" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3 text-sm" placeholder="Enter a rating from 1 to 5" />
-        </div>
-        <!--total rooms-->
-        <div class="w-1/2">
-            <x-input-label for="total_rooms" value="Total Rooms" />
-            <input id="total_rooms" type="number" name="total_rooms" step="1" min="0" required value="{{old('total_rooms',$hotel->total_rooms)}}" class="w-full rounded-xl border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 p-3 text-sm" placeholder="Enter number of total rooms of the hotel" />
-        </div>
+                     
                 </div>
 
+               
+                <div class="right">
+                   <x-input-label for="pets_allowed" value="Pets Allowed" />
+                    <select id="pets_allowed" name="pets_allowed" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                           <option value=""  disabled  selected>-- Select --</option>
+                           <option value="allowed" {{ old('pets_allowed', $hotel->pets_allowed) == 'allowed' ? 'selected' : '' }}>pets allowed</option>
+                           <option value="not_allowed" {{ old('pets_allowed',$hotel->pets_allowed) == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
+                    </select>
 
-        <!--image upload-->
-        <!-- upload new images -->
-        <div class="mb-4">
-            <x-input-label value="Upload New Images"/>
-            <div id="image-inputs">
-                <input type="file" name="images[]" onchange="addImageInput()" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" multiple >
+                    <x-input-label for="check_in_time" value="check_in_time" />
+                    <x-text-input id="check_in_time" type="time" name="check_in_time" required :value="old('check_in_time', \Carbon\Carbon::parse($hotel->check_in_time)->format('H:i'))"/>
+
+                    <x-input-label for="check_out_time" value="check_out_time" />
+                    <x-text-input id="check_out_time" type="time" name="check_out_time" required :value="old('check_out_time', \Carbon\Carbon::parse($hotel->check_out_time)->format('H:i'))" />
+
+                    <x-input-label for="policies" value="policies" />
+                    <x-text-input id="policies" type="text" name="policies"  required :value="old('policies', $hotel->policies)" />
+
+                    <x-input-label for="phone_number" value="phone_number" />
+                    <x-text-input id="phone_number" type="number" name="phone_number" required :value="old('phone_number', $hotel->phone_number)" />
+
+                    <x-input-label for="email" value="email" />
+                    <x-text-input id="email" type="email" name="email" required :value="old('email', $hotel->email)" />
+
+                    
+                    <x-input-label for="website" value="website" />
+                    <x-text-input id="website" type="url" name="website" required :value="old('website', $hotel->website)" />
+                    
+                        <x-input-label for="amenities" value="Amenities" />
+                             @php
+                               $options = ['Wifi','Parking','Pool','Spa','Restaurant','Gym','Laundry','Air Condition','Free Breakfast'];
+                               $oldAmenities = old('amenities', $hotel->amenities ?? []);   
+                             @endphp
+
+                        <div class="amenities-container">
+                            @foreach($options as $option)
+                              <label class="custom-option">
+                               <input  type="checkbox" name="amenities[]"  value="{{ $option }}" 
+                                   {{ in_array($option, $oldAmenities) ? 'checked' : '' }}>
+                                         <span>{{ $option }}</span>
+                              </label>
+                            @endforeach
+
+                        </div> 
+                </div>
             </div>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">You can upload multiple images. The primary image can be changed below.</p>
-        </div>
+             
 
-        <!-------------cancel & update buttons------------------>
+            
+                   <div class="popup-buttons mt-8">
+                   <button type="submit" class="btn btn-primary">Update Hotel</button>
+                   <a href="{{ route('hotels.index') }}" class="cancel-btn">Cancel</a>
+                   </div>
+        </form>
 
-        <div class="flex items-center justify-end mt-4 space-x-3">
-            <a href="{{ route('hotels.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 dark:bg-gray-600 border border-transparent rounded-md font-semibold text-xs text-black dark:text-white uppercase tracking-widest hover:bg-gray-400 dark:hover:bg-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150">
-                {{ __('Cancel') }}
-            </a>
-            <x-primary-button>
-                {{ __('Update') }}
-            </x-primary-button>
-        </div>
-    </form>
+
 
         {{-- show current images --}}
 @if($hotel->images->count())
@@ -197,40 +213,49 @@
         </div>
     </div>
 
+    
 
 </x-app-layout>
 
+
 <script>
+let allFiles = [];
 
-    //fill city and country field
-    document.addEventListener('DOMContentLoaded', function () {
-        const destinationSelect = document.getElementById('destination_id');
-        const cityInput = document.getElementById('city');
-        const countryInput = document.getElementById('country');
+function addFilesToInput(input) {
+    const newFiles = Array.from(input.files);
+    allFiles = allFiles.concat(newFiles); // نضيف الجديد مع القديم
 
-        
-        destinationSelect.addEventListener('change', function () {
-            const selectedOption = this.options[this.selectedIndex];
-            const city = selectedOption.getAttribute('data-city');
-            const country = selectedOption.getAttribute('data-country');
+    // إعادة بناء القائمة كلها داخل input
+    const dataTransfer = new DataTransfer();
+    allFiles.forEach(file => dataTransfer.items.add(file));
 
-            cityInput.value = city || '';
-            countryInput.value = country || '';
-        });
-
-       
-        destinationSelect.dispatchEvent(new Event('change'));
-    });
-
-   
-    function addImageInput() {
-        const container = document.getElementById('image-inputs');
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.name = 'images[]';
-        input.onchange = addImageInput;
-        input.classList.add('block', 'mt-2');
-        container.appendChild(input);
-    }
+    input.files = dataTransfer.files;
+}
 </script>
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const destinationSelect = document.getElementById('destination_id');
+    const cityInput = document.getElementById('city');
+    const countryInput = document.getElementById('country');
+
+    // عند تغيير الـ select
+    destinationSelect.addEventListener('change', function() {
+        // عبّي الحقول فقط إذا فارغة
+        if (!cityInput.value) {
+            cityInput.value = this.selectedOptions[0].dataset.city  '';
+        }
+        if (!countryInput.value) {
+            countryInput.value = this.selectedOptions[0].dataset.country  '';
+        }
+    });
+
+    // تعيين القيم الأولية عند التحميل
+    const oldCity = "{{ old('city', $hotel->city ?? '') }}";
+    const oldCountry = "{{ old('country', $hotel->country ?? '') }}";
+
+    cityInput.value = oldCity;
+    countryInput.value = oldCountry;
+});
+
+</script>

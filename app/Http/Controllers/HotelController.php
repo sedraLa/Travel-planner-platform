@@ -33,7 +33,7 @@ public function index(Request $request)
         });
     }
 
-    $hotels = $query->paginate(8);
+    $hotels = $query->paginate(9);
 
     return view('hotel.index', compact('hotels'));
 }
@@ -49,10 +49,15 @@ public function show(string $id, GeocodingService $geo)
         $hotel->address,
         $hotel->city,
         $hotel->country
-    ]));
-    $coords = $geo->geocodeAddress($fullAddress);
+     ]));
+   
+    $coords = $geo->geocodeAddress($fullAddress) ?? ['latitude' => null, 'longitude' => null];
+
+    
     return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));
 }
+
+
 
 ///create
 
@@ -78,7 +83,8 @@ public function create()
         'city' => $request->city,
         'country' => $request->country,
         'stars'            => $request->stars,
-        'pets_allowed' => $request->pets_allowed === 'allowed' ? 1 : 0,
+        'pets_allowed' => $request->pets_allowed,
+        'check_in_time'   => $request->check_in_time,
         'check_out_time'   => $request->check_out_time,    
         'policies'         => $request->policies,  
         'phone_number'     => $request->phone_number,  

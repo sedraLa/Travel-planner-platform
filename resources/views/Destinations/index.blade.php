@@ -60,7 +60,7 @@
 
 
                                             <form action="{{route('destination.destroy',$destination->id)}}" method="post"
-                                                onsubmit="return confirm('Are you sure you want to delete this transport?');">
+                                                onsubmit="return confirm('Are you sure you want to delete this Destination?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"  class="px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition duration-200 text-sm shadow-sm" >Delete</button>

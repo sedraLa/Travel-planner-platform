@@ -59,27 +59,23 @@
                      <x-input-error class="mt-2" :messages="$errors->get('iata_code')" />
 
 
-                     <div class="flex space-x-4 mt-4">
-                   <!-- Images Upload -->
-                   <div class="mt-6">
-                   <x-input-label for="images" :value="('Images')" />
-                   <input id="images" name="images[]" type="file" class="mt-1 block w-full text-sm text-gray-500
-                    file:mr-4 file:py-2 file:px-4
-                    file:rounded-full file:border-0
-                    file:text-sm file:font-semibold
-                    file:bg-blue-50 file:text-blue-700
-                    hover:file:bg-blue-100"  multiple onchange="showPrimarySelect(this)" />
-                   <x-input-error class="mt-2" :messages="$errors->get('images')" />
-                   </div>
-                   </div>
+                     
+                   <!-- imageee uploadd-->
 
-                   <!-- Primary Image -->
-                   <div id="primary-select-wrapper" class="mt-4 hidden">
-                   <x-input-label for="primary_image_index" :value="__('Choose Primary Image')" />
-                   <!--select primary image-->
-                   <select name="primary_image_index" id="primary_image_index" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 rounded-md shadow-sm"></select>
-                   <x-input-error class="mt-2" :messages="$errors->get('primary_image_index')" />
-                   </div>
+                   <div class="mt-6">
+    <x-input-label for="images" :value="__('Images')" />
+
+    <input id="images" name="images[]" type="file"
+        class="mt-1 block w-full text-sm text-gray-500
+        file:mr-4 file:py-2 file:px-4
+        file:rounded-full file:border-0
+        file:text-sm file:font-semibold
+        file:bg-blue-50 file:text-blue-700
+        hover:file:bg-blue-100"
+        multiple onchange="addFilesToInput(this)" />
+
+    <x-input-error class="mt-2" :messages="$errors->get('images')" />
+</div>
 
 
                      
@@ -150,7 +146,7 @@
             
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Update Destination</button>
-                   <a href="{{ route('drivers.index') }}" class="cancel-btn">Cancel</a>
+                   <a href="{{ route('destination.index') }}" class="cancel-btn">Cancel</a>
                    </div>
         </form>
 
@@ -236,16 +232,16 @@
 </script>
 
 <script>
-    let imageIndex = 0;
-    function addImageInput() {
-    const container = document.getElementById('image-inputs');
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.name = 'images[]';
-    input.onchange = addImageInput;
-    input.classList.add('block', 'mt-2');
-    container.appendChild(input);
+let allFiles = [];
 
+function addFilesToInput(input) {
+    const newFiles = Array.from(input.files);
+    allFiles = allFiles.concat(newFiles); // نضيف الجديد مع القديم
+
+    // إعادة بناء القائمة كلها داخل input
+    const dataTransfer = new DataTransfer();
+    allFiles.forEach(file => dataTransfer.items.add(file));
+
+    input.files = dataTransfer.files;
 }
-
-    </script>
+</script>
