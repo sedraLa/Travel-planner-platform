@@ -208,10 +208,19 @@ public function index(Request $request)
     {
         $driver = Driver::findOrFail($id);
 
+        $hasPending = $driver->reservations()
+         ->where('status', 'pending')
+         ->count();
+
+         if ($hasPending > 0) {
+         return back()->with('error', 'You cannot delete this driver because they still have pending reservations.');
+                  }
+
         if ($driver->license_image && Storage::disk('public')->exists($driver->license_image)) {
             Storage::disk('public')->delete($driver->license_image);
         }
 
+        $driver->user()->delete();
         $driver->delete();
 
         return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
