@@ -27,6 +27,11 @@ class TransportReservation extends Model
         'updated_at'
     ];
 
+    protected $casts = [
+        'pickup_datetime' => 'datetime',
+        'dropoff_datetime' => 'datetime',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
