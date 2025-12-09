@@ -48,6 +48,7 @@
                     {{ $vehicle->driver_id == $driver->id ? 'selected' : '' }}
                     data-name="{{ $driver->user->name }}"
                     data-phone="{{ $driver->user->phone_number }}">
+                    
                     {{ $driver->user->name }}
                 </option>
             @endforeach
@@ -72,10 +73,26 @@
         <x-text-input id="price_per_km" type="number" step="0.01" name="price_per_km" required
             placeholder="e.g. 5.00" :value="old('price_per_km', $vehicle->price_per_km)" />
 
-        <x-input-label for="category" value="Category" />
-        <x-text-input id="category" type="text" name="category"
-            placeholder="Optional"
-            :value="old('category', $vehicle->category)" />
+            <x-input-label for="category" value="Category" />
+
+            <select id="category" name="category"
+                class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+            
+                <option value="">-- Choose a category 'optional' --</option>
+            
+                <option value="luxury"  {{ old('category', $vehicle->category ?? '') == 'LUXURY' ? 'selected' : '' }}>
+                    LUXURY
+                </option>
+            
+                <option value="standard" {{ old('category', $vehicle->category ?? '') == 'STANDARD' ? 'selected' : '' }}>
+                    STANDARD
+                </option>
+            
+                <option value="premium" {{ old('category', $vehicle->category ?? '') == 'PREMIUM' ? 'selected' : '' }}>
+                    PREMIUM
+                </option>
+            
+            </select>            
     </div> <!-- ← أغلق right هون -->
 </div> <!-- ← أغلق first-section -->
 

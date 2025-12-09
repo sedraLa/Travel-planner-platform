@@ -79,8 +79,11 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
 
+
 // Callback PayPal
 Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallback'])->name('payment.paypal.callback');
+Route::get('/payment/paypal/transport/callback', [PaymentController::class, 'paypalCallbackTransport'])
+    ->name('payment.transport.callback');
 
 //flight routes
 Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
@@ -113,8 +116,17 @@ Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
     [TransportReservationController::class, 'store']
 )->name('vehicleReservation.store');
 
-Route::get('/vehicle/reservation/{id}/pay', [TransportReservationController::class, 'pay'])
+
+    Route::get('vehicles/paypal/{reservation}', [PaymentController::class, 'payWithPayPalTransport'])
+    ->name('vehicles.paypal');
+
+Route::get('vehicles/{reservation}/pay', [TransportReservationController::class, 'pay'])
     ->name('vehicles.pay');
+
+
+
+
+
 
  //Drivers Routes
 Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
