@@ -192,8 +192,16 @@
                                         <button type="submit" class="text-red-600 hover:text-red-900  mr-4">Delete</button>
                                     </form>
                                     
-                                    <a    class="text-green-600 hover:text-green-900 mr-4 text-sm font-medium" href="{{ route('drivers.show', $driver->id) }}" >
-                                        View Reservations</a>
+                                       @if($driver->status === 'approved')
+                                        <a class="text-green-600 hover:text-green-900 mr-4 text-sm font-medium" 
+                                          href="{{ route('drivers.show', $driver->id) }}">
+                                                View Reservations </a>
+
+                                        @else
+                                          <button class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium" disabled>
+                                            View Reservations
+                                          </button>
+                                        @endif
                                 </td>
                             </tr>
                         @empty
