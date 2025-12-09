@@ -86,8 +86,8 @@ class TransportReservationController extends Controller
             'driver_id'            => $request->driver_id, 
         ]);
 
-        return redirect()->route('vehicles.pay', $reservation->id)
-            ->with('success', 'Reservation created successfully. Continue to payment.');
+        return redirect()->route('vehicles.paypal', $reservation->id)
+                 ->with('success', 'Reservation created successfully. Continue to payment.');
     }
 
     /**

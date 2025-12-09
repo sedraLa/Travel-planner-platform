@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Transport;
 use App\Http\Requests\VehicleOrderRequest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 
 class VehicleOrderController extends Controller
 {
@@ -71,4 +72,7 @@ class VehicleOrderController extends Controller
             'duration'          => $duration,
         ]);
     }
+
+
+
 }

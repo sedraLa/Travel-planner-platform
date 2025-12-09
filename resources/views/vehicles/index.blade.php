@@ -30,7 +30,7 @@
             <div class="head">
                 <h1>Available cars <span id="route-summary" class="route-badge">Loading...</span></h1>
                 @if (Auth::user()->role === UserRole::ADMIN->value)
-                    <p>Manage Vehicles For This Transport Service</p>
+                    <p>Discover a large group of vehicles for your request</p>
                 @endif
                 <p>{{$pickup_datetime}}</p>
             </div>
