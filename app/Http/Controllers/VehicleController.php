@@ -104,14 +104,14 @@ class VehicleController extends Controller
 
         if ($request->driver_id) {
             $driver = Driver::with('vehicle')->find($request->driver_id);
-        
-            
+
+
             if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
                 return back()->withErrors("You can't choose this driver, it's already assigned to another vehicle");
             }
         }
-        
-        
+
+
         // تحديث بيانات المركبة
         $vehicle->update([
             'transport_id'   => $request->transport_id,
@@ -135,25 +135,28 @@ return redirect()->route('vehicle.show')->with('success', 'Vehicle updated succe
      */
     public function destroy(string $id)
     {
-        
         $vehicle = TransportVehicle::with('reservations')->findOrFail($id);
-    
-        
-        if ($vehicle->reservations()->exists()) {
-            return back()->withErrors("You can't delete this vehicle because it has reservations");
+
+        // Check for future confirmed reservations
+        $hasUpcoming = $vehicle->reservations()
+            ->where('pickup_datetime', '>=', now())
+            ->exists();
+
+        if ($hasUpcoming) {
+            return back()->withErrors("You can't delete this vehicle because it has upcoming confirmed (paid) reservations");
         }
-    
-        
+
+        // Delete image if exists
         if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
             Storage::disk('public')->delete($vehicle->image);
         }
-    
-       
+
         $vehicle->delete();
-    
-        return redirect()->route('vehicle.show')->with('success', 'Vehicle deleted successfully');
+
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle deleted successfully');
     }
-    
+
+
 }
 
 

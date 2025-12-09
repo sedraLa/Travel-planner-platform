@@ -6,12 +6,25 @@
     @push('styles')
     <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
     @endpush
+
     <div class="main-wrapper">
-        @if(session('success'))
-        <div class="mb-4 px-4 py-3 bg-green-200 text-green-800 rounded">
+        @if (session('success'))
+        <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
             {{ session('success') }}
         </div>
     @endif
+
+
+    @if ($errors->any())
+                        <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
         <div class="hero-background transport-page">
             <div class="heading">
                 <div class="header">
@@ -41,7 +54,7 @@
                             </div>
                             <h3>{{ $transport->name }}</h3>
                             <p>{{ $transport->description }}</p>
-        
+
                             <div class="information">
                                 <div class="top">
                                     <div class="content">
@@ -59,7 +72,7 @@
                                     @else
                                         <p class="options">See vehicle options</p>
                                     @endif
-        
+
                                     @if(Auth::user()->role === UserRole::ADMIN->value)
                                         <div class="manage-btn">
                                             <button class="order-btn edit-btn"
@@ -70,7 +83,7 @@
                                                 data-description="{{ $transport->description }}">
                                                 Edit
                                             </button>
-        
+
                                             <form action="{{route('transport.destroy',$transport->id)}}" method="post"
                                                 onsubmit="return confirm('Are you sure you want to delete this transport?');">
                                                 @csrf
@@ -84,7 +97,7 @@
                                         </a>
                                     @endif
                                 </div>
-        
+
                                 @if(Auth::user()->role === UserRole::ADMIN->value)
                                     <!--Add vehicles button-->
                                     <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
@@ -104,7 +117,7 @@
                 </div>
             </div>
         </div>
-        
+
 
 </div>
     <!-- Add/Edit Popup Overlay -->
