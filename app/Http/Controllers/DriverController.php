@@ -32,10 +32,17 @@ public function index(Request $request)
         // إذا البحث A أو B → ابحث بالفئة فقط
         if (in_array(strtoupper($searchTerm), ['A', 'B'])) {
             $query->where('license_category', strtoupper($searchTerm));
-        } else {
-            // خلاف ذلك → ابحث بالاسم فقط
-            $query->where('name', 'like', "%{$searchTerm}%");
         }
+        
+         elseif (in_array($searchTerm, ['approved', 'pending', 'rejected'])) {
+            $query->where('status', $searchTerm);
+        }
+        else {
+            $query->whereHas('user', function ($q) use ($searchTerm) {
+                $q->where('name', 'like', "%{$searchTerm}%");
+            });
+        }
+
     }
 
     $drivers = $query->get();
