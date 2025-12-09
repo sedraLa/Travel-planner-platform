@@ -27,7 +27,7 @@ class VehicleController extends Controller
     public function create(Request $request)
     {
         $transportId = $request->get('transport_id');
-        $drivers = Driver::with('user')->whereDoesntHave('vehicle') ->get();// <-- جلب جميع السائقين
+        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();// <-- جلب جميع السائقين
         return view('vehicles.create', compact('transportId', 'drivers')); // <-- تمريرهم إلى الواجهة
     }
 

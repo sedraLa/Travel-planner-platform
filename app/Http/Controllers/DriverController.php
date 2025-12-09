@@ -103,7 +103,6 @@ public function index(Request $request)
     public function show(string $id = null)
     {
 
-
        $user = auth()->user();
 
     if ($user->role === 'driver') {
@@ -116,17 +115,11 @@ public function index(Request $request)
     }
 
 
-        // تحديث الحجوزات الغير مكتملة التي انتهت بالفعل
-       $driver->reservations()->where('status', 'pending')->get()->each(function ($reservation) {
-            if ($reservation->dropoff_datetime->isPast()) {
-            $reservation->update(['status' => 'completed']);
-            }
-         });
 
 
         $reservations = $driver->reservations()
         ->where('status', 'completed')
-        ->with('vehicle')
+        ->with(['vehicle', 'user'])
         ->get();
 
           return view('driver.show', compact('driver', 'reservations'));
@@ -138,25 +131,19 @@ public function index(Request $request)
 
 
 
-     public function pendingBookings()
-      {
-          $driver = auth()->user()->driver;
-          // تحديث الحجوزات الغير مكتملة التي انتهت بالفعل
-        $driver->reservations()->where('status', 'pending')->get()->each(function ($reservation) {
-        if ($reservation->dropoff_datetime->isPast()) {
-            $reservation->update(['status' => 'completed']);
-        }
-    });
+   public function pendingBookings()
+{
+    $driver = auth()->user()->driver;
 
-       
-         $reservations = $driver->reservations()
-            ->where('status', 'pending')
-            ->with('vehicle')
-            ->get();
+    // جلب الحجوزات التي لا زالت Pending بدون أي تعديل تلقائي
+    $reservations = $driver->reservations()
+        ->where('status', 'pending')
+        ->with(['vehicle', 'user'])
+        ->get();
 
     return view('driver.pendingbooking', compact('driver', 'reservations'));
-    
 }
+
 
 
     /**
@@ -279,6 +266,32 @@ public function index(Request $request)
     return redirect()->back()->with('success', 'Driver status updated and email sent successfully.');
   } 
 
+
+
+
+  public function complete($id)
+{
+    $reservation = TransportReservation::findOrFail($id);
+
+    $now = Carbon::now();
+    $pickup = Carbon::parse($reservation->pickup_datetime);
+
+    if ($now->lt($pickup)) {
+        return back()->with('error', 'Cannot complete this reservation before pickup time.');
+    }
+
+    $reservation->update(['status' => 'completed']);
+
+    return redirect()->route('driverscompleted.show')->with('success', 'Reservation marked as completed.');
+}
+
+public function cancel($id)
+{
+    $reservation = TransportReservation::findOrFail($id);
+    $reservation->delete();
+
+    return redirect()->route('bookings.pending')->with('success', 'Reservation cancelled.');
+}
 
 
 
