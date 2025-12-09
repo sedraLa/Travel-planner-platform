@@ -120,8 +120,7 @@ Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
     Route::get('vehicles/paypal/{reservation}', [PaymentController::class, 'payWithPayPalTransport'])
     ->name('vehicles.paypal');
 
-Route::get('vehicles/{reservation}/pay', [TransportReservationController::class, 'pay'])
-    ->name('vehicles.pay');
+
 
 
 

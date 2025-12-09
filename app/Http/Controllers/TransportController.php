@@ -72,23 +72,21 @@ class TransportController extends Controller
     public function destroy(string $id)
     {
         $transport = Transport::with('vehicles.reservations')->findOrFail($id);
-    
-        
+
+
+        // Check if any vehicle has PENDING reservations
         foreach ($transport->vehicles as $vehicle) {
-            if ($vehicle->reservations->count() > 0) {
-                return back()->withErrors("You can't delete this service because some vehicles have reservations");
-            }
+            $hasUpcoming = $vehicle->reservations()
+            ->where('pickup_datetime', '>=', now())
+            ->exists();
+
+        if ($hasUpcoming) {
+            return back()->withErrors("You can't delete this service because some vehicles have upcoming confirmed reservations");
         }
-    
-        
-        foreach ($transport->vehicles as $vehicle) {
-            $vehicle->delete();
-        }
-    
-        
+    }
         $transport->delete();
-    
+
         return redirect()->back()->with('success', 'Transport deleted successfully');
     }
-    
+
 }

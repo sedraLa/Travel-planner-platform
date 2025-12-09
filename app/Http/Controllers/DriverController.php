@@ -20,7 +20,7 @@ use Carbon\Carbon;
 class DriverController extends Controller
 {
     /**
-     
+
      */
 public function index(Request $request)
 {
@@ -33,7 +33,7 @@ public function index(Request $request)
         if (in_array(strtoupper($searchTerm), ['A', 'B'])) {
             $query->where('license_category', strtoupper($searchTerm));
         }
-        
+
          elseif (in_array($searchTerm, ['approved', 'pending', 'rejected'])) {
             $query->where('status', $searchTerm);
         }
@@ -55,7 +55,7 @@ public function index(Request $request)
 
 
     /**
-     
+
      */
     public function create()
     {
@@ -63,7 +63,7 @@ public function index(Request $request)
     }
 
     /**
-     
+
      */
     public function store(DriverRequest $request)
     {
@@ -71,11 +71,11 @@ public function index(Request $request)
         $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
-        'password' => Hash::make($request->password), 
+        'password' => Hash::make($request->password),
         'last_name' => $request->last_name,
         'phone_number' => $request->phone_number,
         'country' => $request->country,
-        'role' => 'driver', 
+        'role' => 'driver',
     ]);
 
 
@@ -91,14 +91,14 @@ public function index(Request $request)
             'status'           => $request->status,
             'date_of_hire'     => $request->date_of_hire,
             'experience'       => $request->experience,
-          
+
         ]);
 
         return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
     }
 
     /**
-     
+
      */
     public function show(string $id = null)
     {
@@ -133,7 +133,7 @@ public function index(Request $request)
     }
 
     /**
-    
+
      */
 
 
@@ -148,19 +148,19 @@ public function index(Request $request)
         }
     });
 
-       
+
          $reservations = $driver->reservations()
             ->where('status', 'pending')
             ->with('vehicle')
             ->get();
 
     return view('driver.pendingbooking', compact('driver', 'reservations'));
-    
+
 }
 
 
     /**
-    
+
      */
 
     public function edit(string $id)
@@ -170,7 +170,7 @@ public function index(Request $request)
     }
 
     /**
-     
+
      */
     public function update(DriverRequest $request, string $id)
 {
@@ -215,11 +215,18 @@ public function index(Request $request)
 
 
     /**
-   
+
      */
     public function destroy(string $id)
     {
-        $driver = Driver::findOrFail($id);
+        $driver = Driver::with('reservations')->findOrFail($id);
+        $has_pending = $driver->reservations()
+                        ->where('status','pending')
+                        ->exists();
+
+        if($has_pending) {
+            return back()->withErrors("You can't delete this driver because he has uncompleted reservations");
+        }
 
         if ($driver->license_image && Storage::disk('public')->exists($driver->license_image)) {
             Storage::disk('public')->delete($driver->license_image);
@@ -236,7 +243,7 @@ public function index(Request $request)
 
     public function updateStatus(DriverRequest $request, Driver $driver)
 {
-   
+
 
     if (auth()->user()->role !== 'admin') {
         abort(403, 'Unauthorized');
@@ -245,7 +252,7 @@ public function index(Request $request)
 
      $validated = $request->validated();
 
-   
+
    $updateData = ['status' => $validated['status']];
 
           if ($validated['status'] === 'approved') {
@@ -254,7 +261,7 @@ public function index(Request $request)
 
    $driver->update($updateData);
 
-  
+
     $status = $validated['status'];
     $message = match ($status) {
         'approved' => 'Your account has been approved! You can now log in to the system.',
@@ -275,9 +282,9 @@ public function index(Request $request)
 
         return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
     }
-    
+
     return redirect()->back()->with('success', 'Driver status updated and email sent successfully.');
-  } 
+    }
 
 
 
