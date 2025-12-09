@@ -2,32 +2,26 @@
 <x-app-layout>
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/cardetails.css') }}">
-
-        <style>
-            #route-map {
-                height: 400px;
-                border-radius: 15px;
-                overflow: hidden;
-                margin-top: 10px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            }
-
-            .route-badge {
-                background: #007bff;
-                color: #fff;
-                font-size: 14px;
-                padding: 4px 10px;
-                border-radius: 12px;
-                margin-left: 10px;
-            }
-        </style>
     @endpush
 
     <div class="main-container">
+        @if (session('success'))
+                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                        @foreach ($errors->all() as $error)
+                            <div class="mb-1">• {{ $error }}</div>
+                        @endforeach
+                    </div>
+                @endif
         <header>
             <a href="{{route('transport.index')}}"><button class="back">Back</button></a>
             <div class="head">
-                <h1>Available cars <span id="route-summary" class="route-badge">Loading</span></h1>
+                <h1>All Vehicles For This Transport Service</h1>
                 
                     <p>Manage Vehicles For This Transport Service</p>
                 

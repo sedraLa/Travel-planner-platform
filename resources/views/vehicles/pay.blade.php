@@ -23,7 +23,7 @@
             @endif
                 <p class="mb-4 text-gray-700">Total to pay: ${{ $reservation->total_price }}</p>
 
-                <form action="{{ route('payment.paypal', $reservation->id) }}" method="POST">
+                <form action="{{ route('transportPayment.paypal', $reservation->id) }}" method="POST">
                     @csrf
                     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
                         Pay

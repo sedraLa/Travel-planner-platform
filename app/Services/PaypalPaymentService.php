@@ -33,8 +33,12 @@ class PaypalPaymentService
     }
 
     //send request to paypal to create payment order
-    public function sendPayment($reservation)
+    public function sendPayment($reservation, $type = 'hotel')
     {
+        $callback = $type === 'transport'
+            ? route('payment.transport.callback')
+            : route('payment.paypal.callback');
+
         $data = [
             'intent' => 'CAPTURE',
             'purchase_units' => [[
@@ -45,8 +49,8 @@ class PaypalPaymentService
                 'description' => 'Payment for reservation #' . $reservation->id,
             ]],
             'application_context' => [
-                'return_url' => route('payment.paypal.callback'),
-                'cancel_url' => route('payment.paypal.callback'),
+                'return_url' => $callback,
+                'cancel_url' => $callback,
                 'brand_name' => config('app.name'),
                 'landing_page' => 'LOGIN',
                 'user_action' => 'PAY_NOW',
@@ -54,69 +58,52 @@ class PaypalPaymentService
             ],
         ];
 
-        //send request
         $response = Http::withHeaders($this->header)
-    ->asJson()
-    ->post($this->base_url . '/v2/checkout/orders', $data);
-
+            ->asJson()
+            ->post($this->base_url . '/v2/checkout/orders', $data);
 
         if ($response->successful()) {
-            $links = $response->json()['links'];
-            $approveLink = collect($links)->firstWhere('rel', 'approve')['href'];
+            $approveLink = collect($response->json()['links'])
+                ->firstWhere('rel', 'approve')['href'];
 
+            return ['success' => true, 'url' => $approveLink];
+        }
+
+        return ['success' => false, 'message' => 'Error initiating PayPal payment'];
+    }
+
+    public function callBack($request)
+    {
+        $token = $request->get('token');
+
+        if (!$token) {
+            return ['success' => false, 'message' => 'Missing PayPal token'];
+        }
+
+        $url = $this->base_url . '/v2/checkout/orders/' . $token . '/capture';
+
+        $response = Http::withToken($this->getAccessToken())
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+            ->send('POST', $url, ['body' => '{}']);
+
+        if (!$response->successful()) {
+            return ['success' => false, 'message' => 'HTTP failed with status ' . $response->status()];
+        }
+
+        $data = $response->json();
+
+        if (isset($data['status']) && $data['status'] === 'COMPLETED') {
             return [
                 'success' => true,
-                'url' => $approveLink,
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => 'Error initiating PayPal payment',
+                'transaction_id' => $data['id'] ?? null,
             ];
         }
+
+        return ['success' => false, 'message' => 'Payment failed'];
     }
-
-    //send capture request after user approval for payment
-    public function callBack($request)
-{
-    $token = $request->get('token');
-
-    if (!$token) {
-        return ['success' => false, 'message' => 'Missing PayPal token'];
-    }
-
-    $url = $this->base_url . '/v2/checkout/orders/' . $token . '/capture';
-
-    $response = Http::withToken($this->getAccessToken())
-        ->withHeaders([
-            'Content-Type' => 'application/json',
-            'Accept' => 'application/json',
-        ])
-        ->send('POST', $url, [
-            'body' => '{}',
-        ]);
-
-    \Log::info('PayPal Capture Response:', $response->json());
-
-    if (!$response->successful()) {
-        return ['success' => false, 'message' => 'HTTP request failed with status ' . $response->status()];
-    }
-
-    $responseData = $response->json();
-
-    if (
-        isset($responseData['status']) &&
-        $responseData['status'] === 'COMPLETED'
-    ) {
-        return [
-            'success' => true, 
-            'message' => 'Payment completed successfully!',
-            'transaction_id' => $responseData['id'] ?? null,    
-        ];
-    }
-
-    return ['success' => false, 'message' => 'Payment failed! Status: ' . ($responseData['status'] ?? 'unknown')];
-}
 
 
 

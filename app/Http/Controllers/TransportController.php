@@ -43,8 +43,8 @@ class TransportController extends Controller
  public function show(string $id)
 {
     $transport = Transport::with('vehicles')->findOrFail($id);
-    $vehicles = $transport->vehicles;
-    return view('vehicles.index', compact('transport', 'vehicles'));
+    $Vehicles = $transport->vehicles;
+    return view('transport.vehicles', compact('transport', 'Vehicles'));
 }
 
 
@@ -71,8 +71,24 @@ class TransportController extends Controller
      */
     public function destroy(string $id)
     {
-        $transport=Transport::findOrFail($id);
+        $transport = Transport::with('vehicles.reservations')->findOrFail($id);
+    
+        
+        foreach ($transport->vehicles as $vehicle) {
+            if ($vehicle->reservations->count() > 0) {
+                return back()->withErrors("You can't delete this service because some vehicles have reservations");
+            }
+        }
+    
+        
+        foreach ($transport->vehicles as $vehicle) {
+            $vehicle->delete();
+        }
+    
+        
         $transport->delete();
-        return redirect()->back()->with('success','Transport deleted successfully');
+    
+        return redirect()->back()->with('success', 'Transport deleted successfully');
     }
+    
 }
