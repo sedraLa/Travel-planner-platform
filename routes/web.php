@@ -141,9 +141,6 @@ Route::get('/driver/show', [DriverController::class, 'show'])
 Route::get('/admin/driver/{id}/show', [DriverController::class, 'show'])
     ->middleware(['auth'])
     ->name('drivers.show');
-
-
-
 Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
 Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
 Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
@@ -152,7 +149,8 @@ Route::get('/driver/bookings/pending', [DriverController::class, 'pendingBooking
 Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
 
 
-
+Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
+Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
 
 
 require __DIR__.'/auth.php';
