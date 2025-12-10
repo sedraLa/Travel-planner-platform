@@ -55,7 +55,7 @@ class ProfileController extends Controller
         if ($driver) {
             
             $pendingReservations = $driver->reservations()
-                ->where('status', 'pending')
+                ->where('driver_status', 'pending')
                 ->count();
 
             if ($pendingReservations > 0) {
