@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Driver;
+use App\Models\TransportReservation;
 use Illuminate\Http\Request;
 use App\Http\Requests\DriverRequest;
 use App\Services\MediaServices;

@@ -75,7 +75,7 @@
                                             </form>
 
                                                     {{-- Cancel Button --}}
-                                           <form action="{{ route('reservations.cancel', $reservation->id) }}" method="POST" class="inline">
+                                           <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST" class="inline">
                                                         @csrf
                                                 <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">
                                                            Cancel
@@ -85,7 +85,7 @@
 
 
 
-                                
+
                             </tr>
                         @empty
                             <tr>
