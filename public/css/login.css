@@ -90,7 +90,107 @@
         100% { background-position: 0% 50%; }
     }
 
-    /* دائرة الأيقونة */
+    /* دائرة الأيقونة *//* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    color: beige;
+}
+
+/* الخلفية */
+.register-wrapper {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.35)),
+                url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg') center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* البطاقة */
+.register-card {
+    width: 470px;
+    padding: 40px 35px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 35px rgba(0,0,0,0.30);
+    color: #fff;
+    text-align: left;
+}
+
+/* العناوين */
+.title {
+    font-size: 26px;
+    font-weight: 700;
+}
+.subtitle {
+    color: #e9e9e9;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* كل مجموعة */
+.form-group {
+    margin-bottom: 15px;
+}
+
+/* الحقول */
+input,
+select,
+textarea {
+    margin-top: 6px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.95);
+    color: #111;
+}
+
+/* سائق */
+.driver-box {
+    margin-top: 20px;
+}
+
+/* زر التسجيل */
+.main-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px;
+    border-radius: 10px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.main-btn:hover {
+    background: #1e4ed8;
+}
+
+/* مفيد */
+.back-link {
+    display: block;
+    margin-top: 18px;
+    color: #eef2ff;
+}
+
+.note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #ffe19c;
+}
+
     .option-box .icon {
         width: 46px;
         height: 46px;
@@ -107,6 +207,7 @@
         height: 26px;
         object-fit: contain;
         display: block;
+        filter: brightness(0) invert(1);
     }
 
 
@@ -160,4 +261,111 @@
         margin-top: 15px;
         font-size: 12px;
         color: #d1d5db;
-    }    
+    }
+
+
+
+
+    /*--------------------------------*/
+    /* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    overflow: hidden;
+    color: beige;
+}
+
+/* الخلفية */
+.register-wrapper {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.35)),
+                url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg') center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* البطاقة */
+.register-card {
+    width: 520px;
+    padding: 40px 35px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 35px rgba(0,0,0,0.30);
+    color: #fff;
+    text-align: left;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 700;
+    color: white;
+}
+.subtitle {
+    color: #e9e9e9;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 20px;
+}
+
+.full {
+    grid-column: span 2;
+}
+
+/* الأيقونات داخل الحقول */
+.input-icon-wrapper {
+    position: relative;
+}
+.input-icon-wrapper img {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    opacity: 0.7;
+}
+.input-icon-wrapper input,
+.input-icon-wrapper select {
+    padding-left: 45px !important;
+}
+
+/* النجمة الحمراء */
+x-input-label label::after {
+    content: " *";
+    color: #ff4d4d;
+    font-weight: bold;
+}
+
+/* زر */
+.main-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+.main-btn:hover {
+    background: #1e4ed8;
+}
+
+.back-link {
+    color: #e9e9e9;
+}
