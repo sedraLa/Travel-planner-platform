@@ -2,25 +2,48 @@
     use App\Enums\UserRole;
 @endphp
 <x-guest-layout>
-  <div class="login-container">
-    <div class="left">
-      <h1>Welcome</h1>
-      <p>Choose how you want to register.</p>
+    <div class="register-wrapper">
+
+        <div class="register-card">
+
+            <!--<div class="icon-place">
+                <img src="/images/globe-icon.png" alt="icon" class="card-icon">
+            </div>-->
+
+            <h2 class="title">Join Our Platform</h2>
+            <p class="subtitle">Choose how you want to get started</p>
+
+            <div class="options">
+
+                <a href="{{ route('register', ['role' => UserRole::USER->value]) }}" class="option-box traveler">
+                    <div class="icon">
+                        <img src="{{asset('/images/icons/user-group-solid-full.svg')}}" alt="">
+                    </div>
+                    <div class="text">
+                        <h3 style="text-align:left;">Traveler</h3>
+                        <p>Book rides and explore new destinations</p>
+                    </div>
+                    <span class="arrow">›</span>
+                </a>
+
+                <a href="{{ route('register', ['role' => UserRole::DRIVER->value]) }}" class="option-box driver">
+                    <div class="icon">
+                        <img src="{{asset('/images/icons/user-group-solid-full.svg')}}" alt="">
+                    </div>
+                    <div class="text">
+                        <h3 style="text-align:left;">Driver</h3>
+                        <p>Join our driver network and earn</p>
+                    </div>
+                    <span class="arrow">›</span>
+                </a>
+
+            </div>
+
+            <a href="{{ route('login') }}" class="back-link">Back to Sign In</a>
+
+            <p class="footer">© 2024 TravelPlatform. All rights reserved.</p>
+
+        </div>
+
     </div>
-
-    <div class="form-login">
-      <h2 style="color:white; text-align:center; margin-bottom:10px;">Register As</h2>
-
-      <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
-        <a href="{{ route('register', ['role' => UserRole::USER->value]) }}" class="custom-primary-button" style="text-align:center;">
-    I'm a Traveler
-        </a>
-
-        <a href="{{ route('register', ['role' => UserRole::DRIVER->value]) }}" class="custom-primary-button" style="background-color:#2ecc71; text-align:center;">
-    I'm a Driver
-        </a>
-        <a href="{{ route('login') }}" style="color:white; text-align:center; margin-top:8px;">Already have an account? Login</a>
-      </div>
-    </div>
-  </div>
 </x-guest-layout>

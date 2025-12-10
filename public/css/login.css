@@ -1,159 +1,163 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+      /* Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: beige;
-    overflow: hidden;
-}
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+        color: beige;
+    }
 
-.background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    filter: blur(8px);
-    z-index: -1;
-}
+    /* خلفية كاملة */
+    .register-wrapper {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.35)),
+                    url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg') center/cover no-repeat;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-.login-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    max-width: 1000px;
-    width: 100%;
-    gap: 100px;
-    background-image: url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    height: auto;
-    min-height: 350px;
-    border-radius: 10px;
-}
+    /* البطاقة */
+    .register-card {
+        width: 470px;
+        padding: 40px 35px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.18);
+        backdrop-filter: blur(14px);
+        box-shadow: 0 8px 35px rgba(0,0,0,0.30);
+        text-align: center;
+    }
 
+    /* نصوص */
+    .title {
+        margin-bottom: 6px;
+        font-size: 26px;
+        font-weight: 700;
+        color: #f5f5f5;
+    }
 
-.left {
-    line-height: 1.6;
-    padding: 10px;
-    width: 40%;
-}
+    .subtitle {
+        font-size: 15px;
+        color: #e5e7eb;
+        margin-bottom: 28px;
+    }
 
-h1 {
-    font-size: 2rem;
-}
+    /* خيارات */
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
 
-h2 {
-    font-size: 2rem;
-}
+    /* كل خيار */
+    .option-box {
+        display: flex;
+        justify-content: flex-start;
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #e5e7eb;
+        text-decoration: none;
+        transition: 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        align-items: flex-start;
 
-p {
-    font-size: 1rem;
-}
+        /* نفس المسافة للجميع */
+        gap: 14px;
+    }
 
+    /* تأثير Hover مع حركة Gradient */
+    .option-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+        background: linear-gradient(135deg, #ffffff, #e8f0ff, #ffffff);
+        background-size: 300% 300%;
+        animation: gradientMove 2s ease infinite;
+    }
 
-.form-login {
-    width: 100%;
-    max-width: 300px;
-    border: 5px solid white;
-    border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    min-height: 400px;
-}
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
 
-label {
-    display: block;
-    margin-bottom: 10px;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-}
+    /* دائرة الأيقونة */
+    .option-box .icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-    width: 100%;
-    padding: 5px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.custom-primary-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    margin-top:15px;
-    margin-bottom: 15px;
-}
-
-button:hover {
-    background-color: #2667a8;
-}
-
-a {
-    color: #ffffff;
-    font-size: 13px;
-    display: inline-block;
-    margin-top: 5px;
-    transition: color 0.3s;
-    margin-left: 28px;
-}
-
-a:hover {
-    color: #ffffffb3 ;
-}
-
-.custom-error-message {
-    background-color: #ffe6e6;
-    color: #d60000;
-    border: 1px solid #ffb3b3;
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    list-style: none;
-}
-.custom-error-message li {
-    margin-bottom: 4px;
-}
-.forget-pass {
-    display:flex;
-    flex-direction:column;
-}
-.forget-pass p {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size:1rem;
-}
-
-/* public/css/custom.css */
-.my-logo {
-    width: 200px;
-    height: auto;
-}
+    /* الأيقونة */
+    /* نلغي أي مساحة جوات الصورة */
+    .option-box .icon img {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+    }
 
 
+    /* ألوان حسب النوع */
+    .traveler .icon {
+        background: linear-gradient(135deg, #10b981, #34d399);
+    }
+
+    .driver .icon {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+
+    /* نص الخيار */
+    .option-box .text h3 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+        color: #1f2937;
+        /*margin-left:-150px;*/
+    }
+
+    .option-box .text p {
+        margin: 0;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    /* السهم */
+    .arrow {
+        margin-left: auto;
+        font-size: 22px;
+        color: #9ca3af;
+    }
+
+    /* الرجوع */
+    .back-link {
+        display: block;
+        margin-top: 20px;
+        color: #f3f4f6;
+        font-size: 14px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .back-link:hover {
+        color: #ffffffd8;
+    }
+
+    /* الفوتر */
+    .footer {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #d1d5db;
+    }    
