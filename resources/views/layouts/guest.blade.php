@@ -10,6 +10,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="/css/login.css" rel="stylesheet">
+         <!-- CSS تبع مكتبة country-region-selector -->
+    <link rel="stylesheet"
+    href="https://unpkg.com/country-region-selector@2.1.0/dist/css/crs-country-region-selector.min.css">     <!-- Country -->
 
     </head>
     <body>
@@ -31,3 +34,7 @@
         </div>
     </body>
 </html>
+
+
+
+   
