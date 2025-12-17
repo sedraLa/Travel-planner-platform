@@ -32,8 +32,6 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup Location</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dropoff Location</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup DateTime</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distance</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Duration</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -53,8 +51,6 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->pickup_location }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->dropoff_location }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d-m-Y H:i') }} </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->distance }} km</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->duration }} min</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->total_price }}</td>
 
                                 {{-- status ثابت حالياً --}}
@@ -74,6 +70,14 @@
                                                 </button>
                                             </form>
 
+                                           <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST" class="inline">
+                                                      @csrf
+                                                <button type="submit"
+                                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600
+                                                     {{ $canComplete ? '' : 'disabled opacity-50 cursor-not-allowed' }}">
+                                                         Cancel
+                                                </button>
+                                           </form>
                                 </td>
 
 

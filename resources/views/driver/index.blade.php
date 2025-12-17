@@ -158,7 +158,12 @@
                                       class="flex items-center space-x-2">
             
                                       <select name="status" x-model="status"
+                                       @if($driver->status === 'approved') disabled @endif
                                          class="px-4 py-2 text-sm font-semibold rounded-full appearance-none border-none focus:outline-none transition-colors duration-200"
+                                         {{ $driver->status === 'approved'
+                            ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                            : '' }}"
+                                        
                                          :class="{
                                              'bg-orange-100 text-orange-800': status === 'pending',
                                              'bg-green-100 text-green-800': status === 'approved',
@@ -169,10 +174,14 @@
                                              <option value="rejected">Rejected</option>
                                         </select>
 
-                                      <button type="submit"
-                                       class="px-2 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">
-                                              Confirm
-                                       </button>
+                                           <button type="submit"
+                                              @if($driver->status === 'approved') disabled @endif
+                                                    class="px-2 py-1 text-sm font-medium rounded
+                                                    {{ $driver->status === 'approved'
+                                                    ? 'bg-gray-400 text-white cursor-not-allowed'
+                                                     : 'bg-blue-600 text-white hover:bg-blue-700' }}">
+                                                                  Confirm
+                                             </button>
                                      </div>
                                 </form>
                             </td>
@@ -184,6 +193,13 @@
                                 
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+                                   @if($driver->status !== 'approved')
+                                        <button
+                                           class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium"disabled>
+                                                  Delete
+                                        </button>
+                                    @else
                                   
                                     <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" class="inline"
                                         onsubmit="return confirm('Are you sure you want to delete this driver?');">
@@ -191,6 +207,7 @@
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900  mr-4">Delete</button>
                                     </form>
+                                    @endif
                                     
                                        @if($driver->status === 'approved')
                                         <a class="text-green-600 hover:text-green-900 mr-4 text-sm font-medium" 

@@ -52,12 +52,6 @@
                                 Passengers</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Distance</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Duration</th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Total Price </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -76,8 +70,6 @@
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->dropoff_location }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d-m-Y H:i') }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->passengers }}</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->distance }} km</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->duration }} min</td>
                         <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->total_price }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Completetd</td>
                      
