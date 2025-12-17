@@ -33,6 +33,12 @@ class FavoriteController extends Controller
             $item->favorites()->create(['user_id' => $user->id]);
             $status = 'added';
         }
+
+
+         return response()->json([
+        'status' => $status
+    ]);
+
     }
      public function showFavorites()
     {
