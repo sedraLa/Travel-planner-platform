@@ -132,17 +132,32 @@ public function index(Request $request)
 
 
 
-   public function pendingBookings()
-{
-    $driver = auth()->user()->driver;
 
-    // جلب الحجوزات التي لا زالت Pending بدون أي تعديل تلقائي
-    $reservations = $driver->reservations()
+
+
+   public function pendingBookings(string $id = null)
+{
+   
+       $user = auth()->user();
+
+    if ($user->role === 'driver') {
+        $driver = $user->driver;
+    } elseif ($user->role === 'admin') {
+        if (!$id) abort(400, 'Driver ID required for admin');
+        $driver = Driver::findOrFail($id);
+    } else {
+        abort(403, 'Unauthorized');
+    }
+
+
+
+
+        $reservations = $driver->reservations()
         ->where('driver_status', 'pending')
         ->with(['vehicle', 'user'])
         ->get();
 
-    return view('driver.pendingbooking', compact('driver', 'reservations'));
+          return view('driver.pendingbooking', compact('driver', 'reservations'));
 }
 
 

@@ -23,7 +23,7 @@
                 <p class="text-gray-500 mt-1">A list of all my reservations.</p>
                   @else
                 <h2 class="text-2xl font-bold text-gray-800">Reservations {{ $driver->user->name }} </h2>
-                <p class="text-gray-500 mt-1">A list of all the reservations in your system for a driver.</p>
+                <p class="text-gray-500 mt-1">A list of all the Completed Reservations in your system for a driver.</p>
                  @endif
             </div>
 
@@ -35,9 +35,6 @@
                                 <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Client Name</th>
-                                <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                vehicle</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Pickup Location</th>
@@ -65,7 +62,7 @@
                     <tr>
                        
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->user->name?? 'N/A'}}</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->vehicle->car_model ?? 'N/A'}}</td>
+                       
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->pickup_location }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->dropoff_location }}</td>
                         <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d-m-Y H:i') }}</td>

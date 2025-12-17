@@ -58,6 +58,9 @@
                                 <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Address</th>
+                                 <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                experience</th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 License Category</th>
@@ -109,6 +112,10 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm font-medium text-gray-900">{{ $driver->address ?? 'No address' }}</div>
+                                </td>
+
+                                 <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900">{{ $driver-> experience?? 'No address' }}</div>
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap  text-center">
@@ -212,13 +219,29 @@
                                        @if($driver->status === 'approved')
                                         <a class="text-green-600 hover:text-green-900 mr-4 text-sm font-medium" 
                                           href="{{ route('drivers.show', $driver->id) }}">
-                                                View Reservations </a>
+                                                 Completed Reservations </a>
 
                                         @else
                                           <button class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium" disabled>
-                                            View Reservations
+                                             Completed Reservations
                                           </button>
                                         @endif
+
+                                        @if($driver->status === 'approved')
+                                        <a class="text-yellow-600 hover:text-yellow-900 mr-4 text-sm font-medium" 
+                                          href="{{ route('admin.bookings.pending', $driver->id) }}">
+                                                Pending Reservations </a>
+
+                                        @else
+                                          <button class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium" disabled>
+                                             Pending Reservations
+                                          </button>
+                                        @endif
+
+
+
+
+
                                 </td>
                             </tr>
                         @empty
