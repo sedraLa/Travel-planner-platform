@@ -68,6 +68,17 @@ class TransportReservationController extends Controller
         $passengers = $request->passengers;
         $distance = (float) $request->distance;
 
+
+        // استخدام خدمة Geocoding لحساب الإحداثيات
+        $geocoding      = app(GeocodingService::class);
+        $pickupCoords    = $geocoding->geocodeAddress($pickup_location);
+        $dropoffCoords   = $geocoding->geocodeAddress($dropoff_location);
+
+         // حساب المسافة بالكيلومتر والمدة بالدقائق
+        $distance = $geocoding->calculateDistanceKm($pickupCoords, $dropoffCoords);
+        $duration = $geocoding->calculateDurationMinutes($pickupCoords, $dropoffCoords);
+  
+
         // Calculate total price
         $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
 

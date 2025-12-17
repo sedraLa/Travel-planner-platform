@@ -37,7 +37,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                         
 
                         </tr>
                     </thead>
@@ -48,7 +48,7 @@
                                 {{-- Reservation ID مخفي كامل --}}
                                 <td class="hidden">{{ $reservation->id }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->user->name?? 'N/A' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->vehicle->phone_number ?? 'N/A' }}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->usre->phone_number ?? 'N/A' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->vehicle->car_model ?? 'N/A' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->pickup_location }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->dropoff_location }}</td>
@@ -73,6 +73,7 @@
                                                     Complete
                                                 </button>
                                             </form>
+
 
                                                     {{-- Cancel Button --}}
                                            <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST" class="inline">

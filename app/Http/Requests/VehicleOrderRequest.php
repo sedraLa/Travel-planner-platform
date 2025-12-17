@@ -26,6 +26,7 @@ class VehicleOrderRequest extends FormRequest
             'dropoff_location'=>'required|string',
             'pickup_datetime'=>'required|date|after:now',
             'passengers'=>'required|integer|min:1',
+            'driver_status'    => 'nullable|string|in:pending,completed',
         ];
     }
 }
