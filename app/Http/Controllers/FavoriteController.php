@@ -8,19 +8,10 @@ use App\Models\Hotel;
 use App\Models\Favorite;
 use Illuminate\Support\Facades\Auth;
 
+
+
 class FavoriteController extends Controller
 {
-    // عرض كل المفضلات
-    public function index()
-    {
-        $user = auth()->user();
-
-        return view('favorites.index', [
-            'destinations' => $user->favoriteDestinations,
-            'hotels'       => $user->favoriteHotels,
-        ]);
-    }
-
     // إضافة مفضلة
     public function store($type, $id)
     {
@@ -45,6 +36,7 @@ class FavoriteController extends Controller
 
         return back()->with('status', "Favorite $status successfully.");
     }
+
      public function showFavorites()
     {
         $user = Auth::user();
