@@ -244,7 +244,10 @@ public function index(Request $request)
 
    $driver->update($updateData);
 
-  
+   if ($driver->status === 'approved') {
+    return back()->with('error', 'Approved drivers status cannot be changed.');
+   }
+
     $status = $validated['status'];
     $message = match ($status) {
         'approved' => 'Your account has been approved! You can now log in to the system.',
@@ -261,6 +264,7 @@ public function index(Request $request)
         if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
             \Storage::disk('public')->delete($driver->license_image);
         }
+        $driver->user()->delete();
         $driver->delete();
 
         return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
@@ -288,6 +292,30 @@ public function index(Request $request)
     return redirect()->route('driverscompleted.show')->with('success', 'Reservation marked as completed.');
 }
 
+
+
+public function cancel($id)
+{
+    $reservation = TransportReservation::findOrFail($id);
+    $driver = auth()->user()->driver;
+
+    if ($reservation->driver_id !== $driver->id) {
+        abort(403);
+    }
+
+    $now = Carbon::now();
+    $pickup = Carbon::parse($reservation->pickup_datetime);
+
+    if ($now->lt($pickup)) {
+        return back()->with('error', 'Cannot cancel before pickup time.');
+    }
+
+    $reservation->update([
+        'driver_status' => 'cancelled'
+    ]);
+
+    return back()->with('success', 'Reservation marked as cancelled (no-show).');
+}
 
 
 }
