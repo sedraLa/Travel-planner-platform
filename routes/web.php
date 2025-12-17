@@ -132,24 +132,26 @@ Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index'
 Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
 Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
 // للسائق (بدون ID)
-Route::get('/driver/show', [DriverController::class, 'show'])
-    ->middleware(['auth'])
-    ->name('driverscompleted.show');
+Route::middleware(['auth']) ->prefix('driver') ->group(function () {
+
+ Route::get('/show', [DriverController::class, 'show'])->name('driverscompleted.show');
+
+ Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
+
+    });
+
 
 // للأدمن (مع ID)
-Route::get('/admin/driver/{id}/show', [DriverController::class, 'show'])
-    ->middleware(['auth'])
-    ->name('drivers.show');
+
 Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
 Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
 Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
-Route::get('/driver/bookings/pending', [DriverController::class, 'pendingBookings'])
-        ->name('bookings.pending');
 Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
-
-
 Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
 Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
-
+Route::middleware(['auth']) ->prefix('admin') ->group(function () {
+   Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show');
+   Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+ });
 
 require __DIR__.'/auth.php';
