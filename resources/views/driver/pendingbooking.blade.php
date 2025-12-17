@@ -33,7 +33,7 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
-                            {{-- مخفي بس داخل الجدول --}}
+                            
                             <th class="hidden"></th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Name</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Phone Number</th>
@@ -43,9 +43,11 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Passenger</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-
-
+                              @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                  Actions
+                            </th>
+                               @endif
                         </tr>
                     </thead>
 
@@ -59,15 +61,18 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->pickup_location }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->dropoff_location }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d-m-Y H:i') }} </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->passengers}}</td>
+                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->passengers}}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->total_price }}</td>
 
                                 {{-- status ثابت حالياً --}}
                                 <td class="px-6 py-4 text-sm text-yellow-600 font-semibold">Pending</td>
+                                 @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
                                 <td class="px-6 py-4 text-sm">
+                                    
                                         @php
                                          $canComplete = \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($reservation->pickup_datetime));
                                         @endphp
+                                        
 
                                              {{-- Complete Button --}}
                                            <form action="{{ route('reservations.complete', $reservation->id) }}" method="POST" class="inline">
@@ -88,8 +93,8 @@
                                                          Cancel
                                                 </button>
                                            </form>
-
                                 </td>
+                                @endif
 
 
 
