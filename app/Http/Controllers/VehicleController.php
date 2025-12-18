@@ -18,7 +18,7 @@ class VehicleController extends Controller
     public function index()
     {
         $availableVehicles=TransportVehicle::all();
-        return view('vehicles.show',compact('availableVehicles'));
+        return view('vehicles.index',compact('availableVehicles'));
     }
 
     /**
@@ -54,17 +54,23 @@ class VehicleController extends Controller
             'image'          => $imagePath ,
         ]);
 
-        return redirect()->route('vehicle.show')->with('success','Vehicle created successfully');
+        return redirect()
+        ->route('admin.transports.vehicles', $request->transport_id)
+        ->with('success','Vehicle created successfully');
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function vehiclesByTransport($id)
     {
-        //
+        $transport = Transport::with('vehicles')->findOrFail($id);
+        return view('transport.vehicles', [
+            'transport' => $transport,
+            'Vehicles' => $transport->vehicles
+        ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -128,7 +134,10 @@ class VehicleController extends Controller
         ]);
 
         // إعادة التوجيه إلى صفحة قائمة المركبات مع رسالة نجاح
-return redirect()->route('vehicle.show')->with('success', 'Vehicle updated successfully');
+        return redirect()
+        ->route('admin.transports.vehicles', $vehicle->transport_id)
+        ->with('success', 'Vehicle updated successfully');
+    
     }
     /**
      * Remove the specified resource from storage.
@@ -153,7 +162,9 @@ return redirect()->route('vehicle.show')->with('success', 'Vehicle updated succe
 
         $vehicle->delete();
 
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle deleted successfully');
+        return redirect()
+        ->route('admin.transports.vehicles', $vehicle->transport_id)
+        ->with('success', 'Vehicle deleted successfully');
     }
 
 

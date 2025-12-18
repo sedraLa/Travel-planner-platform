@@ -9,7 +9,7 @@
         <h2>Edit Vehicle</h2>
 
         {{-- 2. تغيير مسار الـ action وإضافة @method('PUT') --}}
-        <form action="{{ route('vehicle.update', $vehicle->id) }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.vehicles.update', $vehicle->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -80,16 +80,10 @@
             
                 <option value="">-- Choose a category 'optional' --</option>
             
-                <option value="luxury"  {{ old('category', $vehicle->category ?? '') == 'LUXURY' ? 'selected' : '' }}>
-                    LUXURY
-                </option>
-            
-                <option value="standard" {{ old('category', $vehicle->category ?? '') == 'STANDARD' ? 'selected' : '' }}>
-                    STANDARD
-                </option>
-            
-                <option value="premium" {{ old('category', $vehicle->category ?? '') == 'PREMIUM' ? 'selected' : '' }}>
-                    PREMIUM
+                <option value="luxury"  {{ old('category', $vehicle->category ?? '') == 'luxury' ? 'selected' : '' }}>LUXURY</option>
+                <option value="standard" {{ old('category', $vehicle->category ?? '') == 'standard' ? 'selected' : '' }}>STANDARD</option>
+                <option value="premium" {{ old('category', $vehicle->category ?? '') == 'premium' ? 'selected' : '' }}>PREMIUM</option>
+                
                 </option>
             
             </select>            
