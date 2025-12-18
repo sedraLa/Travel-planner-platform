@@ -14,15 +14,23 @@ class TransportReservation extends Model
         'pickup_location',
         'dropoff_location',
         'pickup_datetime',
+        'dropoff_datetime',
         'passengers',
         'total_price',
         'status',
         'transport_vehicle_id',
+        'driver_id',
+        'driver_status',
     ];
 
     protected $hidden = [
-        'created_at', 
+        'created_at',
         'updated_at'
+    ];
+
+    protected $casts = [
+        'pickup_datetime' => 'datetime',
+        'dropoff_datetime' => 'datetime',
     ];
 
     public function user() {
@@ -34,11 +42,15 @@ class TransportReservation extends Model
     }
 
     public function vehicle() {
-        return $this->belongsTo(TransportVehicle::class);
+        return $this->belongsTo(TransportVehicle::class,'transport_vehicle_id');
     }
 
     public function payment()
     {
         return $this->hasOne(Payment::class);
+    }
+      public function driver()
+    {
+        return $this->belongsTo(Driver::class);
     }
 }

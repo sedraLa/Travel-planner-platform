@@ -11,6 +11,9 @@ use App\Http\Controllers\FlightController;
 use App\Http\Controllers\TransportController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\VehicleOrderController;
+use App\Http\Controllers\TransportReservationController;
+use App\Http\Controllers\DriverController;
 
 
 /*
@@ -28,9 +31,15 @@ Route::get('/', function () {
     return view('auth/login');
 });
 
+// صفحة اختيار نوع التسجيل
+Route::get('/register/select-role', function () {
+    return view('auth.selectRole');
+})->name('register.select-role');
+
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'check.driver.status'])->name('dashboard');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -72,8 +81,11 @@ Route::get('/reservations', [ReservationController::class, 'index']) ->name('res
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
 
+
 // Callback PayPal
 Route::get('/payment/paypal/callback', [PaymentController::class, 'paypalCallback'])->name('payment.paypal.callback');
+Route::get('/payment/paypal/transport/callback', [PaymentController::class, 'paypalCallbackTransport'])
+    ->name('payment.transport.callback');
 
 //flight routes
 Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
@@ -89,11 +101,79 @@ Route::get('/transports/{id}', [TransportController::class, 'show'])->name('tran
 
 
 //vehicles routes
-Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.index');
-Route::get('/vehicle/create',[VehicleController::class,'create'])->name('vehicle.create');
-Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.store');
-Route::get('vehicel/edit',[VehicleController::class,'edit'])->name('vehicle.edit');
+// USER – browse vehicles
+Route::get('/vehicles', [VehicleController::class, 'index'])
+    ->name('vehicles.index');
 
+// ADMIN – manage vehicles
+Route::get('/admin/transports/{transport}/vehicles', 
+    [VehicleController::class, 'vehiclesByTransport']
+)->name('admin.transports.vehicles');
+
+
+Route::get('/admin/vehicles/create', [VehicleController::class, 'create'])
+    ->name('admin.vehicles.create');
+
+Route::post('/admin/vehicles', [VehicleController::class, 'store'])
+    ->name('admin.vehicles.store');
+
+Route::get('/admin/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
+    ->name('admin.vehicles.edit');
+
+Route::put('/admin/vehicles/{vehicle}', [VehicleController::class, 'update'])
+    ->name('admin.vehicles.update');
+
+Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy'])
+    ->name('admin.vehicles.destroy');
+
+//order vehicles
+Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->name('vehicle.order');
+Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
+    ->name('vehicle.search');
+
+Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
+
+Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
+    [TransportReservationController::class, 'store']
+)->name('vehicleReservation.store');
+
+
+    Route::get('vehicles/paypal/{reservation}', [PaymentController::class, 'payWithPayPalTransport'])
+    ->name('vehicles.paypal');
+
+
+
+
+
+
+
+
+ //Drivers Routes
+Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
+Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
+// للسائق (بدون ID)
+Route::middleware(['auth']) ->prefix('driver') ->group(function () {
+
+ Route::get('/show', [DriverController::class, 'show'])->name('driverscompleted.show');
+
+ Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
+
+    });
+
+
+// للأدمن (مع ID)
+
+Route::get('/driver/{id}/edit', [DriverController::class, 'edit'])->name('drivers.edit');
+Route::put('/driver/{id}/update', [DriverController::class, 'update'])->name('drivers.update');
+Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
+Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
+Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
+Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
+Route::middleware(['auth']) ->prefix('admin') ->group(function () {
+   Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show');
+   Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+ });
 
 //favoritefeture routes
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');

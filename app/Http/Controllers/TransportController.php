@@ -40,12 +40,12 @@ class TransportController extends Controller
     /**
      * Display the specified resource.
      */
- public function show(string $id)
+ /*public function show(string $id)
 {
     $transport = Transport::with('vehicles')->findOrFail($id);
-    $vehicles = $transport->vehicles;
-    return view('vehicles.index', compact('transport', 'vehicles'));
-}
+    $Vehicles = $transport->vehicles;
+    return view('transport.vehicles', compact('transport', 'Vehicles'));
+}*/
 
 
     /**
@@ -71,8 +71,22 @@ class TransportController extends Controller
      */
     public function destroy(string $id)
     {
-        $transport=Transport::findOrFail($id);
-        $transport->delete();
-        return redirect()->back()->with('success','Transport deleted successfully');
+        $transport = Transport::with('vehicles.reservations')->findOrFail($id);
+
+
+        // Check if any vehicle has PENDING reservations
+        foreach ($transport->vehicles as $vehicle) {
+            $hasUpcoming = $vehicle->reservations()
+            ->where('pickup_datetime', '>=', now())
+            ->exists();
+
+        if ($hasUpcoming) {
+            return back()->withErrors("You can't delete this service because some vehicles have upcoming confirmed reservations");
+        }
     }
+        $transport->delete();
+
+        return redirect()->back()->with('success', 'Transport deleted successfully');
+    }
+
 }

@@ -9,11 +9,10 @@ class TransportVehicle extends Model
 {
     use HasFactory;
     protected $fillable = [
-       'transport_id',
+    'transport_id',
     'car_model',
     'plate_number',
-    'driver_name',
-    'driver_contact',
+    'driver_id',
     'max_passengers',
     'base_price',
     'price_per_km',
@@ -33,6 +32,10 @@ class TransportVehicle extends Model
 
     public function transport() {
         return $this->belongsTo(Transport::class);
+    }
+
+    public function driver() {
+        return $this->belongsTo(Driver::class);
     }
     
 }

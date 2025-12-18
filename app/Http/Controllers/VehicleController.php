@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\MediaServices;
 use App\Models\Transport;
-use App\Models\TransportVehicle; 
+use App\Models\TransportVehicle;
 use App\Http\Requests\VehicleRequest;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Driver; // <-- إضافة استدعاء موديل السائق
 
 class VehicleController extends Controller
 {
@@ -15,18 +17,19 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        $vehicle=TransportVehicle::all();
-        return view('vehicles.index',compact('vehicle'));
+        $availableVehicles=TransportVehicle::all();
+        return view('vehicles.index',compact('availableVehicles'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-{
-    $transportId = $request->get('transport_id'); 
-    return view('vehicles.create', compact('transportId'));
-}
+    {
+        $transportId = $request->get('transport_id');
+        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();// <-- جلب جميع السائقين
+        return view('vehicles.create', compact('transportId', 'drivers')); // <-- تمريرهم إلى الواجهة
+    }
 
 
     /**
@@ -34,15 +37,16 @@ class VehicleController extends Controller
      */
     public function store(VehicleRequest $request)
     {
+
+
         //save image
         $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
 
         $vehicle= TransportVehicle::create([
             'transport_id'   => $request->transport_id,
+            'driver_id' => $request->driver_id,
             'car_model'=>$request->car_model,
             'plate_number'=>$request->plate_number,
-            'driver_name'=> $request->driver_name,
-            'driver_contact'=>$request->driver_contact,
             'max_passengers' => $request->max_passengers ,
             'base_price'     => $request->base_price ,
             'price_per_km'   => $request->price_per_km,
@@ -50,38 +54,120 @@ class VehicleController extends Controller
             'image'          => $imagePath ,
         ]);
 
-        return redirect()->route('transport.index')->with('success','Vehicle created successfully');
+        return redirect()
+        ->route('admin.transports.vehicles', $request->transport_id)
+        ->with('success','Vehicle created successfully');
+
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function vehiclesByTransport($id)
     {
-        //
+        $transport = Transport::with('vehicles')->findOrFail($id);
+        return view('transport.vehicles', [
+            'transport' => $transport,
+            'Vehicles' => $transport->vehicles
+        ]);
     }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-        //
+         // البحث عن المركبة المراد تعديلها
+        $vehicle = TransportVehicle::findOrFail($id);
+         $drivers = Driver::with('user')->get();
+        // إرجاع عرض (view) يحتوي على نموذج التعديل مع بيانات المركبة
+        return view('vehicles.edit', compact('vehicle','drivers'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(VehicleRequest $request, string $id)
     {
-        //
-    }
+        // البحث عن المركبة
+        $vehicle = TransportVehicle::findOrFail($id);
 
+        // الحصول على مسار الصورة القديمة
+        $oldImagePath = $vehicle->image;
+
+        // التحقق مما إذا كان المستخدم قد قام بتحميل صورة جديدة
+        if ($request->hasFile('image')) {
+            // حفظ الصورة الجديدة
+            $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
+
+            // حذف الصورة القديمة إذا كانت موجودة
+            if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
+                Storage::disk('public')->delete($oldImagePath);
+            }
+        } else {
+            // إذا لم يتم تحميل صورة جديدة، احتفظ بالصورة القديمة
+            $imagePath = $oldImagePath;
+        }
+
+        if ($request->driver_id) {
+            $driver = Driver::with('vehicle')->find($request->driver_id);
+
+
+            if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
+                return back()->withErrors("You can't choose this driver, it's already assigned to another vehicle");
+            }
+        }
+
+
+        // تحديث بيانات المركبة
+        $vehicle->update([
+            'transport_id'   => $request->transport_id,
+            'driver_id' => $request->driver_id,
+            'car_model'      => $request->car_model,
+            'plate_number'   => $request->plate_number,
+            'driver_name'    => $request->driver_name,
+            'driver_contact' => $request->driver_contact,
+            'max_passengers' => $request->max_passengers,
+            'base_price'     => $request->base_price,
+            'price_per_km'   => $request->price_per_km,
+            'category'       => $request->category,
+            'image'          => $imagePath,
+        ]);
+
+        // إعادة التوجيه إلى صفحة قائمة المركبات مع رسالة نجاح
+        return redirect()
+        ->route('admin.transports.vehicles', $vehicle->transport_id)
+        ->with('success', 'Vehicle updated successfully');
+    
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $vehicle = TransportVehicle::with('reservations')->findOrFail($id);
+
+        // Check for future confirmed reservations
+        $hasUpcoming = $vehicle->reservations()
+            ->where('pickup_datetime', '>=', now())
+            ->exists();
+
+        if ($hasUpcoming) {
+            return back()->withErrors("You can't delete this vehicle because it has upcoming confirmed (paid) reservations");
+        }
+
+        // Delete image if exists
+        if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
+            Storage::disk('public')->delete($vehicle->image);
+        }
+
+        $vehicle->delete();
+
+        return redirect()
+        ->route('admin.transports.vehicles', $vehicle->transport_id)
+        ->with('success', 'Vehicle deleted successfully');
     }
+
+
 }
+
+
