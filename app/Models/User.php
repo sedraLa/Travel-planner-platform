@@ -26,6 +26,7 @@ class User extends Authenticatable
         'phone_number',
         'country',
         'password',
+        'role',
     ];
 
     /**
@@ -63,6 +64,7 @@ class User extends Authenticatable
     public function transport_reservations() {
         return $this->hasMany(TransportReservation::class);
     }
+<<<<<<< HEAD
 
     // كل المفضلات
     public function favorites()
@@ -85,6 +87,13 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
 {
     return trim($this->name.' '.($this->last_name ?? ''));
+=======
+    
+     public function driver()
+    {
+        return $this->hasOne(Driver::class);
+    }
+>>>>>>> check-show-reser-driver
 }
 
 

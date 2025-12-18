@@ -48,6 +48,27 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        if ($user->role === 'driver') {
+
+        $driver = $user->driver;
+
+        if ($driver) {
+            
+            $pendingReservations = $driver->reservations()
+                ->where('driver_status', 'pending')
+                ->count();
+
+            if ($pendingReservations > 0) {
+                return back()->with(
+                    'error',
+                    'You cannot delete your account because you still have pending reservations.'
+                );
+            }
+        }
+    }
+
+    
+
         Auth::logout();
 
         $user->delete();
