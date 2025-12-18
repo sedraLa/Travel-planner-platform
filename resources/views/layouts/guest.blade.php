@@ -18,15 +18,6 @@
     <body>
         <div class="background"></div>
         <div class="login-container">
-            <div class="left">
-                <h2>Travel &</h2>
-                <h1>Explore Horizons</h1>
-                <p>
-                    Where your dream destinations become reality.
-                    Embark on a journey where every corner of the world is within your reach.
-                </p>
-            </div>
-
             <div class="form-login">
                 <div class="form-background"></div>
                 {{ $slot }}

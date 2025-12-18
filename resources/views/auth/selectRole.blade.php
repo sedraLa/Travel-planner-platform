@@ -10,8 +10,8 @@
                 <img src="/images/globe-icon.png" alt="icon" class="card-icon">
             </div>-->
 
-            <h2 class="title">Join Our Platform</h2>
-            <p class="subtitle">Choose how you want to get started</p>
+            <h2 class="title" style="text-align:center;">Join Our Platform</h2>
+            <p class="subtitle" style="text-align:center;">Choose how you want to get started</p>
 
             <div class="options">
 
@@ -39,9 +39,9 @@
 
             </div>
 
-            <a href="{{ route('login') }}" class="back-link">Back to Sign In</a>
+            <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Back to Sign In</a>
 
-            <p class="footer">© 2024 TravelPlatform. All rights reserved.</p>
+            <p class="footer" style="text-align:center;">© 2024 TravelPlatform. All rights reserved.</p>
 
         </div>
 

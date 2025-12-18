@@ -6,14 +6,14 @@
     <div class="register-wrapper">
         <div class="register-card">
 
-            <h2 class="title">Create Account</h2>
-            <p class="subtitle">Join the journey</p>
+            <h2 class="title" style="text-align:center;">Create Account</h2>
+            <p class="subtitle" style="text-align:center;">Join the journey</p>
 
             <!-- Indicators -->
             @if(request('role') === UserRole::DRIVER->value)
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <span id="step1Indicator" style="font-weight:bold; @if($errors->any() && !$errors->has('license_image')) opacity:1; @else opacity:1; @endif">Step 1</span>
-                    <span id="step2Indicator" style="opacity:0.4;">Step 2</span>
+                    <span id="step1Indicator" style="font-weight:bold; color:white; @if($errors->any() && !$errors->has('license_image')) opacity:1; @else opacity:1; @endif">Step 1</span>
+                    <span id="step2Indicator" style="opacity:0.4; color:white;">Step 2</span>
                 </div>
             @endif
 
@@ -26,7 +26,7 @@
                     <div class="form-grid">
                         <!-- Name -->
                         <div>
-                            <x-input-label for="name" :value="__('Name')" /> <span class="text-red-500">*</span>
+                            <x-input-label for="name" :value="__('Name')" /> <span style="color:red;">*</span>
                             <div class="input-icon-wrapper">
                                 <img src="/icons/user.svg">
                                 <x-text-input id="name" type="text" name="name" :value="old('name')" />
@@ -145,7 +145,7 @@
                         </div>
                     </div>
 
-                    <p class="note full">ملاحظة: تسجيل السائق سيتم مراجعته من الإدارة قبل القبول.</p>
+                    <p class="note full">Note: Driver registration will be reviewd by management before acceptance </p>
 
                     <button type="submit" class="main-btn" style="margin-top:15px;">
                         Register Driver
@@ -161,7 +161,7 @@
                     <button class="main-btn">Register</button>
                 @endif
 
-                <a href="{{ route('login') }}" class="back-link">Already registered?</a>
+                <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Already registered?</a>
             </form>
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-selector/0.4.1/crs.min.js"></script>
@@ -178,4 +178,9 @@
 
         </div>
     </div>
+    <style>
+        span {
+            color:red;
+        }
+        </style>
 </x-guest-layout>
