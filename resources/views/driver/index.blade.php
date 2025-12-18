@@ -6,15 +6,6 @@
 
     <div class="main-wrapper p-6 md:p-8"> 
 
-        {{--Success messages--}}
-     @if (session('success'))
-    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 mb-6 px-4 py-3 bg-green-100 border border-green-200 text-green-800 rounded-lg z-50">
-        {{ session('success') }}
-    </div>
-@endif
-
-
-
           {{-- Search Form  --}}
           <form method="GET" action="{{ route('drivers.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
             {{-- Keyword --}}
@@ -62,8 +53,21 @@
         {{--Drivers list --}}
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="p-6 border-b border-gray-200">
+                
                 <h2 class="text-2xl font-bold text-gray-800">Driver List</h2>
                 <p class="text-gray-500 mt-1">A list of all the drivers in your system.</p>
+                                {{--Success messages--}}
+                                @if (session('success'))
+                                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+                
+                 @if(session('error'))
+                 <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                    <div class="mb-1">{{ session('error') }}</div>
+                 </div>
+                @endif
             </div>
 
             <div class="overflow-x-auto">

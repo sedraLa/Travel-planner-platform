@@ -252,54 +252,58 @@ class DriverController extends Controller
 
 
     public function updateStatus(DriverRequest $request, Driver $driver)
-{
-   
-
-    if (auth()->user()->role !== 'admin') {
-        abort(403, 'Unauthorized');
-    }
-
-
-     $validated = $request->validated();
-
-   
-   $updateData = ['status' => $validated['status']];
-
-          if ($validated['status'] === 'approved') {
-             $updateData['date_of_hire'] = Carbon::now();
-            }
-
-   $driver->update($updateData);
-
-   if ($driver->status === 'approved') {
-    return back()->with('error', 'Approved drivers status cannot be changed.');
-   }
-
-    $status = $validated['status'];
-    $message = match ($status) {
-        'approved' => 'Your account has been approved! You can now log in to the system.',
-        'rejected' => 'Sorry, your account has been rejected after review of the information.',
-        default => 'Your account status has been changed to under review.',
-    };
-
-
-    Mail::to($driver->user->email)->send(new DriverStatusMail($driver->user->name, $status, $message));
-
-
-
-    if ($status === 'rejected') {
-        if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
-            \Storage::disk('public')->delete($driver->license_image);
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized');
         }
-        $driver->user()->delete();
-        $driver->delete();
 
-        return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
+        
+        // إذا كان Approved مسبقاً → ممنوع التغيير
+        if ($driver->status === 'approved') {
+            return redirect()->back()->with('error', 'Approved drivers status cannot be changed.');
+        }
+    
+        $validated = $request->validated();
+        
+        if ($validated['status'] === 'pending') {
+        return redirect()->back()
+            ->with('error', 'Please select a status before confirming.');
     }
     
-    return redirect()->back()->with('success', 'Driver status updated and email sent successfully.');
-  } 
-
+    
+        $updateData = ['status' => $validated['status']];
+    
+        if ($validated['status'] === 'approved') {
+            $updateData['date_of_hire'] = Carbon::now();
+        }
+    
+        $driver->update($updateData);
+    
+        $status = $validated['status'];
+    
+        $message = match ($status) {
+            'approved' => 'Your account has been approved! You can now log in to the system.',
+            'rejected' => 'Sorry, your account has been rejected after review of the information.',
+            default => 'Your account status has been changed to under review.',
+        };
+    
+        Mail::to($driver->user->email)
+            ->send(new DriverStatusMail($driver->user->name, $status, $message));
+    
+        if ($status === 'rejected') {
+            if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
+                \Storage::disk('public')->delete($driver->license_image);
+            }
+    
+            $driver->user()->delete();
+            $driver->delete();
+    
+            return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
+        }
+    
+        return redirect()->back()->with('success', 'Driver accepted, status updated and email sent successfully.');
+    }
+    
 
 
 
