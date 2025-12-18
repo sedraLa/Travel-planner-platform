@@ -30,7 +30,19 @@ class DestinationRequest extends FormRequest
             'city' => 'required|string|max:255',
              'country' => 'required|string|max:255',
              'iata_code' => 'required|string|size:3|alpha',
+
+             'timezone' => 'nullable|string|max:100',
+             'language' => 'nullable|string|max:100',
+             'currency' => 'nullable|string|max:100',
+
+             'nearest_airport' => 'nullable|string|max:255',
+              
+             'best_time_to_visit' => 'nullable|string|max:255',
+             'emergency_numbers' => 'nullable|string|max:50',
+             'local_tip' => 'nullable|string|max:255',
+
              'primary_image_index' => 'nullable|integer',
+             
         ];
 
         if($this->isMethod('post')) {
