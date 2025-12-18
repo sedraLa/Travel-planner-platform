@@ -46,7 +46,7 @@
 
                         <!-- Phone -->
                         <div>
-                            <x-input-label for="phone_number" :value="__('Phone Number')" /> 
+                            <x-input-label for="phone_number" :value="__('Phone Number')" />
                             <div class="input-icon-wrapper">
                                 <img src="/icons/phone.svg">
                                 <x-text-input id="phone_number" type="text" name="phone_number" :value="old('phone_number')" />
@@ -169,12 +169,12 @@
                 function goToStep2() {
                     document.getElementById('step1').style.display = 'none';
                     document.getElementById('step2').style.display = 'block';
-            
+
                     document.getElementById('step1Indicator').style.opacity = "0.4";
                     document.getElementById('step2Indicator').style.opacity = "1";
                 }
             </script>
-            
+
 
         </div>
     </div>
