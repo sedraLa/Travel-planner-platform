@@ -10,23 +10,16 @@
                     <h2 class="triply text-xl font-bold text-gray-800">Triply</h2>
                 </div>
             </a>
-<<<<<<< HEAD
 
 
-        </div>
-        <!-- Navigation Links -->
-        <ul>
-            <li><a href="{{ route('destination.index') }}">Destinations</a></li>
-            <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
-            <li><a href="{{ route('flight.show') }}">Flights</a></li>
-            <li><a href="{{route('transport.index')}}">Transport</a></li>
-        </ul>
-        <!-- Settings Dropdown -->
-
-
-=======
 
         </div>
+
+
+
+
+
+ 
         <!-- Navigation Links -->
         <ul>
             @if(auth()->check() && auth()->user()->role === UserRole::DRIVER->value)
@@ -47,7 +40,7 @@
   @endif
         </ul>
         <!-- Settings Dropdown -->
->>>>>>> check-show-reser-driver
+
         <div class="hidden sm:flex sm:items-center sm:ms-6">
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
@@ -129,17 +122,17 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
-<<<<<<< HEAD
+
 
                 <x-responsive-nav-link :href="route('reservations.index')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                     {{ __('reservations') }}
+                </x-responsive-nav-link>
 
-=======
                 <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                     {{ __('Log Out') }}
->>>>>>> check-show-reser-driver
+
                 </x-responsive-nav-link>
             </form>
         </div>

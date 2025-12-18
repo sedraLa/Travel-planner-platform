@@ -86,7 +86,7 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
 {
     return trim($this->name.' '.($this->last_name ?? ''));
-
+}
     
      public function driver()
     {
@@ -96,4 +96,3 @@ class User extends Authenticatable
 }
 
 
-}
