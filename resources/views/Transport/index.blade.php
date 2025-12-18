@@ -107,12 +107,15 @@
 
                                 @if(Auth::user()->role === UserRole::ADMIN->value)
                                     <!--Add vehicles button-->
-                                    <a href="{{ route('vehicle.create', ['transport_id' => $transport->id]) }}">
+                                    <a href="{{ route('admin.vehicles.create', ['transport_id' => $transport->id]) }}">
                                         <button class="add-vehicle-btn" style="border:2px solid #3d3d92">Add Vehicles +</button>
                                     </a>
-                                    <a href="{{ route('vehicle.show', $transport->id) }}">
-                                        <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">View Vehicles</button>
+                                    <a href="{{ route('admin.transports.vehicles', $transport->id) }}">
+                                        <button class="add-vehicle-btn" style="border:2px solid #3d3d92;margin-left:5px">
+                                            View Vehicles
+                                        </button>
                                     </a>
+                                    
                                 @endif
                             </div>
                         </div>

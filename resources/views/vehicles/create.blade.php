@@ -7,7 +7,7 @@
     <div class="vehicle-form-container">
         <h2>Add New Vehicle</h2>
 
-        <form action="{{ route('vehicle.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{ route('admin.vehicles.store') }}" method="post" enctype="multipart/form-data">
             @csrf
 
             @if ($errors->any())

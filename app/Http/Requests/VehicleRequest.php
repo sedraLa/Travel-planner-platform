@@ -14,7 +14,7 @@ class VehicleRequest extends FormRequest
 
     public function rules(): array
     {
-        $vehicleId = $this->route('id'); // اسم الباراميتر بالـ route
+        $vehicleId = $this->route('vehicle'); // اسم الباراميتر بالـ route
 
         return [
             'transport_id'   => 'required|exists:transports,id',

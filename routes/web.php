@@ -98,13 +98,31 @@ Route::get('/transports/{id}', [TransportController::class, 'show'])->name('tran
 
 
 //vehicles routes
-Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.index');
-Route::get('/vehicles',[VehicleController::class,'index'])->name('vehicle.show');
-Route::get('/vehicle/create',[VehicleController::class,'create'])->name('vehicle.create');
-Route::post('/vehicle/store',[VehicleController::class,'store'])->name('vehicle.store');
-Route::get('/vehicle/{id}/edit', [VehicleController::class, 'edit'])->name('vehicle.edit');
-Route::put('/vehicle/{id}/update', [VehicleController::class, 'update'])->name('vehicle.update');
-Route::delete('/vehicle/{id}/destroy', [VehicleController::class, 'destroy'])->name('vehicle.destroy');
+// USER – browse vehicles
+Route::get('/vehicles', [VehicleController::class, 'index'])
+    ->name('vehicles.index');
+
+// ADMIN – manage vehicles
+Route::get('/admin/transports/{transport}/vehicles', 
+    [VehicleController::class, 'vehiclesByTransport']
+)->name('admin.transports.vehicles');
+
+
+Route::get('/admin/vehicles/create', [VehicleController::class, 'create'])
+    ->name('admin.vehicles.create');
+
+Route::post('/admin/vehicles', [VehicleController::class, 'store'])
+    ->name('admin.vehicles.store');
+
+Route::get('/admin/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
+    ->name('admin.vehicles.edit');
+
+Route::put('/admin/vehicles/{vehicle}', [VehicleController::class, 'update'])
+    ->name('admin.vehicles.update');
+
+Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy'])
+    ->name('admin.vehicles.destroy');
+
 //order vehicles
 Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->name('vehicle.order');
 Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
