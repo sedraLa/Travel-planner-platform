@@ -2,8 +2,8 @@
     <div class="register-wrapper">
         <div class="register-card">
 
-            <h2 class="title">Welcome Back</h2>
-            <p class="subtitle">Log in to continue your journey</p>
+            <h2 class="title" style="text-align:center;">Welcome Back</h2>
+            <p class="subtitle" style="text-align:center;">Log in to continue your journey</p>
 
             {{-- Success Message --}}
             @if (session('success'))
@@ -59,7 +59,7 @@
                     Log in
                 </button>
 
-                <a href="{{ route('register.select-role') }}" class="back-link">
+                <a href="{{ route('register.select-role') }}" class="back-link" style="text-align:center;">
                     Create a new account
                 </a>
 
