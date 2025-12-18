@@ -11,15 +11,7 @@
                 </div>
             </a>
 
-
-
         </div>
-
-
-
-
-
- 
         <!-- Navigation Links -->
         <ul>
             @if(auth()->check() && auth()->user()->role === UserRole::DRIVER->value)
@@ -40,7 +32,6 @@
   @endif
         </ul>
         <!-- Settings Dropdown -->
-
         <div class="hidden sm:flex sm:items-center sm:ms-6">
             <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
@@ -53,9 +44,6 @@
                     <x-dropdown-link :href="route('profile.edit')">
                         {{ ('Profile') }}
                     </x-dropdown-link>
-                    <x-dropdown-link :href="route('reservations.index')">
-                        {{ __('Show reservation') }}
-                    </x-dropdown-link>
 
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
@@ -66,16 +54,6 @@
                             {{ ('Log Out') }}
                         </x-dropdown-link>
                     </form>
-
-
-                    @if(Auth::check() && Auth::user()->role == 'user')
-                        <x-dropdown-link :href="route('favorites.show')">
-                            {{ __('Show Favorite') }}
-                        </x-dropdown-link>
-                    @endif
-
-
-
                 </x-slot>
             </x-dropdown>
         </div>
@@ -122,17 +100,9 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
 
-
-
-                <x-responsive-nav-link :href="route('reservations.index')" onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                    {{ __('reservations') }}
-                </x-responsive-nav-link>
-
                 <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
                     {{ __('Log Out') }}
-
                 </x-responsive-nav-link>
             </form>
         </div>
