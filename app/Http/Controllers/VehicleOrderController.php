@@ -49,10 +49,13 @@ class VehicleOrderController extends Controller
     })
     ->get();
 
+        $transports = Transport::all();
 
         if ($availableVehicles->isEmpty()) {
-            return view('transport.index')
-                ->with('error', 'No available vehicles for the selected time.');
+            return redirect()
+            ->route('transport.index')
+            ->with('vehicle_error', 'No available vehicles for the required date and time.');
+        
         }
 
         // geocoding service

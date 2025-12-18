@@ -24,6 +24,13 @@
                             </ul>
                         </div>
                     @endif
+        
+    @if(session('vehicle_error'))
+    <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
+        {{ session('vehicle_error') }}
+    </div>
+@endif
+
 
         <div class="hero-background transport-page">
             <div class="heading">
