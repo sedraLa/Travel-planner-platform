@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\DestinationRequest;
+use App\Http\Requests\HighlightRequest;
 use App\Models\Destination;
+use App\Models\Highlight;
 use App\Models\DestinationImage;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Events\DestinationViewed;
+
+
 
 
 
@@ -33,13 +37,16 @@ class DestinationController extends Controller
             });
         }
 
-         $destinations = $query->paginate(8);
-
-         //show popular destinations
-         $popularDestinations = Destination::with('images')
-         ->orderByDesc('clicks')
-         ->take(6)
-         ->get();
+        $destinations = $query
+        ->orderByDesc('clicks') // popular first
+        ->paginate(8);
+    
+    // نحتفظ فيها بس عشان الـ badge
+    $popularDestinations = Destination::select('id')
+        ->orderByDesc('clicks')
+        ->take(6)
+        ->get();
+    
 
 
         return view('destinations.index',compact('destinations','popularDestinations'));
@@ -67,8 +74,27 @@ class DestinationController extends Controller
             'city' => $request->city,
             'country' => $request->country,
             'iata_code' => strtoupper($request['iata_code']),
+            'timezone'=>$request->timezone,
+            'language'=> $request->language,
+            'currency'=> $request->currency,
+            'nearest_airport'=> $request->nearest_airport,
+            'best_time_to_visit'=> $request->best_time_to_visit,
+            'emergency_numbers'=> $request->emergency_numbers,
+            'local_tip'=> $request->local_tip,
 
         ]);
+
+
+
+         if ($request->filled('highlights')) {
+        foreach ($request->highlights as $title) {
+            if (!empty($title)) {
+                $destination->highlights()->create([
+                    'title' => $title,
+                ]);
+            }
+        }
+    }
 
         // if there is any loaded images
 
@@ -94,7 +120,7 @@ class DestinationController extends Controller
      */
     public function show(string $id)
     {
-        $destination = Destination::with('images')->findOrFail($id);
+        $destination = Destination::with(['images','highlights'])->findOrFail($id);
         $primaryImage = $destination->images->where('is_primary', true)->first();
 
         //event to increment clicks
@@ -108,10 +134,10 @@ class DestinationController extends Controller
     public function edit(string $id)
     {
 
-    $destination = Destination::findOrFail($id);
+    $destination = Destination::with('highlights', 'images')->findOrFail($id);
 
     return view('destinations.edit', compact('destination'));
-    }
+    }  
 
     /**
      * Update the specified resource in storage.
@@ -122,6 +148,19 @@ class DestinationController extends Controller
     $destination = Destination::findOrFail($id);
     // update destination info
     $destination->update($request->validated());
+
+
+    if ($request->filled('highlight')) {
+    foreach ($request->highlight as $highlightText) {
+        if (!empty($highlightText)) {
+            $destination->highlights()->create([
+                'title' => $highlightText
+            ]);
+        }
+    }
+}
+
+
 
     // handle loading new images
     if ($request->hasFile('images')) {
@@ -137,9 +176,7 @@ class DestinationController extends Controller
     }
 
 
-
-
-    return redirect()->route('destination.show', $destination->id)->with('success', 'Destination updated successfully');
+    return redirect()->route('destination.index', $destination->id)->with('success', 'Destination updated successfully');
 
 
     }

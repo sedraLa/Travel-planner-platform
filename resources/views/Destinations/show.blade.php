@@ -82,14 +82,14 @@
 
      <!--Hero background-->
      <div class="main-wrapper">
-        <div class="hero-background">
-        <div class="headings">
-            <h1>Santorini</h1>
-            <p style="letter-spacing: normal; font-size: 18px;">A brathtaking island paradise where ehitewashed buildings cascade down dramatic cliffs overlooking the fdeep blue Aegean sea. Experience unforgatteble sunsets world class wines and timeless mediterraneen charm </p>
+        <div class="hero-background" style="background-image: url('{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : '' }}');">>
+        <div class="headings" >
+            <h1>{{$destination->name}}</h1>
+            <p style="letter-spacing: normal; font-size: 18px;">{{$destination->description}} </p>
             <div class="rating-location">
                 <div class="location">
                     <img src="/images/icons/location-dot-solid-full (4).svg" class="heading-icon">
-                    <h5>Oia, Greece</h5>
+                    <h5>{{$destination->city}},{{$destination->country}} </h5>
                 </div>
                 <a style="color:#f4f4f4;" href="">
                 <div class="rating">
@@ -114,27 +114,15 @@
 
             <!--Highlight cards-->
             <div class="highlights-cards">
-                <div class="highlight-card">
-                    <span>✓</span>
-                    <p>world-famous sunset views from oia</p>
-                </div>
-                <div class="highlight-card">
-                    <span>✓</span>
-                    <p>world-famous sunset views from oia</p>
-                </div>
-                <div class="highlight-card">
-                    <span>✓</span>
-                    <p>world-famous sunset views from oia</p>
-                </div>
-                <div class="highlight-card">
-                    <span>✓</span>
-                    <p>world-famous sunset views from oia</p>
-                </div>
-                <div class="highlight-card">
-                    <span>✓</span>
-                    <p>Traditional windmills and blue doomed churches</p>
-                </div>
-            </div>
+    @forelse ($destination->highlights as $highlight)
+        <div class="highlight-card">
+            <span>✓</span>
+            <p>{{ $highlight->title }}</p>
+        </div>
+    @empty
+        <p>No highlights available for this destination.</p>
+    @endforelse
+</div>
         </div>
 
         <!--Experiences section-->
@@ -187,15 +175,15 @@
                 <div class="info-grid">
                   <div>
                     <span>TIMEZONE</span>
-                    <p>EET (UTC+2)</p>
+                    <p>{{$destination->timezone}}</p>
                   </div>
                   <div>
                     <span>LANGUAGE</span>
-                    <p>Greek</p>
+                    <p>{{$destination->language}}</p>
                   </div>
                   <div>
                     <span>CURRENCY</span>
-                    <p>€ Euro (EUR)</p>
+                    <p>{{$destination->currency}}</p>
                   </div>
                   <div>
                     <span>WEATHER</span>
@@ -214,11 +202,12 @@
                 <div class="info-grid two-col">
                   <div>
                     <span>NEAREST AIRPORT</span>
-                    <p>Santorini (Thira) Airport (JTR)</p>
+                    <p>{{$destination->nearest_airport}}</p>
                   </div>
                   <div>
                     <span>PUBLIC TRANSPORT</span>
-                    <p>All transport services are available</p>
+                     <p> Click <a href="{{ route('transport.index') }}" class="text-blue-600 underline hover:text-blue-800">here</a> 
+                                         to view available transport options. </p>
                   </div>
                 </div>
               </div>
@@ -231,15 +220,15 @@
                 <div class="info-grid two-col">
                   <div>
                     <span>BEST TIME TO VISIT</span>
-                    <p>April – October (Warm weather & festivals)</p>
+                    <p>{{$destination->best_time_to_visit}}</p>
                   </div>
                   <div>
                     <span>EMERGENCY NUMBERS</span>
-                    <p>Police: 100 | Ambulance: 166 | Fire: 199</p>
+                    <p>{{$destination->emergency_numbers}}</p>
                   </div>
                   <div>
                     <span>LOCAL TIP</span>
-                    <p>Tipping is appreciated but not mandatory.</p>
+                    <p>{{$destination->local_tip}}</p>
                   </div>
                 </div>
               </div>
@@ -248,24 +237,19 @@
                   <!--Photo Gallery-->
         <div class="highlights-header" style="text-align: center; margin-top:65px;margin-bottom:-60px">
             <h1>Photo Gallery</h1>
-            <p>Discover the beauty of Santorini through stunning imagery </p>
+            <p>Discover the beauty of {{$destination->name}} through stunning imagery </p>
         </div>
         <div class="photo-gallery">
-            <div class="photo">
-                <img src="{{asset('images/photo_٢٠٢٥-٠٤-٠٩_١٣-٠٦-٣٥.jpg')}}" class="photo" alt="photo">
-            </div>
-            <div class="photo">
-                <img src="{{asset('images/photo_٢٠٢٥-٠٤-٠٩_١٣-٠٦-٣٥.jpg')}}" class="photo" alt="photo">
-            </div>
-            <div class="photo">
-                <img src="{{asset('images/photo_٢٠٢٥-٠٤-٠٩_١٣-٠٦-٣٥.jpg')}}" class="photo" alt="photo">
-            </div>
-            <div class="photo">
-                <img src="{{asset('images/photo_٢٠٢٥-٠٤-٠٩_١٣-٠٦-٣٥.jpg')}}" class="photo" alt="photo">
-            </div>
-            <div class="photo">
-                <img src="{{asset('images/photo_٢٠٢٥-٠٤-٠٩_١٣-٠٦-٣٥.jpg')}}" class="photo" alt="photo">
-            </div>
+            <div class="photo-gallery">
+                @forelse ($destination->images as $image)
+                   <div class="photo">
+                          <img src="{{ asset('storage/' . $image->image_url) }}" class="photo" alt="Destination photo">
+                    </div>
+                @empty
+                  <p>No photos available for this destination.</p>
+                @endforelse
+              </div>
+
         </div>
 
     </div>
