@@ -13,20 +13,44 @@ class ActivityController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    $query = Activity::with('destination');
-
-    if ($request->has('search') && !empty($request->search)) {
-        $search = $request->search;
-        $query->where('name', 'like', "%{$search}%")
-              ->orWhereHas('destination', function($q) use ($search) {
-                  $q->where('name', 'like', "%{$search}%");
-              });
+    {
+        $query = Activity::with('destination');
+    
+        // Keyword search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhereHas('destination', fn($q) => $q->where('name', 'like', "%{$search}%"));
+        }
+    
+        // Filters
+        if ($request->filled('availability')) {
+            $query->where('availability', $request->availability);
+        }
+        if ($request->filled('difficulty')) {
+            $query->where('difficulty_level', $request->difficulty);
+        }
+        if ($request->filled('guide_language')) {
+            $query->where('guide_language', $request->guide_language);
+        }
+        if ($request->filled('requires_booking')) {
+            $query->where('requires_booking', $request->requires_booking);
+        }
+        if ($request->filled('family_friendly')) {
+            $query->where('family_friendly', $request->family_friendly);
+        }
+        if ($request->filled('pets_allowed')) {
+            $query->where('pets_allowed', $request->pets_allowed);
+        }
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+    
+        $activities = $query->get();
+    
+        return view('activities.index', compact('activities'));
     }
-
-    $activities = $query->get(); // جلب النشاطات بناءً على البحث
-    return view('activities.index', compact('activities'));
-}
+    
 
     /**
      * Show the form for creating a new resource.
