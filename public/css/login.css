@@ -1,159 +1,278 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+      /* Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        overflow: hidden;
+        color: beige;
+    }
+
+   
+
+
+
+    /* خيارات */
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    /* كل خيار */
+    .option-box {
+        display: flex;
+        justify-content: flex-start;
+        padding: 16px;
+        border-radius: 14px;
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #e5e7eb;
+        text-decoration: none;
+        transition: 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        align-items: flex-start;
+
+        /* نفس المسافة للجميع */
+        gap: 14px;
+    }
+
+    /* تأثير Hover مع حركة Gradient */
+    .option-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.15);
+        background: linear-gradient(135deg, #ffffff, #e8f0ff, #ffffff);
+        background-size: 300% 300%;
+        animation: gradientMove 2s ease infinite;
+    }
+
+    @keyframes gradientMove {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* دائرة الأيقونة *//* Reset */
+
+
+/* كل مجموعة */
+.form-group {
+    margin-bottom: 15px;
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: beige;
-    overflow: hidden;
-}
-
-.background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    filter: blur(8px);
-    z-index: -1;
-}
-
-.login-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    max-width: 1000px;
+/* الحقول */
+input,
+select,
+textarea {
+    margin-top: 6px;
     width: 100%;
-    gap: 100px;
-    background-image: url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    height: auto;
-    min-height: 350px;
+    padding: 12px;
     border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.95);
+    color: #111;
 }
 
-
-.left {
-    line-height: 1.6;
-    padding: 10px;
-    width: 40%;
+/* سائق */
+.driver-box {
+    margin-top: 20px;
 }
 
-h1 {
-    font-size: 2rem;
-}
-
-h2 {
-    font-size: 2rem;
-}
-
-p {
-    font-size: 1rem;
-}
-
-
-.form-login {
+/* زر التسجيل */
+.main-btn {
     width: 100%;
-    max-width: 300px;
-    border: 5px solid white;
+    margin-top: 20px;
+    padding: 13px;
     border-radius: 10px;
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: auto;
-    min-height: 400px;
+    background: #2563eb;
+    color: #fff;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.main-btn:hover {
+    background: #1e4ed8;
 }
 
-label {
+/* مفيد */
+.back-link {
     display: block;
-    margin-bottom: 10px;
+    margin-top: 18px;
+    color: #eef2ff;
+}
+
+.note {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #ffe19c;
+}
+
+    .option-box .icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* الأيقونة */
+    /* نلغي أي مساحة جوات الصورة */
+    .option-box .icon img {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+        filter: brightness(0) invert(1);
+    }
+
+
+    /* ألوان حسب النوع */
+    .traveler .icon {
+        background: linear-gradient(135deg, #10b981, #34d399);
+    }
+
+    .driver .icon {
+        background: linear-gradient(135deg, #f59e0b, #fbbf24);
+    }
+
+    /* نص الخيار */
+    .option-box .text h3 {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+        color: #1f2937;
+        /*margin-left:-150px;*/
+    }
+
+    .option-box .text p {
+        margin: 0;
+        font-size: 13px;
+        color: #6b7280;
+    }
+
+    /* السهم */
+    .arrow {
+        margin-left: auto;
+        font-size: 22px;
+        color: #9ca3af;
+    }
+
+    /* الرجوع */
+    .back-link {
+        display: block;
+        margin-top: 20px;
+        color: #f3f4f6;
+        font-size: 14px;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .back-link:hover {
+        color: #ffffffd8;
+    }
+
+    /* الفوتر */
+    .footer {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #d1d5db;
+    }
+
+
+
+
+
+/* الخلفية */
+.register-wrapper {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.35)),
+                url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg') center/cover no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* البطاقة */
+.register-card {
+    width: 520px;
+    padding: 40px 35px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 8px 35px rgba(0,0,0,0.30);
+    color: #fff;
+    text-align: left;
+}
+
+.title {
+    font-size: 26px;
+    font-weight: 700;
     color: white;
-    font-size: 15px;
+}
+.subtitle {
+    color: #e9e9e9;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+/* grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 20px;
+}
+
+.full {
+    grid-column: span 2;
+}
+
+/* الأيقونات داخل الحقول */
+.input-icon-wrapper {
+    position: relative;
+}
+.input-icon-wrapper img {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    opacity: 0.7;
+}
+.input-icon-wrapper input,
+.input-icon-wrapper select {
+    padding-left: 45px !important;
+}
+
+/* النجمة الحمراء */
+x-input-label label::after {
+    content: " *";
+    color: #ff4d4d;
     font-weight: bold;
 }
 
-input[type="email"],
-input[type="password"],
-input[type="text"] {
+/* زر */
+.main-btn {
     width: 100%;
-    padding: 5px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.custom-primary-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #4a90e2;
+    padding: 14px;
+    border-radius: 12px;
+    background: #2563eb;
     color: white;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    margin-top:15px;
-    margin-bottom: 15px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+.main-btn:hover {
+    background: #1e4ed8;
 }
 
-button:hover {
-    background-color: #2667a8;
+.back-link {
+    color: #e9e9e9;
 }
-
-a {
-    color: #ffffff;
-    font-size: 13px;
-    display: inline-block;
-    margin-top: 5px;
-    transition: color 0.3s;
-    margin-left: 28px;
-}
-
-a:hover {
-    color: #ffffffb3 ;
-}
-
-.custom-error-message {
-    background-color: #ffe6e6;
-    color: #d60000;
-    border: 1px solid #ffb3b3;
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    list-style: none;
-}
-.custom-error-message li {
-    margin-bottom: 4px;
-}
-.forget-pass {
-    display:flex;
-    flex-direction:column;
-}
-.forget-pass p {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size:1rem;
-}
-
-/* public/css/custom.css */
-.my-logo {
-    width: 200px;
-    height: auto;
-}
-
-

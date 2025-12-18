@@ -46,8 +46,8 @@ public function store(Request $request): RedirectResponse
 
     if ($role === UserRole::DRIVER->value) {
         $rules = array_merge($rules, [
-            'license_category' => 'nullable|string|max:50',
-            'license_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'license_category' => 'required|string|max:50',
+            'license_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'experience' => 'nullable|string',
             'address' => 'nullable|string|max:255',
             'age' => 'nullable|integer|min:18|max:100',
@@ -89,7 +89,7 @@ public function store(Request $request): RedirectResponse
         ]);
 
         return redirect()->route('login')
-            ->with('success', 'تم إرسال طلبك للمراجعة. سيتم إعلامك بعد الموافقة.');
+            ->with('success', 'Your request has been sent to review, please check your email');
     }
 
     event(new Registered($user));
