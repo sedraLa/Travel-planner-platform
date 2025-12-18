@@ -63,46 +63,6 @@
     margin-bottom: 15px;
 }
 
-<<<<<<< HEAD
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: beige;
-    overflow: hidden;
-}
-
-.background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    filter: blur(8px);
-    z-index: -1;
-}
-
-.login-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    max-width: 1150px;
-    width: 100%;
-    gap: 80px;
-    background-image: url('/images/paul-siewert-oohrQLy21RM-unsplash (1).jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    height: auto;
-    min-height: 350px;
-=======
 /* الحقول */
 input,
 select,
@@ -110,7 +70,6 @@ textarea {
     margin-top: 6px;
     width: 100%;
     padding: 12px;
->>>>>>> check-show-reser-driver
     border-radius: 10px;
     border: 1px solid #e5e7eb;
     background: rgba(255, 255, 255, 0.95);
@@ -122,31 +81,11 @@ textarea {
     margin-top: 20px;
 }
 
-<<<<<<< HEAD
-h1 {
-    font-size: 2rem;
-}
-
-h2 {
-    font-size: 2rem;
-}
-
-p {
-    font-size: 21px;
-}
-
-
-.form-login {
-    width: 100%;
-    max-width: 425px;
-    border: 5px solid white;
-=======
 /* زر التسجيل */
 .main-btn {
     width: 100%;
     margin-top: 20px;
     padding: 13px;
->>>>>>> check-show-reser-driver
     border-radius: 10px;
     background: #2563eb;
     color: #fff;
@@ -318,15 +257,8 @@ x-input-label label::after {
     font-weight: bold;
 }
 
-<<<<<<< HEAD
-input[type="email"],
-input[type="password"],
-input[type="text"],
-select {
-=======
 /* زر */
 .main-btn {
->>>>>>> check-show-reser-driver
     width: 100%;
     padding: 14px;
     border-radius: 12px;
@@ -344,55 +276,3 @@ select {
 .back-link {
     color: #e9e9e9;
 }
-<<<<<<< HEAD
-
-a {
-    color: #ffffff;
-    font-size: 13px;
-    display: inline-block;
-    margin-top: 5px;
-    transition: color 0.3s;
-    margin-left: 125px;
-}
-
-a:hover {
-    color: #ffffffb3 ;
-}
-
-.custom-error-message {
-    background-color: #ffe6e6;
-    color: #d60000;
-    border: 1px solid #ffb3b3;
-    border-radius: 6px;
-    padding: 8px 12px;
-    margin-top: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    list-style: none;
-}
-.custom-error-message li {
-    margin-bottom: 4px;
-}
-.forget-pass {
-    display:flex;
-    flex-direction:column;
-}
-.forget-pass p {
-    text-align: center;
-    margin-bottom: 10px;
-    font-size:1rem;
-}
-
-/* public/css/custom.css */
-.my-logo {
-    width: 200px;
-    height: auto;
-}
-
-.container {
-    display:flex;
-    gap:10px;
-}
-
-=======
->>>>>>> check-show-reser-driver
