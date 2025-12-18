@@ -16,17 +16,47 @@
 
 
           {{-- Search Form  --}}
-        <form class="search-form" method="GET" action="{{route('drivers.index')}}"  style="margin-top:50px; "">
-            <h1>Search  for a driver by Name or Category</h1>
-            <div class="search-container">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                </svg>
-                <input type="search" id="default-search" name="search" class="search-input" placeholder="Search destinations..." required />
-                <button type="submit" class="search-button">Search</button>
+          <form method="GET" action="{{ route('drivers.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
+            {{-- Keyword --}}
+            <div class="flex-1 min-w-[200px]">
+                <label class="text-sm text-gray-600">Search</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Name, Email, Category, Status" class="w-full border rounded-lg p-2">
+            </div>
+        
+            {{-- Status --}}
+            <div>
+                <label class="text-sm text-gray-600">Status</label>
+                <select name="status" class="border rounded-lg p-2" style="margin-bottom:0">
+                    <option value="">All</option>
+                    <option value="pending" @selected(request('status')=='pending')>Pending</option>
+                    <option value="approved" @selected(request('status')=='approved')>Approved</option>
+                    <option value="rejected" @selected(request('status')=='rejected')>Rejected</option>
+                </select>
+            </div>
+        
+            {{-- License Category --}}
+            <div>
+                <label class="text-sm text-gray-600">License Category</label>
+                <select name="license_category" class="border rounded-lg p-2" style="margin-bottom:0">
+                    <option value="">All</option>
+                    <option value="A" @selected(request('license_category')=='A')>A</option>
+                    <option value="B" @selected(request('license_category')=='B')>B</option>
+                </select>
+            </div>
+        
+            {{-- Country --}}
+            <div>
+                <label class="text-sm text-gray-600">Country</label>
+                <input type="text" name="country" value="{{ request('country') }}" placeholder="Country" class="border rounded-lg p-2">
+            </div>
+        
+            {{-- Actions --}}
+            <div class="flex gap-2">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>
+                <a href="{{ route('drivers.index') }}" class="px-4 py-2 border rounded-lg text-gray-600">Reset</a>
             </div>
         </form>
+        
 
 
         {{--Drivers list --}}

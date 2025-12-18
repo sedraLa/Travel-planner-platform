@@ -23,34 +23,45 @@ class DriverController extends Controller
     /**
      
      */
-public function index(Request $request)
-{
-    $query = Driver::query();
-
-    if ($request->filled('search')) {
-        $searchTerm = $request->search;
-
-        // إذا البحث A أو B → ابحث بالفئة فقط
-        if (in_array(strtoupper($searchTerm), ['A', 'B'])) {
-            $query->where('license_category', strtoupper($searchTerm));
-        }
-        
-         elseif (in_array($searchTerm, ['approved', 'pending', 'rejected'])) {
-            $query->where('status', $searchTerm);
-        }
-        else {
-            $query->whereHas('user', function ($q) use ($searchTerm) {
-                $q->where('name', 'like', "%{$searchTerm}%");
+    public function index(Request $request)
+    {
+        $query = Driver::with('user');
+    
+        if ($request->filled('search')) {
+            $term = $request->search;
+    
+            $query->where(function($q) use ($term) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$term%")
+                                                  ->orWhere('last_name', 'like', "%$term%")
+                                                  ->orWhere('email', 'like', "%$term%"));
+                if (in_array(strtoupper($term), ['A', 'B'])) {
+                    $q->orWhere('license_category', strtoupper($term));
+                }
+                if (in_array(strtolower($term), ['pending', 'approved', 'rejected'])) {
+                    $q->orWhere('status', strtolower($term));
+                }
             });
         }
-
+    
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+    
+        if ($request->filled('license_category')) {
+            $query->where('license_category', $request->license_category);
+        }
+    
+        if ($request->filled('country')) {
+            $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
+        }
+    
+        $query->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')");
+    
+        $drivers = $query->get();
+    
+        return view('driver.index', compact('drivers'));
     }
- $query->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')");
-
-    $drivers = $query->get();
-
-    return view('driver.index', compact('drivers'));
-}
+    
 
 
 
