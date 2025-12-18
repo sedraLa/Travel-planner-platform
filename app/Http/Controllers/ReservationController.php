@@ -79,7 +79,7 @@ public function index(Request $request)
 
     $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
-    // المستخدم العادي يشوف حجوزاته فقط
+    // traveler views his reservations only
     if (!$isAdmin) {
         $query->where('user_id', Auth::id());
     }
