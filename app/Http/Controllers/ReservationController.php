@@ -75,113 +75,67 @@ public function pay($reservationId) {
 }
 public function index(Request $request)
 {
-    $query = Reservation::with(['hotel', 'user', 'hotel.destination']);
+    $query = Reservation::with(['hotel', 'hotel.destination', 'user']);
 
-    // غير الأدمن يشوف حجوزاته فقط
-    if (!Auth::check() || Auth::user()->role !== 'admin') {
+    $isAdmin = Auth::check() && Auth::user()->role === 'admin';
+
+    // المستخدم العادي يشوف حجوزاته فقط
+    if (!$isAdmin) {
         $query->where('user_id', Auth::id());
     }
 
-    // فلترة/بحث.
-    if ($request->filled('search')) {
-        $term = trim($request->input('search'));
+    /* =======================
+       Keyword search
+    ======================= */
+    if ($request->filled('keyword')) {
+        $term = trim($request->keyword);
 
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            // ===== بحث الأدمن =====
-            $month = null;
-            $year  = null;
+        $query->where(function ($q) use ($term, $isAdmin) {
 
-            // 1) سنة فقط: 4 أرقام
-            if (ctype_digit($term) && strlen($term) === 4) {
-                $year = (int) $term;
+            // Hotel
+            $q->whereHas('hotel', fn ($h) =>
+                $h->where('name', 'like', "%{$term}%")
+            )
+
+            // Destination
+            ->orWhereHas('hotel.destination', fn ($d) =>
+                $d->where('name', 'like', "%{$term}%")
+            );
+
+            // User (admin only)
+            if ($isAdmin) {
+                $q->orWhereHas('user', function ($u) use ($term) {
+                    $u->where('name', 'like', "%{$term}%")
+                      ->orWhere('last_name', 'like', "%{$term}%")
+                      ->orWhere('email', 'like', "%{$term}%")
+                      ->orWhereRaw("CONCAT(name,' ',last_name) LIKE ?", ["%{$term}%"])
+                      ->orWhereRaw("CONCAT(last_name,' ',name) LIKE ?", ["%{$term}%"]);
+                });
             }
-            // 2) شهر فقط
-            elseif (ctype_digit($term) && strlen($term) <= 2) {
-                $month = (int) $term;
-            }
-            // 3) شهر + سنة
-            elseif (strpos($term, '-') !== false || strpos($term, '/') !== false) {
-                try {
-                    $dt    = Carbon::parse("1 $term");
-                    $month = $dt->month;
-                    $year  = $dt->year;
-                } catch (\Throwable $e) {}
-            }
-            // 4) اسم شهر فقط
-            else {
-                try {
-                    $dt    = Carbon::parse("1 $term");
-                    $month = $dt->month;
-                } catch (\Throwable $e) {}
-            }
-
-            $query->where(function ($q) use ($term, $month, $year) {
-
-                // فندق
-                $q->whereHas('hotel', fn($h) =>
-                        $h->where('name', 'like', "%{$term}%")
-                  )
-
-                // وجهة
-                  ->orWhereHas('hotel.destination', fn($d) =>
-                        $d->where('name', 'like', "%{$term}%")
-                  )
-
-                // مستخدم (المهم: اسم أول + اسم آخر + كامل)
-                  ->orWhereHas('user', function ($u) use ($term) {
-
-                        // بحث على الحقول المفردة
-                        $u->where('name', 'like', "%{$term}%")
-                          ->orWhere('last_name', 'like', "%{$term}%")
-                          ->orWhere('email', 'like', "%{$term}%");
-
-                        // بحث على الاسم الكامل (Full Name)
-                        $u->orWhereRaw("CONCAT(name, ' ', last_name) LIKE ?", ["%{$term}%"]);
-                        $u->orWhereRaw("CONCAT(last_name, ' ', name) LIKE ?", ["%{$term}%"]);
-                  })
-
-                // بحث الحالة
-                  ->orWhere('reservation_status', 'like', "%{$term}%");
-
-                // التاريخ
-                if ($month !== null && $year !== null) {
-                    $q->orWhere(function ($qq) use ($month, $year) {
-                        $qq->whereMonth('check_in_date', $month)
-                           ->whereYear('check_in_date',  $year);
-                    });
-                } elseif ($month !== null) {
-                    $q->orWhereMonth('check_in_date', $month);
-                } elseif ($year !== null) {
-                    $q->orWhereYear('check_in_date',  $year);
-                }
-            });
-            // ===== /بحث الأدمن =====
-
-        } else {
-            // ===== المستخدم العادي: بحث فندق/وجهة/تاريخ =====
-            $query->where(function ($q) use ($term) {
-
-                // فندق
-                $q->whereHas('hotel', fn($h) =>
-                        $h->where('name', 'like', "%{$term}%")
-                  )
-
-                // وجهة
-                  ->orWhereHas('hotel.destination', fn($d) =>
-                        $d->where('name', 'like', "%{$term}%")
-                  );
-
-                // تاريخ
-                try {
-                    $date = Carbon::parse($term)->toDateString();
-                    $q->orWhereDate('check_in_date', $date);
-                } catch (\Throwable $e) {}
-            });
-            // ===== /المستخدم العادي =====
-        }
+        });
     }
 
-    $reservations = $query->get();
+    /* =======================
+       Date filters
+    ======================= */
+    if ($request->filled('month')) {
+        $query->whereMonth('check_in_date', $request->month);
+    }
+
+    if ($request->filled('year')) {
+        $query->whereYear('check_in_date', $request->year);
+    }
+
+    /* =======================
+       Status filter
+    ======================= */
+    if ($request->filled('status')) {
+        $query->where('reservation_status', $request->status);
+    }
+
+    $reservations = $query->latest()->get();
+
     return view('reservation.index', compact('reservations'));
 }
+
 }
