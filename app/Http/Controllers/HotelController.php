@@ -50,7 +50,7 @@ public function show(string $id, GeocodingService $geo)
         $hotel->city,
         $hotel->country
     ]));
-    $coords = $geo->geocodeAddress($fullAddress);
+    $coords = $geo->geocodeAddress($fullAddress) ?? ['latitude' => null, 'longitude' => null];
     return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));
 }
 
