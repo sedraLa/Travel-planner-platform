@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
+    @endpush
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             @if(Auth::user()->role === 'admin')
@@ -10,8 +14,8 @@
     </x-slot>
 
     {{-- 🔎 Search --}}
-<<<<<<< HEAD
-    
+
+
 
     <form method="GET"
     class="mb-6 bg-white p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
@@ -76,7 +80,7 @@
 </form>
 
 
-=======
+
     @if(Auth::check() && Auth::user()->role === 'admin')
         {{-- الأدمن: بحث شامل --}}
         <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
