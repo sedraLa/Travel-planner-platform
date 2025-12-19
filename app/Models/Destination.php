@@ -28,7 +28,7 @@ class Destination extends Model
         'best_time_to_visit',
         'emergency_numbers',
         'local_tip',
-        
+
     ];
 
     protected $hidden = [
@@ -46,9 +46,11 @@ class Destination extends Model
         return $this->hasMany(Hotel::class);
     }
 
-    public function favorites(): MorphMany{
+    public function favorites(): MorphMany
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
     }
-    
+
     public function activities() {
         return $this->hasMany(Activity::class);
     }
