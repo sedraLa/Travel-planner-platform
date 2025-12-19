@@ -1,12 +1,20 @@
-@php use App\Enums\UserRole;@endphp
+  @php
+    use App\Enums\UserRole;
+
+    $popularIds = isset($popularDestinations)
+        ? $popularDestinations->pluck('id')->toArray()
+        : [];
+@endphp
+
 <x-app-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
-       
+        <link rel="stylesheet" href="{{ asset('css/destinations.css') }}">
     @endpush
 
     <div class="main-wrapper">
+
         @if (Auth::user()->role === UserRole::ADMIN->value)
+            <!-- Create Destination Button -->
             <div class="flex justify-end mb-4 px-6 pt-6">
                 <a href="{{ route('destinations.create') }}"
                    class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
@@ -21,26 +29,33 @@
             @endif
         @endif
 
+        <!-- Hero Background -->
         <div class="hero-background destinations-page"></div>
 
-        <form class="search-form" method="GET" action="{{route('destination.index')}}">
+        {{-- Search Form --}}
+        <form class="search-form" method="GET" action="{{ route('destination.index') }}">
             <h1>Search your next destination</h1>
+
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
                      viewBox="0 0 20 20">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                 </svg>
-                <input type="search" id="default-search" name="search" class="search-input"
-                       placeholder="Search destinations..." required/>
+
+                <input type="search" id="default-search" name="search"
+                       class="search-input" placeholder="Search destinations..." required>
+
                 <button type="submit" class="search-button">Search</button>
             </div>
         </form>
 
-        <div class='cards'>
+        {{-- Cards Section --}}
+        <div class="cards">
+
             @forelse ($destinations as $destination)
                 <div class="card">
-                    <div class="card-img">
+                        <div class="card-img">
                         @if (Auth::user()->role === UserRole::USER->value)
                         {{-- Add heart button to add to favourites--}}
                         <button class="fav-btn fav-toggle"
@@ -73,54 +88,87 @@
                                  alt="Destination Image">
                         </a>
                     </div>
-
-                    {{-- نصوص البطاقة --}}
                     <a href="{{ route('destination.show', $destination->id) }}">
-                        <h5>{{ $destination->name }}</h5>
+                        <h5 class="destination-title">
+                            {{ $destination->name }}
+                        
+                            @if(in_array($destination->id, $popularIds))
+                                <span class="popular-tag">Popular</span>
+                            @endif
+                        </h5>
                         <p class="overview">{{ Str::limit($destination->description, 80) }}</p>
                     </a>
                     
+
+
+                    @if(Auth::user()->role === UserRole::ADMIN->value)
+                        <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4">
+                            <a href="{{ route('destinations.edit', ['id' => $destination->id]) }}">
+                                <button
+                                    class="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition duration-200 text-sm shadow-sm">
+                                    Edit
+                                </button>
+                            </a>
+
+                            <form action="{{ route('destination.destroy', $destination->id) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete this destination?');">
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                        class="px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition duration-200 text-sm shadow-sm">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    @endif
+
                 </div>
             @empty
                 <p style="text-align:center;">No destinations found.</p>
             @endforelse
+
         </div>
 
+        {{-- Pagination --}}
         <div class="pagination-wrapper">
             {{ $destinations->appends(request()->query())->links() }}
         </div>
+
     </div>
 </x-app-layout>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        document.addEventListener("click", async (e) => {
+            let btn = e.target.closest(".fav-toggle");
+            if (!btn) return;
     
-    document.addEventListener("click", async (e) => {
-        let btn = e.target.closest(".fav-toggle");
-        if (!btn) return;
-
-        let icon = btn.querySelector("svg");
-
-        try {
-            let res = await fetch(btn.dataset.url, {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                    "Accept": "application/json"
-                }
-            });
-
-            let data = await res.json();
-
-            let isAdded = data.status === "added";
-            icon.classList.toggle("text-red-500", isAdded);
-            icon.classList.toggle("text-gray-500", !isAdded);
-            icon.setAttribute("fill", isAdded ? "currentColor" : "none");
-
-        } catch (err) {
-            console.error(err);
-        }
+            let icon = btn.querySelector("svg");
+    
+            try {
+                let res = await fetch(btn.dataset.url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json"
+                    }
+                });
+    
+                let data = await res.json();
+    
+                let isAdded = data.status === "added";
+                icon.classList.toggle("text-red-500", isAdded);
+                icon.classList.toggle("text-gray-500", !isAdded);
+                icon.setAttribute("fill", isAdded ? "currentColor" : "none");
+    
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    
     });
 
-});
-</script>
+    </script>

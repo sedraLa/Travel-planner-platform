@@ -16,9 +16,8 @@ class Driver extends Model
         'address',
         'license_image',
         'experience',
-        'license_category',
-        'date_of_hire',
-        'status',
+        /*'email',*/
+        /*'phone',*/
     ];
 
     // علاقة One-to-One مع السيارة

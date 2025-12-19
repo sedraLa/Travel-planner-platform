@@ -10,10 +10,10 @@
     </x-slot>
 
     {{-- 🔎 Search --}}
+<<<<<<< HEAD
     
 
     <form method="GET"
-    action="{{ route('reservations.index') }}"
     class="mb-6 bg-white p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
 
   {{-- Keyword --}}
@@ -76,10 +76,10 @@
 </form>
 
 
-
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            @if($reservations->isEmpty())
+=======
+    @if(Auth::check() && Auth::user()->role === 'admin')
+        {{-- الأدمن: بحث شامل --}}
+        <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
                 <div class="bg-white p-6 shadow rounded text-gray-600">
                     No reservations found.
                 </div>

@@ -27,16 +27,13 @@
                 <div class="left">
                     <x-input-label for="name" value="First Name" />
                     <x-text-input id="name" type="text" name="name" :value="old('name')" required
-                        placeholder="Enter driver's full name" />
+                        placeholder="Enter driver's full name" />--}}
 
                         <x-input-label for="last_name" value="Last name" />
                     <x-text-input id="last_name" type="text" name="last_name" :value="old('last_name')" required
                         placeholder="Enter driver's last name " />
-
                     <x-input-label for="email" value="Email Address" />
                     <x-text-input id="email" type="email" name="email" :value="old('email')" required
-                        placeholder="e.g. driver@example.com" />
-
 
                     <x-input-label for="password" value="Password" />
                     <x-text-input id="password" type="password" name="password" :value="old('password')" required
@@ -53,6 +50,11 @@
                     <x-text-input id="country" type="text" name="country" :value="old('country')" required
                         placeholder="Enter the country" /> 
 
+=======
+                    {{--<x-input-label for="phone" value="Phone Number" />
+                    <x-text-input id="phone" type="text" name="phone" :value="old('phone')" required
+                        placeholder="Enter phone number" />--}}
+>>>>>>> check-destination-details
 
                     <x-input-label for="address" value="Address" />
                     <x-text-input id="address" type="text" name="address" :value="old('address')"

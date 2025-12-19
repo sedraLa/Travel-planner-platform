@@ -28,17 +28,6 @@ class DriverRequest extends FormRequest
             'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',
             'experience'       => 'nullable|string',
-            
-        
-        ];
-    }
-
-    /**
-     * Custom messages for validation errors (optional).
-     */
-    public function messages(): array
-    {
-        return [
             'name.required'          => 'Driver name is required',
             'license_image.required' => 'License image is required',
             'email.required'         => 'Email is required',

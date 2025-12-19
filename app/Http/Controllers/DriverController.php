@@ -103,10 +103,7 @@ class DriverController extends Controller
             'status'           => $request->status,
             'date_of_hire'     => $request->date_of_hire,
             'experience'       => $request->experience,
-          
         ]);
-
-        return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
     }
 
     /**
