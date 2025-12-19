@@ -135,20 +135,19 @@
                     <x-input-label for="website" value="website" />
                     <x-text-input id="website" type="url" name="website" required :value="old('website', $hotel->website)" />
 
-                        <x-input-label for="amenities" value="Amenities" />
-                             @php
-                               $options = ['Wifi','Parking','Pool','Spa','Restaurant','Gym','Laundry','Air Condition','Free Breakfast'];
-                               $oldAmenities = old('amenities', $hotel->amenities ?? []);
-                             @endphp
+                        <x-input-label for="amenities" value="Amenities" style="margin-bottom:10px;"/>
+                        @php
+                             $options = ['Wifi', 'Parking', 'Pool', 'Spa', 'Restaurant', 'Gym', 'Laundry', 'Air Condition', 'Free Breakfast'];
+                             $oldAmenities = old('amenities', []);
+                        @endphp
 
-                        <div class="amenities-container">
-                            @foreach($options as $option)
-                              <label class="custom-option">
-                               <input  type="checkbox" name="amenities[]"  value="{{ $option }}"
-                                   {{ in_array($option, $oldAmenities) ? 'checked' : '' }}>
-                                         <span>{{ $option }}</span>
-                              </label>
-                            @endforeach
+                     <div class="amenities-container">
+                         @foreach($options as $option)
+                             <label class="custom-option" style="display:flex; gap:8px; ">
+                               <input type="checkbox" name="amenities[]" value="{{ $option }}"{{ in_array($option, $oldAmenities) ? 'checked' : '' }} style="width:30px; height:30px;border-radius:15px; font-size:12px;">
+                                 <span >{{ $option }}</span>
+                             </label>
+                         @endforeach
 
                         </div>
                 </div>

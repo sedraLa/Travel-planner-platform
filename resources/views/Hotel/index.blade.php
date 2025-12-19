@@ -77,6 +77,21 @@
                     <h5>{{ $hotel->name }}</h5>
                     <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
                 </a>
+
+                @if(Auth::user()->role === UserRole::ADMIN->value)
+                                        <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4" >
+                                            <a href="{{route('hotels.edit',$hotel)}}">
+                                            <button class="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition duration-200 text-sm shadow-sm">Edit </button></a>
+
+
+                                            <form action="{{route('hotels.destroy',$hotel->id)}}" method="post"
+                                                onsubmit="return confirm('Are you sure you want to delete this Hotel?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"  class="px-4 py-2 rounded-xl text-white bg-red-600 hover:bg-red-700 transition duration-200 text-sm shadow-sm" >Delete</button>
+                                            </form>
+                                        </div>
+                                    @endif
             </div>
             @empty
                 <p style="text-align:center;">No hotels found.</p>
@@ -92,7 +107,7 @@
 </x-app-layout>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     document.addEventListener("click", async (e) => {
         let btn = e.target.closest(".fav-toggle");
         if (!btn) return;
