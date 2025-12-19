@@ -84,52 +84,53 @@
     @if(Auth::check() && Auth::user()->role === 'admin')
         {{-- الأدمن: بحث شامل --}}
         <form method="GET" action="{{ route('reservations.index') }}" class="mb-4 bg-white p-4 shadow rounded">
-                <div class="bg-white p-6 shadow rounded text-gray-600">
-                    No reservations found.
-                </div>
-            @else
-                <div class="overflow-x-auto bg-white p-6 shadow rounded">
-                    <table class="min-w-full text-sm text-left border border-gray-200">
-                        <thead class="bg-gray-100 font-semibold text-gray-700">
-                            <tr>
+            @if($reservations->isEmpty())
+            <div class="bg-white p-6 shadow rounded text-gray-600">
+                No reservations found.
+            </div>
+        @else
+            <div class="overflow-x-auto bg-white p-6 shadow rounded">
+                <table class="min-w-full text-sm text-left border border-gray-200">
+                    <thead class="bg-gray-100 font-semibold text-gray-700">
+                        <tr>
+                            @if(Auth::user()->role === 'admin')
+                                <th class="p-3 border">User</th>
+                            @endif
+                            <th class="p-3 border">Hotel</th>
+                            <th class="p-3 border">Check-in</th>
+                            <th class="p-3 border">Check-out</th>
+                            <th class="p-3 border">Rooms</th>
+                            <th class="p-3 border">Guests</th>
+                            <th class="p-3 border">Total Price</th>
+                            <th class="p-3 border">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-800">
+                        @foreach($reservations as $reservation)
+                            <tr class="hover:bg-gray-50">
                                 @if(Auth::user()->role === 'admin')
-                                    <th class="p-3 border">User</th>
-                                @endif
-                                <th class="p-3 border">Hotel</th>
-                                <th class="p-3 border">Check-in</th>
-                                <th class="p-3 border">Check-out</th>
-                                <th class="p-3 border">Rooms</th>
-                                <th class="p-3 border">Guests</th>
-                                <th class="p-3 border">Total Price</th>
-                                <th class="p-3 border">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-800">
-                            @foreach($reservations as $reservation)
-                                <tr class="hover:bg-gray-50">
-                                    @if(Auth::user()->role === 'admin')
-                                        <td class="p-3 border">
-                                            {{ $reservation->user?->full_name ?? 'N/A' }}
-                                        </td>
-                                    @endif
-
-                                    <td class="p-3 border">{{ $reservation->hotel->name ?? 'N/A' }}</td>
-                                    <td class="p-3 border">{{ $reservation->check_in_date }}</td>
-                                    <td class="p-3 border">{{ $reservation->check_out_date }}</td>
-
-                                    <td class="p-3 border text-center">{{ $reservation->rooms_count }}</td>
-                                    <td class="p-3 border text-center">{{ $reservation->guest_count }}</td>
-
-                                    <td class="p-3 border font-semibold text-green-600">
-                                        ${{ number_format($reservation->total_price, 2) }}
-                                    </td>
                                     <td class="p-3 border">
-                                        <span class="px-2 py-1 rounded
-                                                                    @if($reservation->reservation_status == 'pending') bg-yellow-100 text-yellow-700
-                                                                    @elseif($reservation->reservation_status == 'confirmed') bg-green-100 text-green-700
-                                                                    @elseif($reservation->reservation_status == 'cancelled') bg-red-100 text-red-700
-                                                                    @endif">
-                                            {{ ucfirst($reservation->reservation_status) }}
+                                        {{ $reservation->user?->full_name ?? 'N/A' }}
+                                    </td>
+                                @endif
+
+                                <td class="p-3 border">{{ $reservation->hotel->name ?? 'N/A' }}</td>
+                                <td class="p-3 border">{{ $reservation->check_in_date }}</td>
+                                <td class="p-3 border">{{ $reservation->check_out_date }}</td>
+
+                                <td class="p-3 border text-center">{{ $reservation->rooms_count }}</td>
+                                <td class="p-3 border text-center">{{ $reservation->guest_count }}</td>
+
+                                <td class="p-3 border font-semibold text-green-600">
+                                    ${{ number_format($reservation->total_price, 2) }}
+                                </td>
+                                <td class="p-3 border">
+                                    <span class="px-2 py-1 rounded
+                                                                @if($reservation->reservation_status == 'pending') bg-yellow-100 text-yellow-700
+                                                                @elseif($reservation->reservation_status == 'confirmed') bg-green-100 text-green-700
+                                                                @elseif($reservation->reservation_status == 'cancelled') bg-red-100 text-red-700
+                                                                @endif">
+                                        {{ ucfirst($reservation->reservation_status) }}
                                         </span>
                                     </td>
 
@@ -138,6 +139,7 @@
                         </tbody>
                     </table>
                 </div>
+            @endif
             @endif
         </div>
     </div>
