@@ -18,7 +18,7 @@
         <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
         <li><a href="{{ route('driverscompleted.show')}}">
                My Completed Bookings  </a> </li>
-                                     
+
         @else
 
             <li><a href="{{ route('destination.index') }}">Destinations</a></li>
@@ -26,23 +26,23 @@
             <li><a href="{{ route('flight.show') }}">Flights</a></li>
             <li><a href="{{route('transport.index')}}">Transport</a></li>
             <li><a href="{{route('activities.index')}}">Activities</a></li>
-            <li> 
+            <li>
                 <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                 <x-slot name="trigger">
                     <button>
                         <div style="font-weight:bold">Trips</div>
                     </button>
-                </x-slot> 
+                </x-slot>
                 <x-slot name="content">
                     <x-dropdown-link :href="route('trip.view')">
                         {{ ('Create a trip') }}
                     </x-dropdown-link>
                 </x-slot>
-            </x-dropdown> 
+            </x-dropdown>
         </div>
      </li>
-     
+
             @if (auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                 <li><a href="{{route('drivers.index')}}">Drivers</a></li>
             @endif
@@ -56,11 +56,14 @@
                     <button>
                         <div>{{ Auth::user()->name }}</div>
                     </button>
-                </x-slot>   
+                </x-slot>
 
                 <x-slot name="content">
                     <x-dropdown-link :href="route('profile.edit')">
                         {{ ('Profile') }}
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('reservations.index')">
+                        {{ __('Show reservation') }}
                     </x-dropdown-link>
 
                     <!-- Authentication -->
@@ -72,6 +75,13 @@
                             {{ ('Log Out') }}
                         </x-dropdown-link>
                     </form>
+
+
+                    @if(Auth::check() && Auth::user()->role == 'user')
+                        <x-dropdown-link :href="route('favorites.show')">
+                            {{ __('Show Favorite') }}
+                        </x-dropdown-link>
+                    @endif
                 </x-slot>
             </x-dropdown>
         </div>
