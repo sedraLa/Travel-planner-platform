@@ -17,6 +17,7 @@ use App\Http\Controllers\DriverController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
+use App\Http\Controllers\NotificationController;
 
 
 /*
@@ -200,6 +201,11 @@ Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name(
 Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
 Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
+//notifications routes
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+
 
 
 require __DIR__.'/auth.php';
