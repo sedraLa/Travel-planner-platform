@@ -52,13 +52,13 @@ nav {
     letter-spacing: 1px;
 }
 
-ul li {
+.navigation ul li {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-ul {
+.navigation ul {
     display: flex;
     justify-content: space-between;
     gap: 60px;
@@ -66,21 +66,17 @@ ul {
     margin-top: 3px;
 }
 
-a {
+.navigation a {
     text-decoration: none;
     color:var(--indigo);
     font-size: 16px;
     font-weight: bold;
 }
 
-li a:hover {
+.navigation li a:hover {
     border-bottom: solid 2px var(--indigo);
 }
 
-
-li a:hover {
-    border-bottom: solid 2px var(--indigo);
-}
 
 
 section {
@@ -172,6 +168,11 @@ span {
 .info img {
     width: 80px;
     height: 80px;
+}
+
+/*create a trip*/
+a.block.w-full.px-4.py-2.text-start.text-sm.leading-5.text-gray-700.hover\:bg-gray-100.focus\:outline-none.focus\:bg-gray-100.transition.duration-150.ease-in-out {
+    border-bottom: none;
 }
 
 

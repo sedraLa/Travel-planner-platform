@@ -1,0 +1,170 @@
+/* -------------------- RESET -------------------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* -------------------- VARIABLES -------------------- */
+  :root {
+    --indigo: #052659;
+    --light-aqua: #C1E8FF;
+    --light-blue: #628ECB;
+    --white: #f4f4f4;
+    --grey: #808080;
+    --light-aqua: #c1e8ff9d;
+  }
+  
+  /* -------------------- BODY -------------------- */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--indigo);
+    background-color:var(--light-aqua);
+    background: linear-gradient(135deg, #c1e8ff, #628ecb, #052659) no-repeat fixed center/cover !important;
+    min-height: 100vh;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+  
+  
+  /* -------------------- MAIN CONTAINER -------------------- */
+  .main-container {
+    width: 70vw;
+    margin: 77px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .main-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 35px;           
+    flex-wrap: wrap;     
+    margin-top: 50px;
+  }
+
+
+
+  /* -------------------- CARDS -------------------- */
+.manual,
+.ai {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 25px;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
+  flex: 1 1 48%;       
+  min-width: 320px;    
+  max-width: 500px;    
+  min-height: 350px;   
+  height: auto;
+}
+
+  .manual h2,
+  .manual p,
+  .ai h2,
+  .ai p {
+    text-align: center;
+  }
+
+ 
+  
+  header {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+  }
+  
+  .back {
+    padding: 6px;
+    width: 95px;
+    height: 39px;
+    border: 2px solid var(--indigo);
+    color: var(--indigo);
+    cursor: pointer;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 15px;
+    background: transparent;
+    transition: all 0.3s ease-in-out;  
+  }
+  
+  .back:hover {
+    background: linear-gradient(135deg, #628ecb, #052659); 
+    color: var(--white);                                   
+    transform: translateY(-3px);                          
+    box-shadow: 0 6px 12px rgba(5, 38, 89, 0.35);         
+  }
+  
+
+  h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: 22px;
+    font-weight: bold; 
+}
+
+ ul li {
+    list-style-type: disc;
+}
+
+  .icon {
+    width: 80px;
+    height: 80px;
+    margin-top: 3px;
+    border-radius: 10px;
+  }
+  
+  .time {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap:10px;
+  }
+
+ 
+.cardd-link {
+    text-decoration: none;
+    color: inherit; 
+  }
+  
+
+  .cardd {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+ 
+  .cardd:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(5, 38, 89, 0.35), 
+              0 3px 8px rgba(98, 142, 203, 0.25);
+  }
+
+  .cardd {
+    display: flex;
+    flex-direction: column;
+    align-items: center;   
+    justify-content: flex-start;
+    text-align: center;
+  }
+  
+  .cardd .overview {
+    text-align: left;    
+    margin-top: 10px;
+    padding-left: 20px;     
+    width: 100%;           
+    max-width: 350px;       
+  }
+
+ 
+  
+  

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Favorite;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+
 class Destination extends Model
 {
     use HasFactory;
@@ -17,8 +18,17 @@ class Destination extends Model
         'country',
         'description',
         'location_details',
-        'activities',
+        //'activities',
         'iata_code',
+       // 'weather_info',
+        'timezone',
+        'language',
+        'currency',
+        'nearest_airport',
+        'best_time_to_visit',
+        'emergency_numbers',
+        'local_tip',
+        
     ];
 
     protected $hidden = [
@@ -36,8 +46,15 @@ class Destination extends Model
         return $this->hasMany(Hotel::class);
     }
 
-    public function favorites(): MorphMany
+    public function favorites(): MorphMany{
+    }
+    
+    public function activities() {
+        return $this->hasMany(Activity::class);
+    }
+
+    public function highlights()
     {
-        return $this->morphMany(Favorite::class, 'favoritable');
+    return $this->hasMany(Highlight::class);
     }
 }

@@ -32,7 +32,7 @@
                 @if (Auth::user()->role === UserRole::ADMIN->value)
                     <p>Discover a large group of vehicles for your request</p>
                 @endif
-                <p>{{$pickup_datetime}}</p>
+                {{--<p>{{$pickup_datetime}}</p>--}}
             </div>
         </header>
 

@@ -12,7 +12,7 @@ class TransportVehicle extends Model
     'transport_id',
     'car_model',
     'plate_number',
-    'driver_id',
+    /*'driver_id',*/
     'max_passengers',
     'base_price',
     'price_per_km',

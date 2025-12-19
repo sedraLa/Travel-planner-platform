@@ -14,6 +14,9 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\VehicleOrderController;
 use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
+use App\Http\Controllers\TripController;
+use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\ManualTripController;
 
 
 /*
@@ -177,13 +180,26 @@ Route::middleware(['auth']) ->prefix('admin') ->group(function () {
 
 //favoritefeture routes
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');
-
 Route::post('/favorites/{type}/{id}', [FavoriteController::class, 'store'])
     ->name('favorites.add')
     ->middleware('auth');
     // Route to show the user's favorites page
 Route::get('/show-favourite', [FavoriteController::class, 'showFavorites'])->name('favorites.show')->middleware('auth');
+//Trip routes
+Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
+Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
+Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
+Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
 
+
+//Activities routes
+Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
+Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
+Route::post('/activities/store', [ActivityController::class, 'store'])->name('activities.store');
+Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
+Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
+Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
 
 
 require __DIR__.'/auth.php';

@@ -34,7 +34,7 @@
 
                     
 
-                    <x-input-label for="driver_id" value="Select Driver" />
+                    {{--<x-input-label for="driver_id" value="Select Driver" />
                     <select id="driver_id" name="driver_id"
                         class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                         <option value="">-- Choose a driver --</option>
@@ -44,7 +44,7 @@
                                 {{ $driver->user->name }}
                             </option>
                         @endforeach
-                    </select>
+                    </select>--}}
 
                     
                     <input type="hidden" id="driver_name" name="driver_name">
