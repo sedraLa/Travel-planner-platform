@@ -103,13 +103,14 @@ Route::delete('/transports/{id}',[TransportController::class,'destroy'])->name('
 Route::get('/transports/{id}', [TransportController::class, 'show'])->name('transport.show');
 
 
+
 //vehicles routes
 // USER – browse vehicles
 Route::get('/vehicles', [VehicleController::class, 'index'])
     ->name('vehicles.index');
 
 // ADMIN – manage vehicles
-Route::get('/admin/transports/{transport}/vehicles', 
+Route::get('/admin/transports/{transport}/vehicles',
     [VehicleController::class, 'vehiclesByTransport']
 )->name('admin.transports.vehicles');
 
@@ -200,6 +201,10 @@ Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name(
 Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
 Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
+Route::get('/transport-reservations', [TransportReservationController::class, 'index'])
+    ->name('transport.reservations.index');
+
 
 
 require __DIR__.'/auth.php';

@@ -102,6 +102,21 @@ class TransportReservationController extends Controller
 
         return back()->withErrors('Payment initiation failed.');
     }
+public function index(Request $request)
+{
+    $query = TransportReservation::query()->with('user');
 
+    if ($request->filled('search')) {
+        $search = $request->search;
 
+        $query->whereHas('user', function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%");
+        })
+        ->orWhere('status', 'like', "%{$search}%");
+    }
+
+    $reservations = $query->orderBy('pickup_datetime', 'desc')->paginate(10);
+
+    return view('transportreservation.index', compact('reservations'));
+}
 }
