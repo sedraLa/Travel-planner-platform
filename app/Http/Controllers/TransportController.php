@@ -60,11 +60,31 @@ class TransportController extends Controller
      * Update the specified resource in storage.
      */
     public function update(TransportRequest $request, string $id)
-    {
-        $transport=Transport::findOrFail($id);
-        $transport->update($request->validated());
-        return redirect()->route('transport.index')->with('success','Transport updated successfully');
+{
+    $transport = Transport::findOrFail($id);
+
+    // تحقق إذا رفع المستخدم صورة جديدة
+    if ($request->hasFile('image')) {
+        // احذف الصورة القديمة إذا موجودة
+        if ($transport->image && \Storage::exists('public/' . $transport->image)) {
+            \Storage::delete('public/' . $transport->image);
+        }
+
+        // احفظ الصورة الجديدة
+        $imagePath = MediaServices::save($request->file('image'), 'image', 'Transports');
+        $transport->image = $imagePath;
     }
+
+    // حدث بقية الحقول
+    $transport->name = $request->name;
+    $transport->description = $request->description;
+    $transport->type = $request->type;
+
+    $transport->save();
+
+    return redirect()->route('transport.index')->with('success','Transport updated successfully');
+}
+
 
     /**
      * Remove the specified resource from storage.
