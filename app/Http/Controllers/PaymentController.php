@@ -13,6 +13,7 @@ use App\Services\PaypalPaymentService;
 use App\Mail\PaymentConfirmationMail;
 use App\Mail\TransportPaymentConfirmationMail;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\NewTransportBookingNotification;
 
 
 class PaymentController extends Controller
@@ -170,6 +171,18 @@ public function paypalCallbackTransport(Request $request)
             'status' => 'completed',
             'transport_vehicle_id' => $data['vehicle_id'],
         ]));
+
+
+
+        // driver notification
+$reservation->driver->user->notify(
+    new NewTransportBookingNotification($reservation)
+);
+
+// traveler notification
+$reservation->user->notify(
+    new NewTransportBookingNotification($reservation)
+);
 
         Payment::create([
             'transport_reservation_id' => $reservation->id,

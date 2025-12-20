@@ -73,6 +73,81 @@
                     </form>
                 </x-slot>
             </x-dropdown>
+<!-- Notifications -->
+<div x-data="{ notifOpen: false }" class="relative ml-4">
+    <!-- زر الجرس -->
+    <button
+        @click="notifOpen = !notifOpen"
+        class="relative p-2 rounded-full hover:bg-gray-100 focus:outline-none"
+    >
+        <!-- أيقونة الجرس -->
+        <svg class="h-6 w-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+        </svg>
+
+        <!-- عداد الإشعارات غير المقروءة -->
+        @php
+            $unread = auth()->user()->unreadNotifications->count();
+        @endphp
+
+        @if($unread > 0)
+            <span
+                class="absolute top-0 right-0 inline-flex items-center justify-center
+                       px-2 py-1 text-xs font-bold leading-none text-white
+                       bg-red-600 rounded-full">
+                {{ $unread }}
+            </span>
+        @endif
+    </button>
+
+    <!-- Dropdown الإشعارات -->
+    <div
+        x-show="notifOpen"
+        x-transition
+        x-cloak
+        @click.away="notifOpen = false"
+        style="display: none;"
+        class="absolute right-0 mt-2 w-80 bg-white shadow-lg rounded-lg
+               z-50 overflow-hidden"
+    >
+        <div class="p-4 border-b font-bold text-gray-700">
+            Notifications
+        </div>
+
+        <div class="max-h-64 overflow-y-auto">
+            @forelse(auth()->user()->unreadNotifications as $notification)
+                <a
+                    href="{{ route('notifications.show', $notification->id) }}"
+                    @click="notifOpen = false"
+                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                    {{ $notification->data['message'] ?? 'New notification' }}
+                    <span class="text-gray-400 text-xs block">
+                        {{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}
+                    </span>
+                </a>
+            @empty
+                <p class="px-4 py-2 text-sm text-gray-500">
+                    No new notifications.
+                </p>
+            @endforelse
+        </div>
+
+        <div class="p-2 border-t text-center">
+            <a
+                href="{{ route('notifications.index') }}"
+                class="text-blue-600 text-sm hover:underline"
+            >
+                View All
+            </a>
+        </div>
+    </div>
+</div>
+
+
+
+            
         </div>
 
         <!-- Hamburger for mobile -->
