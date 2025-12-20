@@ -22,6 +22,7 @@
                 <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
                 <li><a href="{{ route('flight.show') }}">Flights</a></li>
                 <li><a href="{{route('transport.index')}}">Transport</a></li>
+                <li><a href="{{route('activities.index')}}">Activities</a></li>
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                     <li><a href="{{route('drivers.index')}}">Drivers</a></li>

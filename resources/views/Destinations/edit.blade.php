@@ -6,6 +6,7 @@
 
     <div class="vehicle-form-container"> 
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Destination</h2>
+        <p style="color:red; margin-bottom:20px;"> *Note: You can add a new activity for this destination from here <a style="color:green;" href="{{route('activities.index')}}">Activities</a> </p>
 
         <form action="{{ route('destinations.update', $destination->id) }}" method="post" enctype="multipart/form-data">
             @csrf

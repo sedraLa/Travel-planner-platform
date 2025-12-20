@@ -21,6 +21,17 @@ class Hotel extends Model
         'price_per_night',
         'total_rooms',
         'destination_id',
+        'stars',
+        'pets_allowed',
+        'check_in_time',
+        'check_out_time',
+        'policies',
+        'phone_number',
+        'email',
+        'website',
+        'amenities', // ممكن تخزنيها كـ JSON
+        'latitude',
+        'longitude',
     ];
 
     protected $hidden = [
