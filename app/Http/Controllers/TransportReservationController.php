@@ -104,18 +104,36 @@ class TransportReservationController extends Controller
     }
 public function index(Request $request)
 {
-    $query = TransportReservation::query()->with('user');
+    $query = TransportReservation::with('user');
+
+    $isAdmin = Auth::check() && Auth::user()->role === 'admin';
+
+    // ✅ المستخدم يشوف حجوزاته فقط
+    if (!$isAdmin) {
+        $query->where('user_id', Auth::id());
+    }
 
     if ($request->filled('search')) {
         $search = $request->search;
 
-        $query->whereHas('user', function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%");
-        })
-        ->orWhere('status', 'like', "%{$search}%");
+        $query->where(function ($q) use ($search, $isAdmin) {
+
+            $q->where('pickup_location', 'like', "%{$search}%")
+              ->orWhere('dropoff_location', 'like', "%{$search}%")
+              ->orWhere('status', 'like', "%{$search}%");
+
+            // ✅ البحث بالمستخدم فقط للأدمن
+            if ($isAdmin) {
+                $q->orWhereHas('user', fn ($u) =>
+                    $u->where('name', 'like', "%{$search}%")
+                );
+            }
+        });
     }
 
-    $reservations = $query->orderBy('pickup_datetime', 'desc')->paginate(10);
+    $reservations = $query
+        ->orderBy('pickup_datetime', 'desc')
+        ->paginate(10);
 
     return view('transportreservation.index', compact('reservations'));
 }

@@ -79,7 +79,7 @@ public function index(Request $request)
 
     $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
-    // traveler views his reservations only
+    // ✅ المستخدم يشوف حجوزاته فقط
     if (!$isAdmin) {
         $query->where('user_id', Auth::id());
     }
@@ -92,24 +92,19 @@ public function index(Request $request)
 
         $query->where(function ($q) use ($term, $isAdmin) {
 
-            // Hotel
             $q->whereHas('hotel', fn ($h) =>
                 $h->where('name', 'like', "%{$term}%")
             )
-
-            // Destination
             ->orWhereHas('hotel.destination', fn ($d) =>
                 $d->where('name', 'like', "%{$term}%")
             );
 
-            // User (admin only)
+            // ✅ بحث بالمستخدم فقط للأدمن
             if ($isAdmin) {
                 $q->orWhereHas('user', function ($u) use ($term) {
                     $u->where('name', 'like', "%{$term}%")
                       ->orWhere('last_name', 'like', "%{$term}%")
-                      ->orWhere('email', 'like', "%{$term}%")
-                      ->orWhereRaw("CONCAT(name,' ',last_name) LIKE ?", ["%{$term}%"])
-                      ->orWhereRaw("CONCAT(last_name,' ',name) LIKE ?", ["%{$term}%"]);
+                      ->orWhere('email', 'like', "%{$term}%");
                 });
             }
         });
@@ -129,13 +124,12 @@ public function index(Request $request)
     /* =======================
        Status filter
     ======================= */
-    if ($request->filled('status')) {
-        $query->where('reservation_status', $request->status);
+    if ($request->filled('reservation_status')) {
+        $query->where('reservation_status', $request->reservation_status);
     }
 
     $reservations = $query->latest()->get();
 
     return view('reservation.index', compact('reservations'));
 }
-
 }
