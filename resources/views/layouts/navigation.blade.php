@@ -56,11 +56,10 @@
                     <x-dropdown-link :href="route('profile.edit')">Profile</x-dropdown-link>
 
                     @if(Auth::check() && auth()->user()->role === UserRole::USER->value)
-                        <!-- User-specific reservations -->
-                        <x-dropdown-link :href="route('reservations.show')">Hotel Reservations</x-dropdown-link>
-                        <x-dropdown-link :href="route('transport.reservations.user')">Transport
+                        <!-- User-specific reservations via username dropdown -->
+                        <x-dropdown-link :href="route('reservations.index')">Hotel Reservations</x-dropdown-link>
+                        <x-dropdown-link :href="route('transport.reservations.index')">Transport
                             Reservations</x-dropdown-link>
-
                         <x-dropdown-link :href="route('favorites.show')">Show Favorite</x-dropdown-link>
                     @endif
 
