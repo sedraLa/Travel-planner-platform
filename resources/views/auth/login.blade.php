@@ -21,7 +21,7 @@
                     <div class="full">
                         <x-input-label for="email" :value="__('Email')" />
                         <div class="input-icon-wrapper">
-                            <img src="/icons/email.svg">
+                            <img src="{{asset('images/icons/email.png')}}">
                             <x-text-input
                                 id="email"
                                 type="email"
@@ -40,7 +40,7 @@
                     <div class="full">
                         <x-input-label for="password" :value="__('Password')" />
                         <div class="input-icon-wrapper">
-                            <img src="/icons/lock.svg">
+                            <img src="{{asset('images/icons/policies.png')}}">
                             <x-text-input
                                 id="password"
                                 type="password"

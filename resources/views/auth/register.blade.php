@@ -28,7 +28,7 @@
                         <div>
                             <x-input-label for="name" :value="__('Name')" /> <span style="color:red;">*</span>
                             <div class="input-icon-wrapper">
-                                <img src="/icons/user.svg">
+                                <img src="{{asset('images/icons/user-group-solid-full.svg')}}">
                                 <x-text-input id="name" type="text" name="name" :value="old('name')" />
                             </div>
                             <x-input-error :messages="$errors->get('name')" />
@@ -38,7 +38,7 @@
                         <div>
                             <x-input-label for="last_name" :value="__('Last Name')" /> <span class="text-red-500">*</span>
                             <div class="input-icon-wrapper">
-                                <img src="/icons/user.svg">
+                                <img src="{{asset('images/icons/user-group-solid-full.svg')}}">
                                 <x-text-input id="last_name" type="text" name="last_name" :value="old('last_name')" />
                             </div>
                             <x-input-error :messages="$errors->get('last_name')" />
@@ -48,7 +48,7 @@
                         <div>
                             <x-input-label for="phone_number" :value="__('Phone Number')" />
                             <div class="input-icon-wrapper">
-                                <img src="/icons/phone.svg">
+                                <img src="{{asset('images/icons/phone-solid-full.svg')}}">
                                 <x-text-input id="phone_number" type="text" name="phone_number" :value="old('phone_number')" />
                             </div>
                             <x-input-error :messages="$errors->get('phone_number')" />
@@ -70,7 +70,7 @@
                         <div class="full">
                             <x-input-label for="email" :value="__('Email')" /> <span class="text-red-500">*</span>
                             <div class="input-icon-wrapper">
-                                <img src="/icons/email.svg">
+                                <img src="{{asset('images/icons/email.png')}}">
                                 <x-text-input id="email" type="email" name="email" :value="old('email')" />
                             </div>
                             <x-input-error :messages="$errors->get('email')" />
@@ -80,7 +80,7 @@
                         <div>
                             <x-input-label for="password" :value="__('Password')" /> <span class="text-red-500">*</span>
                             <div class="input-icon-wrapper">
-                                <img src="/icons/lock.svg">
+                                <img src="{{asset('images/icons/policies.png')}}">
                                 <x-text-input id="password" type="password" name="password" />
                             </div>
                             <x-input-error :messages="$errors->get('password')" />
@@ -90,7 +90,7 @@
                         <div>
                             <x-input-label for="password_confirmation" :value="__('Confirm Password')" /> <span class="text-red-500">*</span>
                             <div class="input-icon-wrapper">
-                                <img src="/icons/lock.svg">
+                                <img src="{{asset('images/icons/policies.png')}}">
                                 <x-text-input id="password_confirmation" type="password" name="password_confirmation" />
                             </div>
                             <x-input-error :messages="$errors->get('password_confirmation')" />
