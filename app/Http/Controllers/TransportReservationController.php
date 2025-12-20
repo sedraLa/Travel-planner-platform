@@ -102,39 +102,59 @@ class TransportReservationController extends Controller
 
         return back()->withErrors('Payment initiation failed.');
     }
-public function index(Request $request)
-{
-    $query = TransportReservation::with('user');
-
-    $isAdmin = Auth::check() && Auth::user()->role === 'admin';
-
-    // ✅ المستخدم يشوف حجوزاته فقط
-    if (!$isAdmin) {
-        $query->where('user_id', Auth::id());
+    public function index(Request $request)
+    {
+        $query = TransportReservation::with('user');
+    
+        $isAdmin = Auth::check() && Auth::user()->role === 'admin';
+    
+        // المستخدم يشوف حجوزاته فقط
+        if (!$isAdmin) {
+            $query->where('user_id', Auth::id());
+        }
+    
+        /* =======================
+           Keyword search
+        ======================= */
+        if ($request->filled('keyword')) {
+            $term = trim($request->keyword);
+    
+            $query->where(function ($q) use ($term, $isAdmin) {
+    
+                $q->where('pickup_location', 'like', "%{$term}%")
+                  ->orWhere('dropoff_location', 'like', "%{$term}%");
+    
+                if ($isAdmin) {
+                    $q->orWhereHas('user', fn ($u) =>
+                        $u->where('name', 'like', "%{$term}%")
+                    );
+                }
+            });
+        }
+    
+        /* =======================
+           Date filters
+        ======================= */
+        if ($request->filled('month')) {
+            $query->whereMonth('pickup_datetime', $request->month);
+        }
+    
+        if ($request->filled('year')) {
+            $query->whereYear('pickup_datetime', $request->year);
+        }
+    
+        /* =======================
+           Status filter
+        ======================= */
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+    
+        $reservations = $query
+            ->orderBy('pickup_datetime', 'desc')
+            ->paginate(10);
+    
+        return view('transportreservation.index', compact('reservations'));
     }
-
-    if ($request->filled('search')) {
-        $search = $request->search;
-
-        $query->where(function ($q) use ($search, $isAdmin) {
-
-            $q->where('pickup_location', 'like', "%{$search}%")
-              ->orWhere('dropoff_location', 'like', "%{$search}%")
-              ->orWhere('status', 'like', "%{$search}%");
-
-            // ✅ البحث بالمستخدم فقط للأدمن
-            if ($isAdmin) {
-                $q->orWhereHas('user', fn ($u) =>
-                    $u->where('name', 'like', "%{$search}%")
-                );
-            }
-        });
-    }
-
-    $reservations = $query
-        ->orderBy('pickup_datetime', 'desc')
-        ->paginate(10);
-
-    return view('transportreservation.index', compact('reservations'));
-}
+    
 }

@@ -3,22 +3,10 @@
         <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
         <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
     @endpush
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            @if(Auth::user()->role === 'admin')
-            {{ __('System Reservations') }}
-            @else
-            {{ __('My Reservations') }}
-            @endif
-        </h2>
-    </x-slot>
 
     {{-- 🔎 Search --}}
-
-
-
     <form method="GET"
-    class="mb-6 bg-white p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
+    class="mb-6 p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
 
   {{-- Keyword --}}
   <div class="flex-1 min-w-[200px]">
@@ -90,6 +78,27 @@
             </div>
         @else
             <div class="overflow-x-auto bg-white p-6 shadow rounded">
+                <div class="p-6 border-b border-gray-200">
+                
+                    <h2 class="text-2xl font-bold text-gray-800">Hotel Reservations</h2>
+                    @if(Auth::user()->role === 'admin')
+                    <p class="text-gray-500 mt-1">A list of all the hotel reservations in your system.</p>
+                    @else 
+                    <p class="text-gray-500 mt-1">A list of all your hotel reservations.</p>
+                    @endif
+                                    {{--Success messages--}}
+                                    @if (session('success'))
+                                    <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                                        {{ session('success') }}
+                                    </div>
+                                @endif
+                    
+                     @if(session('error'))
+                     <div class="mb-4 p-4 bg-red-100 text-red-700 rounded text-sm">
+                        <div class="mb-1">{{ session('error') }}</div>
+                     </div>
+                    @endif
+                </div>
                 <table class="min-w-full text-sm text-left border border-gray-200">
                     <thead class="bg-gray-100 font-semibold text-gray-700">
                         <tr>
