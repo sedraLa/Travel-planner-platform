@@ -21,19 +21,30 @@ class DriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'age'              => 'integer|min:18|max:100',
+            'age'              => 'nullable|integer|min:18|max:100',
             'address'          => 'nullable|string|max:255',
             'license_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048',
-            'license_category' => 'string|max:255',
+            'license_category' => 'nullable|string|max:255',
             'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',
             'experience'       => 'nullable|string',
+            
+        
+        ];
+    }
+
+    /**
+     * Custom messages for validation errors (optional).
+     */
+    public function messages(): array
+    {
+        return [
             'name.required'          => 'Driver name is required',
             'license_image.required' => 'License image is required',
             'email.required'         => 'Email is required',
             'email.email'            => 'Email form is not correct',
             'email.unique'           => 'This email already exist',
-
+            
         ];
     }
 }

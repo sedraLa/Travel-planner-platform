@@ -15,10 +15,10 @@ class Driver extends Model
         'age',
         'address',
         'license_image',
-        'license_category',
         'experience',
-        /*'email',*/
-        /*'phone',*/
+        'license_category',
+        'date_of_hire',
+        'status',
     ];
 
     // علاقة One-to-One مع السيارة
