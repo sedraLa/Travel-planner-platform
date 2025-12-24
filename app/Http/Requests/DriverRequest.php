@@ -21,10 +21,10 @@ class DriverRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'age'              => 'nullable|integer|min:18|max:100',
+            'age'              => 'integer|min:18|max:100',
             'address'          => 'nullable|string|max:255',
             'license_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048',
-            'license_category' => 'nullable|string|max:255',
+            'license_category' => 'string|max:255',
             'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',
             'experience'       => 'nullable|string',
@@ -33,7 +33,7 @@ class DriverRequest extends FormRequest
             'email.required'         => 'Email is required',
             'email.email'            => 'Email form is not correct',
             'email.unique'           => 'This email already exist',
-            
+
         ];
     }
 }

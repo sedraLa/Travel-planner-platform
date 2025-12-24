@@ -15,6 +15,7 @@ class Driver extends Model
         'age',
         'address',
         'license_image',
+        'license_category',
         'experience',
         /*'email',*/
         /*'phone',*/
