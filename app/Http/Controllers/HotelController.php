@@ -44,6 +44,8 @@ public function index(Request $request)
 public function show(string $id, GeocodingService $geo)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
+
+    
     $primaryImage = $hotel->images->where('is_primary', true)->first();
     $fullAddress = implode(', ', array_filter([
         $hotel->address,
@@ -138,7 +140,7 @@ public function update(HotelRequest $request, $id) {
         }
     }
 
-    return redirect()->route('hotel.show', $hotel->id)->with('success', 'Hotel updated successfully');
+    return redirect()->route('hotels.index', $hotel->id)->with('success', 'Hotel updated successfully');
 
 }
 

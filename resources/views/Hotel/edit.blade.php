@@ -134,6 +134,10 @@
                     
                     <x-input-label for="website" value="website" />
                     <x-text-input id="website" type="url" name="website" required :value="old('website', $hotel->website)" />
+
+
+                    <x-input-label for="nearby_landmarks" value="nearby_landmarks" />
+                    <x-text-input id="nearby_landmarks" type="text" name="nearby_landmarks" :value="old('nearby_landmarks',$hotel->nearby_landmarks)" required/>
                     
                         <x-input-label for="amenities" value="Amenities" />
                              @php
