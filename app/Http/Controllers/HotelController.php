@@ -44,18 +44,18 @@ public function index(Request $request)
 public function show(string $id, GeocodingService $geo)
 {
     $hotel = Hotel::with('images')->findOrFail($id);
+
+    
     $primaryImage = $hotel->images->where('is_primary', true)->first();
     $fullAddress = implode(', ', array_filter([
         $hotel->address,
         $hotel->city,
         $hotel->country
      ]));
-
-
+   
     $coords = $geo->geocodeAddress($fullAddress) ?? ['latitude' => null, 'longitude' => null];
 
-
-
+    
     return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));
 }
 
@@ -87,13 +87,13 @@ public function create()
         'stars'            => $request->stars,
         'pets_allowed' => $request->pets_allowed,
         'check_in_time'   => $request->check_in_time,
-        'check_out_time'   => $request->check_out_time,
-        'policies'         => $request->policies,
-        'phone_number'     => $request->phone_number,
-        'email'            => $request->email,
-        'website'          => $request->website,
-        'nearby_landmarks' => $request->nearby_landmarks,
-        'amenities'        => $request->amenities,
+        'check_out_time'   => $request->check_out_time,    
+        'policies'         => $request->policies,  
+        'phone_number'     => $request->phone_number,  
+        'email'            => $request->email,     
+        'website'          => $request->website, 
+        'nearby_landmarks' => $request->nearby_landmarks,    
+        'amenities'        => $request->amenities, 
     ]);
 
     //save images
@@ -140,7 +140,7 @@ public function update(HotelRequest $request, $id) {
         }
     }
 
-    return redirect()->route('hotel.show', $hotel->id)->with('success', 'Hotel updated successfully');
+    return redirect()->route('hotels.index', $hotel->id)->with('success', 'Hotel updated successfully');
 
 }
 
