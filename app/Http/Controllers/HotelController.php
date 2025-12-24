@@ -53,7 +53,7 @@ public function show(string $id, GeocodingService $geo)
 
 
     $coords = $geo->geocodeAddress($fullAddress) ?? ['latitude' => null, 'longitude' => null];
-    dd($coords);
+
 
 
     return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));

@@ -21,15 +21,15 @@ use Carbon\Carbon;
 class DriverController extends Controller
 {
     /**
-     
+
      */
     public function index(Request $request)
     {
         $query = Driver::with('user');
-    
+
         if ($request->filled('search')) {
             $term = $request->search;
-    
+
             $query->where(function($q) use ($term) {
                 $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$term%")
                                                   ->orWhere('last_name', 'like', "%$term%")
@@ -42,32 +42,32 @@ class DriverController extends Controller
                 }
             });
         }
-    
+
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-    
+
         if ($request->filled('license_category')) {
             $query->where('license_category', $request->license_category);
         }
-    
+
         if ($request->filled('country')) {
             $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
         }
-    
+
         $query->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')");
-    
+
         $drivers = $query->get();
-    
+
         return view('driver.index', compact('drivers'));
     }
-    
+
 
 
 
 
     /**
-     
+
      */
     public function create()
     {
@@ -75,7 +75,7 @@ class DriverController extends Controller
     }
 
     /**
-     
+
      */
     public function store(DriverRequest $request)
     {
@@ -83,11 +83,11 @@ class DriverController extends Controller
         $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
-        'password' => Hash::make($request->password), 
+        'password' => Hash::make($request->password),
         'last_name' => $request->last_name,
         'phone_number' => $request->phone_number,
         'country' => $request->country,
-        'role' => 'driver', 
+        'role' => 'driver',
     ]);
 
 
@@ -103,14 +103,14 @@ class DriverController extends Controller
             'status'           => $request->status,
             'date_of_hire'     => $request->date_of_hire,
             'experience'       => $request->experience,
-          
+
         ]);
 
         return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
     }
 
     /**
-     
+
      */
     public function show(string $id = null)
     {
@@ -138,7 +138,7 @@ class DriverController extends Controller
     }
 
     /**
-    
+
      */
 
 
@@ -148,7 +148,7 @@ class DriverController extends Controller
 
    public function pendingBookings(string $id = null)
 {
-   
+
        $user = auth()->user();
 
     if ($user->role === 'driver') {
@@ -174,7 +174,7 @@ class DriverController extends Controller
 
 
     /**
-    
+
      */
 
     public function edit(string $id)
@@ -184,7 +184,7 @@ class DriverController extends Controller
     }
 
     /**
-     
+
      */
     public function update(DriverRequest $request, string $id)
 {
@@ -229,13 +229,13 @@ class DriverController extends Controller
 
 
     /**
-   
+
      */
     public function destroy(string $id)
     {
         $driver = Driver::findOrFail($id);
 
-        
+
 
         if ($driver->license_image && Storage::disk('public')->exists($driver->license_image)) {
             Storage::disk('public')->delete($driver->license_image);
@@ -257,53 +257,53 @@ class DriverController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        
+
         // إذا كان Approved مسبقاً → ممنوع التغيير
         if ($driver->status === 'approved') {
             return redirect()->back()->with('error', 'Approved drivers status cannot be changed.');
         }
-    
+
         $validated = $request->validated();
-        
+
         if ($validated['status'] === 'pending') {
         return redirect()->back()
             ->with('error', 'Please select a status before confirming.');
     }
-    
-    
+
+
         $updateData = ['status' => $validated['status']];
-    
+
         if ($validated['status'] === 'approved') {
             $updateData['date_of_hire'] = Carbon::now();
         }
-    
+
         $driver->update($updateData);
-    
+
         $status = $validated['status'];
-    
+
         $message = match ($status) {
             'approved' => 'Your account has been approved! You can now log in to the system.',
             'rejected' => 'Sorry, your account has been rejected after review of the information.',
             default => 'Your account status has been changed to under review.',
         };
-    
+
        Mail::to($driver->user->email)
             ->send(new DriverStatusMail($driver->user->name, $status, $message));
-    
+
         if ($status === 'rejected') {
             if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
                 \Storage::disk('public')->delete($driver->license_image);
             }
-    
+
             $driver->user()->delete();
             $driver->delete();
-    
+
             return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
         }
-    
+
         return redirect()->back()->with('success', 'Driver accepted, status updated and email sent successfully.');
     }
-    
+
 
 
 
