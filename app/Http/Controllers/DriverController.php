@@ -103,7 +103,10 @@ class DriverController extends Controller
             'status'           => $request->status,
             'date_of_hire'     => $request->date_of_hire,
             'experience'       => $request->experience,
+          
         ]);
+
+        return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
     }
 
     /**
@@ -284,8 +287,8 @@ class DriverController extends Controller
             default => 'Your account status has been changed to under review.',
         };
     
-        Mail::to($driver->user->email)
-            ->send(new DriverStatusMail($driver->user->name, $status, $message));
+       /* Mail::to($driver->user->email)
+            ->send(new DriverStatusMail($driver->user->name, $status, $message));*/
     
         if ($status === 'rejected') {
             if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
@@ -347,5 +350,3 @@ public function cancel($id)
 
 
 }
-
-
