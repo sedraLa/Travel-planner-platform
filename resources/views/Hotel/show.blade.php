@@ -300,7 +300,3 @@ document.addEventListener("DOMContentLoaded", function () {
       if (e.target === popup) popup.style.display = 'none';
     });
   </script>
-
-
-
-

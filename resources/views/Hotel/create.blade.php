@@ -126,8 +126,8 @@
                     <x-input-label for="pets_allowed" value="Pets Allowed" />
                     <select id="pets_allowed" name="pets_allowed" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                            <option value=""  disabled  selected>-- Select --</option>
-                           <option value="allowed" {{ old('pets_allowed') == 'allowed' ? 'selected' : '' }}>pets allowed</option>
-                           <option value="not_allowed" {{ old('pets_allowed') == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
+                           <option value="1" {{ old('pets_allowed') == 'allowed' ? 'selected' : '' }}>pets allowed</option>
+                           <option value="0" {{ old('pets_allowed') == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
                     </select>
 
                     <x-input-label for="check_in_time" value="check_in_time" />
@@ -166,19 +166,19 @@
 
 
                         <x-input-label for="amenities" value="Amenities" style="margin-bottom:10px;"/>
-                                   @php
-                                        $options = ['Wifi', 'Parking', 'Pool', 'Spa', 'Restaurant', 'Gym', 'Laundry', 'Air Condition', 'Free Breakfast'];
-                                        $oldAmenities = old('amenities', []);
-                                   @endphp
+                        @php
+                             $options = ['Wifi', 'Parking', 'Pool', 'Spa', 'Restaurant', 'Gym', 'Laundry', 'Air Condition', 'Free Breakfast'];
+                             $oldAmenities = old('amenities', []);
+                        @endphp
 
-                                <div class="amenities-container">
-                                    @foreach($options as $option)
-                                        <label class="custom-option" style="display:flex; gap:8px; ">
-                                          <input type="checkbox" name="amenities[]" value="{{ $option }}"{{ in_array($option, $oldAmenities) ? 'checked' : '' }} style="width:30px; height:30px;border-radius:15px; font-size:12px;">
-                                            <span >{{ $option }}</span>
-                                        </label>
-                                    @endforeach
-                                </div>
+                     <div class="amenities-container">
+                         @foreach($options as $option)
+                             <label class="custom-option" style="display:flex; gap:8px; ">
+                               <input type="checkbox" name="amenities[]" value="{{ $option }}"{{ in_array($option, $oldAmenities) ? 'checked' : '' }} style="width:30px; height:30px;border-radius:15px; font-size:12px;">
+                                 <span >{{ $option }}</span>
+                             </label>
+                         @endforeach
+                     </div>
                 </div>
 
             </div>

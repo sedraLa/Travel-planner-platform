@@ -4,24 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Favorite;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Hotel extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'name',
-        'description',
-        'address',
         'city',
         'country',
+        'description',
+        'address',
         'global_rating',
         'price_per_night',
         'total_rooms',
         'destination_id',
         'stars',
+        'amenities',
         'pets_allowed',
         'check_in_time',
         'check_out_time',
@@ -29,15 +27,20 @@ class Hotel extends Model
         'phone_number',
         'email',
         'website',
-        'amenities', // ممكن تخزنيها كـ JSON
-        'latitude',
-        'longitude',
+        'nearby_landmarks',
     ];
+
 
     protected $hidden = [
         'created_at',
-        'updated_at',
+        'updated_at'
     ];
+
+    protected $casts = [
+    'check_in_time' => 'datetime:H:i',
+    'check_out_time' => 'datetime:H:i',
+    'amenities' => 'array',
+];
 
     public function destination()
     {
