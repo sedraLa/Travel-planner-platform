@@ -49,10 +49,10 @@
                     </div>
     
                     <div class="driver-section">
-                        <h4>Driver Name : <span class="driver-name">{{ $vehicle->driver_name }}</span></h4>
+                        <h4>Driver Name : <span class="driver-name">{{ $vehicle->driver?->user?->full_name ?? 'No driver assigned' }}
                         <div class="align">
                             <img src="{{ asset('images/icons/phone-solid-full.svg') }}" class="icon">
-                            <p>{{ $vehicle->driver_contact }}</p>
+                            <p>{{$vehicle->driver ? $vehicle->driver->user->phone_number : 'No driver assigned'}}</p>
                         </div>
                     </div>
     

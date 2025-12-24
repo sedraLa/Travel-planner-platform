@@ -78,7 +78,7 @@
                         </div>
         
                         <div class="driver-section">
-                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver ? $vehicle->driver->user->name : 'No driver assigned'}}</span></h4>
+                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver ? $vehicle->driver->user->full_name : 'No driver assigned'}}</span></h4>
                             <div class="align">
                                 <img src="{{asset('images/icons/phone-solid-full.svg')}}" class="icon">
                                 <p>{{$vehicle->driver ? $vehicle->driver->user->phone_number : 'No driver assigned'}}</p>
