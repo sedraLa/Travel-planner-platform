@@ -9,7 +9,7 @@
     <li><strong>Service:</strong> {{ $reservation->transport->name }}</li>
     <li><strong>Plate Number:</strong> {{ $reservation->vehicle->plate_number }}</li>
 <li><strong>Car Model:</strong> {{ $reservation->vehicle->car_model }}</li>
-<li><strong>Driver:</strong> {{ $reservation->driver->user->name ?? 'Auto-assigned' }}</li>
+<li><strong>Driver:</strong> {{ $reservation->driver->user->full_name ?? 'Auto-assigned' }}</li>
 <li><strong>Driver:</strong> {{ $reservation->driver->user->phone_number ?? 'N/A' }}</li>
 
     <li><strong>Total Price:</strong> ${{ number_format($reservation->total_price, 2) }}</li>

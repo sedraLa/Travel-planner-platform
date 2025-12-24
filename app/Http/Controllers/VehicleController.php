@@ -44,7 +44,7 @@ class VehicleController extends Controller
 
         $vehicle= TransportVehicle::create([
             'transport_id'   => $request->transport_id,
-            /*'driver_id' => $request->driver_id,*/
+            'driver_id' => $request->driver_id,
             'car_model'=>$request->car_model,
             'plate_number'=>$request->plate_number,
             'max_passengers' => $request->max_passengers ,
