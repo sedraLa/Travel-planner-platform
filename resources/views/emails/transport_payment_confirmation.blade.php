@@ -9,7 +9,8 @@
     <li><strong>Service:</strong> {{ $reservation->transport->name }}</li>
     <li><strong>Plate Number:</strong> {{ $reservation->vehicle->plate_number }}</li>
 <li><strong>Car Model:</strong> {{ $reservation->vehicle->car_model }}</li>
-<li><strong>Driver:</strong> {{ $reservation->driver->name ?? 'Auto-assigned' }}</li>
+<li><strong>Driver:</strong> {{ $reservation->driver->user->name ?? 'Auto-assigned' }}</li>
+<li><strong>Driver:</strong> {{ $reservation->driver->user->phone_number ?? 'N/A' }}</li>
 
     <li><strong>Total Price:</strong> ${{ number_format($reservation->total_price, 2) }}</li>
     <li><strong>Status:</strong> {{ ucfirst($reservation->status) }}</li>
@@ -22,8 +23,6 @@
     <li><strong>Pickup Time:</strong> {{ $reservation->pickup_datetime }}</li>
     <li><strong>Drop-off Time:</strong> {{ $reservation->dropoff_datetime }}</li>
     <li><strong>Passengers:</strong> {{ $reservation->passengers }}</li>
-    <li><strong>Distance:</strong> {{ $reservation->distance ?? 'N/A' }} km</li>
-    <li><strong>Driver:</strong> {{ $reservation->driver->name ?? 'Auto-assigned' }}</li>
 </ul>
 
 <p>Thank you for choosing our transport services!</p>
