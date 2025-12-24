@@ -14,6 +14,7 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Message</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dropoff</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">driver</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup Date</th>
                         </tr>
                     </thead>
@@ -23,6 +24,7 @@
                             <td class="px-6 py-4">{{ $notification->data['message'] ?? '' }}</td>
                             <td class="px-6 py-4">{{ $notification->data['pickup'] ?? '' }}</td>
                             <td class="px-6 py-4">{{ $notification->data['dropoff'] ?? '' }}</td>
+                            <td class="px-6 py-4">{{ $notification->data['driver'] ?? '' }}</td>
                             <td class="px-6 py-4">{{ $notification->data['pickup_datetime'] ?? '' }}</td>
 
 

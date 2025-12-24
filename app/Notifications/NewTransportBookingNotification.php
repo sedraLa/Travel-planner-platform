@@ -31,6 +31,7 @@ class NewTransportBookingNotification extends Notification
             'reservation_id' => $this->reservation->id,
             'pickup' => $this->reservation->pickup_location,
             'dropoff' => $this->reservation->dropoff_location,
+            'driver' => $this->reservation->driver?->user?->name ?? 'Auto-assigned',
             'pickup_datetime' => $this->reservation->pickup_datetime->format('d-m-Y H:i'),
             'message' => 'New transport booking created',
         ];
