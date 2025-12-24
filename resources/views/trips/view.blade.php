@@ -8,7 +8,7 @@
             <button class="back">Back</button>
             </a>
             <div class="head">
-               
+
                 <h1>Create New Trip Plan</h1>
                 <p>Choose how you'd like to create your perfect itinerary</p>
                 @if (session('success'))
@@ -38,8 +38,8 @@
                     </div>
                 </div>
             </a>
-        
-            <a href="ai.html" class="card-link">
+
+            <a href="{{route('ai.create')}}" class="card-link">
                 <div class="ai cardd">
                     <img src="{{asset('/images/ChatGPT Image Oct 1, 2025, 01_37_30 PM.png')}}" alt="icon" class="icon">
                     <div class="plan-heading">
@@ -65,5 +65,5 @@
     body{
         background-image:url('');
     }
-   
+
     </style>

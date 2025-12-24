@@ -15,6 +15,7 @@ use App\Http\Controllers\VehicleOrderController;
 use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\TripController;
+use App\Http\Controllers\AiTripController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
@@ -192,6 +193,7 @@ Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
 Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
 Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
 Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
+Route::get('trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
 
 
 //Activities routes
