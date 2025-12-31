@@ -10,6 +10,7 @@ class Trip extends Model
     use HasFactory;
     protected $fillable = [
         'user_id',
+        'is_ai',
         'destination_id',
         'destination_name',
         'name',
