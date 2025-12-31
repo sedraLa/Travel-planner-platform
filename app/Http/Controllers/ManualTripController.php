@@ -235,4 +235,16 @@ class ManualTripController extends Controller
                 break;
         }
     }
+
+    public function show(Trip $trip)
+{
+    // Load days and related activities and hotel for the trip
+    $trip->load([
+        'days.activities.activity',
+        'days.hotel'
+    ]);
+
+    return view('trips.manual.show', compact('trip'));
+}
+
 }

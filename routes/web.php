@@ -194,26 +194,16 @@ Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
 Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
 Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
 Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
+Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
+Route::get('/trips',[TripController::class,'index'])->name('trips.index');
 
 //AI trip routes
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
 Route::post('/trips/ai/generate',[AiTripController::class,'generate'])->name('ai.generate');
-Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('trip.show');
+Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
 
 
 
-use App\Services\GroqTripPlannerService;
-
-Route::get('/test-groq', function (GroqTripPlannerService $service) {
-    $data = [
-        'description' => 'A 2-day historical tour in Rome',
-        'duration' => 2,
-        'travelers_number' => 1,
-        'budget' => 1000
-    ];
-    $result = $service->generateTripPlan($data, 'en');
-    return response($result)->header('Content-Type', 'text/plain');
-});
 
 
 //Activities routes

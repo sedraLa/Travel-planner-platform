@@ -73,6 +73,8 @@ public function pay($reservationId) {
     }
     return view('reservation.pay',compact('reservationId','reservation'));
 }
+
+
 public function index(Request $request)
 {
     $query = Reservation::with(['hotel', 'hotel.destination', 'user']);
