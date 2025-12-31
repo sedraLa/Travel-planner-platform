@@ -46,5 +46,9 @@ return [
     'user_agent' => env('NOMINATIM_USER_AGENT'),
 ],
 
+'groq' => [
+    'key' => env('GROQ_API_KEY'),
+],
+
 
 ];

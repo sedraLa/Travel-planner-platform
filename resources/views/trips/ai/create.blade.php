@@ -16,7 +16,7 @@
 
 
     <!-- Form containing all steps -->
-    <form  method="POST" action="{{route('manual.step')}}">
+    <form  method="POST" action="{{route('ai.generate')}}">
       @csrf
 
       <!-- Step 1 Basic trip info -->
