@@ -23,7 +23,8 @@ class Trip extends Model
         'departure_airport',
         'arrival_airport',
         'departure_time',
-        'arrival_time'
+        'arrival_time',
+        'ai_itinerary',
     ];
 
     protected $hidden = [
