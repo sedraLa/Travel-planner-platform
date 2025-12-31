@@ -34,7 +34,7 @@
                     </ul>
                     <div class="time">
                         <h4>Time required:</h4>
-                        <span>2-3 minutes</span>
+                        <span>5-10 minutes</span>
                     </div>
                 </div>
             </a>
@@ -54,7 +54,7 @@
                     </ul>
                     <div class="time">
                         <h4>Time required:</h4>
-                        <span>15-30 minutes</span>
+                        <span>2-3 minutes</span>
                     </div>
                 </div>
             </a>
