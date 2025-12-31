@@ -198,8 +198,9 @@ Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name
 //AI trip routes
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
 Route::post('/trips/ai/generate',[AiTripController::class,'generate'])->name('ai.generate');
+Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('trip.show');
 
-Route::get('/ai-test', [AiTestController::class, 'test']);
+
 
 use App\Services\GroqTripPlannerService;
 
