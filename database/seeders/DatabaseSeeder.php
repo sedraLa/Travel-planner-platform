@@ -12,13 +12,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'name' => 'Admin User', // دمج الاسم الأول والآخر
-            'last_name' => 'User', // حسب الجدول موجود
-            'email' => 'admin@example.com',
-            'phone_number' => '0000000000',
-            'role' => UserRole::ADMIN, // أو 'admin' حسب ما مخزن بالDB
-            'email_verified_at' => now(),
-            'password' => Hash::make('password'),
-        ]);
+    'name' => 'Admin',
+    'last_name' => 'User',
+    'email' => 'admin@gmail.com',
+    'phone_number' => '0000000000',
+    'role' => 'admin',
+    'country' => 'Morocco', // أو أي قيمة
+    'email_verified_at' => now(),
+    'password' => Hash::make('password'),
+]);
+
     }
 }
