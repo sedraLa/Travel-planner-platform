@@ -63,7 +63,7 @@ class AiTripController extends Controller
                 'ai_itinerary' => $tripPlan,
             ]);
 
-            return redirect()->route('trip.show', $trip->id)->with('success', 'Your AI trip has been generated and saved!');
+            return redirect()->route('ai.show', $trip->id)->with('success', 'Your AI trip has been generated and saved!');
         }
 
         return back()->withErrors(['api_error' => 'Failed to generate trip. Please check your API key.']);

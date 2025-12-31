@@ -247,7 +247,7 @@
 
         <!-- أزرار الإجراءات -->
         <div class="trip-actions">
-            <a href="{{ route('trip.view') }}" class="btn btn-secondary">← Back to Trips</a>
+            <a href="{{ route('trips.index') }}" class="btn btn-secondary">← Back to Trips</a>
             <button class="btn btn-primary" onclick="window.print()">🖨️ Print Itinerary</button>
             <!-- يمكن إضافة زر تحميل PDF أو تعديل لاحقاً -->
         </div>
