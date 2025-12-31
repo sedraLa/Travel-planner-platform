@@ -455,3 +455,54 @@ select {
   border-color: var(--blue);
   outline: none;
 }
+
+
+.amenities-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.custom-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-weight: 500;
+}
+
+.custom-option:hover {
+  background: #f3f4f6;
+}
+
+.custom-option input[type="checkbox"] {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid #9ca3af;
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+  position: relative;
+}
+
+.custom-option input[type="checkbox"]:checked {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.custom-option input[type="checkbox"]:checked::after {
+  content: '✔️';
+  position: absolute;
+  color: white;
+  font-size: 12px;
+  left: 2px;
+  top: -1px;
+}

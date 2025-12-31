@@ -1,21 +1,20 @@
-
 <x-app-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/transport.css') }}"> 
         <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
 
-
+       
     @endpush
 
 
-
-    <div class="vehicle-form-container">
+    
+    <div class="vehicle-form-container"> 
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Hotel</h2>
 
         <form action="{{ route('hotels.store') }}" method="post" enctype="multipart/form-data">
             @csrf
 
-
+           
             @if ($errors->any())
                 <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
                     <ul class="list-disc list-inside">
@@ -26,15 +25,15 @@
                 </div>
             @endif
 
-            <div class="first-section">
+            <div class="first-section"> 
 
-
+                
                 <div class="left">
                     <x-input-label for="name" value="Hotel Name" />
                     <x-text-input id="name" type="text" name="name" :value="old('name')" required
                         placeholder="Enter Hotel name" />
 
-
+                           
                         <div class="mt-4">
                          <x-input-label for="destination_id" value="Associated destination" />
                               <select name="destination_id"  id="destination_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
@@ -50,11 +49,11 @@
 
                     <x-input-label for="city" value="City" />
                     <x-text-input id="city" type="text" name="city" :value="old('city')" required/>
-
+                       
 
                     <x-input-label for="country" value="Country" />
                     <x-text-input id="country" type="text" name="country" :value="old('country')" required/>
-
+                        
 
 
 
@@ -74,7 +73,7 @@
                      <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500 text-sm">$</span>
                     <x-text-input id="price_per_night"  type="number" name="price_per_night" :value="old('price_per_night')" required
                          step="0.01" placeholder="Enter price_per_night $" />
-
+                    
                     <x-input-label for="total_rooms" value="total_rooms" />
                     <x-text-input id="total_rooms" type="number" name="total_rooms" step="1" min="0"  :value="old('total_rooms')" required
                         placeholder="Enter total_rooms" />
@@ -90,7 +89,7 @@
                     </select>
 
 
-
+                   
 
 
                      <div class="flex space-x-4 mt-4">
@@ -116,20 +115,20 @@
                    </div>
 
 
-
+                     
                 </div>
 
-
+               
                 <div class="right">
 
 
                     <x-input-label for="pets_allowed" value="Pets Allowed" />
                     <select id="pets_allowed" name="pets_allowed" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                            <option value=""  disabled  selected>-- Select --</option>
-                           <option value="1" {{ old('pets_allowed') == 'allowed' ? 'selected' : '' }}>pets allowed</option>
-                           <option value="0" {{ old('pets_allowed') == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
+                           <option value="allowed" {{ old('pets_allowed') == 'allowed' ? 'selected' : '' }}>pets allowed</option>
+                           <option value="not_allowed" {{ old('pets_allowed') == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
                     </select>
-
+                    
                     <x-input-label for="check_in_time" value="check_in_time" />
                     <x-text-input id="check_in_time" type="time" name="check_in_time" :value="old('check_in_time')" required
                         placeholder="Enter check in time" />
@@ -164,25 +163,25 @@
                         placeholder="Enter nearby landmarks" />
 
 
+                    
+                        <x-input-label for="amenities" value="Amenities" />
+                                   @php
+                                        $options = ['Wifi', 'Parking', 'Pool', 'Spa', 'Restaurant', 'Gym', 'Laundry', 'Air Condition', 'Free Breakfast'];
+                                        $oldAmenities = old('amenities', []);
+                                   @endphp
 
-                        <x-input-label for="amenities" value="Amenities" style="margin-bottom:10px;"/>
-                        @php
-                             $options = ['Wifi', 'Parking', 'Pool', 'Spa', 'Restaurant', 'Gym', 'Laundry', 'Air Condition', 'Free Breakfast'];
-                             $oldAmenities = old('amenities', []);
-                        @endphp
-
-                     <div class="amenities-container">
-                         @foreach($options as $option)
-                             <label class="custom-option" style="display:flex; gap:8px; ">
-                               <input type="checkbox" name="amenities[]" value="{{ $option }}"{{ in_array($option, $oldAmenities) ? 'checked' : '' }} style="width:30px; height:30px;border-radius:15px; font-size:12px;">
-                                 <span >{{ $option }}</span>
-                             </label>
-                         @endforeach
-                     </div>
+                                <div class="amenities-container">
+                                    @foreach($options as $option)
+                                        <label class="custom-option">
+                                          <input type="checkbox" name="amenities[]" value="{{ $option }}"{{ in_array($option, $oldAmenities) ? 'checked' : '' }} >
+                                            <span>{{ $option }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
                 </div>
 
             </div>
-
+             
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Create</button>
                    <a href="{{ route('hotels.index') }}" class="cancel-btn">Cancel</a>

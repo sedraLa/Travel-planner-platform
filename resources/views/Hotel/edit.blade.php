@@ -1,17 +1,17 @@
 <x-app-layout>
     @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/transport.css') }}"> 
         <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
     @endpush
 
 
-    <div class="vehicle-form-container">
+    <div class="vehicle-form-container"> 
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Hotel</h2>
 
         <form action="{{ route('hotels.update', $hotel) }}" method="post" enctype="multipart/form-data">
             @csrf
        @method('PUT')
-
+           
             @if ($errors->any())
                 <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
                     <ul class="list-disc list-inside">
@@ -22,9 +22,9 @@
                 </div>
             @endif
 
-            <div class="first-section">
+            <div class="first-section"> 
 
-
+                
                 <div class="left">
                     <x-input-label for="name" value="Hotel Name" />
                     <x-text-input id="name" type="text" name="name" :value="old('name', $hotel->name)" required
@@ -43,7 +43,7 @@
                                       >{{ $destination->name }}</option>
                                     @endforeach
                                 </select>
-                        </div>
+                        </div>    
                     <x-input-label for="city" value="City" />
                     <x-text-input id="city" type="text" name="city" :value="old('city',$hotel->city)" required
                         placeholder="Entre City" />
@@ -87,7 +87,7 @@
                     </select>
 
                       <!--image upload-->
-
+                 
                  <div class="mt-6">
     <x-input-label for="images" :value="__('Images')" />
 
@@ -104,10 +104,10 @@
 </div>
 
 
-
+                     
                 </div>
 
-
+               
                 <div class="right">
                    <x-input-label for="pets_allowed" value="Pets Allowed" />
                     <select id="pets_allowed" name="pets_allowed" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
@@ -131,31 +131,35 @@
                     <x-input-label for="email" value="email" />
                     <x-text-input id="email" type="email" name="email" required :value="old('email', $hotel->email)" />
 
-
+                    
                     <x-input-label for="website" value="website" />
                     <x-text-input id="website" type="url" name="website" required :value="old('website', $hotel->website)" />
 
+
+                    <x-input-label for="nearby_landmarks" value="nearby_landmarks" />
+                    <x-text-input id="nearby_landmarks" type="text" name="nearby_landmarks" :value="old('nearby_landmarks',$hotel->nearby_landmarks)" required/>
+                    
                         <x-input-label for="amenities" value="Amenities" />
                              @php
                                $options = ['Wifi','Parking','Pool','Spa','Restaurant','Gym','Laundry','Air Condition','Free Breakfast'];
-                               $oldAmenities = old('amenities', $hotel->amenities ?? []);
+                               $oldAmenities = old('amenities', $hotel->amenities ?? []);   
                              @endphp
 
                         <div class="amenities-container">
                             @foreach($options as $option)
                               <label class="custom-option">
-                               <input  type="checkbox" name="amenities[]"  value="{{ $option }}"
-                                   {{ in_array($option, $oldAmenities) ? 'checked' : '' }} style="width:30px; height:30px;border-radius:15px; font-size:12px;>
+                               <input  type="checkbox" name="amenities[]"  value="{{ $option }}" 
+                                   {{ in_array($option, $oldAmenities) ? 'checked' : '' }}>
                                          <span>{{ $option }}</span>
                               </label>
                             @endforeach
 
-                        </div>
+                        </div> 
                 </div>
             </div>
+             
 
-
-
+            
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Update Hotel</button>
                    <a href="{{ route('hotels.index') }}" class="cancel-btn">Cancel</a>
@@ -213,7 +217,7 @@
         </div>
     </div>
 
-
+    
 
 </x-app-layout>
 
