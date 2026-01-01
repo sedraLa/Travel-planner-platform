@@ -67,6 +67,3 @@ http://127.0.0.1:8000
 ## Notes:
 - Make sure the database is created before running migrations.
 - API keys for external services should be added to the .env file.
-
-
-e](https://opensource.org/licenses/MIT).
