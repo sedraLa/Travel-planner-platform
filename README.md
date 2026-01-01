@@ -46,8 +46,8 @@ cp .env.example .env
 ```bash
 php artisan key:generate
 ```
-## Note
-- Configure the database settings in the .env file.
+
+6. Configure the database settings in the .env file.
 
 7. Run database migrations:
 ```bash
