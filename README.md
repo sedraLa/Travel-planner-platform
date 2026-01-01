@@ -23,6 +23,7 @@ Before running the project, make sure the following tools are installed:
 - Composer
 - Node.js and npm
 - MySQL
+- Web server (Apache or Laravel built-in server)
 
 ### Installation Steps
 
