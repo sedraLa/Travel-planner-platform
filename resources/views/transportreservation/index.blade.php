@@ -5,7 +5,7 @@
 @endpush
    
 
-    {{-- 🔎 Filter --}}
+    {{--  Filter --}}
 <form method="GET"
 class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
 

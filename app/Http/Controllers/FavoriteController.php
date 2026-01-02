@@ -10,9 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class FavoriteController extends Controller
 {
-    // عرض كل المفضلات
     
-    // إضافة مفضلة
     public function store($type, $id)
     {
         $user = auth()->user();

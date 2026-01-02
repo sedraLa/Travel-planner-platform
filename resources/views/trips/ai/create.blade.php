@@ -2,7 +2,7 @@
     @push('styles')
     <link rel='stylesheet' href="{{asset('css/manual.css')}}">
     <style>
-        /* تنسيقات إضافية لضمان عمل الـ Spinner */
+       
         .generate-btn {
             position: relative;
             padding: 14px 42px;
@@ -31,7 +31,7 @@
             opacity: 0.8;
         }
 
-        /* تصميم الـ Spinner */
+        
         .spinner {
             width: 20px;
             height: 20px;
@@ -39,11 +39,11 @@
             border-top: 3px solid white;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            display: none; /* مخفي افتراضياً */
+            display: none; 
             margin-left: 10px;
         }
 
-        /* إظهار الـ Spinner عند التحميل */
+        
         .generate-btn.loading .spinner {
             display: block;
         }
@@ -148,11 +148,11 @@
             const btn = document.getElementById('generateBtn');
             const spinner = document.getElementById('btnSpinner');
             
-            // إضافة الـ Class لتفعيل التنسيقات
+            
             btn.classList.add('loading');
-            // تعطيل الزر لمنع الإرسال المتكرر
+            
             btn.disabled = true;
-            // إظهار الـ Spinner يدوياً للتأكيد
+           
             spinner.style.display = 'block';
         });
     </script>

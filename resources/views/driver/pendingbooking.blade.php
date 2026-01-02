@@ -54,7 +54,7 @@
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse ($reservations as $reservation)
                             <tr>
-                                {{-- Reservation ID مخفي كامل --}}
+                                
                                 <td class="hidden">{{ $reservation->id }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->user->name?? 'N/A' }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->user->phone_number ?? 'N/A' }}</td>
@@ -64,7 +64,6 @@
                                 <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->passengers}}</td>
                                 <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->total_price }}</td>
 
-                                {{-- status ثابت حالياً --}}
                                 <td class="px-6 py-4 text-sm text-yellow-600 font-semibold">Pending</td>
                                  @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
                                 <td class="px-6 py-4 text-sm">

@@ -81,7 +81,7 @@ public function index(Request $request)
 
     $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
-    // ✅ المستخدم يشوف حجوزاته فقط
+    
     if (!$isAdmin) {
         $query->where('user_id', Auth::id());
     }
@@ -101,7 +101,7 @@ public function index(Request $request)
                 $d->where('name', 'like', "%{$term}%")
             );
 
-            // ✅ بحث بالمستخدم فقط للأدمن
+          
             if ($isAdmin) {
                 $q->orWhereHas('user', function ($u) use ($term) {
                     $u->where('name', 'like', "%{$term}%")

@@ -16,8 +16,8 @@ class NotificationController extends Controller
     public function show($id)
     {
         $notification = auth()->user()->notifications()->findOrFail($id);
-        $notification->markAsRead(); // تعليم كمقروء
-        return redirect()->back(); // أو صفحة تفاصيل الحجز إذا عندها relation
+        $notification->markAsRead(); 
+        return redirect()->back(); 
     }
 }
 

@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{{asset('css/vehicles.css')}}">
     <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
     <style>
-        /* نفس تنسيقاتك السابقة */
+        
         .trip-container { max-width: 1400px; margin: 0 auto; padding: 30px 20px; background: white; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
         .trip-header { border-bottom: 3px solid #7f53ac; padding-bottom: 20px; margin-bottom: 30px; margin-top:30px; }
         .trip-header h1 { color: #333; font-size: 28px; margin: 0 0 10px 0; }
@@ -26,14 +26,14 @@
     @endpush
 
     <div class="trip-container">
-        <!-- رسالة النجاح -->
+       
         @if (session('success'))
             <div class="success-message">
                 ✓ {{ session('success') }}
             </div>
         @endif
 
-        <!-- رأس الرحلة -->
+        
         <div class="trip-header">
             <h1>{{ $trip->name }}</h1>
             @if($trip->destination_name)
@@ -72,7 +72,7 @@
             @endif
         </div>
 
-        <!-- محتوى الأيام والفنادق والأنشطة -->
+       
         <div class="trip-itinerary">
             @foreach($trip->days as $day)
                 <h2>Day {{ $day->day_number }}</h2>
@@ -88,7 +88,7 @@
             @endforeach
         </div>
 
-        <!-- أزرار الإجراءات -->
+        
         <div class="trip-actions">
             <a href="{{ route('trips.index') }}" class="btn btn-secondary">← Back to Trips</a>
             <button class="btn btn-primary" onclick="window.print()">🖨️ Print Itinerary</button>
