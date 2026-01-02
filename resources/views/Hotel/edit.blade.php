@@ -238,28 +238,30 @@ function addFilesToInput(input) {
 </script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const destinationSelect = document.getElementById('destination_id');
     const cityInput = document.getElementById('city');
     const countryInput = document.getElementById('country');
 
-    // عند تغيير الـ select
-    destinationSelect.addEventListener('change', function() {
-        // عبّي الحقول فقط إذا فارغة
-        if (!cityInput.value) {
-            cityInput.value = this.selectedOptions[0].dataset.city  '';
-        }
-        if (!countryInput.value) {
-            countryInput.value = this.selectedOptions[0].dataset.country  '';
-        }
+    // هل الصفحة رجعت مع old values؟
+    const hasOldValues = "{{ old('city') || old('country') ? '1' : '0' }}" === '1';
+
+    function syncCityCountry() {
+        const option = destinationSelect.selectedOptions[0];
+        if (!option) return;
+
+        cityInput.value = option.dataset.city || '';
+        countryInput.value = option.dataset.country || '';
+    }
+
+    // فقط إذا ما في old values
+    if (!hasOldValues && destinationSelect.value) {
+        syncCityCountry();
+    }
+
+    // عند تغيير الـ destination دائماً حدّث
+    destinationSelect.addEventListener('change', function () {
+        syncCityCountry();
     });
-
-    // تعيين القيم الأولية عند التحميل
-    const oldCity = "{{ old('city', $hotel->city ?? '') }}";
-    const oldCountry = "{{ old('country', $hotel->country ?? '') }}";
-
-    cityInput.value = oldCity;
-    countryInput.value = oldCountry;
 });
-
 </script>
