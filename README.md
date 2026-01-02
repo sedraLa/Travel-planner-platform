@@ -48,30 +48,6 @@ cp .env.example .env
 ```bash
 php artisan key:generate
 ```
-<<<<<<< HEAD
-6. Configure the database settings in the .env file.
-7. Run database migrations:
-```bash
-php artisan migrate
-```
-8. Run npm :
-```bash
-npm run dev
-```
-9. Start the development server:
-```bash
-php artisan serve
-```
-The application will be accessible at:
-http://127.0.0.1:8000
-
-## Notes:
-- Make sure the database is created before running migrations.
-- API keys for external services should be added to the .env file.
-
-
-=======
-
 6. Configure the database settings in the .env file.
 
 7. Run database migrations:
@@ -92,4 +68,4 @@ http://127.0.0.1:8000
 ## Notes:
 - Make sure the database is created before running migrations.
 - API keys for external services should be added to the .env file.
->>>>>>> e9eb38057a073f332d70975b73fc2936124d2ca0
+- Project SRS is in the Documentation folder
