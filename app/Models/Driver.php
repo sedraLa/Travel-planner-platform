@@ -21,13 +21,13 @@ class Driver extends Model
         'status',
     ];
 
-    // علاقة One-to-One مع السيارة
+    
     public function vehicle()
     {
         return $this->hasOne(TransportVehicle::class);
     }
 
-    // علاقة One-to-Many مع الحجوزات مباشرة
+   
     public function reservations()
     {
         return $this->hasMany(TransportReservation::class);

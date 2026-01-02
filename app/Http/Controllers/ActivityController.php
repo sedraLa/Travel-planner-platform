@@ -77,18 +77,8 @@ class ActivityController extends Controller
         return redirect()->route('activities.index')->with('success', 'Activity created successfully!');
     }
 
-    /**
-     * Display the specified resource.
-     */
-     /*  public function show(Activity $activity) // استخدام Route Model Binding
-    {
-        // تحميل الوجهة المرتبطة بالنشاط لتجنب استعلامات إضافية
-        $activity->load('destination');
 
-        // إرجاع صفحة العرض مع تمرير بيانات النشاط
-        return view('activities.show', compact('activity'));
-    }
-*/
+
     /**
      * Show the form for editing the specified resource.
      */

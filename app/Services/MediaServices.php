@@ -16,13 +16,13 @@ class MediaServices
      */
     public static function save($file, $type = 'image', $folder = 'uploads')
     {
-        // توليد اسم فريد للملف
+        
         $fileName = uniqid() . '.' . $file->getClientOriginalExtension();
 
-        // حفظ الملف في مجلد داخل disk 'public'
+       
         $path = $file->storeAs($folder, $fileName, 'public');
 
-        // إرجاع المسار النسبي (مثلاً: storage/Destinations/xyz.jpg)
+     
         return  $path;
     }
 }

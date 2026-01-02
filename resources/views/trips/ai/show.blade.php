@@ -208,7 +208,7 @@
     @endpush
 
     <div class="trip-container">
-        <!-- رسالة النجاح -->
+       
         @if (session('success'))
             <div class="success-message">
                 ✓ {{ session('success') }}
@@ -240,16 +240,16 @@
             </div>
         </div>
 
-        <!-- محتوى الرحلة (Markdown محول إلى HTML) -->
+       
         <div class="trip-itinerary">
             {!! Str::markdown($trip->ai_itinerary) !!}
         </div>
 
-        <!-- أزرار الإجراءات -->
+      
         <div class="trip-actions">
             <a href="{{ route('trips.index') }}" class="btn btn-secondary">← Back to Trips</a>
             <button class="btn btn-primary" onclick="window.print()">🖨️ Print Itinerary</button>
-            <!-- يمكن إضافة زر تحميل PDF أو تعديل لاحقاً -->
+           
         </div>
     </div>
 

@@ -83,10 +83,10 @@ class TransportReservationController extends Controller
             'driver_id' => $request->driver_id,
         ];
 
-        // تخزين مؤقت بالـ session
+        
         session(['transport_reservation_data' => $paymentData]);
 
-        // إنشاء كائن وهمي مؤقت ليوافق sendPayment
+        
         $tempReservation = new class($total_price) {
             public $id = 0;
             public $total_price;
@@ -97,7 +97,7 @@ class TransportReservationController extends Controller
         $response = $paypal->sendPayment($tempReservation, 'transport');
 
         if ($response['success']) {
-            return redirect()->away($response['url']); // توجيه مباشرة لصفحة الدفع
+            return redirect()->away($response['url']); 
         }
 
         return back()->withErrors('Payment initiation failed.');
@@ -108,7 +108,7 @@ class TransportReservationController extends Controller
     
         $isAdmin = Auth::check() && Auth::user()->role === 'admin';
     
-        // المستخدم يشوف حجوزاته فقط
+        
         if (!$isAdmin) {
             $query->where('user_id', Auth::id());
         }

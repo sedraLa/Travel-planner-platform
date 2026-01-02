@@ -37,15 +37,6 @@ class TransportController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
- /*public function show(string $id)
-{
-    $transport = Transport::with('vehicles')->findOrFail($id);
-    $Vehicles = $transport->vehicles;
-    return view('transport.vehicles', compact('transport', 'Vehicles'));
-}*/
 
 
     /**
@@ -63,19 +54,18 @@ class TransportController extends Controller
 {
     $transport = Transport::findOrFail($id);
 
-    // تحقق إذا رفع المستخدم صورة جديدة
+    
     if ($request->hasFile('image')) {
-        // احذف الصورة القديمة إذا موجودة
+        
         if ($transport->image && \Storage::exists('public/' . $transport->image)) {
             \Storage::delete('public/' . $transport->image);
         }
 
-        // احفظ الصورة الجديدة
         $imagePath = MediaServices::save($request->file('image'), 'image', 'Transports');
         $transport->image = $imagePath;
     }
 
-    // حدث بقية الحقول
+    
     $transport->name = $request->name;
     $transport->description = $request->description;
     $transport->type = $request->type;

@@ -191,7 +191,7 @@ class DriverController extends Controller
     $driver = Driver::findOrFail($id);
     $user = $driver->user;
 
-    // ✅ تحديث بيانات المستخدم المرتبط
+    
     $user->update([
         'name'         => $request->name,
         'last_name'    => $request->last_name,
@@ -200,20 +200,20 @@ class DriverController extends Controller
         'country'      => $request->country,
     ]);
 
-    // ✅ تحديث صورة الرخصة بطريقة أبسط
+   
     $licensePath = $driver->license_image;
 
     if ($request->hasFile('license_image')) {
-        // حذف الصورة القديمة فقط إن وُجدت
+       
         if ($licensePath && Storage::disk('public')->exists($licensePath)) {
             Storage::disk('public')->delete($licensePath);
         }
 
-        // حفظ الصورة الجديدة
+       
         $licensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
     }
 
-    // ✅ تحديث بيانات الـ Driver
+    
     $driver->update([
         'age'              => $request->age,
         'address'          => $request->address,
@@ -258,7 +258,7 @@ class DriverController extends Controller
         }
 
 
-        // إذا كان Approved مسبقاً → ممنوع التغيير
+        
         if ($driver->status === 'approved') {
             return redirect()->back()->with('error', 'Approved drivers status cannot be changed.');
         }

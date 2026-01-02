@@ -50,7 +50,7 @@
                     <input type="hidden" id="driver_name" name="driver_name">
                     <input type="hidden" id="driver_contact" name="driver_contact">
 
-                    {{-- ===== نهاية التعديل ===== --}}
+                   
 
                 </div>
 
@@ -96,19 +96,19 @@
                 const driverContactInput = document.getElementById('driver_contact');
 
                 driverSelect.addEventListener('change', function () {
-                    // ابحث عن الخيار الذي تم تحديده
+                    
                     const selectedOption = this.options[this.selectedIndex];
 
                     if (selectedOption.value) {
-                        // احصل على البيانات من data attributes
+                        
                         const name = selectedOption.getAttribute('data-name');
                         const phone = selectedOption.getAttribute('data-phone');
 
-                        // قم بتعبئة الحقول المخفية بالبيانات
+                        
                         driverNameInput.value = name;
                         driverContactInput.value = phone;
                     } else {
-                        // أفرغ الحقول إذا لم يتم اختيار أي سائق
+                        
                         driverNameInput.value = '';
                         driverContactInput.value = '';
                     }

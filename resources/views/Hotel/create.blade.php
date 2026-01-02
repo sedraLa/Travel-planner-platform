@@ -221,12 +221,12 @@
             wrapper.classList.add('hidden');
         }
 
-        //  تحديث ملفات الفورم المخفية
+        
         updateFileList(input);
     }
 
     function updateFileList(input) {
-        // إنشاء كائن جديد من نوع DataTransfer لتخزين الملفات كلها
+        
         const dataTransfer = new DataTransfer();
         allFiles.forEach(file => dataTransfer.items.add(file));
         input.files = dataTransfer.files;
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const cityInput = document.getElementById('city');
     const countryInput = document.getElementById('country');
 
-    // هل الصفحة رجعت مع old values؟
+    
     const hasOldValues = "{{ old('city') || old('country') ? '1' : '0' }}" === '1';
 
     function syncCityCountry() {
@@ -251,12 +251,12 @@ document.addEventListener('DOMContentLoaded', function () {
         countryInput.value = option.dataset.country || '';
     }
 
-    // فقط إذا ما في old values
+    
     if (!hasOldValues && destinationSelect.value) {
         syncCityCountry();
     }
 
-    // عند تغيير الـ destination دائماً حدّث
+    
     destinationSelect.addEventListener('change', function () {
         syncCityCountry();
     });

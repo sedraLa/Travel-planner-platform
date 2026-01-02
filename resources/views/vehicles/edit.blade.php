@@ -5,10 +5,10 @@
     @endpush
 
     <div class="vehicle-form-container">
-        {{-- 1. تغيير العنوان --}}
+      
         <h2>Edit Vehicle</h2>
 
-        {{-- 2. تغيير مسار الـ action وإضافة @method('PUT') --}}
+        
         <form action="{{ route('admin.vehicles.update', $vehicle->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -23,12 +23,12 @@
                 </div>
             @endif
 
-            <!-- Transport ID (مخفي) -->
+           
             <input type="hidden" name="transport_id" value="{{ $vehicle->transport_id }}">
 
             <div class="first-section">
     <div class="left">
-        <!-- محتوى left -->
+    
         <x-input-label for="car_model" value="Car Model" />
         <x-text-input id="car_model" type="text" name="car_model" required
             placeholder="Enter car model"
@@ -56,10 +56,10 @@
 
         <input type="hidden" id="driver_name" name="driver_name">
         <input type="hidden" id="driver_contact" name="driver_contact">
-    </div> <!-- ← أغلق left هون -->
+    </div> 
 
     <div class="right">
-        <!-- محتوى right -->
+     
         <x-input-label for="max_passengers" value="Max Passengers" />
         <x-text-input id="max_passengers" type="number" name="max_passengers"
             required placeholder="e.g. 4"
@@ -87,8 +87,8 @@
                 </option>
             
             </select>            
-    </div> <!-- ← أغلق right هون -->
-</div> <!-- ← أغلق first-section -->
+    </div> 
+</div> 
 
 
             <!-- Vehicle Image -->
@@ -105,7 +105,7 @@
                 <input type="file" id="image" name="image" accept="image/*">
             </div>
             <div class="popup-buttons">
-                {{-- تغيير نص الزر --}}
+                
                 <button type="submit" class="btn btn-primary">Update Vehicle</button>
                 <a href="{{route('transport.index')}}" class="cancel-btn">Cancel</a>
             </div>

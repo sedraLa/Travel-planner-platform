@@ -8,7 +8,7 @@ use App\Models\Transport;
 use App\Models\TransportVehicle;
 use App\Http\Requests\VehicleRequest;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Driver; // <-- إضافة استدعاء موديل السائق
+use App\Models\Driver; 
 
 class VehicleController extends Controller
 {
@@ -27,8 +27,8 @@ class VehicleController extends Controller
     public function create(Request $request)
     {
         $transportId = $request->get('transport_id');
-        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();// <-- جلب جميع السائقين
-        return view('vehicles.create', compact('transportId', 'drivers')); // <-- تمريرهم إلى الواجهة
+        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();
+        return view('vehicles.create', compact('transportId', 'drivers')); 
     }
 
 
@@ -76,10 +76,10 @@ class VehicleController extends Controller
      */
     public function edit(string $id)
     {
-         // البحث عن المركبة المراد تعديلها
+         
         $vehicle = TransportVehicle::findOrFail($id);
          $drivers = Driver::with('user')->get();
-        // إرجاع عرض (view) يحتوي على نموذج التعديل مع بيانات المركبة
+      
         return view('vehicles.edit', compact('vehicle','drivers'));
     }
 
@@ -88,23 +88,23 @@ class VehicleController extends Controller
      */
     public function update(VehicleRequest $request, string $id)
     {
-        // البحث عن المركبة
+        
         $vehicle = TransportVehicle::findOrFail($id);
 
-        // الحصول على مسار الصورة القديمة
+        
         $oldImagePath = $vehicle->image;
 
-        // التحقق مما إذا كان المستخدم قد قام بتحميل صورة جديدة
+       
         if ($request->hasFile('image')) {
-            // حفظ الصورة الجديدة
+         
             $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
 
-            // حذف الصورة القديمة إذا كانت موجودة
+           
             if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
                 Storage::disk('public')->delete($oldImagePath);
             }
         } else {
-            // إذا لم يتم تحميل صورة جديدة، احتفظ بالصورة القديمة
+            
             $imagePath = $oldImagePath;
         }
 
@@ -118,7 +118,7 @@ class VehicleController extends Controller
         }
 
 
-        // تحديث بيانات المركبة
+        
         $vehicle->update([
             'transport_id'   => $request->transport_id,
             'driver_id' => $request->driver_id,
@@ -133,7 +133,7 @@ class VehicleController extends Controller
             'image'          => $imagePath,
         ]);
 
-        // إعادة التوجيه إلى صفحة قائمة المركبات مع رسالة نجاح
+        
         return redirect()
         ->route('admin.transports.vehicles', $vehicle->transport_id)
         ->with('success', 'Vehicle updated successfully');
