@@ -40,7 +40,9 @@ class Hotel extends Model
     'check_in_time' => 'datetime:H:i',
     'check_out_time' => 'datetime:H:i',
     'amenities' => 'array',
+    'pets_allowed' => 'boolean',
 ];
+
 
     public function destination()
     {
