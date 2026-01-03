@@ -334,11 +334,11 @@
 //here
 
 document.addEventListener("DOMContentLoaded", function () {
-//store current step number (hidden input)
+  // store current step number (hidden input)
   const stepInput = document.getElementById("step-input");
-  //step number from server
+  // step number from server
   let currentStep = {{ $currentStep }};
-  //sync
+  // sync
   stepInput.value = currentStep;
 
   const form = document.getElementById('trip-form');
@@ -348,14 +348,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const nextBtn = document.getElementById("next-btn");
   const prevBtn = document.getElementById("pre-btn");
 
-  //calculate current index
+  // calculate current index
   let currentStepIndex = currentStep - 1;
 
 
   function updateSteps() {
     steps.forEach((step, index) => step.style.display = index === currentStepIndex ? "block" : "none");
 
-    //coloring circles
+    // coloring circles
     circles.forEach((circle, index) => {
       if (index === currentStepIndex) {
         circle.style.backgroundColor = "#628ECB";
@@ -372,61 +372,71 @@ document.addEventListener("DOMContentLoaded", function () {
     nextBtn.textContent = currentStepIndex === steps.length - 1 ? "Finish" : "Next Step";
   }
 
-  //click on Next event
+  // ========== التعديل الأساسي هنا ==========
+  // click on Next event
   nextBtn.addEventListener("click", function (e) {
-  e.preventDefault(); // prevent automatic submit
-  stepInput.value = currentStepIndex + 1;  // send step number to server
-  form.submit(); //send data to server
+    e.preventDefault(); // prevent automatic submit
+    
+    // إذا كنا في آخر خطوة (الخطوة 6)، نرسل رقم 6 للحفظ النهائي
+    // وإلا نرسل رقم الخطوة الحالية لمعالجة بياناتها
+    if (currentStepIndex === steps.length - 1) {
+      stepInput.value = steps.length; // إرسال 6 للخطوة الأخيرة
+    } else {
+      stepInput.value = currentStepIndex + 1; // إرسال رقم الخطوة الحالية
+    }
+    
+    form.submit(); // send data to server
+  });
+  // ==========================================
 
-});
-
-//click on previous event
+  // click on previous event
   prevBtn.addEventListener("click", function () {
     if (currentStepIndex > 0) {
-    currentStepIndex--;
-    stepInput.value = currentStepIndex + 1;  // reverse current step
-    updateSteps();               // update view
-  }
+      currentStepIndex--;
+      stepInput.value = currentStepIndex + 1;  // reverse current step
+      updateSteps();               // update view
+    }
   });
 
-    // store selected id's before sending form
-    form.addEventListener("submit", function () {
+  // store selected id's before sending form
+  form.addEventListener("submit", function () {
     hiddenInput.value = selectedDestinations.join(",");
   });
+  
   updateSteps();
 });
 
-//handling selected ID's
-  const selectedDestinations = [];
-  const hiddenInput = document.getElementById("selected_destination");
+// handling selected ID's
+const selectedDestinations = [];
+const hiddenInput = document.getElementById("selected_destination");
 
-  // get selected id from + button
-  document.querySelectorAll(".add-btn").forEach(btn => {
-    btn.addEventListener("click", function (e) {
-      e.preventDefault();
-      const destId = this.dataset.id;
+// get selected id from + button
+document.querySelectorAll(".add-btn").forEach(btn => {
+  btn.addEventListener("click", function (e) {
+    e.preventDefault();
+    const destId = this.dataset.id;
 
-      // add selected destination if it's not selected before
-      if (!selectedDestinations.includes(destId)) {
-        selectedDestinations.push(destId);
-        this.textContent = "✔";
-        this.style.backgroundColor = "#2e8b57";
-        this.style.color = "white";
-      } else {
-        // delete it if it was selected before
-        const index = selectedDestinations.indexOf(destId);
-        selectedDestinations.splice(index, 1);
-        this.textContent = "+";
-        this.style.backgroundColor = "var(--light-blue)";
-        this.style.color = "#052659";
-      }
+    // add selected destination if it's not selected before
+    if (!selectedDestinations.includes(destId)) {
+      selectedDestinations.push(destId);
+      this.textContent = "✔";
+      this.style.backgroundColor = "#2e8b57";
+      this.style.color = "white";
+    } else {
+      // delete it if it was selected before
+      const index = selectedDestinations.indexOf(destId);
+      selectedDestinations.splice(index, 1);
+      this.textContent = "+";
+      this.style.backgroundColor = "var(--light-blue)";
+      this.style.color = "#052659";
+    }
 
-      // update hidden input with new values
-      hiddenInput.value = selectedDestinations.join(",");
+    // update hidden input with new values
+    hiddenInput.value = selectedDestinations.join(",");
 
-      console.log("Selected Destinations:", selectedDestinations);
-    });
+    console.log("Selected Destinations:", selectedDestinations);
   });
+});
 
 
 

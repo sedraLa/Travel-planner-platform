@@ -143,7 +143,7 @@ class ManualTripController extends Controller
                 return redirect()->route('manual.create');
                 break;
 
-            //step 5 
+            //step 5
             case 5:
                 $validated = $request->validate([
                     'flight_number' => 'nullable|string|max:20',
@@ -153,22 +153,10 @@ class ManualTripController extends Controller
                     'departure_time' => 'nullable|after:now',
                     'arrival_time' => 'nullable|after:departure_time',
                 ]);
-
+            
                 $data['flight'] = $validated;
-                //update step
-                $data['step'] = 6;
-                //update session array
-                session(['trip_manual' => $data]);
-                //dd(session('trip_manual'));
-
-                return redirect()->route('manual.create');
-                break;
-
-            //step 6 (save everything to database)
-            case 6:
-                $data['step'] = 6;
-                session(['trip_manual'=>$data]);
-
+            
+                
                 DB::transaction(function () use ($data) {
                     $trip = Trip::create([
                         'user_id' => auth()->id(),
@@ -187,52 +175,13 @@ class ManualTripController extends Controller
                         'departure_time' => $data['flight']['departure_time'] ?? null,
                         'arrival_time' => $data['flight']['arrival_time'] ?? null,
                     ]);
-
-                    //calculate days (for DB)
-                    $start = Carbon::parse($data['basic']['start_date']);
-                    $end = Carbon::parse($data['basic']['end_date']);
-                    $daysCount = $start->diffInDays($end) + 1;
-
-                    for ($i=1; $i<=$daysCount; $i++) {
-                        $tripDay = TripDay::create([
-                            'trip_id' => $trip->id,
-                            'day_number' => $i,
-                            'hotel_id' => $data['hotels']['selected']["day_$i"] ?? null,
-                            'custom_hotel' => $data['hotels']['custom']["day_$i"] ?? null,
-                        ]);
-
-                        //save selected activities for these days
-                      // selected activities
-                    $selectedActivities = $data['activities']['selected']["day_$i"] ?? [];
-                    if (!is_array($selectedActivities)) {
-                    $selectedActivities = [$selectedActivities];
-                    }
-                    foreach ($selectedActivities as $activityId) {
-                    DayActivity::create([
-                    'trip_day_id' => $tripDay->id,
-                    'activity_id' => $activityId
-                    ]);
-                    }
-
-                    // custom activities
-                    $customActivities = $data['activities']['custom']["day_$i"] ?? [];
-                    if (!is_array($customActivities)) {
-                    $customActivities = [$customActivities];
-                        }
-                    foreach ($customActivities as $customActivity) {
-                    DayActivity::create([
-                    'trip_day_id' => $tripDay->id,
-                    'custom_activity' => $customActivity
-                    ]);
-
-                    }
-                }
+            
                 });
-        
-
+            
                 session()->forget('trip_manual');
                 return redirect()->route('trip.view')->with('success', 'Trip created successfully!');
                 break;
+            
         }
     }
 
