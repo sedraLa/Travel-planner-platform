@@ -56,36 +56,36 @@
             <div class="container">
               <label for="trip-name">Trip Name</label>
               <input type="text" name="name" id="name" value="{{old('name',$data['basic']['name'] ?? '')}}" placeholder="e.g., European Adventure 2024">
-              @error('name') <div class="error">{{ $message }}</div> @enderror
+             
             </div>
             <div class="container">
               <label for="description">Description</label>
               <input type="text" name="description" id="description" value="{{old('description',$data['basic']['description'] ?? '')}}" placeholder="Brief description of your trip ... ">
-              @error('description') <div class="error">{{ $message }}</div> @enderror
+             
             </div>
           </div>
           <div class="second-section">
             <div class="container">
               <label for="start_date">Start Date</label>
               <input type="date" name="start_date" id="start_date" value="{{old('start_date',$data['basic']['start_date'] ?? '')}}">
-              @error('start_date') <div class="error">{{ $message }}</div> @enderror
+              
             </div>
             <div class="container">
               <label for="end_date">End Date</label>
               <input type="date" name="end_date" id="end_date" value="{{old('end_date',$data['basic']['end_date'] ?? '')}}">
-              @error('end_date') <div class="error">{{ $message }}</div> @enderror
+              
             </div>
           </div>
           <div class="second-section">
             <div class="container">
               <label for="travelers_number">Number of Travelers</label>
               <input type="number" name="travelers_number" id="travelers_number" min="1" placeholder="Enter number of Travelers" value="{{old('travelers_number',$data['basic']['travelers_number'] ?? '')}}">
-              @error('travelers_number') <div class="error">{{ $message }}</div> @enderror
+              
             </div>
             <div class="container">
               <label for="budget">Estimated Budget $</label>
               <input type="text" name="budget" id="budget" placeholder="Enter your Budget" value="{{old('budget',$data['basic']['budget'] ?? '')}}">
-              @error('budget') <div class="error">{{ $message }}</div> @enderror
+              
             </div>
           </div>
         </div>
@@ -152,9 +152,7 @@
               <span class="price">${{$hotel->price_per_night}} / night</span>
             </div>
             <div class="services">
-              <span>🛜 Free Wi-Fi</span>
-              <span>🍳 Breakfast included</span>
-              <span>🏊 🚗 🏋 Pool access</span>
+                <span>{{$hotel->description}}</span>
             </div>
           </div>
         </div>
