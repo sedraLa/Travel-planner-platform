@@ -21,13 +21,15 @@
 
     @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     var lat = parseFloat(@json($coords['latitude']));
     var lon = parseFloat(@json($coords['longitude']));
     console.log("lat:", lat, "lon:", lon);
 
-    if (lat && lon) {
+    if (!isNaN(lat) && !isNaN(lon)) {
         var map = L.map('hotel-map').setView([lat, lon], 13);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -39,9 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
             .bindPopup("{{ addslashes($hotel->name) }}")
             .openPopup();
     } else {
-        document.getElementById('hotel-map').innerHTML = "<p style='padding:20px;text-align:center;'>Map data not available</p>";
+        document.getElementById('hotel-map').innerHTML =
+            "<p style='padding:20px;text-align:center;'>Map data not available</p>";
     }
 });
+
 </script>
 @endpush
 
