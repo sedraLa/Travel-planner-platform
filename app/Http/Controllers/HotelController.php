@@ -51,9 +51,18 @@ public function show(string $id, GeocodingService $geo)
         $hotel->address,
         $hotel->city,
         $hotel->country
-     ]));
-   
-    $coords = $geo->geocodeAddress($fullAddress) ?? ['latitude' => null, 'longitude' => null];
+    ]));
+    
+    $coords = $geo->geocodeAddress($fullAddress);
+    
+    // fallback: إذا ما في نتيجة، استخدمي المدينة والدولة
+    if (!$coords) {
+        $coords = $geo->geocodeAddress($hotel->city . ', ' . $hotel->country);
+    }
+    
+    // إذا ما في نتيجة بعد fallback، خلي null
+    $coords = $coords ?? ['latitude' => null, 'longitude' => null];
+    
 
     
     return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));
