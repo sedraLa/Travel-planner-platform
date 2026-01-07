@@ -15,10 +15,18 @@ use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewTransportBookingNotification;
 use App\Services\Payments\PaymentContext;
 use App\Services\Payments\PaypalPaymentService;
+use App\Services\Notifications\PaymentNotificationService;
 
 
 class PaymentController extends Controller
 {
+
+    protected $notificationService;
+
+    public function __construct(PaymentNotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
 
     public function payWithPayPal($reservationId)
 {
@@ -63,8 +71,8 @@ class PaymentController extends Controller
             'payment_date' => now(),
         ]);
 
-        Mail::to($reservation->user->email)
-            ->send(new PaymentConfirmationMail($reservation->hotel->name, $reservation));
+        $this->notificationService
+        ->sendHotelPaymentConfirmation($reservation);
 
         return redirect()->route('hotels.index', $reservation->hotel_id)
             ->with('success', 'Payment completed.');
@@ -116,15 +124,9 @@ public function paypalCallbackTransport(Request $request)
 
 
 
-        // driver notification
-$reservation->driver->user->notify(
-    new NewTransportBookingNotification($reservation)
-);
-
-// traveler notification
-$reservation->user->notify(
-    new NewTransportBookingNotification($reservation)
-);
+        $this->notificationService
+        ->sendTransportPaymentConfirmation($reservation);
+    
 
         Payment::create([
             'transport_reservation_id' => $reservation->id,
@@ -136,8 +138,7 @@ $reservation->user->notify(
         ]);
 
      
-        Mail::to(Auth::user()->email)
-            ->send(new TransportPaymentConfirmationMail($reservation));
+
 
         session()->forget('transport_reservation_data');
 
