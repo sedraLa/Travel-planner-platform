@@ -14,13 +14,14 @@
                     + Add New Hotel
                 </a>
             </div>
-
+            @endif
+            
             @if (session('success'))
                 <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
                     {{ session('success') }}
                 </div>
             @endif
-        @endif
+        
 
         <!-- Hero Background (for all users) -->
         <div class="hero-background hotels-page"></div>

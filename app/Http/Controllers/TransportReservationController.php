@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\TransportVehicle;
 use App\Models\Transport;
 use App\Models\TransportReservation;
-use App\Services\PaypalPaymentService;
+use App\Services\Payments\PaymentContext;
+use App\Services\Payments\PaypalPaymentService;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\VehicleOrderRequest;
 use App\Services\GeocodingService;
@@ -93,8 +94,9 @@ class TransportReservationController extends Controller
             public function __construct($total_price) { $this->total_price = $total_price; }
         };
 
-        $paypal = new PaypalPaymentService();
-        $response = $paypal->sendPayment($tempReservation, 'transport');
+        $context = new PaymentContext(new PaypalPaymentService());
+        $response = $context->sendPayment($tempReservation, 'transport');
+        
 
         if ($response['success']) {
             return redirect()->away($response['url']); 
