@@ -160,7 +160,7 @@
     const inputs = step1.querySelectorAll('input, select, textarea');
     let valid = true;
 
-    // تحقق من صحة كل الحقول
+    // check validity of all fields
     inputs.forEach(input => {
         if (!input.checkValidity()) {
             input.reportValidity(); // يعرض رسالة required أو أي validation

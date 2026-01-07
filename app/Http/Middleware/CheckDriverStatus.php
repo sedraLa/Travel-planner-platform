@@ -42,7 +42,7 @@ class CheckDriverStatus
                         'email' => 'Your account request has been rejected.',
                     ]);
                 case 'approved':
-                    // يسمح بالدخول
+                    // allow login
                     break;
                 default:
                     auth()->logout();

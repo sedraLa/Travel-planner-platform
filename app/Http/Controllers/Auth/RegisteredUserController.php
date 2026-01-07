@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
      */
 public function store(Request $request): RedirectResponse
 {
-    $role = $request->input('role', UserRole::USER->value);
+    $role = $request->input('role', UserRole::USER->value);  //get role from url
 
     $rules = [
         'name' => ['required', 'string', 'max:255'],
