@@ -21,11 +21,11 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Handle an incoming authentication request.
+     * Handle an incoming authentication request. (login)
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate(); //authenticate user data
 
         $request->session()->regenerate();
 
@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
-     * Destroy an authenticated session.
+     * Destroy an authenticated session. (logout)
      */
     public function destroy(Request $request): RedirectResponse
     {
