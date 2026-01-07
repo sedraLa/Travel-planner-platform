@@ -34,9 +34,67 @@
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                 </svg>
-                <input type="search" name="search" class="search-input" placeholder="Search hotels..." required />
+                <input type="search" name="search" class="search-input" placeholder="Search hotels..."  />
                 <button type="submit" class="search-button">Search</button>
             </div>
+
+            <div class="filters">
+                <select name="city">
+                    <option value="">Select City</option>
+                    @foreach (\App\Models\Hotel::distinct('city')->pluck('city') as $city)
+                        <option value="{{ $city }}" {{ request('city') == $city ? 'selected' : '' }}>{{ $city }}</option>
+                    @endforeach
+                </select>
+            
+                <select name="country">
+                    <option value="">Select Country</option>
+                    @foreach (\App\Models\Hotel::distinct('country')->pluck('country') as $country)
+                        <option value="{{ $country }}" {{ request('country') == $country ? 'selected' : '' }}>{{ $country }}</option>
+                    @endforeach
+                </select>
+            
+                <select name="stars">
+                    <option value="">Stars</option>
+                    @for ($i = 1; $i <= 5; $i++)
+                        <option value="{{ $i }}" {{ request('stars') == $i ? 'selected' : '' }}>{{ $i }}★</option>
+                    @endfor
+                </select>
+
+
+                <div class="dropdown">
+                    <button type="button" class="dropbtn">Select Amenities</button>
+                    <div class="dropdown-content">
+                        @foreach(['Wifi','Parking','Pool','Spa','Restaurant','Gym','Laundry','Air Condition','Free Breakfast'] as $amenity)
+                            <label>
+                                <input type="checkbox" name="amenities[]" value="{{ $amenity }}" 
+                                    {{ in_array($amenity, (array) request('amenities', [])) ? 'checked' : '' }}>
+                                {{ $amenity }}
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                
+                
+                
+                
+                
+                
+            
+                <select name="pets_allowed">
+                    <option value="">Pets Allowed</option>
+                    <option value="1" {{ request('pets_allowed') == '1' ? 'selected' : '' }}>Yes</option>
+                    <option value="0" {{ request('pets_allowed') == '0' ? 'selected' : '' }}>No</option>
+                </select>
+            
+                <input type="number" name="min_price" placeholder="Min Price" value="{{ request('min_price') }}">
+                <input type="number" name="max_price" placeholder="Max Price" value="{{ request('max_price') }}">
+            
+                <div class="filters-actions">
+                    <button type="submit" class="filter-btn">Filter</button>
+                    <a href="{{ route('hotels.index') }}" class="reset-btn">Reset</a>
+                </div>
+            </div>
+            
         </form>
 
         <!-- Hotels Cards -->
@@ -108,6 +166,7 @@
 </div>
 
 </x-app-layout>
+
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
