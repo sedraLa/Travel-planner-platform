@@ -9,42 +9,16 @@ use App\Models\Transport;
 use App\Models\TransportReservation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use App\Services\PaypalPaymentService;
 use App\Mail\PaymentConfirmationMail;
 use App\Mail\TransportPaymentConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewTransportBookingNotification;
+use App\Services\Payments\PaymentContext;
+use App\Services\Payments\PaypalPaymentService;
 
 
 class PaymentController extends Controller
 {
-    /*public function payWithPayPal($reservationId)
-    {
-        //check if there is a reservation
-        $reservation = Reservation::findOrFail($reservationId);
-
-        if (Auth::id() !== $reservation->user_id) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        //create paypal service
-
-        $paypalService = new PaypalPaymentService();
-
-        //start payment process
-        $response = $paypalService->sendPayment($reservation);
-
-        //if request has been created successfully
-        if ($response['success']) {
-            // store reservation id in session so we can know it easilly
-            Session::put('paypal_reservation_id', $reservation->id);
-
-            // take the user to payment url which been given to us from paypal
-            return redirect()->away($response['url']);
-        } else {
-            return redirect()->route('reservations.pay', $reservation->id)->withErrors(['Payment initiation failed. Please try again.']);
-        }
-    }*/
 
     public function payWithPayPal($reservationId)
 {
@@ -54,8 +28,8 @@ class PaymentController extends Controller
         abort(403);
     }
 
-    $paypal = new PaypalPaymentService();
-    $response = $paypal->sendPayment($reservation, 'hotel');
+    $context = new PaymentContext(new PaypalPaymentService());
+    $response = $context->sendPayment($reservation, 'hotel');    
 
     if ($response['success']) {
         Session::put('paypal_reservation_id', $reservation->id);
@@ -66,47 +40,12 @@ class PaymentController extends Controller
 }
 
 
-   /* public function paypalCallback(Request $request)
-    {
-        $paypalService = new PaypalPaymentService();
-
-        //continue payment process
-        $response = $paypalService->callBack($request);
-
-        //get reservation id from session
-        $reservationId = Session::get('paypal_reservation_id');
-        $reservation = Reservation::findOrFail($reservationId);
-
-        //update reservation status according to payment result
-
-        if ($response['success']) {
-
-            $reservation->reservation_status = 'paid';
-            $reservation->save();
-
-            //store payment process
-            Payment::create([
-                'reservation_id' => $reservation->id,
-                'user_id' => $reservation->user_id,
-                'amount' => $reservation->total_price,
-                'status' => 'completed',
-                'transaction_id' => $response['transaction_id'] ?? null,
-                'payment_date' => now(),
-            ]);
-
-            //sending email
-            Mail::to($reservation->user->email)->send(new PaymentConfirmationMail($reservation->hotel->name, $reservation));
-
-            return redirect()->route('hotel.show', $reservation->hotel_id)->with('success', "Payment completed successfully! Your reservation is now completed. we'v sent you an email ");
-        } else {
-            return redirect()->route('reservations.pay', $reservation->id)->withErrors(['Payment failed. Please try again.']);
-        }
-    }*/
 
     public function paypalCallback(Request $request)
 {
-    $paypal = new PaypalPaymentService();
-    $result = $paypal->callBack($request);
+    $context = new PaymentContext(new PaypalPaymentService());
+    $result = $context->callBack($request);
+        
 
     $reservation = Reservation::findOrFail(Session::get('paypal_reservation_id'));
 
@@ -127,7 +66,7 @@ class PaymentController extends Controller
         Mail::to($reservation->user->email)
             ->send(new PaymentConfirmationMail($reservation->hotel->name, $reservation));
 
-        return redirect()->route('hotel.show', $reservation->hotel_id)
+        return redirect()->route('hotels.index', $reservation->hotel_id)
             ->with('success', 'Payment completed.');
     }
 
@@ -145,8 +84,10 @@ public function payWithPayPalTransport($reservationId)
         abort(403);
     }
 
-    $paypal = new PaypalPaymentService();
-    $response = $paypal->sendPayment($reservation, 'transport');
+    $context = new PaymentContext(new PaypalPaymentService());
+    $response = $context->sendPayment($tempReservation, 'transport');
+
+
 
     if ($response['success']) {
         Session::put('paypal_transport_reservation_id', $reservation->id);
@@ -159,13 +100,14 @@ public function payWithPayPalTransport($reservationId)
 
 public function paypalCallbackTransport(Request $request)
 {
-    $paypal = new PaypalPaymentService();
-    $result = $paypal->callBack($request);
+    $context = new PaymentContext(new PaypalPaymentService());
+    $result = $context->callBack($request);
+    
 
     $data = session('transport_reservation_data');
 
     if ($result['success'] && $data) {
-        // إنشاء الحجز بعد الدفع مباشرة
+        
         $reservation = TransportReservation::create(array_merge($data, [
             'user_id' => Auth::id(),
             'status' => 'completed',
@@ -193,7 +135,7 @@ $reservation->user->notify(
             'payment_date' => now(),
         ]);
 
-        // إرسال ايميل تأكيد
+     
         Mail::to(Auth::user()->email)
             ->send(new TransportPaymentConfirmationMail($reservation));
 

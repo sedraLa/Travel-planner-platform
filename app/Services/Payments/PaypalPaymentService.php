@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Payments;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\Request;
 
-class PaypalPaymentService
+class PaypalPaymentService implements PaymentStrategy
 {
     protected $base_url;   //api url
     protected $header; //info we send with each http request/response
@@ -72,7 +73,7 @@ class PaypalPaymentService
         return ['success' => false, 'message' => 'Error initiating PayPal payment'];
     }
 
-    public function callBack($request)
+    public function callBack(Request $request)
     {
         $token = $request->get('token');
 
