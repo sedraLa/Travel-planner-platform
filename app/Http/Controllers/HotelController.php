@@ -17,26 +17,55 @@ class HotelController extends Controller
 {
 
     ///index
-public function index(Request $request)
-{
-    $query = Hotel::with('images');
+    public function index(Request $request)
+    {
+        $query = Hotel::with('images');
+    
+        // Search
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('country', 'like', "%{$search}%")
+                  ->orWhere('global_rating', 'like', "%{$search}%");
+            });
+        }
+    
+        // Filters
+        if ($request->filled('city')) {
+            $query->where('city', $request->city);
+        }
+        if ($request->filled('country')) {
+            $query->where('country', $request->country);
+        }
+        if ($request->filled('stars')) {
+            $query->where('stars', (int) $request->stars);
+        }
+        if ($request->filled('pets_allowed')) {
+            $query->where('pets_allowed', $request->pets_allowed);
+        }
+        if ($request->filled('min_price')) {
+            $query->where('price_per_night', '>=', $request->min_price);
+        }
+        if ($request->filled('max_price')) {
+            $query->where('price_per_night', '<=', $request->max_price);
+        }
 
-    // check if there is a search word from the user
-    if ($request->has('search') && $request->search != '') {
-        $searchTerm = $request->search;
-
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('name', 'like', '%' . $searchTerm . '%')
-              ->orWhere('city', 'like', '%' . $searchTerm . '%')
-              ->orWhere('country', 'like', '%' . $searchTerm . '%')
-              ->orWhere('global_rating', 'like', '%' . $searchTerm . '%');
-        });
+        if ($request->filled('amenities')) {
+            $query->where(function($q) use ($request) {
+                foreach ($request->amenities as $amenity) {
+                    $q->orWhereJsonContains('amenities', $amenity);
+                }
+            });
+        }
+        
+    
+        $hotels = $query->paginate(9);
+    
+        return view('hotel.index', compact('hotels'));
     }
-
-    $hotels = $query->paginate(9);
-
-    return view('hotel.index', compact('hotels'));
-}
+    
 
 
 ////show
