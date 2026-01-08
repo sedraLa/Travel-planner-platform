@@ -69,7 +69,6 @@ class TransportController extends Controller
     $transport->name = $request->name;
     $transport->description = $request->description;
     $transport->type = $request->type;
-
     $transport->save();
 
     return redirect()->route('transport.index')->with('success','Transport updated successfully');
@@ -84,7 +83,7 @@ class TransportController extends Controller
         $transport = Transport::with('vehicles.reservations')->findOrFail($id);
 
 
-        // Check if any vehicle has PENDING reservations
+        // Check if any vehicle has upcoming reservations
         foreach ($transport->vehicles as $vehicle) {
             $hasUpcoming = $vehicle->reservations()
             ->where('pickup_datetime', '>=', now())

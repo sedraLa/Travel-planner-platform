@@ -30,13 +30,9 @@ class TransportReservationController extends Controller
         $distance = (float) $request->query('distance', 0);
         $duration = $request->query('duration');
 
-        // Calculate total price
+        // Calculate total price , for view
         $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
 
-        // Geocode pickup & dropoff locations
-        $geocoding = app(GeocodingService::class);
-        $pickupCoords = $geocoding->geocodeAddress($pickup_location);
-        $dropoffCoords = $geocoding->geocodeAddress($dropoff_location);
 
         return view('vehicles.reservation', [
             'vehicle'          => $vehicle,
@@ -47,8 +43,6 @@ class TransportReservationController extends Controller
             'distance'         => $distance,
             'duration'         => $duration,
             'total_price'      => $total_price,
-            'pickupCoords'     => $pickupCoords,
-            'dropoffCoords'    => $dropoffCoords,
         ]);
     }
 
@@ -56,54 +50,37 @@ class TransportReservationController extends Controller
      * Store a new reservation.
      */
     public function store(VehicleOrderRequest $request, $transportId, $vehicleId)
-    {
-        $transport = Transport::findOrFail($transportId);
-        $vehicle = TransportVehicle::findOrFail($vehicleId);
+{
+    $transport = Transport::findOrFail($transportId);
+    $vehicle = TransportVehicle::findOrFail($vehicleId);
 
-        // Receive form data
-        $pickup_location = $request->pickup_location;
-        $dropoff_location = $request->dropoff_location;
-        $pickupDatetime = Carbon::parse($request->pickup_datetime);
-        $durationMinutes = (int) $request->duration;
-        $dropoffDatetime = $pickupDatetime->copy()->addMinutes($durationMinutes);
-        $passengers = $request->passengers;
-        $distance = (float) $request->distance;
+    $pickupDatetime = Carbon::parse($request->pickup_datetime);
+    $dropoffDatetime = $pickupDatetime->copy()->addMinutes((int)$request->duration);
 
-        // Calculate total price
-        $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
+    $distance = (float) $request->distance;
+    $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
 
-        $paymentData = [
-            'transport_id' => $transportId,
-            'vehicle_id' => $vehicleId,
-            'pickup_location' => $pickup_location,
-            'dropoff_location' => $dropoff_location,
-            'pickup_datetime' => $pickupDatetime,
-            'dropoff_datetime' => $dropoffDatetime,
-            'passengers' => $passengers,
-            'total_price' => $total_price,
-            'driver_id' => $request->driver_id,
-        ];
+    $paymentData = [
+        'transport_id' => $transportId,
+        'vehicle_id' => $vehicleId,
+        'pickup_location' => $request->pickup_location,
+        'dropoff_location' => $request->dropoff_location,
+        'pickup_datetime' => $pickupDatetime,
+        'dropoff_datetime' => $dropoffDatetime,
+        'passengers' => $request->passengers,
+        'total_price' => $total_price,
+        'driver_id' => $request->driver_id,
+    ];
 
-        
-        session(['transport_reservation_data' => $paymentData]);
+    session(['transport_reservation_data' => $paymentData]);
 
-        
-        $tempReservation = new class($total_price) {
-            public $id = 0;
-            public $total_price;
-            public function __construct($total_price) { $this->total_price = $total_price; }
-        };
+    
+    return redirect()->route('vehicles.paypal');
+}
 
-        $context = new PaymentContext(new PaypalPaymentService());
-        $response = $context->sendPayment($tempReservation, 'transport');
-        
 
-        if ($response['success']) {
-            return redirect()->away($response['url']); 
-        }
 
-        return back()->withErrors('Payment initiation failed.');
-    }
+
     public function index(Request $request)
     {
         $query = TransportReservation::with('user');

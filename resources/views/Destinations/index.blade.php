@@ -62,8 +62,9 @@
                          data-url="{{ route('favorites.add', ['type' => 'destination', 'id' => $destination->id]) }}"
                          style="position:absolute; top:10px; right:10px; z-index:10; background:none; border:none; cursor:pointer;">
 
+                         {{--Check if destination is already in user's fav--}}
                                 @if(auth()->user()->favoriteDestinations->contains('id', $destination->id))
-                                           {{-- قلب أحمر --}}
+                                           {{-- Red heart--}}
                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500"
                                         viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd"
@@ -71,7 +72,7 @@
                                        clip-rule="evenodd"/>
                                 </svg>
                                 @else
-                                         {{-- قلب فاضي --}}
+                                         {{-- Empty heart  --}}
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500"
                                      fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                   <path stroke-linecap="round" stroke-linejoin="round"
@@ -82,7 +83,7 @@
                         </button>
 
                     @endif
-                        {{-- الصورة --}}
+                        {{-- image --}}
                         <a href="{{ route('destination.show', $destination->id) }}">
                             <img src="{{ asset('storage/' . optional($destination->images->where('is_primary', true)->first())->image_url) }}"
                                  alt="Destination Image">
@@ -149,6 +150,7 @@
             let icon = btn.querySelector("svg");
     
             try {
+                //get url from data-url
                 let res = await fetch(btn.dataset.url, {
                     method: "POST",
                     headers: {
@@ -157,8 +159,10 @@
                     }
                 });
     
+                //get response
                 let data = await res.json();
     
+                //check if status is added (json response from controller)
                 let isAdded = data.status === "added";
                 icon.classList.toggle("text-red-500", isAdded);
                 icon.classList.toggle("text-gray-500", !isAdded);

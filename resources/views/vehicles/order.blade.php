@@ -3,7 +3,6 @@
   <link rel="stylesheet" href="{{asset("css/ordercar.css")}}">
   @endpush
 <div class="main-wrapper">
-    
         <div class="hero-background">
           <div class="headings">
             <h1>Book Your <span>Perfect Ride</span></h1>

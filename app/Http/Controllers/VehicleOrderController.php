@@ -16,46 +16,42 @@ class VehicleOrderController extends Controller
         return view('vehicles.order', compact('transport'));
     }
 
+    //send request and filter vehicles
     public function store(VehicleOrderRequest $request, $id)
     {
         // get transport with vehicles
         $transport = Transport::with('vehicles')->findOrFail($id);
 
-        // store required passengers
+        // store request informations
         $requiredPassengers = $request->passengers;
 
-        // pickup datetime
         $pickupDatetime = Carbon::parse($request->pickup_datetime ?? now());
 
-        // distance + duration from leaflet(form)
-        $distance = $request->distance; // km
-        $duration = $request->duration; // minutes
-
-        // dropoff calculated from duration
-        $dropoffDatetime = $pickupDatetime->copy()->addMinutes($duration);
+        // dropoff calculated later(frontend)
+        $dropoffDatetime = $pickupDatetime->copy(); 
 
         //vehicles filter(considering overlapped reservations )
         $availableVehicles = $transport->vehicles()
-        ->where('max_passengers', '>=', $requiredPassengers)
-        ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
-        $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
-            $query->whereBetween('pickup_datetime', [$pickupDatetime, $dropoffDatetime])
-                  ->orWhereBetween('dropoff_datetime', [$pickupDatetime, $dropoffDatetime])
-                  ->orWhere(function($sub) use ($pickupDatetime, $dropoffDatetime) {
-                      $sub->where('pickup_datetime', '<', $pickupDatetime)
-                          ->where('dropoff_datetime', '>', $dropoffDatetime);
-                  });
-        });
-    })
-    ->get();
-
-        $transports = Transport::all();
+            ->where('max_passengers', '>=', $requiredPassengers)
+            ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
+                $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
+                    //reservation exist during request time 
+                    $query->whereBetween('pickup_datetime', [$pickupDatetime, $dropoffDatetime])
+                    //reservation exist during dropoff time 8 -> 8:35 , request at 8:34 (not available)
+                          ->orWhereBetween('dropoff_datetime', [$pickupDatetime, $dropoffDatetime])
+                          //request inside reservations 8->9 , request at 8:15 -> 8:45 (not available)
+                          ->orWhere(function($sub) use ($pickupDatetime, $dropoffDatetime) {
+                              $sub->where('pickup_datetime', '<', $pickupDatetime)
+                                  ->where('dropoff_datetime', '>', $dropoffDatetime);
+                          });
+                });
+            })
+            ->get();
 
         if ($availableVehicles->isEmpty()) {
             return redirect()
-            ->route('transport.index')
-            ->with('vehicle_error', 'No available vehicles for the required date and time.');
-        
+                ->route('transport.index')
+                ->with('vehicle_error', 'No available vehicles for the required date and time.');
         }
 
         // geocoding service
@@ -71,11 +67,6 @@ class VehicleOrderController extends Controller
             'passengers'        => $requiredPassengers,
             'pickupCoords'      => $pickupCoords,
             'dropoffCoords'     => $dropoffCoords,
-            'distance'          => $distance,
-            'duration'          => $duration,
         ]);
     }
-
-
-
 }

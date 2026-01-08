@@ -20,7 +20,6 @@ use App\Services\Notifications\PaymentNotificationService;
 
 class PaymentController extends Controller
 {
-
     protected $notificationService;
 
     public function __construct(PaymentNotificationService $notificationService)
@@ -28,77 +27,89 @@ class PaymentController extends Controller
         $this->notificationService = $notificationService;
     }
 
+    /* HOTEL PAYMENT */
+
+    // send user to paypal
     public function payWithPayPal($reservationId)
-{
-    $reservation = Reservation::findOrFail($reservationId);
+    {
+        $reservation = Reservation::findOrFail($reservationId);
 
-    if (Auth::id() !== $reservation->user_id) {
-        abort(403);
+        if (Auth::id() !== $reservation->user_id) {
+            abort(403);
+        }
+
+        $context = new PaymentContext(new PaypalPaymentService());
+
+        // create paypal payment
+        $response = $context->sendPayment($reservation, 'hotel');
+
+        if ($response['success']) {
+            Session::put('paypal_reservation_id', $reservation->id);
+            return redirect()->away($response['url']); // go to paypal
+        }
+
+        return back()->withErrors('Payment initiation failed.');
     }
 
-    $context = new PaymentContext(new PaypalPaymentService());
-    $response = $context->sendPayment($reservation, 'hotel');    
-
-    if ($response['success']) {
-        Session::put('paypal_reservation_id', $reservation->id);
-        return redirect()->away($response['url']);
-    }
-
-    return back()->withErrors('Payment initiation failed.');
-}
-
-
-
+    
     public function paypalCallback(Request $request)
-{
-    $context = new PaymentContext(new PaypalPaymentService());
-    $result = $context->callBack($request);
-        
+    {
+        $context = new PaymentContext(new PaypalPaymentService());
 
-    $reservation = Reservation::findOrFail(Session::get('paypal_reservation_id'));
+       
+        $result = $context->callBack($request);
 
-    if ($result['success']) {
+        $reservation = Reservation::findOrFail(
+            Session::get('paypal_reservation_id')
+        );
 
-        $reservation->reservation_status = 'paid';
-        $reservation->save();
+        if ($result['success']) {
 
-        Payment::create([
-            'reservation_id' => $reservation->id,
-            'user_id' => $reservation->user_id,
-            'amount' => $reservation->total_price,
-            'status' => 'completed',
-            'transaction_id' => $result['transaction_id'],
-            'payment_date' => now(),
-        ]);
+            // update reservation
+            $reservation->reservation_status = 'paid';
+            $reservation->save();
 
-        $this->notificationService
-        ->sendHotelPaymentConfirmation($reservation);
+            // create payment record
+            Payment::create([
+                'reservation_id' => $reservation->id,
+                'user_id' => $reservation->user_id,
+                'amount' => $reservation->total_price,
+                'status' => 'completed',
+                'transaction_id' => $result['transaction_id'],
+                'payment_date' => now(),
+            ]);
 
-        return redirect()->route('hotels.index', $reservation->hotel_id)
-            ->with('success', 'Payment completed.');
+            $this->notificationService
+                ->sendHotelPaymentConfirmation($reservation);
+
+            return redirect()
+                ->route('hotels.index', $reservation->hotel_id)
+                ->with('success', 'Payment completed.');
+        }
+
+        return back()->withErrors('Payment failed.');
     }
 
-    return back()->withErrors('Payment failed.');
-}
+    /* TRANSPORT PAYMENT  */
 
-
-
-
-public function payWithPayPalTransport($reservationId)
+    public function payWithPayPalTransport()
 {
-    $reservation = TransportReservation::findOrFail($reservationId);
+    $data = session('transport_reservation_data');
 
-    if (Auth::id() !== $reservation->user_id) {
-        abort(403);
+    if (!$data) {
+        abort(400);
     }
+
+    // DTO 
+    $tempReservation = (object) [
+        'id' => 0,
+        'total_price' => $data['total_price'],
+    ];
 
     $context = new PaymentContext(new PaypalPaymentService());
     $response = $context->sendPayment($tempReservation, 'transport');
 
-
-
     if ($response['success']) {
-        Session::put('paypal_transport_reservation_id', $reservation->id);
         return redirect()->away($response['url']);
     }
 
@@ -106,28 +117,32 @@ public function payWithPayPalTransport($reservationId)
 }
 
 
+   
 public function paypalCallbackTransport(Request $request)
 {
     $context = new PaymentContext(new PaypalPaymentService());
     $result = $context->callBack($request);
-    
 
     $data = session('transport_reservation_data');
 
     if ($result['success'] && $data) {
-        
-        $reservation = TransportReservation::create(array_merge($data, [
+
+        // create reservation
+        $reservation = TransportReservation::create([
             'user_id' => Auth::id(),
-            'status' => 'completed',
+            'transport_id' => $data['transport_id'],
             'transport_vehicle_id' => $data['vehicle_id'],
-        ]));
+            'pickup_location' => $data['pickup_location'],
+            'dropoff_location' => $data['dropoff_location'],
+            'pickup_datetime' => $data['pickup_datetime'],
+            'dropoff_datetime' => $data['dropoff_datetime'],
+            'passengers' => $data['passengers'],
+            'total_price' => $data['total_price'],
+            'driver_id' => $data['driver_id'],
+            'status' => 'completed',
+        ]);
 
-
-
-        $this->notificationService
-        ->sendTransportPaymentConfirmation($reservation);
-    
-
+        // create payment record
         Payment::create([
             'transport_reservation_id' => $reservation->id,
             'user_id' => $reservation->user_id,
@@ -137,19 +152,17 @@ public function paypalCallbackTransport(Request $request)
             'payment_date' => now(),
         ]);
 
-     
-
+        $this->notificationService
+            ->sendTransportPaymentConfirmation($reservation);
 
         session()->forget('transport_reservation_data');
 
-        return redirect()->route('transport.index')
-    ->with('success', 'Transport payment completed and reservation created.');
-
+        return redirect()
+            ->route('transport.index')
+            ->with('success', 'Transport payment completed.');
     }
 
     return back()->withErrors('Payment failed.');
 }
 
 }
-
-

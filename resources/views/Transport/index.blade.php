@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{asset('css/destinations.css')}}">
     @endpush
 
+    {{--success messages--}}
     <div class="main-wrapper">
         @if (session('success'))
         <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
@@ -14,7 +15,7 @@
         </div>
     @endif
 
-
+   {{--error messages--}}
     @if ($errors->any())
                         <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
                             <ul class="list-disc pl-5">
@@ -24,7 +25,7 @@
                             </ul>
                         </div>
                     @endif
-        
+
     @if(session('vehicle_error'))
     <div class="mb-4 p-4 bg-red-100 text-red-700 rounded">
         {{ session('vehicle_error') }}
@@ -43,6 +44,7 @@
 
                 <p style="color:white;font-size:20px;width:50%">choose from our curated selection of premium tranportation options each designed to evelate your travel experience</p>
                 <div class="flex justify-end mb-4 px-6 pt-6">
+                    {{--Add service button--}}
                 @if (Auth::user()->role === UserRole::ADMIN->value)
                         <button class="add-btn" id="popup-btn">+ Add New Service</button>
                     @endif
@@ -80,6 +82,7 @@
                                         <p class="options">See vehicle options</p>
                                     @endif
 
+                                    {{--Edit--}}
                                     @if(Auth::user()->role === UserRole::ADMIN->value)
                                         <div class="manage-btn">
                                             <button class="order-btn edit-btn"
@@ -91,6 +94,7 @@
                                                 Edit
                                             </button>
 
+                                            {{--Delete--}}
                                             <form action="{{route('transport.destroy',$transport->id)}}" method="post"
                                                 onsubmit="return confirm('Are you sure you want to delete this transport?');">
                                                 @csrf
@@ -99,6 +103,7 @@
                                             </form>
                                         </div>
                                     @else
+                                    {{--order car button--}}
                                         <a href="{{route('vehicle.order', $transport->id)}}">
                                             <button class="order-btn">order car</button>
                                         </a>
@@ -115,7 +120,7 @@
                                             View Vehicles
                                         </button>
                                     </a>
-                                    
+
                                 @endif
                             </div>
                         </div>
@@ -148,6 +153,7 @@
 @endif
 
                 <!--To change form method when edit-->
+                <!--Method Spoofing-->
                 <input type="hidden" name="_method" id="method-spoof" value="PUT" disabled>
                 <input type="hidden" name="edit_id" id="edit-id" value="">
 
@@ -190,16 +196,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const nameInput = document.getElementById('popup-name');
     const typeSelect = document.getElementById('popup-type');
     const descTextarea = document.getElementById('popup-description');
+    //to decide if it's put or post
     const methodInput = document.getElementById('method-spoof');
+    // the service id
     const editIdInput = document.getElementById('edit-id');
 
     // Add Service
     const addServiceBtn = document.getElementById('popup-btn');
     addServiceBtn?.addEventListener('click', () => {
+        //open popup
         popupOverlay.style.display = 'flex';
         popupTitle.textContent = 'Add New Service';
+
+        //route('transport.store')
         popupForm.action = popupForm.dataset.addAction;
 
+        //no put or edit id
         methodInput.disabled = true;
         methodInput.value = '';
         editIdInput.value = '';
@@ -213,9 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const id = btn.dataset.id;
-
             popupOverlay.style.display = 'flex';
             popupTitle.textContent = 'Edit Service';
+
+            //change action to be edit
             popupForm.action = `/transports/${id}`;
 
             //change form method to PUT
@@ -223,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
             methodInput.value = 'PUT';
             editIdInput.value = id;
 
+            //fill data
             nameInput.value = btn.dataset.name;
             descTextarea.value = btn.dataset.description;
 
@@ -241,8 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Reload popup after validation error
     @if($errors->any())
+    //if errors, popup is open
         popupOverlay.style.display = 'flex';
 
+        //decide add or edit
         @if(old('edit_id'))
             popupTitle.textContent = 'Edit Service';
             popupForm.action = `/transports/{{ old('edit_id') }}`;
@@ -256,7 +272,7 @@ document.addEventListener('DOMContentLoaded', () => {
             methodInput.value = '';
             editIdInput.value = '';
         @endif
-
+    //get old values if an error happened
         nameInput.value = "{{ old('name') }}";
         descTextarea.value = "{{ old('description') }}";
         const typeValue = "{{ old('type', 'Airport pick up') }}".trim().toLowerCase();

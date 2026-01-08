@@ -157,11 +157,13 @@ Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->nam
 Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
     ->name('vehicle.search');
 Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
+
 Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
-    [TransportReservationController::class, 'store']
-)->name('vehicleReservation.store');
-Route::get('vehicles/paypal/{reservation}', [PaymentController::class, 'payWithPayPalTransport'])
-->name('vehicles.paypal');
+    [TransportReservationController::class, 'store'])->name('vehicleReservation.store');
+
+Route::get('vehicles/paypal', [PaymentController::class, 'payWithPayPalTransport'])
+    ->name('vehicles.paypal');
+
 
 //favoritefeture routes
 Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites.index');

@@ -109,6 +109,7 @@
 @if(request('role') === UserRole::DRIVER->value)
 <div id="step2" @if($errors->has('license_image')) style="display:block;" @else style="display:none;" @endif>
 
+    <!-- license image -->
     <div class="form-grid full">
         <div class="full">
             <x-input-label for="license_image" :value="__('License Image')" /> <span class="text-red-500">*</span>
@@ -116,6 +117,7 @@
             <x-input-error :messages="$errors->get('license_image')" />
         </div>
 
+    <!-- License Category -->
         <div class="full">
             <x-input-label for="license_category" value="License Category" /> <span class="text-red-500">*</span>
             <select id="license_category" name="license_category" required>
@@ -126,18 +128,21 @@
             <x-input-error :messages="$errors->get('license_category')" />
         </div>
 
+        <!-- Experience -->
         <div class="full">
             <x-input-label for="experience" value="Experience" />
             <textarea id="experience" name="experience" rows="3">{{ old('experience') }}</textarea>
             <x-input-error :messages="$errors->get('experience')" />
         </div>
 
+        <!-- Address -->
         <div>
             <x-input-label for="address" value="Address" />
             <x-text-input id="address" type="text" name="address" :value="old('address')" />
             <x-input-error :messages="$errors->get('address')" />
         </div>
 
+        <!-- Age -->
         <div>
             <x-input-label for="age" value="Age" /> <span class="text-red-500">*</span>
             <x-text-input id="age" type="number" name="age" :value="old('age')" required />
@@ -145,8 +150,10 @@
         </div>
     </div>
 
+    <!-- Note -->
     <p class="note full">Note: Driver registration will be reviewd by management before acceptance </p>
 
+    <!-- Back button -->
     <div style="display:flex; gap:10px; margin-top:15px;">
         <button type="button" class="main-btn" onclick="goToStep1()">Back</button>
         <button type="submit" class="main-btn">Register Driver</button>
@@ -154,30 +161,50 @@
 
 </div>
 @endif
+
+<!-- Send role with the form -->
+<input type="hidden" name="role" value="{{ request('role', UserRole::USER->value) }}">
+
+<!-- Traveler submits normally -->
+@if(request('role') !== UserRole::DRIVER->value)
+    <button class="main-btn">Register</button>
+@endif
+
+    <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Already registered?</a>
+</form>
+ </div>
+</div>
+
+<style>
+   span {
+    color:red;
+}
+</style>
+
 <script>
     function goToStep2() {
     const step1 = document.getElementById('step1');
-    const inputs = step1.querySelectorAll('input, select, textarea');
+    const inputs = step1.querySelectorAll('input, select, textarea'); //get all fields of step1
     let valid = true;
 
     // check validity of all fields
     inputs.forEach(input => {
-        if (!input.checkValidity()) {
-            input.reportValidity(); // يعرض رسالة required أو أي validation
+        if (!input.checkValidity()) { //check each field with html5 validation
+            input.reportValidity(); // show error message
             valid = false;
-            return false; // يوقف التحقق عند أول خطأ
+            return false;
         }
     });
 
-    if (!valid) return; // ما نروح Step 2 إذا فيه خطأ
+    if (!valid) return; // if not valid don't continue to step2
 
-    // إذا كل الحقول صحيحة
-    step1.style.display = 'none';
+    // if all fields are valid
+    step1.style.display = 'none'; //hide step1
     document.getElementById('step2').style.display = 'block';
     document.getElementById('step1Indicator').style.opacity = "0.4";
     document.getElementById('step2Indicator').style.opacity = "1";
 }
-
+    //for back
     function goToStep1() {
         document.getElementById('step2').style.display = 'none';
         document.getElementById('step1').style.display = 'block';
@@ -185,35 +212,15 @@
         document.getElementById('step2Indicator').style.opacity = "0.4";
     }
 
-    // تأكد إن زر Register Driver يرسل الفورم فقط إذا Step 2 ظاهر
+    // don't send form unless step2 is completed
     document.querySelector('form').addEventListener('submit', function(e){
         if(document.getElementById('step2').style.display === 'none' && '{{ request("role") }}' === '{{ UserRole::DRIVER->value }}'){
-            e.preventDefault(); // يمنع الفورم إذا Step 2 مخفية
+            e.preventDefault();
             alert("Please complete Step 2 before submitting.");
         }
     });
 </script>
 
-
-
-                <input type="hidden" name="role" value="{{ request('role', UserRole::USER->value) }}">
-
-                <!-- Traveler submits normally -->
-                @if(request('role') !== UserRole::DRIVER->value)
-                    <button class="main-btn">Register</button>
-                @endif
-
-                <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Already registered?</a>
-            </form>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-selector/0.4.1/crs.min.js"></script>
-
-
-        </div>
-    </div>
-    <style>
-        span {
-            color:red;
-        }
-        </style>
+<!-- countries javascript library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-selector/0.4.1/crs.min.js"></script>
 </x-guest-layout>

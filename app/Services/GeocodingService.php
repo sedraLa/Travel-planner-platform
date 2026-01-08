@@ -16,6 +16,7 @@ class GeocodingService
 
     public function geocodeAddress(string $fullAddress) : ?array
     {
+        // Generate a unique cache key for storing/retrieving geocoding results
         $cacheKey  = 'geocode_' . md5($fullAddress);
 
         //try to get data from cache first
@@ -30,12 +31,12 @@ class GeocodingService
             $response = Http::withHeaders([
                 'User-Agent' => $this->userAgent
             ])->get($this->baseUrl, [
-                'format' => 'json',
-                'q' => $fullAddress,
+                'format' => 'json', //output format
+                'q' => $fullAddress, //query parameter
                 'limit' => 1
             ]);
 
-            $data = $response->json();
+            $data = $response->json(); //convert json to array
 
 
             if (! $data || count($data) === 0) {
