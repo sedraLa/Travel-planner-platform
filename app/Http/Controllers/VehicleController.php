@@ -12,15 +12,7 @@ use App\Models\Driver;
 
 class VehicleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        $availableVehicles=TransportVehicle::all();
-        return view('vehicles.index',compact('availableVehicles'));
-    }
-
+    
     /**
      * Show the form for creating a new resource.
      */
@@ -78,7 +70,7 @@ class VehicleController extends Controller
     {
          
         $vehicle = TransportVehicle::findOrFail($id);
-         $drivers = Driver::with('user')->get();
+        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();
       
         return view('vehicles.edit', compact('vehicle','drivers'));
     }
@@ -108,17 +100,6 @@ class VehicleController extends Controller
             $imagePath = $oldImagePath;
         }
 
-        if ($request->driver_id) {
-            $driver = Driver::with('vehicle')->find($request->driver_id);
-
-
-            if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
-                return back()->withErrors("You can't choose this driver, it's already assigned to another vehicle");
-            }
-        }
-
-
-        
         $vehicle->update([
             'transport_id'   => $request->transport_id,
             'driver_id' => $request->driver_id,

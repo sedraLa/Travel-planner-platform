@@ -3,25 +3,8 @@
     @push('styles')
         <link rel="stylesheet" href="{{ asset('css/cardetails.css') }}">
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <!--Routing library-->
         <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-        <style>
-            #route-map {
-                height: 400px;
-                border-radius: 15px;
-                overflow: hidden;
-                margin-top: 10px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            }
-
-            .route-badge {
-                background: #007bff;
-                color: #fff;
-                font-size: 14px;
-                padding: 4px 10px;
-                border-radius: 12px;
-                margin-left: 10px;
-            }
-        </style>
     @endpush
 
     <div class="main-container">
@@ -29,10 +12,10 @@
             <a href="{{route('transport.index')}}"><button class="back">Back</button></a>
             <div class="head">
                 <h1>Available cars <span id="route-summary" class="route-badge">Loading...</span></h1>
-                @if (Auth::user()->role === UserRole::ADMIN->value)
-                    <p>Discover a large group of vehicles for your request</p>
-                @endif
-                {{--<p>{{$pickup_datetime}}</p>--}}
+             
+            <p>Discover a large group of vehicles for your request</p>
+           
+               <p>{{$pickup_datetime}}</p>
             </div>
         </header>
 
@@ -115,39 +98,65 @@
         
     </div>
 
+    <style>
+        #route-map {
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .route-badge {
+            background: #007bff;
+            color: #fff;
+            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-left: 10px;
+        }
+    </style>
+
     @push('scripts')
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
+                //convert to js objects
                 var pickup = @json($pickupCoords);
                 var dropoff = @json($dropoffCoords);
 
                 if (pickup && dropoff) {
+                    //build map
                     var map = L.map('route-map').setView([pickup.latitude, pickup.longitude], 13);
-
+                    // add OpenStreetMap for leaflet
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                         maxZoom: 19,
                         attribution: '&copy; OpenStreetMap contributors'
                     }).addTo(map);
 
+                    //leaflet routing machine to calculate route
                     var control = L.Routing.control({
                         waypoints: [
-                            L.latLng(pickup.latitude, pickup.longitude),
-                            L.latLng(dropoff.latitude, dropoff.longitude)
+                            L.latLng(pickup.latitude, pickup.longitude), //pickup point
+                            L.latLng(dropoff.latitude, dropoff.longitude) //dropoff point
                         ],
                         routeWhileDragging: false,
                         showAlternatives: false,
+                        //marker for each point
                         createMarker: function (i, wp) { return L.marker(wp.latLng, { draggable: false }); }
                     }).addTo(map);
-
+                    //after calculating route
                     control.on('routesfound', function (e) {
-                        var route = e.routes[0];
-                        var distance = parseFloat((route.summary.totalDistance / 1000).toFixed(2));
-                        var duration = parseFloat((route.summary.totalTime / 60).toFixed(1));
+                        var route = e.routes[0]; //main route
+                        var distance = parseFloat((route.summary.totalDistance / 1000).toFixed(2)); //km
+                        var duration = parseFloat((route.summary.totalTime / 60).toFixed(1)); //min
 
+                        //fill route badge
                         document.getElementById('route-summary').innerText = `${distance} km | ${duration} min`;
+                        //fill distance
                         document.getElementById('trip-distance').innerText = `Distance: ${distance} km`;
+                        //fill duration
                         document.getElementById('trip-duration').innerText = `Duration: ${duration} min`;
 
                         // fill hidden fields

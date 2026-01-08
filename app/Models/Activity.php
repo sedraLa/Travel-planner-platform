@@ -19,8 +19,6 @@ class Activity extends Model
         'price',
         'category',
         'is_active',
-
-        // الإضافات الجديدة
         'start_time',
         'end_time',
         'start_date',

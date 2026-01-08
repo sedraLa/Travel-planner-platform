@@ -25,32 +25,26 @@
             <div class="first-section">
                 <div class="left">
                     <x-input-label for="car_model" value="Car Model" />
-                    <x-text-input id="car_model" type="text" name="car_model" :value="old('car_model')" required
-                        placeholder="Enter car model" />
+                    <x-text-input id="car_model" type="text" name="car_model" :value="old('car_model')"
+                    required placeholder="Enter car model" />
 
                     <x-input-label for="plate_number" value="Plate Number" />
                     <x-text-input id="plate_number" type="text" name="plate_number" :value="old('plate_number')"
                         required placeholder="Enter plate number" />
 
-                    
+
 
                     <x-input-label for="driver_id" value="Select Driver" />
                     <select id="driver_id" name="driver_id"
                         class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                         <option value="">-- Choose a driver --</option>
                         @foreach ($drivers as $driver)
-                            <option value="{{ $driver->id}}" data-name="{{ $driver->user->name }}"
-                                data-phone="{{ $driver->user->phone_number}}">
+                            <option value="{{ $driver->id}}">
                                 {{ $driver->user->name }}
                             </option>
                         @endforeach
                     </select>
 
-                    
-                    <input type="hidden" id="driver_name" name="driver_name">
-                    <input type="hidden" id="driver_contact" name="driver_contact">
-
-                   
 
                 </div>
 
@@ -73,7 +67,7 @@
                         <option value="">-- Choose a category 'optional' --</option>
                             <option value="luxury">LUXURY</option>
                             <option value="standard">STANDARD</option>
-                            <option value="premium">PREMIUM</option>     
+                            <option value="premium">PREMIUM</option>
                     </select>
                 </div>
             </div>
@@ -88,34 +82,7 @@
         </form>
     </div>
 
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const driverSelect = document.getElementById('driver_id');
-                const driverNameInput = document.getElementById('driver_name');
-                const driverContactInput = document.getElementById('driver_contact');
+    
 
-                driverSelect.addEventListener('change', function () {
-                    
-                    const selectedOption = this.options[this.selectedIndex];
-
-                    if (selectedOption.value) {
-                        
-                        const name = selectedOption.getAttribute('data-name');
-                        const phone = selectedOption.getAttribute('data-phone');
-
-                        
-                        driverNameInput.value = name;
-                        driverContactInput.value = phone;
-                    } else {
-                        
-                        driverNameInput.value = '';
-                        driverContactInput.value = '';
-                    }
-                });
-            });
-        </script>
-    @endpush
-   
 
 </x-app-layout>

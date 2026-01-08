@@ -45,17 +45,11 @@
             <option value="">-- Choose a driver --</option>
             @foreach ($drivers as $driver)
                 <option value="{{ $driver->id }}" 
-                    {{ $vehicle->driver_id == $driver->id ? 'selected' : '' }}
-                    data-name="{{ $driver->user->name }}"
-                    data-phone="{{ $driver->user->phone_number }}">
-                    
+                    {{ $vehicle->driver_id == $driver->id ? 'selected' : '' }}>
                     {{ $driver->user->name }}
                 </option>
             @endforeach
         </select>
-
-        <input type="hidden" id="driver_name" name="driver_name">
-        <input type="hidden" id="driver_contact" name="driver_contact">
     </div> 
 
     <div class="right">
