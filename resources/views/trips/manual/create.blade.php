@@ -224,38 +224,40 @@
 
   </div>
 
-  {{-- Assign hotels per days --}}
+  {{-- Assign activities per days --}}
   <div class="days-container">
-    <h3 class="dest-title" style="margin-top:30px;">Assign Hotels to Days</h3>
-    <p>Select which hotel you’ll stay at for each day:</p>
-
+    <h3 class="dest-title" style="margin-top:30px;">Assign Activities to Days</h3>
+    <p>Select activities for each day (you can choose more than one):</p>
+  
     <div class="days-selection">
-      @for($i=1; $i<=$days_count; $i++)
+        @for($i=1; $i<=$days_count; $i++)
           <div class="day">
-          <label>Day {{$i}}</label>
-          <select name="activity_id[day_{{$i}}]" class="hotel-select">
-          <option value="">-- Select Activity --</option>
-          @foreach ($activities as $activity)
-              <option value="{{ $activity->id }}">{{ $activity->name }}</option>
-          @endforeach
-          </select>
+            <label style="color:black;margin-bottom:15px;">Day {{$i}}</label>
+            <div class="checkbox-group" style="display:flex;gap:30px;">
+              @foreach($activities as $activity)
+                <label>
+                  <input type="checkbox" name="activity_id[day_{{$i}}][]" value="{{ $activity->id }}">
+                  {{ $activity->name }}
+                </label>
+              @endforeach
+            </div>
+          </div>
+        @endfor
       </div>
-@endfor
-
-    </div>
+      
   </div>
-
+  
   <div class="assign-section">
-    <h3 style="margin-top: 35px; margin-bottom: 15px;font-size: 25px;">Assign Custom Activities To Days</h3>
-    <p style="margin-bottom: 25px;">You can custom your activities and assign them to your trip's days</p>
+    <h3 style="margin-top: 35px;">Assign Custom Activities To Days</h3>
+  
     @for ($i=1; $i<=$days_count; $i++)
-<div class="day-input">
-  <label>Day {{$i}}:</label>
-  <input type="text" name="activity_name[day_{{$i}}]" placeholder="Enter activity name for Day {{$i}}">
-</div>
-@endfor
-
+      <div class="day-input">
+        <label>Day {{$i}}</label>
+        <input type="text" name="activity_name[day_{{$i}}][]" placeholder="Custom activity">
+      </div>
+    @endfor
   </div>
+  
 </div> <!--  close bottom-container (Step 3) -->
 
 
