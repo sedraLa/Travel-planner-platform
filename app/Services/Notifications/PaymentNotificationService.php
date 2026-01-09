@@ -23,11 +23,11 @@ class PaymentNotificationService
 
     public function sendTransportPaymentConfirmation(TransportReservation $reservation)
     {
-        // Email فقط للمسافر
+        // Email for traveler
         Mail::to($reservation->user->email)
             ->send(new TransportPaymentConfirmationMail($reservation));
 
-        // Notifications للمسافر والسائق
+        // Notifications for traveler and driver
         if ($reservation->driver && $reservation->driver->user) {
             $reservation->driver->user->notify(
                 new NewTransportBookingNotification($reservation)

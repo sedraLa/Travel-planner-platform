@@ -8,48 +8,59 @@ use App\Models\Transport;
 use App\Models\TransportVehicle;
 use App\Http\Requests\VehicleRequest;
 use Illuminate\Support\Facades\Storage;
-use App\Models\Driver; 
+use App\Models\Driver;
 
 class VehicleController extends Controller
 {
-    
     /**
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
     {
         $transportId = $request->get('transport_id');
-        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();
-        return view('vehicles.create', compact('transportId', 'drivers')); 
-    }
 
+        // جلب الـ drivers المصرح لهم واللي ما عندهم سيارة
+        $drivers = Driver::with('user')
+            ->where('status', 'approved')
+            ->whereDoesntHave('vehicle')
+            ->get();
+
+        return view('vehicles.create', compact('transportId', 'drivers'));
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(VehicleRequest $request)
     {
+        // تحقق من أن الـ driver غير مرتبط بسيارة أخرى
+        if ($request->driver_id) {
+            $driver = Driver::with('vehicle')->find($request->driver_id);
+            if ($driver && $driver->vehicle) {
+                return back()->withErrors("You can't choose this driver, it's already assigned to another car");
+            }
+        }
 
+        // حفظ الصورة
+        $imagePath = $request->hasFile('image')
+            ? MediaServices::save($request->file('image'), 'image', 'vehicles')
+            : null;
 
-        //save image
-        $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
-
-        $vehicle= TransportVehicle::create([
+        $vehicle = TransportVehicle::create([
             'transport_id'   => $request->transport_id,
-            'driver_id' => $request->driver_id,
-            'car_model'=>$request->car_model,
-            'plate_number'=>$request->plate_number,
-            'max_passengers' => $request->max_passengers ,
-            'base_price'     => $request->base_price ,
+            'driver_id'      => $request->driver_id,
+            'car_model'      => $request->car_model,
+            'plate_number'   => $request->plate_number,
+            'max_passengers' => $request->max_passengers,
+            'base_price'     => $request->base_price,
             'price_per_km'   => $request->price_per_km,
-            'category'       => $request->category ,
-            'image'          => $imagePath ,
+            'category'       => $request->category,
+            'image'          => $imagePath,
         ]);
 
         return redirect()
-        ->route('admin.transports.vehicles', $request->transport_id)
-        ->with('success','Vehicle created successfully');
-
+            ->route('admin.transports.vehicles', $request->transport_id)
+            ->with('success', 'Vehicle created successfully');
     }
 
     /**
@@ -63,16 +74,24 @@ class VehicleController extends Controller
             'Vehicles' => $transport->vehicles
         ]);
     }
+
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)
     {
-         
         $vehicle = TransportVehicle::findOrFail($id);
-        $drivers = Driver::with('user')->where('status','approved')->whereDoesntHave('vehicle') ->get();
-      
-        return view('vehicles.edit', compact('vehicle','drivers'));
+
+        // جلب الـ drivers المصرح لهم، اللي ما عندهم سيارة أو هو الـ driver الحالي
+        $drivers = Driver::with('user')
+            ->where('status', 'approved')
+            ->where(function($query) use ($vehicle) {
+                $query->whereDoesntHave('vehicle')
+                      ->orWhere('id', $vehicle->driver_id);
+            })
+            ->get();
+
+        return view('vehicles.edit', compact('vehicle', 'drivers'));
     }
 
     /**
@@ -80,29 +99,30 @@ class VehicleController extends Controller
      */
     public function update(VehicleRequest $request, string $id)
     {
-        
         $vehicle = TransportVehicle::findOrFail($id);
 
-        
+        // حفظ الصورة الجديدة إذا تم رفعها
         $oldImagePath = $vehicle->image;
-
-       
         if ($request->hasFile('image')) {
-         
             $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
-
-           
             if ($oldImagePath && Storage::disk('public')->exists($oldImagePath)) {
                 Storage::disk('public')->delete($oldImagePath);
             }
         } else {
-            
             $imagePath = $oldImagePath;
+        }
+
+        // تحقق من أن الـ driver غير مرتبط بسيارة أخرى
+        if ($request->driver_id) {
+            $driver = Driver::with('vehicle')->find($request->driver_id);
+            if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
+                return back()->withErrors("You can't choose this driver, it's already assigned to another car");
+            }
         }
 
         $vehicle->update([
             'transport_id'   => $request->transport_id,
-            'driver_id' => $request->driver_id,
+            'driver_id'      => $request->driver_id,
             'car_model'      => $request->car_model,
             'plate_number'   => $request->plate_number,
             'driver_name'    => $request->driver_name,
@@ -114,12 +134,11 @@ class VehicleController extends Controller
             'image'          => $imagePath,
         ]);
 
-        
         return redirect()
-        ->route('admin.transports.vehicles', $vehicle->transport_id)
-        ->with('success', 'Vehicle updated successfully');
-    
+            ->route('admin.transports.vehicles', $vehicle->transport_id)
+            ->with('success', 'Vehicle updated successfully');
     }
+
     /**
      * Remove the specified resource from storage.
      */
@@ -127,7 +146,7 @@ class VehicleController extends Controller
     {
         $vehicle = TransportVehicle::with('reservations')->findOrFail($id);
 
-        // Check for future confirmed reservations
+        // تحقق من وجود حجوزات مستقبلية مؤكدة
         $hasUpcoming = $vehicle->reservations()
             ->where('pickup_datetime', '>=', now())
             ->exists();
@@ -136,7 +155,7 @@ class VehicleController extends Controller
             return back()->withErrors("You can't delete this vehicle because it has upcoming confirmed (paid) reservations");
         }
 
-        // Delete image if exists
+        // حذف الصورة إذا موجودة
         if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
             Storage::disk('public')->delete($vehicle->image);
         }
@@ -144,11 +163,7 @@ class VehicleController extends Controller
         $vehicle->delete();
 
         return redirect()
-        ->route('admin.transports.vehicles', $vehicle->transport_id)
-        ->with('success', 'Vehicle deleted successfully');
+            ->route('admin.transports.vehicles', $vehicle->transport_id)
+            ->with('success', 'Vehicle deleted successfully');
     }
-
-
 }
-
-
