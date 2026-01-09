@@ -26,4 +26,15 @@ class TripController extends Controller
         return view('trips.view');
     }
 
+
+
+    public function destroy(Trip $trip)
+{
+    $trip->delete();
+
+    return redirect()
+        ->back()
+        ->with('success', 'Trip deleted successfully');
+}
+
 }
