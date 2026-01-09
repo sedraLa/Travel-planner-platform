@@ -121,6 +121,7 @@ class PaymentController extends Controller
 public function paypalCallbackTransport(Request $request)
 {
     $context = new PaymentContext(new PaypalPaymentService());
+    //check if pay is success
     $result = $context->callBack($request);
 
     $data = session('transport_reservation_data');
