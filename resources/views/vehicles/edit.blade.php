@@ -5,10 +5,10 @@
     @endpush
 
     <div class="vehicle-form-container">
-      
+
         <h2>Edit Vehicle</h2>
 
-        
+
         <form action="{{ route('admin.vehicles.update', $vehicle->id) }}" method="post" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -23,12 +23,12 @@
                 </div>
             @endif
 
-           
+
             <input type="hidden" name="transport_id" value="{{ $vehicle->transport_id }}">
 
             <div class="first-section">
     <div class="left">
-    
+
         <x-input-label for="car_model" value="Car Model" />
         <x-text-input id="car_model" type="text" name="car_model" required
             placeholder="Enter car model"
@@ -39,21 +39,22 @@
             placeholder="Enter plate number"
             :value="old('plate_number', $vehicle->plate_number)" />
 
-        <x-input-label for="driver_id" value="Select Driver" />
-        <select id="driver_id" name="driver_id"
-            class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-            <option value="">-- Choose a driver --</option>
-            @foreach ($drivers as $driver)
-                <option value="{{ $driver->id }}" 
-                    {{ $vehicle->driver_id == $driver->id ? 'selected' : '' }}>
-                    {{ $driver->user->name }}
-                </option>
-            @endforeach
-        </select>
-    </div> 
+            <x-input-label for="driver_id" value="Select Driver" />
+            <select id="driver_id" name="driver_id"
+                class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                <option value="">-- Choose a driver --</option>
+                @foreach ($drivers as $driver)
+                    <option value="{{ $driver->id }}"
+                        {{ old('driver_id', $vehicle->driver_id) == $driver->id ? 'selected' : '' }}>
+                        {{ $driver->user->name }}
+                    </option>
+                @endforeach
+            </select>
+
+    </div>
 
     <div class="right">
-     
+
         <x-input-label for="max_passengers" value="Max Passengers" />
         <x-text-input id="max_passengers" type="number" name="max_passengers"
             required placeholder="e.g. 4"
@@ -71,18 +72,18 @@
 
             <select id="category" name="category"
                 class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-            
+
                 <option value="">-- Choose a category 'optional' --</option>
-            
+
                 <option value="luxury"  {{ old('category', $vehicle->category ?? '') == 'luxury' ? 'selected' : '' }}>LUXURY</option>
                 <option value="standard" {{ old('category', $vehicle->category ?? '') == 'standard' ? 'selected' : '' }}>STANDARD</option>
                 <option value="premium" {{ old('category', $vehicle->category ?? '') == 'premium' ? 'selected' : '' }}>PREMIUM</option>
-                
+
                 </option>
-            
-            </select>            
-    </div> 
-</div> 
+
+            </select>
+    </div>
+</div>
 
 
             <!-- Vehicle Image -->
@@ -99,7 +100,7 @@
                 <input type="file" id="image" name="image" accept="image/*">
             </div>
             <div class="popup-buttons">
-                
+
                 <button type="submit" class="btn btn-primary">Update Vehicle</button>
                 <a href="{{route('transport.index')}}" class="cancel-btn">Cancel</a>
             </div>
