@@ -189,7 +189,7 @@
                      </div>
                     </td>
 
-
+                    <!--Update driver status-->
                             <td class="px-6 py-4 whitespace-nowrap">
                                  <form method="POST" action="{{ route('drivers.updateStatus', $driver->id) }}">
                                           @csrf
@@ -197,7 +197,7 @@
 
                                     <div x-data="{ status: '{{ $driver->status ?? 'pending' }}' }" 
                                       class="flex items-center space-x-2">
-            
+                                <!--disable select-->
                                       <select name="status" x-model="status"
                                        @if($driver->status === 'approved') disabled @endif
                                          class="px-4 py-2 text-sm font-semibold rounded-full appearance-none border-none focus:outline-none transition-colors duration-200"
@@ -216,6 +216,7 @@
                                         </select>
 
                                            <button type="submit"
+                                           {{--disable submit--}}
                                               @if($driver->status === 'approved') disabled @endif
                                                     class="px-2 py-1 text-sm font-medium rounded
                                                     {{ $driver->status === 'approved'
@@ -227,21 +228,21 @@
                                 </form>
                             </td>
 
-                                
+                                <!-- date of hire-->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $driver->date_of_hire ? \Carbon\Carbon::parse($driver->date_of_hire)->format('d-m-Y') : 'N/A' }}
                                 </td>
                                 
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-
+                            <!--delete driver button-->
                                    @if($driver->status !== 'approved')
                                         <button
                                            class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium"disabled>
                                                   Delete
                                         </button>
                                     @else
-                                  
+                                  <!--delete driver-->
                                     <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" class="inline"
                                         onsubmit="return confirm('Are you sure you want to delete this driver?');">
                                         @csrf
@@ -249,33 +250,27 @@
                                         <button type="submit" class="text-red-600 hover:text-red-900  mr-4">Delete</button>
                                     </form>
                                     @endif
-                                    
+
+                                    <!--Completed reservations button-->
                                        @if($driver->status === 'approved')
                                         <a class="text-green-600 hover:text-green-900 mr-4 text-sm font-medium" 
-                                          href="{{ route('drivers.show', $driver->id) }}">
+                                          href="{{ route('admin.bookings.completed', $driver->id) }}">
                                                  Completed Reservations </a>
-
                                         @else
                                           <button class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium" disabled>
                                              Completed Reservations
                                           </button>
                                         @endif
-
+                                          <!--pending reservations button-->
                                         @if($driver->status === 'approved')
                                         <a class="text-yellow-600 hover:text-yellow-900 mr-4 text-sm font-medium" 
                                           href="{{ route('admin.bookings.pending', $driver->id) }}">
                                                 Pending Reservations </a>
-
                                         @else
                                           <button class="text-gray-400 cursor-not-allowed mr-4 text-sm font-medium" disabled>
                                              Pending Reservations
                                           </button>
                                         @endif
-
-
-
-
-
                                 </td>
                             </tr>
                         @empty
