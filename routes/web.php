@@ -95,7 +95,7 @@ Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy']
 Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
 Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
 Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
-Route::get('/driver/{id}/show', [DriverController::class, 'show'])->name('drivers.show');
+Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
 Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
 
 //Admin Activities
@@ -189,9 +189,6 @@ Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
 Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
 
-// Driver routes for registerteration
-Route::get('/driver/create', [DriverController::class, 'create'])->name('drivers.create');
-Route::post('/driver/store', [DriverController::class, 'store'])->name('drivers.store');
 
 //notifications routes
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
@@ -204,7 +201,7 @@ Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name
 //Driver routes
 Route::middleware(['auth']) ->prefix('driver') ->group(function () {
 
- Route::get('/show', [DriverController::class, 'show'])->name('driverscompleted.show');
+ Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('driverscompleted.show');
 
  Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
 

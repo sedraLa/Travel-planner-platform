@@ -32,14 +32,8 @@ class DriverController extends Controller
 
             $query->where(function($q) use ($term) {
                 $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$term%")
-                                                  ->orWhere('last_name', 'like', "%$term%")
-                                                  ->orWhere('email', 'like', "%$term%"));
-                if (in_array(strtoupper($term), ['A', 'B'])) {
-                    $q->orWhere('license_category', strtoupper($term));
-                }
-                if (in_array(strtolower($term), ['pending', 'approved', 'rejected'])) {
-                    $q->orWhere('status', strtolower($term));
-                }
+                ->orWhere('last_name', 'like', "%$term%")
+                ->orWhere('email', 'like', "%$term%"));
             });
         }
 
@@ -63,60 +57,10 @@ class DriverController extends Controller
     }
 
 
-
-
-
-    /**
-
-     */
-    public function create()
+//show driver completed bookings for admin and driver
+    public function CompletedBookings(string $id = null)
     {
-        return view('driver.create');
-    }
-
-    /**
-
-     */
-    public function store(DriverRequest $request)
-    {
-
-        $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'last_name' => $request->last_name,
-        'phone_number' => $request->phone_number,
-        'country' => $request->country,
-        'role' => 'driver',
-    ]);
-
-
-
-        $licensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
-
-        Driver::create([
-            'user_id'          => $user->id,
-            'age'              => $request->age,
-            'address'          => $request->address,
-            'license_image'    => $licensePath,
-            'license_category' => $request->license_category,
-            'status'           => $request->status,
-            'date_of_hire'     => $request->date_of_hire,
-            'experience'       => $request->experience,
-
-        ]);
-
-        return redirect()->route('drivers.index')->with('success', 'Driver created successfully');
-    }
-
-    /**
-
-     */
-    public function show(string $id = null)
-    {
-
        $user = auth()->user();
-
     if ($user->role === 'driver') {
         $driver = $user->driver;
     } elseif ($user->role === 'admin') {
@@ -125,32 +69,18 @@ class DriverController extends Controller
     } else {
         abort(403, 'Unauthorized');
     }
-
-
-
-
         $reservations = $driver->reservations()
         ->where('driver_status', 'completed')
         ->with(['vehicle', 'user'])
         ->get();
 
-          return view('driver.show', compact('driver', 'reservations'));
+          return view('driver.completedbooking', compact('driver', 'reservations'));
     }
 
-    /**
-
-     */
-
-
-
-
-
-
+   //show driver pending bookings for admin and driver
    public function pendingBookings(string $id = null)
 {
-
        $user = auth()->user();
-
     if ($user->role === 'driver') {
         $driver = $user->driver;
     } elseif ($user->role === 'admin') {
@@ -159,88 +89,33 @@ class DriverController extends Controller
     } else {
         abort(403, 'Unauthorized');
     }
-
-
-
-
         $reservations = $driver->reservations()
         ->where('driver_status', 'pending')
         ->with(['vehicle', 'user'])
         ->get();
-
           return view('driver.pendingbooking', compact('driver', 'reservations'));
 }
 
 
-
-    /**
-
-     */
-
-    public function edit(string $id)
-    {
-        $driver = Driver::findOrFail($id);
-        return view('driver.edit', compact('driver'));
-    }
-
-    /**
-
-     */
-    public function update(DriverRequest $request, string $id)
-{
-    $driver = Driver::findOrFail($id);
-    $user = $driver->user;
-
-    
-    $user->update([
-        'name'         => $request->name,
-        'last_name'    => $request->last_name,
-        'email'        => $request->email,
-        'phone_number' => $request->phone_number,
-        'country'      => $request->country,
-    ]);
-
-   
-    $licensePath = $driver->license_image;
-
-    if ($request->hasFile('license_image')) {
-       
-        if ($licensePath && Storage::disk('public')->exists($licensePath)) {
-            Storage::disk('public')->delete($licensePath);
-        }
-
-       
-        $licensePath = MediaServices::save($request->file('license_image'), 'image', 'drivers');
-    }
-
-    
-    $driver->update([
-        'age'              => $request->age,
-        'address'          => $request->address,
-        'license_image'    => $licensePath,
-        'license_category' => $request->license_category,
-        'status'           => $request->status,
-        'date_of_hire'     => $request->date_of_hire,
-        'experience'       => $request->experience,
-    ]);
-
-    return redirect()->route('drivers.index')->with('success', 'Driver information updated successfully.');
-}
-
-
-    /**
-
-     */
+//Delete driver
     public function destroy(string $id)
     {
-        $driver = Driver::findOrFail($id);
+        $driver = Driver::with('reservations')->findOrFail($id);
 
+        //check driver reservations
+        $hasUpcoming = $driver->reservations()
+        ->where('pickup_datetime', '>=', now())
+        ->exists();
 
+    if ($hasUpcoming) {
+        return redirect()->back()->with('error',"You can't delete this Driver because he has upcoming confirmed (paid) reservations");
+    }
 
+    //delete license image
         if ($driver->license_image && Storage::disk('public')->exists($driver->license_image)) {
             Storage::disk('public')->delete($driver->license_image);
         }
-
+        //delete driver
         $driver->user()->delete();
         $driver->delete();
 
@@ -248,9 +123,7 @@ class DriverController extends Controller
     }
 
 
-
-
-
+    //approve or reject driver request
     public function updateStatus(DriverRequest $request, Driver $driver)
     {
         if (auth()->user()->role !== 'admin') {
@@ -258,13 +131,14 @@ class DriverController extends Controller
         }
 
 
-        
+        //prevent changing approved drivers
         if ($driver->status === 'approved') {
             return redirect()->back()->with('error', 'Approved drivers status cannot be changed.');
         }
 
         $validated = $request->validated();
 
+        //enforce choosing (approved,reject)
         if ($validated['status'] === 'pending') {
         return redirect()->back()
             ->with('error', 'Please select a status before confirming.');
@@ -273,14 +147,17 @@ class DriverController extends Controller
 
         $updateData = ['status' => $validated['status']];
 
+        //update date of hire if approved
         if ($validated['status'] === 'approved') {
             $updateData['date_of_hire'] = Carbon::now();
         }
+
 
         $driver->update($updateData);
 
         $status = $validated['status'];
 
+        //email messages
         $message = match ($status) {
             'approved' => 'Your account has been approved! You can now log in to the system.',
             'rejected' => 'Sorry, your account has been rejected after review of the information.',
@@ -290,6 +167,7 @@ class DriverController extends Controller
        Mail::to($driver->user->email)
             ->send(new DriverStatusMail($driver->user->name, $status, $message));
 
+            //delete user if request rejected
         if ($status === 'rejected') {
             if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
                 \Storage::disk('public')->delete($driver->license_image);
@@ -306,11 +184,10 @@ class DriverController extends Controller
 
 
 
-
+//mark reservation as completed
   public function complete($id)
 {
     $reservation = TransportReservation::findOrFail($id);
-
     $now = Carbon::now();
     $pickup = Carbon::parse($reservation->pickup_datetime);
 
@@ -323,7 +200,7 @@ class DriverController extends Controller
     return redirect()->route('driverscompleted.show')->with('success', 'Reservation marked as completed.');
 }
 
-
+//mark reservation as cancelled
 
 public function cancel($id)
 {
@@ -350,3 +227,7 @@ public function cancel($id)
 
 
 }
+
+   
+
+   
