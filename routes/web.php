@@ -179,6 +179,7 @@ Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name
 Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
 Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
 Route::get('/trips',[TripController::class,'index'])->name('trips.index');
+Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.destroy');
 
 //AI trip routes
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
