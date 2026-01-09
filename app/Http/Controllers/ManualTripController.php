@@ -23,9 +23,9 @@ class ManualTripController extends Controller
         $currentStep = $data['step'] ?? 1;
 
         //get popular destinations only for step 2
-        $popular = Destination::with('images')->orderByDesc('clicks')->take(10)->get();
+        $popular = Destination::with('images')->orderByDesc('clicks')->take(6)->get();
 
-        //get hotels related to the selected destinations from the user
+        //get hotels related to the selected destinations 
         $hotels = [];
         if (isset($data['destination']['destination_id'])) {
             $hotels = Hotel::with('images')

@@ -7,12 +7,12 @@ use Illuminate\Support\Facades\Storage;
 class MediaServices
 {
     /**
-     * حفظ ملف وسائط (مثل صورة) في مجلد معين ضمن disk `public`.
+     * 
      *
-     * @param \Illuminate\Http\UploadedFile $file الملف المرفوع
-     * @param string $type نوع الملف (مثلاً: image)
-     * @param string $folder اسم المجلد داخل public
-     * @return string المسار النسبي للملف (للاستخدام في العرض أو قاعدة البيانات)
+     * @param \Illuminate\Http\UploadedFile $file 
+     * @param string $type 
+     * @param string $folder 
+     * @return string 
      */
     public static function save($file, $type = 'image', $folder = 'uploads')
     {

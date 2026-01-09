@@ -9,7 +9,6 @@
     </a>
       <div class="head">
         <h1>Create New Trip Plan</h1>
-        <!--<p>Choose how you'd like to create your perfect itinerary</p>-->
         <p>Manual planning — step: {{ $currentStep }}</p>
       </div>
     </header>
@@ -34,6 +33,7 @@
     <!-- Form containing all steps -->
     <form id="trip-form" method="POST" action="{{route('manual.step')}}">
       @csrf
+
       <input type="hidden" name="step" id="step-input" value="1">
 
       <!-- Step 1 Basic trip info -->
@@ -101,7 +101,7 @@
       </div>
 
       <div class="destinations-container">
-        <h3 class="dest-title">🌍 Popular Destinations</h3>
+        <h3 class="dest-title"> Popular Destinations</h3>
         <div class="destination-cards">
             @foreach ($popular as $destination)
               <div class="dist-card" data-id="{{ $destination->id }}">
@@ -139,7 +139,7 @@
     </div>
 
     <div class="destinations-container">
-      <h3 class="dest-title">🏨 Available Hotels</h3>
+      <h3 class="dest-title"> Available Hotels</h3>
 
       <div class="destination-cards">
         @foreach ( $hotels as $hotel )
@@ -181,7 +181,7 @@
 
       </div>
     </div>
-
+{{--Assign Custom hotels--}}
     <div class="assign-section">
       <h3 style="margin-top: 35px; margin-bottom: 15px;font-size: 25px;">Assign Custom Hotels To Days</h3>
       <p style="margin-bottom: 25px;">You can custom your hotels and assign them to your trip's days</p>
@@ -193,11 +193,8 @@
 @endfor
 
     </div>
-  </div> <!--  close bottom-container (Step 3) -->
-
-
-
-
+  </div> 
+  
 <!-- Step 4 -->
 <div class="bottom-container step">
   <div class="form-header">
@@ -211,7 +208,7 @@
 
     <div class="destination-cards">
         @foreach($activities as $activity)
-      <div class="activity-card" data-id="1">
+      <div class="activity-card" data-id="{{ $activity->id }}">
         <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->name }}">
         <div class="content">
           <h4>{{$activity->name}}</h4>
@@ -247,6 +244,7 @@
       
   </div>
   
+  {{--  Assign custom hotels--}}
   <div class="assign-section">
     <h3 style="margin-top: 35px;">Assign Custom Activities To Days</h3>
   
@@ -258,7 +256,7 @@
     @endfor
   </div>
   
-</div> <!--  close bottom-container (Step 3) -->
+</div> 
 
 
  <!-- Step 5 / flights  -->
@@ -272,12 +270,10 @@
       <div class="container">
         <label for="airline">Airline</label>
         <input type="text" id="airline" placeholder="e.g., American Airlines" name="airline">
-        @error('airline') <div class="error">{{ $message }}</div> @enderror
       </div>
       <div class="container">
         <label for="flight_number">Flight Number</label>
         <input type="text" id="flight_number" placeholder="e.g., AA123" name="flight_number">
-        @error('flight_number') <div class="error">{{ $message }}</div> @enderror
       </div>
     </div>
 
@@ -285,12 +281,10 @@
         <div class="container">
             <label for="departure_airport">Departure Airport</label>
             <input type="text" id="departure_airport" placeholder="e.g., Paris (CDG)" name="departure_airport">
-            @error('departure_airport') <div class="error">{{ $message }}</div> @enderror
         </div>
         <div class="container">
         <label for="arrival_airport">Arrival Airport</label>
         <input type="text" id="arrival_airport" placeholder="e.g., New York (JFK)" name="arrival_airport">
-        @error('arrival_airport') <div class="error" style="color:red">{{ $message }}</div> @enderror
       </div>
       
     </div>
@@ -299,20 +293,12 @@
         <div class="container">
             <label for="departure-time">Departure Date & Time</label>
             <input type="datetime-local" id="departure_time" name="departure_time">
-            @error('departure_time') <div class="error" style="color:red">{{ $message }}</div> @enderror
           </div>
       <div class="container">
         <label for="arrival_time">Arrival Date & Time</label>
         <input type="datetime-local" id="arrival_time" name="arrival_time">
-        @error('arrival_time') <div class="error">{{ $message }}</div> @enderror
       </div>
       
-
-      <!--<div class="container">
-        <label for="price">Price</label>
-        <input type="number" id="price" name="price" step="0.5" style="width:163px;">
-      </div>
-    -->
     </div>
   </div>
 
@@ -331,7 +317,6 @@
 
 
 <script>
-//here
 
 document.addEventListener("DOMContentLoaded", function () {
   // store current step number (hidden input)
@@ -348,7 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const nextBtn = document.getElementById("next-btn");
   const prevBtn = document.getElementById("pre-btn");
 
-  // calculate current index
+  // calculate current index 
   let currentStepIndex = currentStep - 1;
 
 
@@ -372,29 +357,26 @@ document.addEventListener("DOMContentLoaded", function () {
     nextBtn.textContent = currentStepIndex === steps.length - 1 ? "Finish" : "Next Step";
   }
 
-  // ========== التعديل الأساسي هنا ==========
+
   // click on Next event
   nextBtn.addEventListener("click", function (e) {
     e.preventDefault(); // prevent automatic submit
     
-    // إذا كنا في آخر خطوة (الخطوة 6)، نرسل رقم 6 للحفظ النهائي
-    // وإلا نرسل رقم الخطوة الحالية لمعالجة بياناتها
+    // step 6 , send step to save
     if (currentStepIndex === steps.length - 1) {
-      stepInput.value = steps.length; // إرسال 6 للخطوة الأخيرة
+      stepInput.value = steps.length; 
     } else {
-      stepInput.value = currentStepIndex + 1; // إرسال رقم الخطوة الحالية
-    }
+      stepInput.value = currentStepIndex + 1; // send current step number
     
     form.submit(); // send data to server
   });
-  // ==========================================
 
   // click on previous event
   prevBtn.addEventListener("click", function () {
     if (currentStepIndex > 0) {
       currentStepIndex--;
       stepInput.value = currentStepIndex + 1;  // reverse current step
-      updateSteps();               // update view
+      updateSteps();// update view
     }
   });
 
@@ -438,34 +420,6 @@ document.querySelectorAll(".add-btn").forEach(btn => {
   });
 });
 
-
-
-/*
-    // Handle selecting destination
-const selectedDestinations = [];
-
-document.querySelectorAll('.add-btn').forEach(btn => {
-  btn.addEventListener('click', function (e) {
-    e.preventDefault();
-
-    const card = this.closest('.dist-card');
-    const destId = card.dataset.id;
-
-    if (!selectedDestinations.includes(destId)) {
-      selectedDestinations.push(destId);
-      this.textContent = "✔";
-      this.style.backgroundColor = "#2e8b57";
-    } else {
-      const index = selectedDestinations.indexOf(destId);
-      selectedDestinations.splice(index, 1);
-      this.textContent = "+";
-      this.style.backgroundColor = "var(--light-blue)";
-    }
-
-    console.log("Selected Destinations:", selectedDestinations);
-  });
-});
-*/
 
   </script>
 

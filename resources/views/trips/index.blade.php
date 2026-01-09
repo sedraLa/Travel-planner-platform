@@ -41,7 +41,7 @@
                         <a href="{{ route('manual.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
                         @endif
                     
-                    <form action="{{--{{ route('trip.destroy', $trip->id) }}"--}}" method="POST" onsubmit="return confirm('Are you sure?');">
+                    <form action="{{ route('trip.destroy', $trip->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Delete</button>
