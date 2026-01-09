@@ -20,9 +20,12 @@
             @else
                 <li><a href="{{ route('destination.index') }}">Destinations</a></li>
                 <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
+                @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
                 <li><a href="{{ route('flight.show') }}">Flights</a></li>
+                @endif
                 <li><a href="{{route('transport.index')}}">Transport</a></li>
                 <li><a href="{{route('activities.index')}}">Activities</a></li>
+                @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
                 <li>
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
                     <x-dropdown align="right" width="48">
@@ -42,6 +45,7 @@
                 </x-dropdown>
             </div>
          </li>
+         @endif
      
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
@@ -94,6 +98,8 @@
                     </form>
                 </x-slot>
             </x-dropdown>
+            @if(auth()->check() && auth()->user()->role === UserRole::USER->value || 
+            auth()->check() && auth()->user()->role === UserRole::DRIVER->value )
 <!-- Notifications -->
 <div x-data="{ notifOpen: false }" class="relative ml-4">
     <!-- زر الجرس -->
@@ -166,7 +172,7 @@
     </div>
 </div>
 
-
+@endif
 
 
         </div>

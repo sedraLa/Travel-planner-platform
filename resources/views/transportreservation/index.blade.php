@@ -45,16 +45,6 @@ class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
   </select>
 </div>
 
-{{-- Status --}}
-<div>
-  <label class="text-sm text-gray-600">Status</label>
-  <select name="status" class="border rounded-lg p-2">
-      <option value="">All</option>
-      <option value="pending" @selected(request('status')=='pending')>Pending</option>
-      <option value="confirmed" @selected(request('status')=='confirmed')>Confirmed</option>
-      <option value="cancelled" @selected(request('status')=='cancelled')>Cancelled</option>
-  </select>
-</div>
 
 {{-- Actions --}}
 <div class="flex gap-2">
@@ -80,21 +70,25 @@ class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
         <table class="min-w-full text-sm border border-gray-200">
             <thead class="bg-gray-100 text-gray-700 font-semibold">
                 <tr>
+                    @if(Auth::user()->role === 'admin')
                     <th class="p-3 border">User</th>
+                    @endif
                     <th class="p-3 border">Pickup</th>
                     <th class="p-3 border">Dropoff</th>
                     <th class="p-3 border">Pickup Date</th>
                     <th class="p-3 border">Passengers</th>
                     <th class="p-3 border">Total Price</th>
-                    <th class="p-3 border">Status</th>
+             
                 </tr>
             </thead>
             <tbody>
                 @forelse($reservations as $reservation)
                     <tr class="hover:bg-gray-50">
+                        @if(Auth::user()->role === 'admin')
                         <td class="p-3 border">
                             {{ $reservation->user?->name ?? 'N/A' }}
                         </td>
+                        @endif
                         <td class="p-3 border">
                             {{ $reservation->pickup_location }}
                         </td>
@@ -110,15 +104,7 @@ class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
                         <td class="p-3 border text-green-600 font-semibold">
                             ${{ number_format($reservation->total_price, 2) }}
                         </td>
-                        <td class="p-3 border">
-                            <span class="px-2 py-1 rounded
-                                                @if($reservation->status === 'pending') bg-yellow-100 text-yellow-700
-                                                @elseif($reservation->status === 'confirmed') bg-green-100 text-green-700
-                                                @elseif($reservation->status === 'cancelled') bg-red-100 text-red-700
-                                                @endif">
-                                {{ ucfirst($reservation->status) }}
-                            </span>
-                        </td>
+                        
                     </tr>
                 @empty
                     <tr>
