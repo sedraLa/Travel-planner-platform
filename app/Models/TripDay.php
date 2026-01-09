@@ -31,10 +31,7 @@ class TripDay extends Model
         return $this->belongsTo(Hotel::class);
     }
 
-   /* public function daysWithHotels()
-{
-    return $this->hasMany(TripDay::class)->with('hotel');
-}*/
+  
 
 }
 
