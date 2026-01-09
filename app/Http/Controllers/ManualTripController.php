@@ -190,33 +190,23 @@ class ManualTripController extends Controller
                    ]);
 
                    //save selected activities for these days
-                 // selected activities
-               $selectedActivities = $data['activities']['selected']["day_$i"] ?? [];
-               if (!is_array($selectedActivities)) {
-               $selectedActivities = [$selectedActivities];
-               }
-               foreach ($selectedActivities as $activityId) {
-               DayActivity::create([
-               'trip_day_id' => $tripDay->id,
-               'activity_id' => $activityId
-               ]);
-               }
+                   foreach ($data['activities']['selected']["day_$i"] ?? [] as $activityId) {
+                    DayActivity::create([
+                        'trip_day_id' => $tripDay->id,
+                        'activity_id' => $activityId,
+                    ]);
+                }
 
-               // custom activities
-               $customActivities = $data['activities']['custom']["day_$i"] ?? [];
-               if (!is_array($customActivities)) {
-               $customActivities = [$customActivities];
-                   }
-               foreach ($customActivities as $customActivity) {
-               DayActivity::create([
-               'trip_day_id' => $tripDay->id,
-               'custom_activity' => $customActivity
-               ]);
-
-               }
-           }
-           });
-   
+                foreach ($data['activities']['custom']["day_$i"] ?? [] as $customActivity) {
+                    if (!empty($customActivity)) {
+                        DayActivity::create([
+                            'trip_day_id' => $tripDay->id,
+                            'custom_activity' => $customActivity,
+                        ]);
+                    }
+                }
+            }
+        });
 
            session()->forget('trip_manual');
            return redirect()->route('trip.view')->with('success', 'Trip created successfully!');
