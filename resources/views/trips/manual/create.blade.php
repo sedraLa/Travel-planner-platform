@@ -367,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
       stepInput.value = steps.length; 
     } else {
       stepInput.value = currentStepIndex + 1; // send current step number
-    
+    }
     form.submit(); // send data to server
   });
 
