@@ -19,7 +19,7 @@ class VehicleController extends Controller
     {
         $transportId = $request->get('transport_id');
 
-        // جلب الـ drivers المصرح لهم واللي ما عندهم سيارة
+        
         $drivers = Driver::with('user')
             ->where('status', 'approved')
             ->whereDoesntHave('vehicle')
@@ -33,7 +33,7 @@ class VehicleController extends Controller
      */
     public function store(VehicleRequest $request)
     {
-        // تحقق من أن الـ driver غير مرتبط بسيارة أخرى
+        
         if ($request->driver_id) {
             $driver = Driver::with('vehicle')->find($request->driver_id);
             if ($driver && $driver->vehicle) {
@@ -82,7 +82,7 @@ class VehicleController extends Controller
     {
         $vehicle = TransportVehicle::findOrFail($id);
 
-        // جلب الـ drivers المصرح لهم، اللي ما عندهم سيارة أو هو الـ driver الحالي
+        
         $drivers = Driver::with('user')
             ->where('status', 'approved')
             ->where(function($query) use ($vehicle) {
@@ -101,7 +101,7 @@ class VehicleController extends Controller
     {
         $vehicle = TransportVehicle::findOrFail($id);
 
-        // حفظ الصورة الجديدة إذا تم رفعها
+        
         $oldImagePath = $vehicle->image;
         if ($request->hasFile('image')) {
             $imagePath = MediaServices::save($request->file('image'), 'image', 'vehicles');
@@ -112,7 +112,8 @@ class VehicleController extends Controller
             $imagePath = $oldImagePath;
         }
 
-        // تحقق من أن الـ driver غير مرتبط بسيارة أخرى
+        
+        // check driver is not assigned to another vehicle
         if ($request->driver_id) {
             $driver = Driver::with('vehicle')->find($request->driver_id);
             if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
