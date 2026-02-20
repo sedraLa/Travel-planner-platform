@@ -111,11 +111,18 @@
 
     <!-- license image -->
     <div class="form-grid full">
-        <div class="full">
+        <div>
             <x-input-label for="license_image" :value="__('License Image')" /> <span class="text-red-500">*</span>
             <input id="license_image" type="file" name="license_image"  required/>
             <x-input-error :messages="$errors->get('license_image')" />
         </div>
+
+    <!--personal image-->
+    <div>
+    <x-input-label for="personal_image" :value="__('personal_image')"/> <span class="text-red-500">*</span>
+    <input id="personal_image" type="file" name="personal_image" required/>
+    <x-input-error :messages="$errors->get('personal_image')"/>
+    </div>
 
     <!-- License Category -->
         <div class="full">

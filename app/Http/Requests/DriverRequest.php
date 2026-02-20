@@ -23,7 +23,8 @@ class DriverRequest extends FormRequest
         return [
             'age'              => 'nullable|integer|min:18|max:100',
             'address'          => 'nullable|string|max:255',
-            'license_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048',
+            'license_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048' ,
+            'personal_image'    => ($this->isMethod('post') ? 'required|' : 'nullable|') . 'image|mimes:jpg,jpeg,png|max:2048',
             'license_category' => 'nullable|string|max:255',
             'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',

@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\RegisterRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -31,68 +32,76 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-public function store(Request $request): RedirectResponse
+    public function store(RegisterRequest $request): RedirectResponse
 {
-    $role = $request->input('role', UserRole::USER->value);  //get role from url
+    $validated = $request->validated();
 
-    $rules = [
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'last_name' => ['required', 'string', 'max:255'],
-        'phone_number' => ['required', 'string', 'max:255'],
-        'country' => ['required', 'string', 'max:255'],
-    ];
+    $role = $validated['role'];
 
-    if ($role === UserRole::DRIVER->value) {
-        $rules = array_merge($rules, [
-            'license_category' => 'required|string|max:50',
-            'license_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
-            'experience' => 'nullable|string',
-            'address' => 'nullable|string|max:255',
-            'age' => 'nullable|integer|min:18|max:100',
-        ]);
-    }
-
-    $validated = $request->validate($rules);
-
+    // create user
     $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'last_name' => $request->last_name,
-        'phone_number' => $request->phone_number,
-        'country' => $request->country,
+
+        'name' => $validated['name'],
+
+        'last_name' => $validated['last_name'],
+
+        'email' => $validated['email'],
+
+        'password' => Hash::make($validated['password']),
+
+        'phone_number' => $validated['phone_number'],
+
+        'country' => $validated['country'],
+
         'role' => $role,
+
     ]);
 
+    // if driver
     if ($role === UserRole::DRIVER->value) {
-        $licensePath = null;
 
-        if ($request->hasFile('license_image')) {
-            $licensePath = MediaServices::save(
-                $request->file('license_image'),
-                'image',
-                'drivers'
-            );
-        }
+        $licensePath = MediaServices::save(
+            $request->file('license_image'),
+            'images',
+            'drivers'
+        );
+
+        $personalPath = MediaServices::save(
+            $request->file('personal_image'),
+            'images',
+            'drivers'
+        );
 
         Driver::create([
+
             'user_id' => $user->id,
-            'age' => $request->age,
-            'address' => $request->address,
+
+            'age' => $validated['age'] ?? null,
+
+            'address' => $validated['address'] ?? null,
+
             'license_image' => $licensePath,
-            'license_category' => $request->license_category,
-            'experience' => $request->experience,
+
+            'personal_image' => $personalPath,
+
+            'license_category' => $validated['license_category'],
+
+            'experience' => $validated['experience'] ?? null,
+
             'status' => 'pending',
+
             'date_of_hire' => null,
+
         ]);
 
-        return redirect()->route('login')
-            ->with('success', 'Your request has been sent to review, please check your email');
+        return redirect()
+            ->route('login')
+            ->with('success', 'Driver request sent successfully');
     }
 
+    // normal user
     event(new Registered($user));
+
     Auth::login($user);
 
     return redirect(RouteServiceProvider::HOME);
