@@ -17,7 +17,7 @@ class VehicleRequest extends FormRequest
         $vehicleId = $this->route('vehicle'); //for edit vehicle to ignore current plate number
 
         return [
-            'transport_id'   => 'required|exists:transports,id',
+            
             'driver_id'   => 'required|exists:drivers,id',
             'car_model'      => 'required|string|max:255',
             'plate_number'   => [

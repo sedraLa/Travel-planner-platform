@@ -20,7 +20,7 @@
                 </div>
             @endif
 
-            <input type="hidden" name="transport_id" value="{{ $transportId }}">
+            
 
             <div class="first-section">
                 <div class="left">
@@ -77,7 +77,7 @@
 
             <div class="popup-buttons">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{route('transport.index')}}" class="cancel-btn">Cancel</a>
+                <a href="{{route('admin.transports.vehicles')}}" class="cancel-btn">Cancel</a>
             </div>
         </form>
     </div>

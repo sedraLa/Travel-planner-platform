@@ -131,7 +131,6 @@ public function paypalCallbackTransport(Request $request)
         // create reservation
         $reservation = TransportReservation::create([
             'user_id' => Auth::id(),
-            'transport_id' => $data['transport_id'],
             'transport_vehicle_id' => $data['vehicle_id'],
             'pickup_location' => $data['pickup_location'],
             'dropoff_location' => $data['dropoff_location'],
@@ -159,8 +158,8 @@ public function paypalCallbackTransport(Request $request)
         session()->forget('transport_reservation_data');
 
         return redirect()
-            ->route('transport.index')
-            ->with('success', 'Transport payment completed.');
+            ->route('vehicles.index')
+            ->with('success', 'Transport  payment completed.');
     }
 
     return back()->withErrors('Payment failed.');

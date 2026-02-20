@@ -51,7 +51,7 @@ class TransportReservationController extends Controller
      */
     public function store(VehicleOrderRequest $request, $transportId, $vehicleId)
 {
-    $transport = Transport::findOrFail($transportId);
+    
     $vehicle = TransportVehicle::findOrFail($vehicleId);
 
     $pickupDatetime = Carbon::parse($request->pickup_datetime);
@@ -62,7 +62,6 @@ class TransportReservationController extends Controller
 
     //prepare reservation data
     $paymentData = [
-        'transport_id' => $transportId,
         'vehicle_id' => $vehicleId,
         'pickup_location' => $request->pickup_location,
         'dropoff_location' => $request->dropoff_location,

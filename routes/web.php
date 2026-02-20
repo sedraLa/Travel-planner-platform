@@ -75,7 +75,7 @@ Route::delete('/transports/{id}',[TransportController::class,'destroy'])->name('
 Route::get('/transports/{id}', [TransportController::class, 'show'])->name('transport.show');
 
 // ADMIN Vehicles
-Route::get('/admin/transports/{transport}/vehicles',
+Route::get('/admin/transports/vehicles',
     [VehicleController::class, 'vehiclesByTransport']
 )->name('admin.transports.vehicles');
 Route::get('/admin/vehicles/create', [VehicleController::class, 'create'])

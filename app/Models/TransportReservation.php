@@ -9,7 +9,6 @@ class TransportReservation extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'transport_id',
         'user_id',
         'pickup_location',
         'dropoff_location',
@@ -37,9 +36,6 @@ class TransportReservation extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function transport() {
-        return $this->belongsTo(Transport::class);
-    }
 
     public function vehicle() {
         return $this->belongsTo(TransportVehicle::class,'transport_vehicle_id');
