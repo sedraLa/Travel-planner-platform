@@ -17,6 +17,7 @@ class Driver extends Model
         'license_image',
         'experience',
         'license_category',
+        'personal_image',
         'date_of_hire',
         'status',
     ];
