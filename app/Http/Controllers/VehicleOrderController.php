@@ -12,15 +12,14 @@ class VehicleOrderController extends Controller
 {
     public function create(string $id)
     {
-        $transport = Transport::findOrFail($id);
-        return view('vehicles.order', compact('transport'));
+       $vehicle = TransportVehicle::findOrFail($vehicleId);
+        return view('vehicles.order', compact('vehicle'));
     }
 
     //send request and filter vehicles
     public function store(VehicleOrderRequest $request, $id)
     {
-        // get transport with vehicles
-        $transport = Transport::with('vehicles')->findOrFail($id);
+       
 
         // store request informations
         $requiredPassengers = $request->passengers;
@@ -31,8 +30,7 @@ class VehicleOrderController extends Controller
         $dropoffDatetime = $pickupDatetime->copy(); 
 
         //vehicles filter(considering overlapped reservations )
-        $availableVehicles = $transport->vehicles()
-            ->where('max_passengers', '>=', $requiredPassengers)
+        $availableVehicles =TransportVehicle::where('max_passengers', '>=', $requiredPassengers)
             ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
                 $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
                     //reservation exist during request time 
@@ -50,7 +48,7 @@ class VehicleOrderController extends Controller
 
         if ($availableVehicles->isEmpty()) {
             return redirect()
-                ->route('transport.index')
+                ->route('vehicles.index')
                 ->with('vehicle_error', 'No available vehicles for the required date and time.');
         }
 

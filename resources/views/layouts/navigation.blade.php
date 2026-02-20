@@ -22,8 +22,10 @@
                 <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
                 @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
                 <li><a href="{{ route('flight.show') }}">Flights</a></li>
+                <li><a   href="{{route('vehicle.order', $transport->id)}}">aya</a></li>
+              
                 @endif
-                <li><a href="{{route('transport.index')}}">Transport</a></li>
+                <li><a href="{{route('admin.transports.vehicles')}}">Vehicls</a></li>
                 <li><a href="{{route('activities.index')}}">Activities</a></li>
                 @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
                 <li>

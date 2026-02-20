@@ -9,7 +9,6 @@ class TransportVehicle extends Model
 {
     use HasFactory;
     protected $fillable = [
-    'transport_id',
     'car_model',
     'plate_number',
     'driver_id',
@@ -30,9 +29,7 @@ class TransportVehicle extends Model
         return $this->hasMany(TransportReservation::class);
     }
 
-    public function transport() {
-        return $this->belongsTo(Transport::class);
-    }
+   
 
     public function driver() {
         return $this->belongsTo(Driver::class);

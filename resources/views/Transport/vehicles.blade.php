@@ -19,10 +19,19 @@
         </div>
     @endif
     <header>
-        <a href="{{route('transport.index')}}"><button class="back">Back</button></a>
-        <div class="head">
-            <h1>Available cars</h1>
-            
+        
+        <div class="head w-full">
+        
+            <div class="flex justify-between items-center">
+           <h1>Available cars</h1>
+
+        <a href="{{ route('admin.vehicles.create') }}">
+            <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded shadow transition duration-200">
+                +Add Vehicles
+            </button>
+        </a>
+    </div>
+
             <p>Manage Vehicles For This Transport Service</p>
         </div>
     </header>
