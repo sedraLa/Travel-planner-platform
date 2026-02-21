@@ -9,7 +9,7 @@
 
     <div class="main-container">
         <header>
-            <a href="{{route('transport.index')}}"><button class="back">Back</button></a>
+            <a href="{{route('vehicle.order')}}"><button class="back">Back</button></a>
             <div class="head">
                 <h1>Available cars <span id="route-summary" class="route-badge">Loading...</span></h1>
              

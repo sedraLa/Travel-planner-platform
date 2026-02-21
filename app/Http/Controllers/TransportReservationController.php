@@ -49,7 +49,7 @@ class TransportReservationController extends Controller
     /**
      * Store a new reservation.
      */
-    public function store(VehicleOrderRequest $request, $transportId, $vehicleId)
+    public function store(VehicleOrderRequest $request,  $vehicleId)
 {
     
     $vehicle = TransportVehicle::findOrFail($vehicleId);

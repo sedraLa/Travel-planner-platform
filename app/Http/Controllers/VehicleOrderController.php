@@ -7,17 +7,22 @@ use App\Models\Transport;
 use App\Http\Requests\VehicleOrderRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use App\Models\TransportVehicle;
 
 class VehicleOrderController extends Controller
 {
-    public function create(string $id)
+    public function create()
     {
-       $vehicle = TransportVehicle::findOrFail($vehicleId);
-        return view('vehicles.order', compact('vehicle'));
+       
+        return view('vehicles.order');
     }
 
+
+
+
+    
     //send request and filter vehicles
-    public function store(VehicleOrderRequest $request, $id)
+    public function store(VehicleOrderRequest $request)
     {
        
 
@@ -48,7 +53,7 @@ class VehicleOrderController extends Controller
 
         if ($availableVehicles->isEmpty()) {
             return redirect()
-                ->route('vehicles.index')
+                ->route('vehicle.order')
                 ->with('vehicle_error', 'No available vehicles for the required date and time.');
         }
 
