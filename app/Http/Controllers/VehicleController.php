@@ -57,14 +57,14 @@ class VehicleController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.transports.vehicles')
+            ->route('admin.vehicles.index')
             ->with('success', 'Vehicle created successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function vehiclesByTransport()
+    public function Index()
     {
         $vehicles = TransportVehicle::all();
         return view('transport.vehicles', [
@@ -132,7 +132,7 @@ class VehicleController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.transports.vehicles' )
+            ->route('admin.vehicles.index' )
             ->with('success', 'Vehicle updated successfully');
     }
 
@@ -160,7 +160,7 @@ class VehicleController extends Controller
         $vehicle->delete();
 
         return redirect()
-            ->route('admin.transports.vehicles')
+            ->route('admin.vehicles.index')
             ->with('success', 'Vehicle deleted successfully');
     }
 }
