@@ -43,7 +43,7 @@ Route::get('/register/select-role', function () {
 })->name('register.select-role');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('driver.dashboard');
 })->middleware(['auth', 'verified', 'check.driver.status'])->name('dashboard');
 
 
