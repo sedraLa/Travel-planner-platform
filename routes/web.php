@@ -87,7 +87,10 @@ Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy']
     ->name('admin.vehicles.destroy');
 
  //Admin Drivers 
- Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+ //Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
+Route::get('/drivers/request', [DriverController::class, 'Requestindex'])->name('drivers.request.index');
+Route::get('/drivers/approved', [DriverController::class, 'Approvedtindex'])->name('drivers.approved.index');
+Route::get('/drivers/{id}/details/request', [DriverController::class, 'ShowDetailsrequest'])->name('drivers.show.details.requset');
  Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
 Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
 Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');

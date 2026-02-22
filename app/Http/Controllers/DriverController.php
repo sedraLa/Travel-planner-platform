@@ -93,6 +93,22 @@ class DriverController extends Controller
 
 
 
+ public function ShowDetailsrequest(string $id)
+    {
+        
+
+        $driver = Driver::with('user')->findOrFail($id);
+         return view('driver.details', compact('driver'));
+
+        
+    }
+
+
+
+
+
+
+
 //show driver completed bookings for admin and driver
     public function CompletedBookings(string $id = null)
     {
@@ -155,7 +171,7 @@ class DriverController extends Controller
         $driver->user()->delete();
         $driver->delete();
 
-        return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
+        return redirect()->route('drivers.approved.index')->with('success', 'Driver deleted successfully');
     }
 
 
