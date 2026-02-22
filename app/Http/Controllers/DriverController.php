@@ -84,7 +84,7 @@ class DriverController extends Controller
             $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
         }
 
-        $query->orderByRaw('created_at');
+        $query->orderByRaw('date_of_hire');
 
         $drivers = $query->get();
 
