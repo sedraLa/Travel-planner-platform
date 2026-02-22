@@ -6,7 +6,6 @@
 
 <h3>Reservation Details:</h3>
 <ul>
-    <li><strong>Service:</strong> {{ $reservation->transport->name }}</li>
     <li><strong>Plate Number:</strong> {{ $reservation->vehicle->plate_number }}</li>
 <li><strong>Car Model:</strong> {{ $reservation->vehicle->car_model }}</li>
 <li><strong>Driver Name:</strong> {{ $reservation->driver?->user?->full_name ?? 'Auto-assigned' }}</li>
