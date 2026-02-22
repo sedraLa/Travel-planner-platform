@@ -122,7 +122,7 @@
                     <div class="info-grid two-col">
                         <div><span>NEAREST AIRPORT</span><p>{{ $destination->nearest_airport }}</p></div>
                         <div><span>PUBLIC TRANSPORT</span>
-                            <p>Click <a href="{{ route('transport.index') }}" class="text-blue-600 underline hover:text-blue-800">here</a> to view available transport options.</p>
+                         {{--   <p>Click <a href="{{ route('transport.index') }}" class="text-blue-600 underline hover:text-blue-800">here</a> to view available transport options.</p>--}}
                         </div>
                     </div>
                 </div>

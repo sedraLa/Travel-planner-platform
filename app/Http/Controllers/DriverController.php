@@ -58,6 +58,23 @@ class DriverController extends Controller
     }
 
 
+    //show approved drivers details
+    public function show(string $id) {
+        $driver = Driver::with('user','vehicle','reservations')->findOrFail($id);
+        $vehicle = $driver?->vehicle;
+        $pendingBookings = $driver->reservations()->where('status','pending')->count();
+        $completedBookings = $driver->reservations()->where('status','completed')->count();
+        $canceledBookings = $driver->reservations()->where('status','canceled')->count();
+        return view('driver.show', compact([
+            'driver',
+            'vehicle',
+            'pendingBookings',
+            'completedBookings',
+            'canceledBookings',
+        ]));
+    }
+
+
 //show driver completed bookings for admin and driver
     public function CompletedBookings(string $id = null)
     {
