@@ -20,6 +20,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiTestController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
 /*
@@ -42,9 +43,9 @@ Route::get('/register/select-role', function () {
     return view('auth.selectRole');
 })->name('register.select-role');
 
-Route::get('/dashboard', function () {
-    return view('driver.dashboard');
-})->middleware(['auth', 'verified', 'check.driver.status'])->name('dashboard');
+Route::get('/dashboard',[AuthenticatedSessionController::class, 'dashboard'])
+->middleware(['auth', 'verified', 'check.driver.status'])
+->name('dashboard');
 
 
 //Admin Routes
@@ -93,8 +94,6 @@ Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy']
  Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
  Route::delete('/driver/{id}/destroy', [DriverController::class, 'destroy'])->name('drivers.destroy');
 Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
-Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
-Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
 Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
 Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
 
@@ -200,11 +199,15 @@ Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name
 
 
 //Driver routes
-Route::middleware(['auth']) ->prefix('driver') ->group(function () {
+Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(function () {
 
  Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('driverscompleted.show');
 
  Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
+ Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
+
+ Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
+
 
     });
 
