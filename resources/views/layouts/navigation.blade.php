@@ -22,8 +22,10 @@
                 <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
                 @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
                 <li><a href="{{ route('flight.show') }}">Flights</a></li>
+                 <li><a href="{{route('vehicle.order')}}">Transport airport</a></li>
+              
                 @endif
-                <li><a href="{{route('transport.index')}}">Transport</a></li>
+              
                 <li><a href="{{route('activities.index')}}">Activities</a></li>
                 @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
                 <li>
@@ -49,6 +51,7 @@
      
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
+                    <li><a href="{{route('admin.vehicles.index')}}">Vehicls</a></li>
                     <li><a href="{{route('drivers.index')}}">Drivers</a></li>
 
                     <!-- Admin Reservations Dropdown -->
@@ -60,7 +63,7 @@
                             class="absolute mt-1 bg-white border rounded shadow-md">
                             <li><a href="{{ route('reservations.index') }}" class="block px-4 py-2 hover:bg-gray-100">Hotels</a>
                             </li>
-                            <li><a href="{{ route('transport.reservations.index') }}"
+                            <li><a href="{{ route('vehicle.reservations.index') }}"
                                     class="block px-4 py-2 hover:bg-gray-100">Transport</a></li>
                         </ul>
                     </li>
@@ -83,7 +86,7 @@
                     @if(Auth::check() && auth()->user()->role === UserRole::USER->value)
                         <!-- User-specific reservations via username dropdown -->
                         <x-dropdown-link :href="route('reservations.index')">Hotel Reservations</x-dropdown-link>
-                        <x-dropdown-link :href="route('transport.reservations.index')">Transport
+                        <x-dropdown-link :href="route('vehicle.reservations.index')">Transport
                             Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('favorites.show')">Show Favorite</x-dropdown-link>
                     @endif

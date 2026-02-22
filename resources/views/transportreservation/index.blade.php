@@ -52,7 +52,7 @@ class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
       Filter
   </button>
 
-  <a href="{{ route('transport.reservations.index') }}"
+  <a href="{{ route('vehicle.reservations.index') }}"
      class="px-4 py-2 border rounded-lg text-gray-600">
       Reset
   </a>
