@@ -17,15 +17,13 @@ class VehicleController extends Controller
      */
     public function create(Request $request)
     {
-        $transportId = $request->get('transport_id');
-
-        
+        // جلب الـ drivers المصرح لهم واللي ما عندهم سيارة
         $drivers = Driver::with('user')
             ->where('status', 'approved')
             ->whereDoesntHave('vehicle')
             ->get();
 
-        return view('vehicles.create', compact('transportId', 'drivers'));
+        return view('vehicles.create', compact('drivers'));
     }
 
     /**
@@ -47,7 +45,6 @@ class VehicleController extends Controller
             : null;
 
         $vehicle = TransportVehicle::create([
-            'transport_id'   => $request->transport_id,
             'driver_id'      => $request->driver_id,
             'car_model'      => $request->car_model,
             'plate_number'   => $request->plate_number,
@@ -59,19 +56,18 @@ class VehicleController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.transports.vehicles', $request->transport_id)
+            ->route('admin.vehicles.index')
             ->with('success', 'Vehicle created successfully');
     }
 
     /**
      * Display the specified resource.
      */
-    public function vehiclesByTransport($id)
+    public function Index()
     {
-        $transport = Transport::with('vehicles')->findOrFail($id);
+        $vehicles = TransportVehicle::all();
         return view('transport.vehicles', [
-            'transport' => $transport,
-            'Vehicles' => $transport->vehicles
+            'Vehicles' => $vehicles
         ]);
     }
 
@@ -122,7 +118,7 @@ class VehicleController extends Controller
         }
 
         $vehicle->update([
-            'transport_id'   => $request->transport_id,
+
             'driver_id'      => $request->driver_id,
             'car_model'      => $request->car_model,
             'plate_number'   => $request->plate_number,
@@ -136,7 +132,7 @@ class VehicleController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.transports.vehicles', $vehicle->transport_id)
+            ->route('admin.vehicles.index' )
             ->with('success', 'Vehicle updated successfully');
     }
 
@@ -164,7 +160,7 @@ class VehicleController extends Controller
         $vehicle->delete();
 
         return redirect()
-            ->route('admin.transports.vehicles', $vehicle->transport_id)
+            ->route('admin.vehicles.index')
             ->with('success', 'Vehicle deleted successfully');
     }
 }

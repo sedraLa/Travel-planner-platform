@@ -69,16 +69,12 @@ Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->nam
 Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
 Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
 
-//Admin Transports
-Route::post('/transports',[TransportController::class,'store'])->name('transport.store');
-Route::put('/transports/{id}',[TransportController::Class,'update'])->name('transport.update');
-Route::delete('/transports/{id}',[TransportController::class,'destroy'])->name('transport.destroy');
-Route::get('/transports/{id}', [TransportController::class, 'show'])->name('transport.show');
+
 
 // ADMIN Vehicles
-Route::get('/admin/transports/{transport}/vehicles',
-    [VehicleController::class, 'vehiclesByTransport']
-)->name('admin.transports.vehicles');
+Route::get('/admin/vehicles',
+    [VehicleController::class, 'Index']
+)->name('admin.vehicles.index');
 Route::get('/admin/vehicles/create', [VehicleController::class, 'create'])
     ->name('admin.vehicles.create');
 Route::post('/admin/vehicles', [VehicleController::class, 'store'])
@@ -140,25 +136,25 @@ Route::get('/payment/paypal/transport/callback', [PaymentController::class, 'pay
 Route::get('/flights/search',[FlightController::class,'showFlightForm'])->name('flight.show');
 Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name('flights.search');
 
-//transport routes
-Route::get('/transports',[TransportController::class,'index'])->name('transport.index');
+
 
 //transport reservations
-Route::get('/transport-reservations', [TransportReservationController::class, 'index'])
-    ->name('transport.reservations.index');
+Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
 
 //vehicles routes
 // USER – browse vehicles
-Route::get('/vehicles', [VehicleController::class, 'index'])
-    ->name('vehicles.index');
+
+//انتبهيييRoute::get('/vehicles', [VehicleController::class, 'index'])
+    //->name('vehicles.index');
+
 //order vehicles
-Route::get('/vehicle/order/{id}',[VehicleOrderController::class, 'create'])->name('vehicle.order');
-Route::post('/transports/{id}/available', [VehicleOrderController::class, 'store'])
-    ->name('vehicle.search');
+Route::get('/vehicle/order',[VehicleOrderController::class, 'create'])->name('vehicle.order');
+Route::post('/vehicles/search',  [VehicleOrderController::class, 'store'])->name('vehicle.search');
+
 Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
 
-Route::post('/transports/{transportId}/vehicles/{vehicleId}/reservation',
-    [TransportReservationController::class, 'store'])->name('vehicleReservation.store');
+Route::post('/vehicles/{vehicleId}/reservation',[TransportReservationController::class, 'store'])
+->name('vehicleReservation.store');
 
 Route::get('vehicles/paypal', [PaymentController::class, 'payWithPayPalTransport'])
     ->name('vehicles.paypal');

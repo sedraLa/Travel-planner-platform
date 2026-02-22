@@ -6,20 +6,24 @@ use App\Models\Transport;
 use App\Http\Requests\VehicleOrderRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
+use App\Models\TransportVehicle;
 
 class VehicleOrderController extends Controller
 {
-    public function create(string $id)
+    public function create()
     {
-        $transport = Transport::findOrFail($id);
-        return view('vehicles.order', compact('transport'));
+       
+        return view('vehicles.order');
     }
 
+
+
+
+    
     //send request and filter vehicles
-    public function store(VehicleOrderRequest $request, $id)
+    public function store(VehicleOrderRequest $request)
     {
-        // get transport with vehicles
-        $transport = Transport::with('vehicles')->findOrFail($id);
+       
 
         // store request informations
         $requiredPassengers = $request->passengers;
@@ -30,8 +34,7 @@ class VehicleOrderController extends Controller
         $dropoffDatetime = $pickupDatetime->copy(); 
 
         //vehicles filter(considering overlapped reservations )
-        $availableVehicles = $transport->vehicles()
-            ->where('max_passengers', '>=', $requiredPassengers)
+        $availableVehicles =TransportVehicle::where('max_passengers', '>=', $requiredPassengers)
             ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
                 $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
                     //reservation exist during request time 
@@ -49,7 +52,7 @@ class VehicleOrderController extends Controller
 
         if ($availableVehicles->isEmpty()) {
             return redirect()
-                ->route('transport.index')
+                ->route('vehicle.order')
                 ->with('vehicle_error', 'No available vehicles for the required date and time.');
         }
 

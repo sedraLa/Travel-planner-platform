@@ -25,7 +25,7 @@
                 <p>Fill in your trip details to find the perfect vehicle</p>
             </div>
             <div class="form-container">
-              <form action="{{ route('vehicle.search', $transport->id) }}" method="POST">
+              <form action="{{ route('vehicle.search') }}" method="POST">
                 @csrf
                 <div class="first-section">
                   <div class="container">
