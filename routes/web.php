@@ -92,6 +92,7 @@ Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy']
 Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus'])->name('drivers.updateStatus');
 Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
 Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+Route::get('/drivers/details/{id}',[DriverController::class, 'show'])->name('drivers.details');
 
 //Admin Activities
 Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
