@@ -77,7 +77,7 @@
 
             <div class="popup-buttons">
                 <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{route('admin.transports.vehicles')}}" class="cancel-btn">Cancel</a>
+                <a href="{{route('admin.vehicles.index')}}" class="cancel-btn">Cancel</a>
             </div>
         </form>
     </div>

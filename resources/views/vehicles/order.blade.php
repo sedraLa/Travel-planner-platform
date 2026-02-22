@@ -21,6 +21,12 @@
             </div>
         @endif
             <div class="form-header">
+                @if (session('success'))
+                <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+                    {{ session('success') }}
+                </div>
+            @endif
+        
                 <h2>Where would you like to go ?</h2>
                 <p>Fill in your trip details to find the perfect vehicle</p>
             </div>

@@ -158,7 +158,7 @@ public function paypalCallbackTransport(Request $request)
         session()->forget('transport_reservation_data');
 
         return redirect()
-            ->route('vehicles.index')
+            ->route('vehicle.order')
             ->with('success', 'Transport  payment completed.');
     }
 
