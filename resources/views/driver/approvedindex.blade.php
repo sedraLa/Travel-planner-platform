@@ -210,7 +210,7 @@
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <!--delete driver button-->
-<div class="flex items-center gap-4">
+                                  <div class="flex items-center gap-4">
                                     <form action="{{ route('drivers.destroy', $driver->id) }}" method="POST" class="inline"
                                         onsubmit="return confirm('Are you sure you want to delete this driver?');">
                                         @csrf
