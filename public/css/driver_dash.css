@@ -70,8 +70,8 @@ span {
 
 /* Pending */
 .pending {
-    background: #fef3c7;  /* فاتح برتقالي / كريم */
-    color: #b45309;       /* نص برتقالي غامق */
+    background: #fef3c7;  
+    color: #b45309;       
 }
 
 #pending-total {
@@ -79,8 +79,8 @@ span {
 }
 /* Completed */
 .completed {
-    background: #dcfce7;  /* أخضر فاتح pastel */
-    color: #15803d;       /* نص أخضر غامق */
+    background: #dcfce7;  
+    color: #15803d;      
 }
 
 #completed-total {
@@ -89,8 +89,8 @@ span {
 
 /* Canceled */
 .canceled {
-    background: #fee2e2;  /* أحمر فاتح pastel */
-    color: #991b1b;       /* نص أحمر غامق */
+    background: #fee2e2;  
+    color: #991b1b;       
 }
 
 #canceled-total {
@@ -99,27 +99,27 @@ span {
 
 /* Earning */
 .earning {
-    background: #dbeafe;  /* أزرق فاتح pastel */
-    color: #1e40af;       /* نص أزرق غامق */
+    background: #dbeafe;  
+    color: #1e40af;      
 }
 
 #earning-total {
     color: #1e40af;  
 }
 
-/* عنوان الـ Vehicle */
+
 .vehicle-title {
     font-size: 32px;
     font-weight: 700;
     text-align: center;
-    color:  #152957; /* أزرق غامق */
+    color:  #152957; 
     margin-bottom: 25px;
     letter-spacing: 1px;
     display: inline-block;
     padding-bottom: 5px;
 }
 
-/* تعديل حجم الصورة والمسافة بينها وبين التفاصيل */
+
 .vehicle-info {
     display: flex;
     gap: 40px;
@@ -135,7 +135,7 @@ span {
     box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
-/* معلومات السيارة */
+
 .vehicle-details {
     display: flex;
     flex-direction: column;
@@ -155,7 +155,7 @@ span {
     color: #6366f1;
 }
 
-/* Stats مع أيقونات */
+
 .vehicle-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -167,7 +167,7 @@ span {
     display: flex;
     align-items: center;
     gap: 10px;
-    background-color: #f3f4f6; /* خلفية فاتحة لكل Stat */
+    background-color: #f3f4f6; 
     padding: 10px 15px;
     border-radius: 10px;
 }
