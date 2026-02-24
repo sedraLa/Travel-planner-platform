@@ -6,67 +6,81 @@
 <x-app-layout>
 
 <div class="main-container">
-<div class="heading">
+<div class="head">
 <a href="{{route('drivers.index')}}">Back</a>
 <h1>Driver Details</h1>
 </div>
+<div class="driver-details">
 <div class="left-section">
-<div class="top-section">
-<img src="{{ $driver && $driver->personal_image ? asset('storage/' . $driver->personal_image) : asset('images/ian-dooley-d1UPkiFd04A-unsplash.jpg') }}" alt="personal image">
-<h2>{{$driver?->user?->name}} {{$driver?->user?->last_name}}</h2>
-<div class="status">
-<h4> {{$driver?->status}} </h4> <!--availability-->
-<h4> {{$driver?->status}} </h4>  <!--approved-->
-</div>
-<span id="rating">⭐ 4.9 rating</span>
-</div>
-<div class="bottom-section">
+    <div class="top-section">
+        <div class="top-header"></div>
+        <div class="top-content">
+            <img class="personal-image"
+                 src="{{ $driver && $driver->personal_image ? asset('storage/' . $driver->personal_image) : asset('images/ian-dooley-d1UPkiFd04A-unsplash.jpg') }}"
+                 alt="personal image">
+            <h2 class="driver-name">
+                {{$driver?->user?->name}} {{$driver?->user?->last_name}}
+            </h2>
+            <div class="status">
+                <span class="badge available">Available</span>
+                <span class="badge approved">Approved</span>
+            </div>
+            <div class="rating">
+                ⭐ 4.9 rating
+            </div>
+        </div>
+    </div>
+
+<div class="bottomm-section">
 <h3>Performance</h3>
 <div class="bookings">
- <div class ="pending">
+ <div class ="total pending">
+    <div class="type">
             <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
              <h3>Pending</h3>
+    </div>
             <div class="count">
             <span id="pending-total">{{ $pendingBookings }}</span>
             </div>
-            </div>
         </div>
 
-   <div class ="completed">
+   <div class="total completed">
+   <div class="type">
             <img class="icon" src="{{asset('images/icons/icons8-checkmark-50.png')}}">
              <h3>completed</h3>
+             </div>
             <div class="count">
             <span id="completed-total">{{ $completedBookings }}</span>
             </div>
-            </div>
         </div>
 
-        <div class ="canceled">
+        <div class="total canceled">
+            <div class="type">
             <img class="icon" src="{{asset('images/icons/icons8-cancel-50.png')}}">
             <h3>Canceled</h3>
+            </div>
             <div class="count">
             <span id="canceled-total">{{ $canceledBookings }}</span>
             </div>
-            </div>
         </div>
 
-        <div class ="earning">
+        <div class ="total earning">
+            <div class="type">
             <img class="icon" src="{{asset('images/icons/icons8-earning-50.png')}}">
             <h3>Earnings</h3>
+            </div>
             <div class="count">
             <span id="earning-total">2 <!--number of pending booings--> </span>
-            <span id="earning-total"> 2</span>
-            </div>
             </div>
         </div>
 </div>
 </div>
 </div>
 <div class="right-section">
-<h3>Personal Information</h3>
 <div class="info">
+    <h3>Personal Information</h3>
 <div class="stat">
-  <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+  <img class="stat-icon" src="{{ asset('images/icons/icons8-email-50.png') }}" alt="Plate Icon">
     <div>
        <h5>Email</h5>
           <h6>{{ $driver?->user?->email ?? 'N/A' }}</h6>
@@ -74,15 +88,15 @@
  </div>
 
 <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+   <img class="stat-icon" src="{{ asset('images/icons/icons8-phone-50.png') }}" alt="Plate Icon">
       <div>
          <h5>Contact</h5>
-             <h6>{{ $driver?->user?->phone_number ?? 'N/A' }}</h6>
+        <h6>{{ $driver?->user?->phone_number ?? 'N/A' }}</h6>
       </div>
  </div>
 
  <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+   <img class="stat-icon" src="{{ asset('images/icons/icons8-around-the-globe-50.png') }}" alt="Plate Icon">
       <div>
          <h5>Country</h5>
              <h6>{{ $driver?->user?->country ?? 'N/A' }}</h6>
@@ -90,7 +104,7 @@
  </div>
 
  <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+   <img class="stat-icon" src="{{ asset('images/icons/icons8-country-50.png') }}" alt="Plate Icon">
       <div>
          <h5>Address</h5>
              <h6>{{ $driver?->address ?? 'N/A' }}</h6>
@@ -98,7 +112,7 @@
  </div>
 
  <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+   <img class="stat-icon" src="{{ asset('images/icons/icons8-experience-50.png') }}" alt="Plate Icon">
       <div>
          <h5>Experience</h5>
              <h6>{{ $driver?->experience ?? 'N/A' }}</h6>
@@ -114,26 +128,27 @@
  </div>
 
  <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+   <img class="stat-icon" src="{{ asset('images/icons/icons8-category-50.png') }}" alt="Plate Icon">
       <div>
          <h5>Date Of Hire</h5>
              <h6>{{ $driver?->date_of_hire ?? 'N/A' }}</h6>
       </div>
  </div>
-{{--
+
  <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+   <img class="stat-icon" src="{{ asset('images/icons/icons8-24-hours-50.png') }}" alt="Plate Icon">
       <div>
-         <h5>Contact</h5>
+         <h5>Availability</h5>
              <h6>{{ $driver?->date_of_hire ?? 'N/A' }}</h6>
       </div>
  </div>
---}}
+
 
 
 
 
 </div>
+
 
 <div class="vehicle-section">
     <div class="vehicle-header">
@@ -141,7 +156,7 @@
 
         @if($vehicle)
             <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}" class="edit-btn">
-                ✏️ Edit Vehicle
+                 Edit Vehicle
             </a>
         @endif
     </div>
@@ -198,6 +213,6 @@
     @endif
 </div>
 </div>
-</div>
+
 
 </x-app-layout>
