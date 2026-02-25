@@ -137,8 +137,8 @@
                                     <div class="text-sm font-medium text-gray-900">{{ $driver-> experience?? 'No experience' }}</div>
                                 </td>-->
 
-                                <td class="px-6 py-4 whitespace-nowrap  text-center">
-                                    <div class="text-sm font-medium text-gray-900">{{ $driver->license_category }}</div>
+                                <td class="px-6 py-4 whitespace-nowrap  text-center" style="width:160px;">
+                                    <div class="text-sm font-medium text-gray-900" style="margin-right:50px;">{{ $driver->license_category }}</div>
                                     
                                 </td>
 
