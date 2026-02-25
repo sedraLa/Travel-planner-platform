@@ -33,8 +33,14 @@ class VehicleOrderController extends Controller
         // dropoff calculated later(frontend)
         $dropoffDatetime = $pickupDatetime->copy(); 
 
+
+        
         //vehicles filter(considering overlapped reservations )
-        $availableVehicles =TransportVehicle::where('max_passengers', '>=', $requiredPassengers)
+        $availableVehicles = TransportVehicle::where('max_passengers', '>=', $requiredPassengers)
+        ->when($request->filled('category') && $request->filled('type'), function ($q) use ($request) {
+         $q->where('category', $request->category)
+          ->where('type', $request->type);
+         })
             ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
                 $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
                     //reservation exist during request time 
@@ -53,6 +59,7 @@ class VehicleOrderController extends Controller
         if ($availableVehicles->isEmpty()) {
             return redirect()
                 ->route('vehicle.order')
+                 ->withInput()
                 ->with('vehicle_error', 'No available vehicles for the required date and time.');
         }
 
@@ -69,6 +76,9 @@ class VehicleOrderController extends Controller
             'passengers'        => $requiredPassengers,
             'pickupCoords'      => $pickupCoords,
             'dropoffCoords'     => $dropoffCoords,
+            'selectedCategory'   => $request->category,
+             'selectedType'      => $request->type,
+            
         ]);
     }
 }

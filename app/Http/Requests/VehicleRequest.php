@@ -32,6 +32,7 @@ class VehicleRequest extends FormRequest
             'price_per_km'   => 'required|numeric|min:0',
             'category'       => 'nullable|string|in:luxury,standard,premium',
             'image'          => 'nullable|image|mimes:jpeg,png,jpg,gif',
+            'type'           => 'required|string|in:car,van,bus',
         ];
     }
 }
