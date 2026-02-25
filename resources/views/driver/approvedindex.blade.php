@@ -210,7 +210,7 @@
                                 </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap  text-center">
-                                  <a href=>
+                                  <a href="{{route('drivers.details', $driver->id)}}">
                                         <div class="inline-flex items-center gap-2">
                                             <img src="{{ asset('images/icons/details.png') }}" alt="Details Icon" class="w-6 h-6 align-middle">
                                              <button class="order-btn edit-btn px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">

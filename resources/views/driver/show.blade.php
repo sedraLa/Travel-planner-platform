@@ -7,7 +7,7 @@
 
 <div class="main-container">
 <div class="head">
-<a href="{{route('drivers.index')}}">Back</a>
+<a href="{{route('drivers.approved.index')}}">Back</a>
 <h1>Driver Details</h1>
 </div>
 <div class="driver-details">

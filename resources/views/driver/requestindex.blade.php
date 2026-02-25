@@ -174,7 +174,7 @@
                                     </td>-->
 
                     <!--Update driver status-->
-                            <td class="px-6 py-4 whitespace-nowrap">
+                            <td class="px-6 py-4 whitespace-nowrap" style="width:50px;">
                                  <form method="POST" action="{{ route('drivers.updateStatus', $driver->id) }}">
                                           @csrf
                                           @method('PATCH')
@@ -199,7 +199,7 @@
                                              <option value="rejected">Rejected</option>
                                         </select>
 
-                                           <button type="submit"
+                                           <button type="submit" style="margin-left:30px;margin-bottom:12px;"
                                            {{--disable submit--}}
                                               @if($driver->status === 'approved') disabled @endif
                                                     class="px-2 py-1 text-sm font-medium rounded
@@ -214,7 +214,7 @@
 
                              <td class="px-6 py-4 whitespace-nowrap  text-center">
                                   <a href="{{ route('drivers.show.details.requset', $driver->id) }}">
-                                        <div class="inline-flex items-center gap-2">
+                                        <div class="inline-flex items-center gap-2"  style="margin-bottom:10px;">
                                             <img src="{{ asset('images/icons/details.png') }}" alt="Details Icon" class="w-6 h-6 align-middle">
                                              <button class="order-btn edit-btn px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                                                   DETAILS
