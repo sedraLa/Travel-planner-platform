@@ -83,6 +83,7 @@
                             <input type="hidden" name="distance" class="distance-input">
                             <input type="hidden" name="duration" class="duration-input">
                             <input type="hidden" name="vehicle_id" value="{{ $vehicle->id }}">
+                           
                             <div class="book-car">
                             <button type="submit">Reserve</button>
                             </div>

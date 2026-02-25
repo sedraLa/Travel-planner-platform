@@ -24,9 +24,11 @@ class DriverController extends Controller
     /**
 
      */
-    public function index(Request $request)
+
+    //show the requests from the diver
+     public function Requestindex(Request $request)
     {
-        $query = Driver::with('user');
+        $query = Driver::with('user')->where('status', 'pending');
 
         if ($request->filled('search')) {
             $term = $request->search;
@@ -50,11 +52,43 @@ class DriverController extends Controller
             $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
         }
 
-        $query->orderByRaw("FIELD(status, 'pending', 'approved', 'rejected')");
+        $query->orderByRaw('created_at');
 
         $drivers = $query->get();
 
-        return view('driver.index', compact('drivers'));
+        return view('driver.requestindex', compact('drivers'));
+    }
+
+    //show system drivers
+    public function Approvedtindex(Request $request)
+    {
+        $query = Driver::with('user')->where('status', 'Approved');
+
+        if ($request->filled('search')) {
+            $term = $request->search;
+
+            $query->where(function($q) use ($term) {
+                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$term%")
+                ->orWhere('last_name', 'like', "%$term%")
+                ->orWhere('email', 'like', "%$term%"));
+            });
+        }
+
+
+
+        if ($request->filled('license_category')) {
+            $query->where('license_category', $request->license_category);
+        }
+
+        if ($request->filled('country')) {
+            $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
+        }
+
+        $query->orderByRaw('date_of_hire');
+
+        $drivers = $query->get();
+
+        return view('driver.approvedindex', compact('drivers'));
     }
 
 
@@ -73,6 +107,23 @@ class DriverController extends Controller
             'canceledBookings',
         ]));
     }
+
+
+
+ public function ShowDetailsrequest(string $id)
+    {
+
+
+        $driver = Driver::with('user')->findOrFail($id);
+         return view('driver.details', compact('driver'));
+
+
+    }
+
+
+
+
+
 
 
 //show driver completed bookings for admin and driver
@@ -137,7 +188,7 @@ class DriverController extends Controller
         $driver->user()->delete();
         $driver->delete();
 
-        return redirect()->route('drivers.index')->with('success', 'Driver deleted successfully');
+        return redirect()->route('drivers.approved.index')->with('success', 'Driver deleted successfully');
     }
 
 
