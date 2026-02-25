@@ -51,6 +51,17 @@
                 @endforeach
             </select>
 
+
+
+            <x-input-label for="type" value="type" />
+                    <select id="type" name="type"
+                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                        <option value="">-- Choose a type  --</option>
+                            <option value="car">CAR</option>
+                            <option value="van">VAN</option>
+                            <option value="bus">BUS</option>
+                    </select>
+
     </div>
 
     <div class="right">

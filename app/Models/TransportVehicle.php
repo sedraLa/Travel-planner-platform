@@ -17,6 +17,7 @@ class TransportVehicle extends Model
     'price_per_km',
     'category',
     'image',
+    'type',
 ];
         
     protected $hidden = [

@@ -51,8 +51,8 @@
                   </div>
                 </div>
 
-                <div class="second-section">
-                    <div class="container">
+                <div class="second-section flex flex-wrap gap-4">
+                    <div class="container flex-1 min-w-[200px]">
                         <div class="head-row">
                             <img class="icon" src="{{asset('images/icons/calendar-days-solid-full (1).svg')}}" alt="icon">
                             <label for="pickup_datetime">pickup Date & Time</label>
@@ -60,7 +60,7 @@
                         <x-text-input type="datetime-local" name="pickup_datetime" id="pickup_datetime" min="{{now()->format('Y-m-d\TH:i')}}"/>
                       </div>
 
-                      <div class="container">
+                      <div class="container flex-1 min-w-[200px] ">
                         <div class="head-row">
                             <img class="icon" src="{{asset('images/icons/user-group-solid-full (1).svg')}}" alt="icon">
                             <label for="passengers">Number of passengers</label>
@@ -68,13 +68,47 @@
                         <x-text-input type="number" name="passengers" id="passengers" placeholder="1 Passenger" min="1"/>
                       </div>
 
+
+              <div class="first-section flex flex-wrap gap-4">
+                <!-- Vehicle Category-->
+                  <div class="container flex-1 min-w-[200px]">
+                    <div class="head-row">
+                         <img class="icon" src="{{asset('images/icons/car-side-solid-full.svg')}}" alt="icon">
+                         <label for="category">Vehicle Category</label>
+                    </div>
+                  <select name="category" id="category" class="  w-80 border rounded px-3 py-2 border-gray-300">
+                              <option value="">Any category</option>
+                              <option value="luxury" @selected(old('category') === 'luxury')>LUXURY</option>
+                              <option value="standard" @selected(old('category') === 'standard')>STANDARD</option>
+                              <option value="premium" @selected(old('category') === 'premium')>PREMIUM</option>
+                               
+                         </select>
+                  </div>
+
+                    <!-- Vehicle Type-->
+                  <div class="container flex-1 min-w-[200px]  ">
+                    <div class="head-row">
+                        <img class="icon" src="{{asset('images/icons/type.png')}}" alt="icon">
+                        <label for="dropoff_location">Vehicle Type</label>
+                    </div>
+                    <select name="type" id="type" class="w-80 border rounded px-3 py-2   border-gray-300">
+                              <option value="">Any category</option>
+                              <option value="car" @selected(old('type') === 'car')>CAR</option>
+                              <option value="van" @selected(old('type') === 'van')>VAN</option>
+                            
+                               
+                         </select>
+                  </div>
                 </div>
+
+
+              </div>
                 <button class="order-car" type="submit">Find Available Cars</button>
 
 
-                </form>
-            </div>
-
+            </form>
           </div>
+
+         </div>
 
 </x-app-layout>
