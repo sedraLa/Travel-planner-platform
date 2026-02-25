@@ -14,16 +14,7 @@
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Name,  Category, Status" class="w-full border rounded-lg p-2">
             </div>
         
-            {{-- Status --}}
-            <div>
-                <label class="text-sm text-gray-600">Status</label>
-                <select name="status" class="border rounded-lg p-2" style="margin-bottom:0">
-                    <option value="">All</option>
-                    <option value="pending" @selected(request('status')=='pending')>Pending</option>
-                    <option value="approved" @selected(request('status')=='approved')>Approved</option>
-                    <option value="rejected" @selected(request('status')=='rejected')>Rejected</option>
-                </select>
-            </div>
+            
         
             {{-- License Category --}}
             <div>

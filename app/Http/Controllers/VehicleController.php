@@ -52,7 +52,9 @@ class VehicleController extends Controller
             'base_price'     => $request->base_price,
             'price_per_km'   => $request->price_per_km,
             'category'       => $request->category,
+            'type'           => $request->type,
             'image'          => $imagePath,
+            
         ]);
 
         return redirect()
@@ -63,12 +65,62 @@ class VehicleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function Index()
+    public function Index(Request $request)
     {
-        $vehicles = TransportVehicle::all();
-        return view('transport.vehicles', [
-            'Vehicles' => $vehicles
-        ]);
+        $query = TransportVehicle::with('driver.user');
+        
+         $drivers = Driver::with('user')
+            ->whereHas('vehicle')
+            ->get()
+            ->sortBy(fn ($driver) => strtolower($driver->user?->full_name ?? ''))
+            ->values();
+
+
+           if ($request->filled('search')) {
+            $searchTerm = $request->search;
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('car_model', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('plate_number', 'like', '%' . $searchTerm . '%')
+                    ->orWhereHas('driver.user', function ($driverQuery) use ($searchTerm) {
+                        $driverQuery
+                            ->whereRaw("CONCAT(name, ' ', COALESCE(last_name, '')) like ?", ['%' . $searchTerm . '%'])
+                            ->orWhere('name', 'like', '%' . $searchTerm . '%')
+                            ->orWhere('last_name', 'like', '%' . $searchTerm . '%');
+                    });
+            });
+        }
+
+
+          if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+         if ($request->filled('type')) {
+            $query->where('type', $request->type);
+        }
+
+        if ($request->filled('max_passengers')) {
+            $query->where('max_passengers', $request->max_passengers);
+        
+        }
+
+
+        if ($request->filled('base_price')) {
+            $query->where('base_price', $request->base_price);
+        
+        }
+
+
+      if ($request->filled('driver_id')) {
+      $query->where('driver_id', $request->driver_id);
+      }
+
+
+        $vehicles=$query->get();
+        return view('transport.vehicles', compact('vehicles','drivers'));
+           
+        
     }
 
     /**
@@ -129,6 +181,7 @@ class VehicleController extends Controller
             'price_per_km'   => $request->price_per_km,
             'category'       => $request->category,
             'image'          => $imagePath,
+            'type'           => $request->type,
         ]);
 
         return redirect()
