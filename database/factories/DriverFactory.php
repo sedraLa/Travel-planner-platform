@@ -39,9 +39,9 @@ class DriverFactory extends Factory
             'date_of_hire' => fake()->date(),
 
             'status' => fake()->randomElement([
-                'completed',
-                'canceled',
-                'pending'
+                'pending',
+                'approved',
+                'rejected',
             ]),
         ];
     }
