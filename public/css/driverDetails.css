@@ -1,9 +1,9 @@
 .main-container {
-    display:flex;
-    width:1200px;
+    display: flex;
+    width: 1200px;
     margin: 20px auto;
     justify-content: center;
-    flex-direction:column;
+    flex-direction: column;
 }
 
 
@@ -15,43 +15,45 @@
 
 .head a {
     width: 60px;
-    padding:5px;
+    padding: 5px;
     text-align: center;
     border-radius: 10px;
-    font-weight:bold;
+    font-weight: bold;
     background-color: #1E3A8A;
     color: white;
-    height:38px;
+    height: 38px;
 }
 
 .head a:hover {
     border: 2px solid #1E3A8A;
-    background-color:transparent;
+    background-color: transparent;
     color: #1E3A8A;
     transition: color 0.2 ease-out;
     transition: background-color 0.3s ease-in-out;
 }
 
 .driver-details {
-    display:flex;
+    display: flex;
     justify-content: space-between;
-    width:1176px;
+    width: 1176px;
     margin: 10px auto;
 
     flex-wrap: wrap;
 }
 
 .left-section {
-    display:flex;
-    flex-direction:column;
+    display: flex;
+    flex-direction: column;
     width: 400px;
 }
 
-.top-section, .bottomm-section, .info {
+.top-section,
+.bottomm-section,
+.info {
     background: white;
     border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    margin-bottom : 20px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
 
 }
 
@@ -60,11 +62,9 @@
     height: 80px;
     border-top-left-radius: 16px;
     border-top-right-radius: 16px;
-    background: linear-gradient(
-        135deg,
-        #1e3a8a,
-        #0f172a
-    );
+    background: linear-gradient(135deg,
+            #1e3a8a,
+            #0f172a);
 }
 
 .top-content {
@@ -76,13 +76,14 @@
 }
 
 
-.personal-image,.vehicle-image {
+.personal-image,
+.vehicle-image {
     width: 90px;
     height: 90px;
     border-radius: 16px;
     border: 4px solid white;
     object-fit: cover;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
 .driver-name {
@@ -138,109 +139,111 @@
 }
 
 .bottomm-section {
-    display:flex;
-    flex-direction:column;
-    width:400px; 
-    padding:35px;
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    padding: 35px;
 }
 
 .info {
     width: 600px;
-    padding : 35px;
+    padding: 35px;
 
 }
 
 .bottomm-section h3 {
     margin-bottom: 30px;
-} 
+}
 
 .bookings {
-    display:flex;
-    flex-direction:column;
-    gap:20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .bookings h3 {
-    font-weight:400;
+    font-weight: 400;
 }
+
 .total {
-    display:flex;
+    display: flex;
     justify-content: space-between;
-    gap:15px;
-    padding:10px;
-    height:50px;
+    gap: 15px;
+    padding: 10px;
+    height: 50px;
     text-align: center;
     border-radius: 10px;
 }
 
 .type {
-    display:flex;
-    gap:15px;
+    display: flex;
+    gap: 15px;
 
 }
 
 .pending {
-    background: #fef3c7; 
-    color: #b45309;      
+    background: #fef3c7;
+    color: #b45309;
 }
 
 #pending-total {
-    color: #b45309; 
+    color: #b45309;
 }
+
 /* Completed */
 .completed {
-    background: #dcfce7;  
-    color: #15803d;       
+    background: #dcfce7;
+    color: #15803d;
 }
 
 #completed-total {
-    color: #15803d;  
+    color: #15803d;
 }
 
 /* Canceled */
 .canceled {
-    background: #fee2e2;  
-    color: #991b1b;       
+    background: #fee2e2;
+    color: #991b1b;
 }
 
 #canceled-total {
-    color: #991b1b; 
+    color: #991b1b;
 }
 
 /* Earning */
 .earning {
-    background: #dbeafe;  
-    color: #1e40af;       
+    background: #dbeafe;
+    color: #1e40af;
 }
 
 #earning-total {
-    color: #1e40af;  
+    color: #1e40af;
 }
 
 .right-section {
-    display:flex;
+    display: flex;
     flex-direction: column;
 }
 
 .info {
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
 }
 
 .stat {
-    display:flex;
-    gap:30px;
+    display: flex;
+    gap: 30px;
 }
 
 .stat img {
-    width:20px;
-    height:20px;
-    margin-top:10px;
-    
+    width: 20px;
+    height: 20px;
+    margin-top: 10px;
+
 }
 
 .stat h5 {
-    color : #6b7280;
+    color: #6b7280;
     font-weight: 600;
     font-size: 18px;
 }
@@ -260,7 +263,7 @@
 
     border-radius: 16px;
 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 
     padding: 25px;
 
@@ -346,7 +349,7 @@
 
     object-fit: cover;
 
-    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 
 }
 
@@ -432,3 +435,88 @@
 
 }
 
+
+/* Style for the modal to make it larger */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+}
+
+/* Style for the image inside the modal */
+.modal-image {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+/* Close button style */
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #555;
+    cursor: pointer;
+}
+
+.modal-close-button:hover {
+    color: #000;
+}
+
+
+/*
+ * Force the modal to be larger and centered.
+ * Using !important to ensure these styles are not overridden.
+ */
+.license-modal-container {
+    background-color: white;
+    padding: 1.5rem !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 90vw !important;
+    max-width: 400px !important;
+    position: relative;
+
+}
+
+/*
+ * Ensure the image fills the container.
+ */
+.license-modal-image {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 8px;
+    display: block;
+
+}
+
+/*
+ * A clear, accessible close button.
+ */
+.license-modal-close-btn {
+    position: absolute !important;
+    top: 10px;
+    right: 15px;
+    font-size: 30px !important;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.license-modal-close-btn:hover {
+    color: #000;
+}
+
+
+.pending {
+    background: #fed7aa;
+    color: #9a3412;
+
+}
