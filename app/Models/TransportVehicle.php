@@ -36,4 +36,11 @@ class TransportVehicle extends Model
         return $this->belongsTo(Driver::class);
     }
     
+
+    public function assignments()
+    {
+    return $this->hasMany(Assignment::class); 
+    }
+
+
 }
