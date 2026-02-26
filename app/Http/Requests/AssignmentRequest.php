@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VehicleOrderRequest extends FormRequest
+class AssignmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,12 +22,8 @@ class VehicleOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pickup_location'=>'required|string',
-            'dropoff_location'=>'required|string',
-            'pickup_datetime'=>'required|date|after:now',
-            'passengers'=>'required|integer|min:1',
-            'driver_status'    => 'nullable|string|in:pending,completed',
-            'driver_earning' => 'nullable|numeric|min:0',
+              'transport_vehicles_id' => 'required|exists:transport_vehicles,id',
+              'shift_template_id' => 'required|exists:shift_templates,id',
         ];
     }
 }

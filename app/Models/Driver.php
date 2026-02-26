@@ -20,6 +20,10 @@ class Driver extends Model
         'personal_image',
         'date_of_hire',
         'status',
+        'assignment_id',
+        'last_trip_at',
+        'total_trips_count',
+        'earnings_balance',
     ];
 
     
@@ -40,5 +44,16 @@ class Driver extends Model
         return $this->belongsTo(User::class);
     }
 
+     public function assignment()
+    {
+     return $this->belongsTo(Assignment::class); 
+    
+    }
+
+
+    public function bookingRequests()
+    {
+    return $this->hasMany(BookingRequest::class);
+    }
 
 }
