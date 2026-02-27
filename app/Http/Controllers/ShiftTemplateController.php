@@ -22,5 +22,38 @@ class ShiftTemplateController extends Controller
         return view('shifts.shifttemplate', compact('shiftTemplates'));
     }
 
+
+     public function create()
+    {
+        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        return view('shifts.shiftcreate', compact('days'));
+    }
+
+
+    public function store(ShiftTemplateRequest $request)
+    {
+        ShiftTemplate::create($request->validated());
+
+        return redirect()->route('shift-templates.index')
+            ->with('success', 'Shift template created successfully.');
+    }
+
+
+     public function destroy(string $id)
+    {
+        if (auth()->user()?->role !== 'admin') {
+            abort(403, 'Unauthorized');
+        }
+
+        
+        $shiftTemplate = ShiftTemplate::findOrFail($id);
+        $shiftTemplate->delete();
+        
+
+        
+        return redirect()->route('shift-templates.index')
+            ->with('success', 'Shift template deleted successfully.');
+    }
    
 }

@@ -100,8 +100,12 @@ Route::get('/drivers/details/{id}',[DriverController::class, 'show'])->name('dri
 
 
 
+
 //Admin Shift Templates
 Route::get('/admin/shift-templates', [ShiftTemplateController::class,'index'])->name('shift-templates.index');
+Route::get('/shift-templates/create', [ShiftTemplateController::class, 'create'])->name('shift-templates.create');
+Route::post('/shift-templates', [ShiftTemplateController::class, 'store'])->name('shift-templates.store');
+Route::delete('/shift-templates/{id}', [ShiftTemplateController::class, 'destroy'])->name('shift-templates.destroy');
 
 
 
