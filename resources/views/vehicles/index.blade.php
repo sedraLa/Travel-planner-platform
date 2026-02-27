@@ -12,9 +12,9 @@
             <a href="{{route('vehicle.order')}}"><button class="back">Back</button></a>
             <div class="head">
                 <h1>Available cars <span id="route-summary" class="route-badge">Loading...</span></h1>
-             
+
             <p>Discover a large group of vehicles for your request</p>
-           
+
                <p>{{$pickup_datetime}}</p>
             </div>
         </header>
@@ -31,6 +31,8 @@
                         <li>Destination Location: {{$dropoff_location}}</li>
                         <li>Passengers: {{$passengers}}</li>
                         <li>Date & Time: {{$pickup_datetime}}</li>
+                        <li>Category: {{$selectedCategory}}</li>
+                        <li>Type: {{$selectedType}}</li>
                         <li id="trip-distance">Distance: Loading...</li>
                         <li id="trip-duration">Duration: Loading...</li>
                     </ul>
@@ -59,7 +61,7 @@
                                 <span>{{$vehicle->category}}</span>
                             </div>
                         </div>
-        
+{{--
                         <div class="driver-section">
                             <h4>Driver Name : <span class="driver-name">{{$vehicle->driver ? $vehicle->driver->user->full_name : 'No driver assigned'}}</span></h4>
                             <div class="align">
@@ -67,14 +69,14 @@
                                 <p>{{$vehicle->driver ? $vehicle->driver->user->phone_number : 'No driver assigned'}}</p>
                             </div>
                         </div>
-        
+--}}
                         <div class="price-section">
                             <div class="left">
                                 <h4>Base Price : {{$vehicle->base_price}}$</h4>
                                 <p>+ ${{$vehicle->price_per_km}}/km</p>
                             </div>
                         </div>
-        
+
                         <form action="{{ route('vehicle.reservation', $vehicle->id) }}" method="GET">
                             <input type="hidden" name="pickup_location" value="{{ $pickup_location }}">
                             <input type="hidden" name="dropoff_location" value="{{ $dropoff_location }}">
@@ -83,7 +85,7 @@
                             <input type="hidden" name="distance" class="distance-input">
                             <input type="hidden" name="duration" class="duration-input">
                             <input type="hidden" name="vehicle_id" value="{{ $vehicle->id }}">
-                           
+
                             <div class="book-car">
                             <button type="submit">Reserve</button>
                             </div>
@@ -96,7 +98,7 @@
                 </p>
             @endforelse
         </div>
-        
+
     </div>
 
     <style>

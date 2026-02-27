@@ -16,7 +16,7 @@ use Carbon\Carbon;
 class TransportReservationController extends Controller
 {
     /**
-     * Show the reservation page for a vehicle.
+     * Show the reservation page for a vehicle. (complete reservation)
      */
     public function create(Request $request, $vehicleId)
     {
@@ -27,6 +27,8 @@ class TransportReservationController extends Controller
         $dropoff_location = $request->query('dropoff_location');
         $pickup_datetime = Carbon::parse($request->query('pickup_datetime')); // Carbon object
         $passengers = $request->query('passengers');
+        $category = $request->query('category') ?? 'standard';
+        $type= $request->query('type');
         $distance = (float) $request->query('distance', 0);
         $duration = $request->query('duration');
 
@@ -40,6 +42,8 @@ class TransportReservationController extends Controller
             'dropoff_location' => $dropoff_location,
             'pickup_datetime'  => $pickup_datetime->format('Y-m-d\TH:i'), // For datetime-local input
             'passengers'       => $passengers,
+            'category'         => $category,
+            'type'             => $type,
             'distance'         => $distance,
             'duration'         => $duration,
             'total_price'      => $total_price,
@@ -51,7 +55,7 @@ class TransportReservationController extends Controller
      */
     public function store(VehicleOrderRequest $request,  $vehicleId)
 {
-    
+
     $vehicle = TransportVehicle::findOrFail($vehicleId);
 
     $pickupDatetime = Carbon::parse($request->pickup_datetime);
@@ -74,7 +78,7 @@ class TransportReservationController extends Controller
 
     session(['transport_reservation_data' => $paymentData]);
 
-    
+
     return redirect()->route('vehicles.paypal');
 }
 
@@ -84,25 +88,25 @@ class TransportReservationController extends Controller
     public function index(Request $request)
     {
         $query = TransportReservation::with('user');
-    
+
         $isAdmin = Auth::check() && Auth::user()->role === 'admin';
-    
-        
+
+
         if (!$isAdmin) {
             $query->where('user_id', Auth::id());
         }
-    
+
         /* =======================
            Keyword search
         ======================= */
         if ($request->filled('keyword')) {
             $term = trim($request->keyword);
-    
+
             $query->where(function ($q) use ($term, $isAdmin) {
-    
+
                 $q->where('pickup_location', 'like', "%{$term}%")
                   ->orWhere('dropoff_location', 'like', "%{$term}%");
-    
+
                 if ($isAdmin) {
                     $q->orWhereHas('user', fn ($u) =>
                         $u->where('name', 'like', "%{$term}%")
@@ -110,30 +114,30 @@ class TransportReservationController extends Controller
                 }
             });
         }
-    
+
         /* =======================
            Date filters
         ======================= */
         if ($request->filled('month')) {
             $query->whereMonth('pickup_datetime', $request->month);
         }
-    
+
         if ($request->filled('year')) {
             $query->whereYear('pickup_datetime', $request->year);
         }
-    
+
         /* =======================
            Status filter
         ======================= */
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
-    
+
         $reservations = $query
             ->orderBy('pickup_datetime', 'desc')
             ->paginate(10);
-    
+
         return view('transportreservation.index', compact('reservations'));
     }
-    
+
 }
