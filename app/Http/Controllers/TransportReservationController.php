@@ -64,6 +64,8 @@ class TransportReservationController extends Controller
     $distance = (float) $request->distance;
     $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
 
+    
+
     //prepare reservation data
     $paymentData = [
         'vehicle_id' => $vehicleId,
