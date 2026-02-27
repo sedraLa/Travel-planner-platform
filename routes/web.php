@@ -20,6 +20,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiTestController;
+use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
@@ -97,12 +98,20 @@ Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'Complet
 Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
 Route::get('/drivers/details/{id}',[DriverController::class, 'show'])->name('drivers.details');
 
+
+
+//Admin Shift Templates
+Route::get('/admin/shift-templates', [ShiftTemplateController::class,'index'])->name('shift-templates.index');
+
+
+
 //Admin Activities
 Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
 Route::post('/activities/store', [ActivityController::class, 'store'])->name('activities.store');
 Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
 Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
     });
 
     
