@@ -37,10 +37,32 @@ class VehicleOrderController extends Controller
 
         //vehicles filter(considering overlapped reservations )
         $availableVehicles = TransportVehicle::where('max_passengers', '>=', $requiredPassengers)
+        ->whereHas('assignments', function ($assignmentQuery) use ($pickupDatetime) {
+    
+            $day = strtolower($pickupDatetime->format('D')); // mon, tue, wed
+            $time = $pickupDatetime->format('H:i:s');
+    
+            $assignmentQuery->whereHas('driver',function($driverQuery) {
+                $driverQuery->orderBy('total_trips_count','asc')
+                            ->orderBy('last_trip_at','asc');
+
+            })
+                ->whereHas('shiftTemplate', function ($shiftQuery) use ($day, $time) {
+    
+                    $shiftQuery->whereJsonContains('days_of_week', $day)
+                               ->where('start_time', '<=', $time)
+                               ->where('end_time', '>=', $time);
+    
+                });
+    
+        })
+    
         ->when($request->filled('category') && $request->filled('type'), function ($q) use ($request) {
-         $q->where('category', $request->category)
-          ->where('type', $request->type);
-         })
+    
+            $q->where('category', $request->category)
+              ->where('type', $request->type);
+    
+        })
             ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
                 $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
                     //reservation exist during request time
