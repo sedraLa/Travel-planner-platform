@@ -27,6 +27,7 @@
                 </div>
             @endif
         
+
                 <h2>Where would you like to go ?</h2>
                 <p>Fill in your trip details to find the perfect vehicle</p>
             </div>
@@ -78,10 +79,10 @@
                     </div>
                   <select name="category" id="category" class="  w-80 border rounded px-3 py-2 border-gray-300">
                               <option value="">Any category</option>
-                              <option value="luxury" @selected(old('category') === 'luxury')>LUXURY</option>
-                              <option value="standard" @selected(old('category') === 'standard')>STANDARD</option>
-                              <option value="premium" @selected(old('category') === 'premium')>PREMIUM</option>
-                               
+                              <option value="comfort" @selected(old('category') === 'comfort')>COMFORT</option>
+                              <option value="economy" @selected(old('category') === 'economy')>ECONOMY</option>
+                              <option value="vip" @selected(old('category') === 'vip')>VIP</option>
+
                          </select>
                   </div>
 
@@ -92,11 +93,12 @@
                         <label for="dropoff_location">Vehicle Type</label>
                     </div>
                     <select name="type" id="type" class="w-80 border rounded px-3 py-2   border-gray-300">
-                              <option value="">Any category</option>
-                              <option value="car" @selected(old('type') === 'car')>CAR</option>
+                              <option value="">Any type</option>
+                              <option value="suv" @selected(old('type') === 'suv')>SUV</option>
                               <option value="van" @selected(old('type') === 'van')>VAN</option>
-                            
-                               
+                              <option value="sedan" @selected(old('type') === 'sedan')>SEDAN</option>
+
+
                          </select>
                   </div>
                 </div>

@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\Payment;
 use App\Models\Transport;
+use Illuminate\Support\Facades\DB;
 use App\Models\TransportReservation;
+use App\Models\Driver;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use App\Mail\PaymentConfirmationMail;
@@ -51,12 +53,12 @@ class PaymentController extends Controller
         return back()->withErrors('Payment initiation failed.');
     }
 
-    
+
     public function paypalCallback(Request $request)
     {
         $context = new PaymentContext(new PaypalPaymentService());
 
-       
+
         $result = $context->callBack($request);
 
         $reservation = Reservation::findOrFail(
@@ -100,7 +102,7 @@ class PaymentController extends Controller
         abort(400);
     }
 
-    // DTO 
+    // DTO
     $tempReservation = (object) [
         'id' => 0,
         'total_price' => $data['total_price'],
@@ -117,7 +119,7 @@ class PaymentController extends Controller
 }
 
 
-   
+
 public function paypalCallbackTransport(Request $request)
 {
     $context = new PaymentContext(new PaypalPaymentService());
@@ -129,28 +131,45 @@ public function paypalCallbackTransport(Request $request)
     if ($result['success'] && $data) {
 
         // create reservation
-        $reservation = TransportReservation::create([
-            'user_id' => Auth::id(),
-            'transport_vehicle_id' => $data['vehicle_id'],
-            'pickup_location' => $data['pickup_location'],
-            'dropoff_location' => $data['dropoff_location'],
-            'pickup_datetime' => $data['pickup_datetime'],
-            'dropoff_datetime' => $data['dropoff_datetime'],
-            'passengers' => $data['passengers'],
-            'total_price' => $data['total_price'],
-            'driver_id' => $data['driver_id'],
-            'status' => 'completed',
-        ]);
+        $reservation = DB::transaction(function () use ($data, $result) {
+            // create reservation as pending for driver workflow
+            $reservation = TransportReservation::create([
+                'user_id' => Auth::id(),
+                'transport_vehicle_id' => $data['vehicle_id'],
+                'pickup_location' => $data['pickup_location'],
+                'dropoff_location' => $data['dropoff_location'],
+                'pickup_datetime' => $data['pickup_datetime'],
+                'dropoff_datetime' => $data['dropoff_datetime'],
+                'passengers' => $data['passengers'],
+                'total_price' => $data['total_price'],
+                'driver_id' => $data['driver_id'],
+                'status' => 'completed',
+                'driver_status' => 'pending',
+            ]);
 
-        // create payment record
-        Payment::create([
-            'transport_reservation_id' => $reservation->id,
-            'user_id' => $reservation->user_id,
-            'amount' => $reservation->total_price,
-            'status' => 'completed',
-            'transaction_id' => $result['transaction_id'],
-            'payment_date' => now(),
-        ]);
+            $driver = Driver::find($data['driver_id']);
+
+            if ($driver) {
+                $driver->update([
+                'last_trip_at' => now(),
+                    ]);
+
+            $driver->increment('total_trips_count');
+            }
+
+
+            // create payment record
+            Payment::create([
+                'transport_reservation_id' => $reservation->id,
+                'user_id' => $reservation->user_id,
+                'amount' => $reservation->total_price,
+                'status' => 'completed',
+                'transaction_id' => $result['transaction_id'],
+                'payment_date' => now(),
+            ]);
+
+            return $reservation;
+        });
 
         $this->notificationService
             ->sendTransportPaymentConfirmation($reservation);

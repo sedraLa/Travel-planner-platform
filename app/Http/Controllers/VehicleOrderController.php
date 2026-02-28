@@ -12,18 +12,18 @@ class VehicleOrderController extends Controller
 {
     public function create()
     {
-       
+
         return view('vehicles.order');
     }
 
 
 
 
-    
+
     //send request and filter vehicles
     public function store(VehicleOrderRequest $request)
     {
-       
+
 
         // store request informations
         $requiredPassengers = $request->passengers;
@@ -31,19 +31,41 @@ class VehicleOrderController extends Controller
         $pickupDatetime = Carbon::parse($request->pickup_datetime ?? now());
 
         // dropoff calculated later(frontend)
-        $dropoffDatetime = $pickupDatetime->copy(); 
+        $dropoffDatetime = $pickupDatetime->copy();
 
 
-        
+
         //vehicles filter(considering overlapped reservations )
         $availableVehicles = TransportVehicle::where('max_passengers', '>=', $requiredPassengers)
+        ->whereHas('assignments', function ($assignmentQuery) use ($pickupDatetime) {
+    
+            $day = strtolower($pickupDatetime->format('D')); // mon, tue, wed
+            $time = $pickupDatetime->format('H:i:s');
+    
+            $assignmentQuery->whereHas('driver',function($driverQuery) {
+                $driverQuery->orderBy('total_trips_count','asc')
+                            ->orderBy('last_trip_at','asc');
+
+            })
+                ->whereHas('shiftTemplate', function ($shiftQuery) use ($day, $time) {
+    
+                    $shiftQuery->whereJsonContains('days_of_week', $day)
+                               ->where('start_time', '<=', $time)
+                               ->where('end_time', '>=', $time);
+    
+                });
+    
+        })
+    
         ->when($request->filled('category') && $request->filled('type'), function ($q) use ($request) {
-         $q->where('category', $request->category)
-          ->where('type', $request->type);
-         })
+    
+            $q->where('category', $request->category)
+              ->where('type', $request->type);
+    
+        })
             ->whereDoesntHave('reservations', function($q) use ($pickupDatetime, $dropoffDatetime) {
                 $q->where(function($query) use ($pickupDatetime, $dropoffDatetime) {
-                    //reservation exist during request time 
+                    //reservation exist during request time
                     $query->whereBetween('pickup_datetime', [$pickupDatetime, $dropoffDatetime])
                     //reservation exist during dropoff time 8 -> 8:35 , request at 8:34 (not available)
                           ->orWhereBetween('dropoff_datetime', [$pickupDatetime, $dropoffDatetime])
@@ -57,10 +79,7 @@ class VehicleOrderController extends Controller
             ->get();
 
         if ($availableVehicles->isEmpty()) {
-            return redirect()
-                ->route('vehicle.order')
-                 ->withInput()
-                ->with('vehicle_error', 'No available vehicles for the required date and time.');
+            return back()->withErrors('No vehicles found');
         }
 
         // geocoding service
@@ -77,8 +96,8 @@ class VehicleOrderController extends Controller
             'pickupCoords'      => $pickupCoords,
             'dropoffCoords'     => $dropoffCoords,
             'selectedCategory'   => $request->category,
-             'selectedType'      => $request->type,
-            
+            'selectedType'      => $request->type,
+
         ]);
     }
 }
