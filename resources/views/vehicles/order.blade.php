@@ -26,6 +26,7 @@
                     {{ session('success') }}
                 </div>
             @endif
+        
 
                 <h2>Where would you like to go ?</h2>
                 <p>Fill in your trip details to find the perfect vehicle</p>

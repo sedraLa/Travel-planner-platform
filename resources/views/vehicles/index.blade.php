@@ -12,9 +12,9 @@
             <a href="{{route('vehicle.order')}}"><button class="back">Back</button></a>
             <div class="head">
                 <h1>Available cars <span id="route-summary" class="route-badge">Loading...</span></h1>
-
+             
             <p>Discover a large group of vehicles for your request</p>
-
+           
                <p>{{$pickup_datetime}}</p>
             </div>
         </header>
