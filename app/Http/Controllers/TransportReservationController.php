@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\TransportVehicle;
 use App\Models\Transport;
+use App\Models\Assignment;
 use App\Models\TransportReservation;
 use App\Services\Payments\PaymentContext;
 use App\Services\Payments\PaypalPaymentService;
@@ -64,7 +65,17 @@ class TransportReservationController extends Controller
     $distance = (float) $request->distance;
     $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
 
-    
+    $assignment = Assignment::where('transport_vehicles_id', $vehicleId)
+    ->with('driver')
+    ->first();
+
+    if (!$assignment || !$assignment->driver) {
+        abort(500, 'No driver assigned to this vehicle.');
+    }
+
+    $driver_id = $assignment->driver->id;
+
+
 
     //prepare reservation data
     $paymentData = [
@@ -75,7 +86,7 @@ class TransportReservationController extends Controller
         'dropoff_datetime' => $dropoffDatetime,
         'passengers' => $request->passengers,
         'total_price' => $total_price,
-        'driver_id' => $request->driver_id,
+        'driver_id' => $driver_id,
     ];
 
     session(['transport_reservation_data' => $paymentData]);

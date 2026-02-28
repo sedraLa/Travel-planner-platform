@@ -25,7 +25,7 @@ class TransportReservationFactory extends Factory
             'status' => fake()->randomElement(['completed', 'pending', 'cancelled']),
             'transport_vehicle_id' => TransportVehicle::factory(),
             'driver_id' => Driver::factory(),
-            'driver_status' => fake()->randomElement(['pending', 'accepted', 'rejected']),
+            'driver_status' => fake()->randomElement(['pending', 'accepted', 'rejected', 'completed', 'cancelled']),
         ];
     }
 }

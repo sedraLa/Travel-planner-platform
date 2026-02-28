@@ -16,12 +16,12 @@ class TransportReservation extends Model
         'dropoff_datetime',
         'passengers',
         'total_price',
-        'earnings_balance',
+        'driver_earning',
         'status',
         'transport_vehicle_id',
         'driver_id',
         'driver_status',
-        'earnings_balance',
+
     ];
 
     protected $hidden = [
@@ -54,7 +54,7 @@ class TransportReservation extends Model
 
 
     public function bookingRequests()
-    {  
+    {
     return $this->hasMany(BookingRequest::class);
     }
 }

@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use App\Models\Assignment;
+use App\Models\ShiftTemplate;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Driver>
@@ -43,6 +45,10 @@ class DriverFactory extends Factory
                 'approved',
                 'rejected',
             ]),
+            'assignment_id' => Assignment::factory(),
+            'last_trip_at' => fake()->optional()->dateTimeBetween('-3 months', 'now'),
+            'total_trips_count' => fake()->numberBetween(0, 250),
+            'earnings_balance' => fake()->randomFloat(2, 0, 10000),
         ];
     }
 }
