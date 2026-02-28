@@ -14,7 +14,7 @@ class AssignmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'transport_vehicles_id' => TransportVehicle::factory(),
+            'transport_vehicle_id' => TransportVehicle::factory(),
             'shift_template_id' => ShiftTemplate::factory(),
         ];
     }

@@ -10,13 +10,13 @@ class Assignment extends Model
     use HasFactory;
 
    protected $fillable = [
-        'transport_vehicles_id',
+        'transport_vehicle_id',
         'shift_template_id',
     ];
 
     public function vehicle()
     {
-        return $this->belongsTo(TransportVehicle::class, 'transport_vehicles_id');
+        return $this->belongsTo(TransportVehicle::class);
     }
 
     public function shiftTemplate()
@@ -30,10 +30,10 @@ class Assignment extends Model
      return $this->hasOne(Driver::class);
     }
 
-     
-  
 
-   
+
+
+
 
 
 }
