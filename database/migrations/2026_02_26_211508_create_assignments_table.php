@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('assignments', function (Blueprint $table) {
          $table->id();
-         $table->foreignId('transport_vehicles_id') ->constrained() ->cascadeOnDelete();
+         $table->foreignId('transport_vehicle_id') ->constrained() ->cascadeOnDelete();
          $table->foreignId('shift_template_id')->constrained()->cascadeOnDelete();
-         $table->unique(['transport_vehicles_id', 'shift_template_id']);
+         $table->unique(['transport_vehicle_id', 'shift_template_id']);
          $table->timestamps();
         });
     }

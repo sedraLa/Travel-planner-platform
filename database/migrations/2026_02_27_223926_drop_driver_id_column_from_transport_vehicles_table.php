@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shift_templates', function (Blueprint $table) {
-          $table->id();
-          $table->string('name'); //  Sun-Tue Shift
-
-          $table->time('start_time');
-          $table->time('end_time');
-          $table->json('days_of_week');
-          $table->timestamps();
-
+        Schema::table('transport_vehicles', function (Blueprint $table) {
+            $table->dropForeign(['driver_id']);
+            $table->dropColumn('driver_id');
         });
     }
 
@@ -28,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shift_templates');
+        Schema::table('transport_vehicles', function (Blueprint $table) {
+            $table->foreignId('driver_id')->nullable()->constrained('drivers')->onDelete('set null');
+        });
     }
 };

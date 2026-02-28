@@ -15,7 +15,6 @@ class TransportVehicleFactory extends Factory
         return [
             'car_model' => fake()->company() . ' ' . fake()->word(),
             'plate_number' => strtoupper(fake()->bothify('??-####')),
-            'driver_id' => Driver::factory(),
             'max_passengers' => fake()->numberBetween(2, 8),
             'base_price' => fake()->randomFloat(2, 20, 150),
             'price_per_km' => fake()->randomFloat(2, 1, 10),

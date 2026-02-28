@@ -20,6 +20,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiTestController;
+use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
@@ -96,6 +97,14 @@ Route::patch('/drivers/{driver}/status', [DriverController::class, 'updateStatus
 Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
 Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
 Route::get('/drivers/details/{id}',[DriverController::class, 'show'])->name('drivers.details');
+
+
+//Admin Shift Templates
+Route::get('/admin/shift-templates', [ShiftTemplateController::class,'index'])->name('shift-templates.index');
+Route::get('/shift-templates/create', [ShiftTemplateController::class, 'create'])->name('shift-templates.create');
+Route::post('/shift-templates', [ShiftTemplateController::class, 'store'])->name('shift-templates.store');
+Route::delete('/shift-templates/{id}', [ShiftTemplateController::class, 'destroy'])->name('shift-templates.destroy');
+
 
 //Admin Activities
 Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');

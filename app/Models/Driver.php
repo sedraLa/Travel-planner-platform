@@ -26,12 +26,6 @@ class Driver extends Model
         'earnings_balance',
     ];
 
-    
-    public function vehicle()
-    {
-        return $this->hasOne(TransportVehicle::class);
-    }
-
    
     public function reservations()
     {

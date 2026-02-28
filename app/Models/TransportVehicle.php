@@ -11,7 +11,6 @@ class TransportVehicle extends Model
     protected $fillable = [
     'car_model',
     'plate_number',
-    'driver_id',
     'max_passengers',
     'base_price',
     'price_per_km',
@@ -28,12 +27,6 @@ class TransportVehicle extends Model
     public function reservations()
     {
         return $this->hasMany(TransportReservation::class);
-    }
-
-   
-
-    public function driver() {
-        return $this->belongsTo(Driver::class);
     }
     
 
