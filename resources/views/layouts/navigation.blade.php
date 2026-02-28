@@ -52,6 +52,8 @@
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                     <li><a href="{{route('admin.vehicles.index')}}">Vehicls</a></li>
+                    <li><a href="{{route('shift-templates.index')}}">ShiftTemplete</a></li>
+
                     
                        <li x-data="{ openDropdown: false }" class="relative">
                         <button @click="openDropdown = !openDropdown" class="px-3 py-2  hover:bg-gray-100 rounded font-bold">
