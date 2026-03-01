@@ -88,22 +88,6 @@
                 <input type="number" name="max_passengers"  step=0.1 value="{{ request('max_passengers') }}"     min="0" class="border rounded-lg p-2 w-20">
             </div>
 
-
-
-
-          <div>
-        <label class="text-sm text-gray-600 p-2 w-44">Driver</label>
-        <select name="driver_id" class="w-full border border-gray-300 rounded px-3 py-2" >
-            <option value="">All drivers</option>
-            @foreach($drivers as $driver)
-                <option value="{{ $driver->id }}" @selected((string) ($selectedDriverId ?? '') === (string) $driver->id)>
-                    {{ $driver->user?->full_name ?? 'Unknown driver' }}
-                </option>
-            @endforeach
-        </select>
-        </div>
-           
-        
             {{-- Actions --}}
             <div class="flex gap-2">
                 <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>
