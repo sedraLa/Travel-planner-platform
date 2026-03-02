@@ -53,8 +53,6 @@ class VehicleOrderController extends Controller
         abort_unless($reservation->user_id === Auth::id(), 403);
 
         if ($reservation->status === 'pending_driver') {
-            $rankedDriverIds = $reservation->ranked_driver_ids ?? [];
-
             $pendingRequest = BookingRequest::query()
                 ->where('reservation_id', $reservation->id)
                 ->where('status', 'pending')
@@ -64,40 +62,13 @@ class VehicleOrderController extends Controller
             if ($pendingRequest && $pendingRequest->expires_at && $pendingRequest->expires_at->isPast()) {
                 $pendingRequest->update(['status' => 'expired']);
 
-                $currentIndex = array_search($pendingRequest->driver_id, $rankedDriverIds, true);
-
                 ProcessNextDriverInChainJob::dispatchSync(
                     $reservation->id,
-                    $rankedDriverIds,
-                    $currentIndex === false ? 1 : $currentIndex + 1,
+                    $reservation->ranked_driver_ids ?? [],
+                    array_search($pendingRequest->driver_id, $reservation->ranked_driver_ids ?? [], true) + 1,
                 );
 
                 $reservation->refresh();
-            }
-
-            if (!$pendingRequest) {
-                $lastRequest = BookingRequest::query()
-                    ->where('reservation_id', $reservation->id)
-                    ->latest('id')
-                    ->first();
-
-                if ($lastRequest && in_array($lastRequest->status, ['expired', 'rejected'], true)) {
-                    $currentIndex = array_search($lastRequest->driver_id, $rankedDriverIds, true);
-                    $nextIndex = $currentIndex === false ? 1 : $currentIndex + 1;
-                    $nextDriverId = $rankedDriverIds[$nextIndex] ?? null;
-
-                    if ($nextDriverId) {
-                        $alreadySentToNext = BookingRequest::query()
-                            ->where('reservation_id', $reservation->id)
-                            ->where('driver_id', $nextDriverId)
-                            ->exists();
-
-                        if (!$alreadySentToNext) {
-                            ProcessNextDriverInChainJob::dispatchSync($reservation->id, $rankedDriverIds, $nextIndex);
-                            $reservation->refresh();
-                        }
-                    }
-                }
             }
         }
 
