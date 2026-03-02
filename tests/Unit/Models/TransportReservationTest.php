@@ -7,6 +7,7 @@ use App\Models\TransportReservation;
 use App\Models\TransportVehicle;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -34,10 +35,14 @@ class TransportReservationTest extends TestCase
         $this->assertInstanceOf(BelongsTo::class, $transportReservation->user());
         $this->assertInstanceOf(BelongsTo::class, $transportReservation->vehicle());
         $this->assertInstanceOf(HasOne::class, $transportReservation->payment());
+        $this->assertInstanceOf(HasMany::class, $transportReservation->bookingRequests());
         $this->assertInstanceOf(BelongsTo::class, $transportReservation->driver());
+
+        $this->assertSame('reservation_id', $transportReservation->bookingRequests()->getForeignKeyName());
 
         $this->assertTrue($transportReservation->user->is($user));
         $this->assertTrue($transportReservation->vehicle->is($vehicle));
         $this->assertNotNull($transportReservation->payment);
+
     }
 }

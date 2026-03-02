@@ -23,7 +23,7 @@ class BookingRequest extends Model
 
     public function reservation()
     {
-        return $this->belongsTo(TransportReservation::class, 'reservation_id');
+        return $this->belongsTo(TransportReservation::class, 'reservation_id', 'id');
     }
 
     public function driver()
