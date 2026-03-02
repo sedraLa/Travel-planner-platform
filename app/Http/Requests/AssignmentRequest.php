@@ -11,7 +11,7 @@ class AssignmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+         return true;
     }
 
     /**
@@ -22,8 +22,9 @@ class AssignmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-              'transport_vehicles_id' => 'required|exists:transport_vehicles,id',
+              'transport_vehicle_id' => 'required|exists:transport_vehicles,id',
               'shift_template_id' => 'required|exists:shift_templates,id',
+              'driver_id' => 'required|exists:drivers,id',
         ];
     }
 }

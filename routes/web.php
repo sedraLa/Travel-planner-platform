@@ -21,6 +21,7 @@ use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiTestController;
 use App\Http\Controllers\ShiftTemplateController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
@@ -104,6 +105,13 @@ Route::get('/admin/shift-templates', [ShiftTemplateController::class,'index'])->
 Route::get('/shift-templates/create', [ShiftTemplateController::class, 'create'])->name('shift-templates.create');
 Route::post('/shift-templates', [ShiftTemplateController::class, 'store'])->name('shift-templates.store');
 Route::delete('/shift-templates/{id}', [ShiftTemplateController::class, 'destroy'])->name('shift-templates.destroy');
+
+
+Route::post('/admin/assignments/index', [AssignmentController::class, 'index'])->name('assignments.index');
+Route::post('/admin/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
+Route::post('/admin/assignments', [AssignmentController::class, 'create'])->name('assignments.create');
+Route::post('/admin/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
+Route::delete('/admin/assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
 
 //Admin Activities
