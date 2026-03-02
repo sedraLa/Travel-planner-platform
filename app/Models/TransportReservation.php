@@ -57,6 +57,6 @@ class TransportReservation extends Model
 
     public function bookingRequests()
     {
-    return $this->hasMany(BookingRequest::class, 'reservation_id');
+    return $this->hasMany(BookingRequest::class, 'reservation_id', 'id');
     }
 }
