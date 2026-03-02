@@ -73,7 +73,7 @@ class BookingRequestController extends Controller
         $rankedDriverIds = $reservation->ranked_driver_ids ?? [];
         $currentIndex = array_search($driver->id, $rankedDriverIds, true);
 
-        ProcessNextDriverInChainJob::dispatch($reservation->id, $rankedDriverIds, $currentIndex === false ? 1 : $currentIndex + 1);
+        ProcessNextDriverInChainJob::dispatchSync($reservation->id, $rankedDriverIds, $currentIndex === false ? 1 : $currentIndex + 1);
 
         return back()->with('success', 'Booking request rejected.');
     }

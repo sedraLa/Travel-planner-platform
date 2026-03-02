@@ -27,6 +27,6 @@ class CheckBookingRequestTimeoutJob implements ShouldQueue
 
         $bookingRequest->update(['status' => 'expired']);
 
-        ProcessNextDriverInChainJob::dispatch($bookingRequest->reservation_id, $this->rankedDriverIds, $this->currentIndex + 1);
+        ProcessNextDriverInChainJob::dispatchSync($bookingRequest->reservation_id, $this->rankedDriverIds, $this->currentIndex + 1);
     }
 }
