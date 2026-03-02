@@ -51,7 +51,8 @@ class BookingRequestController extends Controller
 
             $bookingRequest->update(['status' => 'accepted']);
 
-            $reservation->bookingRequests()
+            BookingRequest::query()
+                ->where('reservation_id', $reservation->id)
                 ->where('id', '!=', $bookingRequest->id)
                 ->where('status', 'pending')
                 ->update(['status' => 'expired']);
