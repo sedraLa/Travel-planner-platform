@@ -15,6 +15,8 @@
         <!-- Navigation Links -->
         <ul>
             @if(auth()->check() && auth()->user()->role === UserRole::DRIVER->value)
+            <li><a href="{{ route('driver.booking-requests.index') }}">Booking Requests</a></li>
+                <li><a href="{{ route('driver.pending-reservations') }}">Assigned Reservations</a></li>
                 <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
                 <li><a href="{{ route('driverscompleted.show') }}">My Completed Bookings</a></li>
             @else

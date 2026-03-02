@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BookingRequest extends Model
 {
+    protected $table = 'booking_request';
     use HasFactory;
     protected $fillable = [
         'reservation_id',
@@ -15,8 +16,12 @@ class BookingRequest extends Model
         'expires_at',
     ];
 
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
 
-     public function reservation()
+
+    public function reservation()
     {
         return $this->belongsTo(TransportReservation::class);
     }

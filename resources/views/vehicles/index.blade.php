@@ -77,7 +77,7 @@
                             </div>
                         </div>
 
-                        <form action="{{ route('vehicle.reservation', $vehicle->id) }}" method="GET">
+                        <form action="{{ route('vehicle.reservation', $reservation->id ?? $vehicle->id) }}" method="GET">
                             <input type="hidden" name="pickup_location" value="{{ $pickup_location }}">
                             <input type="hidden" name="dropoff_location" value="{{ $dropoff_location }}">
                             <input type="hidden" name="pickup_datetime" value="{{ $pickup_datetime }}">

@@ -21,6 +21,7 @@ class TransportReservation extends Model
         'transport_vehicle_id',
         'driver_id',
         'driver_status',
+        'ranked_driver_ids',
 
     ];
 
@@ -32,6 +33,7 @@ class TransportReservation extends Model
     protected $casts = [
         'pickup_datetime' => 'datetime',
         'dropoff_datetime' => 'datetime',
+        'ranked_driver_ids' => 'array',
     ];
 
     public function user() {

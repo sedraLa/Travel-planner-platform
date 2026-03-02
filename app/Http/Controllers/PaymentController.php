@@ -96,16 +96,22 @@ class PaymentController extends Controller
 
     public function payWithPayPalTransport()
 {
-    $data = session('transport_reservation_data');
+    $reservationId = session('transport_reservation_id');
 
-    if (!$data) {
+    if (!$reservationId) {
         abort(400);
     }
 
     // DTO
+    $reservation = TransportReservation::findOrFail($reservationId);
+
+    if ($reservation->user_id !== Auth::id()) {
+        abort(403);
+    }
+
     $tempReservation = (object) [
-        'id' => 0,
-        'total_price' => $data['total_price'],
+        'id' => $reservation->id,
+        'total_price' => $reservation->total_price,
     ];
 
     $context = new PaymentContext(new PaypalPaymentService());
@@ -126,35 +132,18 @@ public function paypalCallbackTransport(Request $request)
     //check if pay is success
     $result = $context->callBack($request);
 
-    $data = session('transport_reservation_data');
+    $reservationId = session('transport_reservation_id');
+    $reservation = $reservationId ? TransportReservation::find($reservationId) : null;
 
-    if ($result['success'] && $data) {
+    if ($result['success'] && $reservation) {
+        DB::transaction(function () use ($reservation, $result) {
+            $reservation->update(['status' => 'confirmed']);
 
-        // create reservation
-        $reservation = DB::transaction(function () use ($data, $result) {
-            // create reservation as pending for driver workflow
-            $reservation = TransportReservation::create([
-                'user_id' => Auth::id(),
-                'transport_vehicle_id' => $data['vehicle_id'],
-                'pickup_location' => $data['pickup_location'],
-                'dropoff_location' => $data['dropoff_location'],
-                'pickup_datetime' => $data['pickup_datetime'],
-                'dropoff_datetime' => $data['dropoff_datetime'],
-                'passengers' => $data['passengers'],
-                'total_price' => $data['total_price'],
-                'driver_id' => $data['driver_id'],
-                'status' => 'completed',
-                'driver_status' => 'pending',
-            ]);
-
-            $driver = Driver::find($data['driver_id']);
+            $driver = Driver::find($reservation->driver_id);
 
             if ($driver) {
-                $driver->update([
-                'last_trip_at' => now(),
-                    ]);
-
-            $driver->increment('total_trips_count');
+                $driver->update(['last_trip_at' => now()]);
+                $driver->increment('total_trips_count');
             }
 
 
@@ -167,18 +156,15 @@ public function paypalCallbackTransport(Request $request)
                 'transaction_id' => $result['transaction_id'],
                 'payment_date' => now(),
             ]);
-
-            return $reservation;
         });
 
-        $this->notificationService
-            ->sendTransportPaymentConfirmation($reservation);
+        $this->notificationService->sendTransportPaymentConfirmation($reservation->refresh());
 
-        session()->forget('transport_reservation_data');
 
-        return redirect()
-            ->route('vehicle.order')
-            ->with('success', 'Transport  payment completed.');
+        session()->forget('transport_reservation_id');
+
+       return redirect()->route('vehicle.order')->with('success', 'Transport payment completed.');
+    
     }
 
     return back()->withErrors('Payment failed.');
