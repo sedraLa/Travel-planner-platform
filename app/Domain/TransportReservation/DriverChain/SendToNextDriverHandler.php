@@ -16,7 +16,7 @@ class SendToNextDriverHandler extends DriverRequestHandler
         }
 
         //send request to the handler(driver) u
-        SendBookingRequestToDriverJob::dispatch($reservation->id, $rankedDriverIds[$index], $rankedDriverIds, $index);
+        SendBookingRequestToDriverJob::dispatchSync($reservation->id, $rankedDriverIds[$index], $rankedDriverIds, $index);
 
         return true;
     }

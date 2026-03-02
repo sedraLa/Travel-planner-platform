@@ -51,7 +51,8 @@ class BookingRequestController extends Controller
 
             $bookingRequest->update(['status' => 'accepted']);
 
-            $reservation->bookingRequests()
+            BookingRequest::query()
+                ->where('reservation_id', $reservation->id)
                 ->where('id', '!=', $bookingRequest->id)
                 ->where('status', 'pending')
                 ->update(['status' => 'expired']);
@@ -73,7 +74,7 @@ class BookingRequestController extends Controller
         $rankedDriverIds = $reservation->ranked_driver_ids ?? [];
         $currentIndex = array_search($driver->id, $rankedDriverIds, true);
 
-        ProcessNextDriverInChainJob::dispatch($reservation->id, $rankedDriverIds, $currentIndex === false ? 1 : $currentIndex + 1);
+        ProcessNextDriverInChainJob::dispatchSync($reservation->id, $rankedDriverIds, $currentIndex === false ? 1 : $currentIndex + 1);
 
         return back()->with('success', 'Booking request rejected.');
     }

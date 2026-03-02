@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Queue;
 
 class SendBookingRequestToDriverJob implements ShouldQueue
 {
@@ -44,6 +45,9 @@ class SendBookingRequestToDriverJob implements ShouldQueue
             $driver->user->notify(new DriverBookingRequestNotification($reservation));
         }
 
-        CheckBookingRequestTimeoutJob::dispatch($bookingRequest->id, $this->rankedDriverIds, $this->currentIndex)->delay($bookingRequest->expires_at);
+        if (Queue::getDefaultDriver() !== 'sync') {
+            CheckBookingRequestTimeoutJob::dispatch($bookingRequest->id, $this->rankedDriverIds, $this->currentIndex)
+                ->delay($bookingRequest->expires_at);
+        }
     }
 }
