@@ -43,6 +43,8 @@ class VehicleOrderController extends Controller
             'pickup_datetime' => $request->pickup_datetime,
             'dropoff_datetime' => $request->pickup_datetime,
             'passengers' => $request->passengers,
+            'preferred_category' => $request->category,
+            'preferred_type' => $request->type,
             'total_price' => 0,
         ]);
 

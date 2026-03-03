@@ -6,6 +6,7 @@ use App\Domain\TransportReservation\Ranking\DriverRankingStrategy;
 use App\Models\Assignment;
 use App\Models\Driver;
 use App\Models\TransportReservation;
+use Carbon\CarbonInterface;
 use Carbon\Carbon;
 
 class DriverRankingService
@@ -17,17 +18,29 @@ class DriverRankingService
     public function rankedDriverIdsForReservation(TransportReservation $reservation): array
     {
         $pickup = $reservation->pickup_datetime;
+        $dropoff = $reservation->dropoff_datetime ?? $pickup->copy()->addHours(2);
         $shortDay = strtolower($pickup->format('D')); // mon
         $fullDay = strtolower($pickup->format('l')); // monday
         $requestTime = $pickup->format('H:i:s');
 
         $assignments = Assignment::query()
             ->whereHas('driver', fn ($driverQuery) => $driverQuery->whereIn('status', ['approved', 'Approved']))
-            ->with(['driver', 'shiftTemplate'])
+            ->whereHas('vehicle', function ($vehicleQuery) use ($reservation) {
+                $vehicleQuery->where('max_passengers', '>=', $reservation->passengers);
+
+                if (!empty($reservation->preferred_category)) {
+                    $vehicleQuery->where('category', $reservation->preferred_category);
+                }
+
+                if (!empty($reservation->preferred_type)) {
+                    $vehicleQuery->where('type', $reservation->preferred_type);
+                }
+            })
+            ->with(['driver', 'shiftTemplate', 'vehicle'])
             ->get();
 
         $driverIds = $assignments
-            ->filter(function ($assignment) use ($shortDay, $fullDay, $requestTime) {
+            ->filter(function ($assignment) use ($shortDay, $fullDay, $requestTime, $pickup, $dropoff, $reservation) {
                 if (!$assignment->driver || !$assignment->shiftTemplate) {
                     return false;
                 }
@@ -42,30 +55,25 @@ class DriverRankingService
                     return false;
                 }
 
-                return $this->isWithinShift($requestTime, $assignment->shiftTemplate->start_time, $assignment->shiftTemplate->end_time);
+                if (!$this->isWithinShift($requestTime, $assignment->shiftTemplate->start_time, $assignment->shiftTemplate->end_time)) {
+                    return false;
+                }
+
+                return !$this->hasVehicleOverlap(
+                    vehicleId: $assignment->transport_vehicle_id,
+                    pickup: $pickup,
+                    dropoff: $dropoff,
+                    reservationIdToIgnore: $reservation->id,
+                );
             })
             ->pluck('driver.id')
             ->filter()
             ->unique()
             ->values()
             ->all();
-            
-            if (empty($driverIds)) {
-                // Fallback: if no shift assignment matches, still try approved drivers
-                // so booking requests can continue instead of immediate cancellation.
-                $driverIds = Driver::query()
-                    ->whereIn('status', ['approved', 'Approved'])
-                    ->pluck('id')
-                    ->all();
-            }
 
         if (empty($driverIds)) {
-            // Fallback: if no shift assignment matches, still try approved drivers
-            // so booking requests can continue instead of immediate cancellation.
-            $driverIds = Driver::query()
-                ->whereIn('status', ['approved', 'Approved'])
-                ->pluck('id')
-                ->all();
+            return [];
         }
 
         $drivers = Driver::query()->whereIn('id', $driverIds)->get();
@@ -86,5 +94,23 @@ class DriverRankingService
 
         // Overnight shift: 22:00 -> 06:00
         return $request->gte($start) || $request->lte($end);
+    }
+
+    private function hasVehicleOverlap(int $vehicleId, CarbonInterface $pickup, CarbonInterface $dropoff, ?int $reservationIdToIgnore = null): bool
+    {
+        return TransportReservation::query()
+            ->where('transport_vehicle_id', $vehicleId)
+            ->when($reservationIdToIgnore, fn ($query) => $query->where('id', '!=', $reservationIdToIgnore))
+            ->whereNotIn('status', ['cancelled', 'completed'])
+            ->where(function ($query) use ($pickup, $dropoff) {
+                $query
+                    ->whereBetween('pickup_datetime', [$pickup, $dropoff])
+                    ->orWhereBetween('dropoff_datetime', [$pickup, $dropoff])
+                    ->orWhere(function ($inner) use ($pickup, $dropoff) {
+                        $inner->where('pickup_datetime', '<=', $pickup)
+                            ->where('dropoff_datetime', '>=', $dropoff);
+                    });
+            })
+            ->exists();
     }
 }

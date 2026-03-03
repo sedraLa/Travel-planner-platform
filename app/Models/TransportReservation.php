@@ -15,6 +15,8 @@ class TransportReservation extends Model
         'pickup_datetime',
         'dropoff_datetime',
         'passengers',
+        'preferred_category',
+        'preferred_type',
         'total_price',
         'driver_earning',
         'status',
