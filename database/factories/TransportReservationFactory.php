@@ -26,6 +26,11 @@ class TransportReservationFactory extends Factory
             'transport_vehicle_id' => TransportVehicle::factory(),
             'driver_id' => Driver::factory(),
             'driver_status' => fake()->randomElement(['pending', 'accepted', 'rejected', 'completed', 'cancelled']),
+            'driver_earning'=>function (array $attributes) {
+        return $attributes['total_price'] * 0.2; },
+
+
+
         ];
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
          $table->id();
          $table->foreignId('transport_vehicle_id') ->constrained() ->cascadeOnDelete();
          $table->foreignId('shift_template_id')->constrained()->cascadeOnDelete();
+         $table->foreignId('driver_id') ->constrained()->cascadeOnDelete()->unique(); 
          $table->unique(['transport_vehicle_id', 'shift_template_id']);
          $table->timestamps();
         });

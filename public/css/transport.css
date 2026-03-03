@@ -506,3 +506,17 @@ select {
   left: 2px;
   top: -1px;
 }
+
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  /* حجم ثابت للزر */
+  height: 36px;
+  /* حجم ثابت للزر */
+  background: transparent;
+  border: none;
+  padding: 0;
+}

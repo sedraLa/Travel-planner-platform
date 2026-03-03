@@ -19,11 +19,10 @@ class Driver extends Model
         'license_category',
         'personal_image',
         'date_of_hire',
-        'status',
-        'assignment_id',
         'last_trip_at',
         'total_trips_count',
         'earnings_balance',
+        'status',
     ];
 
    
@@ -40,7 +39,7 @@ class Driver extends Model
 
      public function assignment()
     {
-     return $this->belongsTo(Assignment::class); 
+     return $this->hasOne(Assignment::class); 
     
     }
 

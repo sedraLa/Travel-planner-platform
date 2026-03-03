@@ -53,6 +53,7 @@
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                     <li><a href="{{route('admin.vehicles.index')}}">Vehicls</a></li>
                     <li><a href="{{route('shift-templates.index')}}">ShiftTemplete</a></li>
+                    <li><a href="{{route('assignments.index')}}">Assignments</a></li>
 
                     
                        <li x-data="{ openDropdown: false }" class="relative">

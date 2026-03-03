@@ -102,15 +102,15 @@ Route::get('/drivers/details/{id}',[DriverController::class, 'show'])->name('dri
 
 //Admin Shift Templates
 Route::get('/admin/shift-templates', [ShiftTemplateController::class,'index'])->name('shift-templates.index');
-Route::get('/shift-templates/create', [ShiftTemplateController::class, 'create'])->name('shift-templates.create');
 Route::post('/shift-templates', [ShiftTemplateController::class, 'store'])->name('shift-templates.store');
 Route::delete('/shift-templates/{id}', [ShiftTemplateController::class, 'destroy'])->name('shift-templates.destroy');
 
-
-Route::post('/admin/assignments/index', [AssignmentController::class, 'index'])->name('assignments.index');
-Route::post('/admin/assignments/create', [AssignmentController::class, 'create'])->name('assignments.create');
-Route::post('/admin/assignments', [AssignmentController::class, 'create'])->name('assignments.create');
-Route::post('/admin/assignments', [AssignmentController::class, 'store'])->name('assignments.store');
+//Admin Assignment
+Route::get('/admin/assignments',[AssignmentController::class,'index'])->name('assignments.index');
+Route::get('/admin/assignments/create',[AssignmentController::class,'create'])->name('assignments.create');
+Route::post('/admin/assignments/store', [AssignmentController::class,'store'])->name('assignments.store');
+Route::get('/admin/assignments/edit', [AssignmentController::class,'edit'])->name('assignments.edit');
+Route::put('/admin/assignments/update', [AssignmentController::class,'update'])->name('assignments.update');
 Route::delete('/admin/assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
 

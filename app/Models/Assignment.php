@@ -12,6 +12,7 @@ class Assignment extends Model
    protected $fillable = [
         'transport_vehicle_id',
         'shift_template_id',
+        'drivre_is',
     ];
 
     public function vehicle()
@@ -27,7 +28,7 @@ class Assignment extends Model
 
     public function driver()
     {
-     return $this->hasOne(Driver::class);
+     return $this->belongsTo(Driver::class);
     }
 
 

@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Http\Requests\AssignmentRequest;
 use App\Models\Assignment;
 use App\Models\Driver;
 use App\Models\ShiftTemplate;
 use App\Models\TransportVehicle;
+use App\Services\Notifications\AssignmentNotificationService;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 
+
 class AssignmentController extends Controller
 {
+      protected AssignmentNotificationService $notificationService;
 
-   public function index()
+    public function __construct(AssignmentNotificationService $notificationService)
+    {
+        $this->notificationService = $notificationService;
+    }
+
+   public function index(Request $request)
   {
 
         $assignments = Assignment::with(['vehicle', 'driver.user', 'shiftTemplate'])
@@ -55,8 +64,16 @@ class AssignmentController extends Controller
     ->orderBy('id')
     ->get();
 
-    return view('assignments.create', compact(   'vehicles', 'drivers', 'shiftTemplates'));
+     return response()->json([
+        'vehicles' => $vehicles,
+        'drivers' => $drivers,
+        'shiftTemplates' => $shiftTemplates,
+    ]);
 }
+
+
+
+
 
     public function store(AssignmentRequest $request)
     {
@@ -86,11 +103,13 @@ class AssignmentController extends Controller
         $assignment = Assignment::create([
             'transport_vehicle_id' => $validated['transport_vehicle_id'],
             'shift_template_id' => $validated['shift_template_id'],
-        ]);
+            'driver_id'=> $validated['driver_id'],
+                  ]);
 
-        $driver->update([
-            'assignment_id' => $assignment->id,
-        ]);
+        
+
+          $assignment->load(['vehicle', 'shiftTemplate']);
+          $this->notificationService->notifyDriverAssigned($driver, $assignment);
 
         return back()->with('success', 'Assignment created successfully.');
     }
@@ -105,6 +124,13 @@ class AssignmentController extends Controller
     $vehicles = TransportVehicle::orderBy('car_model')->get();
     $shiftTemplates = ShiftTemplate::orderBy('name')->get();
     $drivers = Driver::where('status', 'approved')
+    ->where(function ($q) use ($assignment) {
+        $q->whereDoesntHave('assignment') // كل السائقين الخاليين
+          ->orWhere('id', $assignment->driver_id); // السائق الحالي يبقى
+    })
+    ->orderBy('id')
+    ->get();
+    $drivers = Driver::where('status', 'approved')
         ->where(function ($q) use ($assignment) {
             $q->doesntHave('assignment')
               ->orWhere('id', $assignment->driver_id); // السائق الحالي يظل ضمن القائمة
@@ -112,7 +138,11 @@ class AssignmentController extends Controller
         ->orderBy('id')
         ->get();
 
-    return view('assignments.edit', compact('assignment', 'vehicles', 'drivers', 'shiftTemplates'));
+  return response()->json([
+        'vehicles' => $vehicles,
+        'drivers' => $drivers,
+        'shiftTemplates' => $shiftTemplates,
+    ]);
    }
 
     
@@ -140,31 +170,47 @@ class AssignmentController extends Controller
     $driver = Driver::findOrFail($validated['driver_id']);
     
 
-    // التحقق من أن السائق لا يملك assignment آخر غير هذا
-    if ($driver->assignment_id && $driver->assignment_id != $assignment->id) {
-        return back()->withErrors([
-            'driver_id' => 'This driver already has an assignment.',
-        ]);
+    $existingAssignment = Assignment::where('driver_id', $driver->id)
+    ->where('id', '!=', $assignment->id)
+    ->first();
+
+    if ($existingAssignment) {
+    return back()->withErrors([
+        'driver_id' => 'This driver already has an assignment.',
+    ]);
     }
 
-
-     Driver::where('assignment_id', $assignment->id)
-        ->where('id', '!=', $driver->id)
-        ->update(['assignment_id' => null]);
-
-
-     $driver->update([
-        'assignment_id' => $assignment->id,
-    ]);
+    $previousDriver = $assignment->driver;
+    $previousShiftTemplateId = $assignment->shift_template_id;
+    $previousVehicleId = $assignment->transport_vehicle_id;
 
 
+     if ($previousDriver && $previousDriver->id !== $driver->id) {
+    // فرّغ driver_id في الـ assignment الحالي
+    $assignment->update([
+        'driver_id' => null,
+       ]);
+     }
 
     $assignment->update([
         'transport_vehicle_id' => $validated['transport_vehicle_id'],
         'shift_template_id' => $validated['shift_template_id'],
+        'driver_id'=> $validated['driver_id'],
     ]);
 
-   
+      
+     $assignment->load(['vehicle', 'shiftTemplate']);
+
+    if ($previousDriver && $previousDriver->id !== $driver->id) {
+       $this->notificationService->notifyDriverUnassigned($previousDriver, $assignment);
+        $this->notificationService->notifyDriverAssigned($driver, $assignment);
+    } elseif ($previousDriver && $previousDriver->id === $driver->id) {
+        if ($previousShiftTemplateId !== $assignment->shift_template_id || $previousVehicleId !== $assignment->transport_vehicle_id) {
+           $this->notificationService->notifyDriverShiftOrVehicleChanged($driver, $assignment);
+        }
+    } else {
+      $this->notificationService->notifyDriverAssigned($driver, $assignment);
+    }
     
 
    
@@ -176,7 +222,14 @@ class AssignmentController extends Controller
  
     public function destroy(Assignment $assignment)
     {
-        Driver::where('assignment_id', $assignment->id)->update(['assignment_id' => null]);
+    
+     $assignment->load(['vehicle', 'shiftTemplate', 'driver.user']);
+
+       if ($assignment->driver) {
+        $this->notificationService->sendDriverAssignmentNotification($assignment->driver, $assignment);
+    }
+ 
+
         $assignment->delete();
 
         return back()->with('success', 'Assignment deleted successfully.');

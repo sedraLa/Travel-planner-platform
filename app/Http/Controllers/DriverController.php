@@ -52,8 +52,8 @@ class DriverController extends Controller
             $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
         }
 
-        $query->orderByRaw('created_at');
-
+        $query->orderBy('created_at', 'desc');
+        
         $drivers = $query->get();
 
         return view('driver.requestindex', compact('drivers'));
@@ -84,7 +84,7 @@ class DriverController extends Controller
             $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
         }
 
-        $query->orderByRaw('date_of_hire');
+        $query->orderBy('date_of_hire', 'desc');
 
         $drivers = $query->get();
 
@@ -94,13 +94,15 @@ class DriverController extends Controller
 
     //show approved drivers details
     public function show(string $id) {
-        $driver = Driver::with('user','vehicle','reservations')->findOrFail($id);
-        $vehicle = $driver?->vehicle;
+        $driver = Driver::with('user','assignment.vehicle','reservations')->findOrFail($id);
+        $assignment = $driver?->assignment;
+        $vehicle = $assignment?->vehicle;
         $pendingBookings = $driver->reservations()->where('status','pending')->count();
         $completedBookings = $driver->reservations()->where('status','completed')->count();
         $canceledBookings = $driver->reservations()->where('status','canceled')->count();
         return view('driver.show', compact([
             'driver',
+            'assignment',
             'vehicle',
             'pendingBookings',
             'completedBookings',

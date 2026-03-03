@@ -23,13 +23,7 @@ class ShiftTemplateController extends Controller
     }
 
 
-     public function create()
-    {
-        $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-        return view('shifts.shiftcreate', compact('days'));
-    }
-
+    
 
     public function store(ShiftTemplateRequest $request)
     {
