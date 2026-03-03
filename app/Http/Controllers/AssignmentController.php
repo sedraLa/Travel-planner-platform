@@ -60,6 +60,7 @@ class AssignmentController extends Controller
     $vehicles = TransportVehicle::orderBy('car_model')->get();
     $shiftTemplates = ShiftTemplate::orderBy('name')->get();
     $drivers = Driver::where('status', 'approved')
+    ->with('user')
     ->doesntHave('assignment')
     ->orderBy('id')
     ->get();
@@ -124,13 +125,7 @@ class AssignmentController extends Controller
     $vehicles = TransportVehicle::orderBy('car_model')->get();
     $shiftTemplates = ShiftTemplate::orderBy('name')->get();
     $drivers = Driver::where('status', 'approved')
-    ->where(function ($q) use ($assignment) {
-        $q->whereDoesntHave('assignment') // كل السائقين الخاليين
-          ->orWhere('id', $assignment->driver_id); // السائق الحالي يبقى
-    })
-    ->orderBy('id')
-    ->get();
-    $drivers = Driver::where('status', 'approved')
+    ->with('user')
         ->where(function ($q) use ($assignment) {
             $q->doesntHave('assignment')
               ->orWhere('id', $assignment->driver_id); // السائق الحالي يظل ضمن القائمة

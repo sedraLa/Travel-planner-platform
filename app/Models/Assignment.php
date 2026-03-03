@@ -12,7 +12,7 @@ class Assignment extends Model
    protected $fillable = [
         'transport_vehicle_id',
         'shift_template_id',
-        'drivre_is',
+        'drivre_id',
     ];
 
     public function vehicle()

@@ -109,8 +109,8 @@ Route::delete('/shift-templates/{id}', [ShiftTemplateController::class, 'destroy
 Route::get('/admin/assignments',[AssignmentController::class,'index'])->name('assignments.index');
 Route::get('/admin/assignments/create',[AssignmentController::class,'create'])->name('assignments.create');
 Route::post('/admin/assignments/store', [AssignmentController::class,'store'])->name('assignments.store');
-Route::get('/admin/assignments/edit', [AssignmentController::class,'edit'])->name('assignments.edit');
-Route::put('/admin/assignments/update', [AssignmentController::class,'update'])->name('assignments.update');
+Route::get('/admin/assignments/edit/{assignment}', [AssignmentController::class,'edit'])->name('assignments.edit');
+Route::put('/admin/assignments/update/{assignment}', [AssignmentController::class,'update'])->name('assignments.update');
 Route::delete('/admin/assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
 
