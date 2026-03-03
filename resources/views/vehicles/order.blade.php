@@ -95,7 +95,7 @@
                   <div class="container flex-1 min-w-[200px]  ">
                     <div class="head-row">
                         <img class="icon" src="{{asset('images/icons/type.png')}}" alt="icon">
-                        <label for="dropoff_location">Vehicle Type</label>
+                        <label for="type">Vehicle Type</label>
                     </div>
                     <select name="type" id="type" class="w-80 border rounded px-3 py-2   border-gray-300">
                               <option value="">Any type</option>
