@@ -8,6 +8,7 @@ use App\Models\BookingRequest;
 use App\Models\TransportReservation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use App\Services\TransportReservation\ReservationStateManager;
 
 class BookingRequestController extends Controller
 {
@@ -42,22 +43,31 @@ class BookingRequestController extends Controller
             return back()->withErrors('No assigned vehicle found for your account.');
         }
 
+
+
         DB::transaction(function () use ($bookingRequest, $reservation, $driver, $vehicleId) {
+        
+            $stateManager = app(ReservationStateManager::class);
+        
+            // هنا بدل التحديث المباشر
+            $stateManager->transition($reservation, 'driver_assigned');
+        
+            // تحديث الـ driver و vehicle بعد التأكد من الانتقال
             $reservation->update([
                 'driver_id' => $driver->id,
                 'transport_vehicle_id' => $vehicleId,
-                'status' => 'driver_assigned',
             ]);
-
+        
             $bookingRequest->update(['status' => 'accepted']);
-
+        
+            // إلغاء كل الطلبات التانية
             $reservation->bookingRequests()
                 ->where('id', '!=', $bookingRequest->id)
                 ->where('status', 'pending')
                 ->update(['status' => 'expired']);
         });
 
-        return redirect()->route('driver.pending-reservations')->with('success', 'Booking request accepted.');
+        return back()->with('success', 'Booking request accepted, Go to your Pending Bookings page.');
     }
 
     public function reject(BookingRequest $bookingRequest): RedirectResponse

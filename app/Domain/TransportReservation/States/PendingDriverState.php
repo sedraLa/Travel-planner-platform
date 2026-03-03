@@ -1,5 +1,5 @@
 <?php
-namespace App\Domain\TransportReservation\States\PendingDiiverState;
+namespace App\Domain\TransportReservation\States;
 
 class PendingDriverState extends ReservationState
 {

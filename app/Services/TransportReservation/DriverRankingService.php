@@ -49,6 +49,15 @@ class DriverRankingService
             ->unique()
             ->values()
             ->all();
+            
+            if (empty($driverIds)) {
+                // Fallback: if no shift assignment matches, still try approved drivers
+                // so booking requests can continue instead of immediate cancellation.
+                $driverIds = Driver::query()
+                    ->whereIn('status', ['approved', 'Approved'])
+                    ->pluck('id')
+                    ->all();
+            }
 
         $drivers = Driver::query()->whereIn('id', $driverIds)->get();
 

@@ -18,6 +18,7 @@ use App\Notifications\NewTransportBookingNotification;
 use App\Services\Payments\PaymentContext;
 use App\Services\Payments\PaypalPaymentService;
 use App\Services\Notifications\PaymentNotificationService;
+use App\Services\TransportReservation\ReservationStateManager;
 
 
 class PaymentController extends Controller
@@ -136,18 +137,22 @@ public function paypalCallbackTransport(Request $request)
     $reservation = $reservationId ? TransportReservation::find($reservationId) : null;
 
     if ($result['success'] && $reservation) {
+      
+
         DB::transaction(function () use ($reservation, $result) {
-            $reservation->update(['status' => 'confirmed']);
-
+            $stateManager = app(ReservationStateManager::class);
+        
+            // بدل التحديث المباشر
+            $stateManager->transition($reservation, 'pending_payment'); // بعد assign driver
+            $stateManager->transition($reservation, 'confirmed');       // بعد الدفع
+        
             $driver = Driver::find($reservation->driver_id);
-
+        
             if ($driver) {
                 $driver->update(['last_trip_at' => now()]);
                 $driver->increment('total_trips_count');
             }
-
-
-            // create payment record
+        
             Payment::create([
                 'transport_reservation_id' => $reservation->id,
                 'user_id' => $reservation->user_id,

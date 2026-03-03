@@ -1,16 +1,25 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\VehicleOrderRequest;
 use Illuminate\Http\Request;
 use App\Models\TransportReservation;
 use Illuminate\Support\Facades\Auth;
 use App\Services\GeocodingService;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\DB;
+use App\Services\TransportReservation\ReservationStateManager;
 
 class TransportReservationController extends Controller
 {
+    protected ReservationStateManager $stateManager;
+
+    public function __construct(ReservationStateManager $stateManager)
+    {
+        $this->stateManager = $stateManager;
+    }
+
     /**
      * Show the reservation page for a vehicle. (complete reservation)
      */
@@ -18,8 +27,11 @@ class TransportReservationController extends Controller
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        if ($reservation->status !== 'driver_assigned' || !$reservation->vehicle) {
-            return redirect()->route('vehicle.searching', $reservation)->withErrors('No assigned vehicle yet.');
+        // استخدام State pattern بدل المقارنة المباشرة
+        $allowedStatus = ['driver_assigned'];
+        if (!in_array($reservation->status, $allowedStatus) || !$reservation->vehicle) {
+            return redirect()->route('vehicle.searching', $reservation)
+                ->withErrors('No assigned vehicle yet.');
         }
 
         $distance = (float) $request->query('distance', 0);
@@ -27,10 +39,10 @@ class TransportReservationController extends Controller
 
         if ($distance > 0) {
             $totalPrice = ($distance * $reservation->vehicle->price_per_km) + $reservation->vehicle->base_price;
-            $dropoffDateTime = Carbon::parse($reservation->pickup_datetime)->addMinutes($duration > 0 ? $duration : 0);
+            $dropoffDateTime = Carbon::parse($reservation->pickup_datetime)
+                ->addMinutes($duration > 0 ? $duration : 0);
 
-
-        $reservation->update([
+            $reservation->update([
                 'total_price' => $totalPrice,
                 'dropoff_datetime' => $dropoffDateTime,
             ]);
@@ -42,17 +54,18 @@ class TransportReservationController extends Controller
             'reservation' => $reservation,
             'vehicle' => $reservation->vehicle,
         ]);
-
     }
 
     /**
-     * Store a new reservation.
+     * Store a new reservation (complete details before payment)
      */
     public function store(VehicleOrderRequest $request, TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        if ($reservation->status !== 'driver_assigned') {
+        // بدل المقارنة المباشرة للـ status، يمكننا التحقق من خلال الـ State
+        $allowedStatus = ['driver_assigned'];
+        if (!in_array($reservation->status, $allowedStatus)) {
             return back()->withErrors('Reservation is not ready for payment.');
         }
 
@@ -67,44 +80,37 @@ class TransportReservationController extends Controller
         session(['transport_reservation_id' => $reservation->id]);
 
         return redirect()->route('vehicles.paypal');
-}
+    }
 
-
-
-
+    /**
+     * List reservations
+     */
     public function index(Request $request)
     {
         $query = TransportReservation::with('user');
 
         $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
-
         if (!$isAdmin) {
             $query->where('user_id', Auth::id());
         }
 
-        /* =======================
-           Keyword search
-        ======================= */
+        // Keyword search
         if ($request->filled('keyword')) {
             $term = trim($request->keyword);
-
             $query->where(function ($q) use ($term, $isAdmin) {
-
                 $q->where('pickup_location', 'like', "%{$term}%")
                   ->orWhere('dropoff_location', 'like', "%{$term}%");
 
                 if ($isAdmin) {
-                    $q->orWhereHas('user', fn ($u) =>
+                    $q->orWhereHas('user', fn($u) =>
                         $u->where('name', 'like', "%{$term}%")
                     );
                 }
             });
         }
 
-        /* =======================
-           Date filters
-        ======================= */
+        // Date filters
         if ($request->filled('month')) {
             $query->whereMonth('pickup_datetime', $request->month);
         }
@@ -113,9 +119,7 @@ class TransportReservationController extends Controller
             $query->whereYear('pickup_datetime', $request->year);
         }
 
-        /* =======================
-           Status filter
-        ======================= */
+        // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -127,4 +131,21 @@ class TransportReservationController extends Controller
         return view('transportreservation.index', compact('reservations'));
     }
 
+    /**
+     * Example method to confirm payment and change state
+     */
+    public function confirmPayment(TransportReservation $reservation)
+    {
+        abort_unless($reservation->user_id === Auth::id(), 403);
+
+        // استخدام StateManager لتأكيد الانتقال من driver_assigned -> confirmed
+        try {
+            $this->stateManager->transition($reservation, 'confirmed');
+        } catch (\LogicException $e) {
+            return back()->withErrors($e->getMessage());
+        }
+
+        return redirect()->route('vehicles.index', $reservation)
+            ->with('success', 'Reservation confirmed.');
+    }
 }

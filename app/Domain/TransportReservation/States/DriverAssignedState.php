@@ -11,6 +11,6 @@ class DriverAssignedState extends ReservationState
 
     protected function allowedTransitions(): array
     {
-        return ['confirmed', 'cancelled'];
+        return ['pending_payment', 'cancelled'];
     }
 }

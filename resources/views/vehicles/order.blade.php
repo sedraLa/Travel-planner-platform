@@ -20,6 +20,11 @@
                 </ul>
             </div>
         @endif
+        @if($message)
+        <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+        {{ $message }}
+    </div>
+@endif
             <div class="form-header">
                 @if (session('success'))
                 <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">

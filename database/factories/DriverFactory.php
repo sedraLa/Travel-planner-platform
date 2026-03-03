@@ -20,7 +20,9 @@ class DriverFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory() ,
+            'user_id' => User::factory()->state([
+            'role' => UserRole::DRIVER->value
+            ]),
             'age' => fake()->numberBetween(21,60),
             'address' => fake()->address(),
             'license_image' => fake()->uuid().'.jpg',

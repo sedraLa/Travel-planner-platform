@@ -65,9 +65,9 @@
                 <label class="text-sm text-gray-600 p-2 w-44">Type</label>
                 <select name="type" class="border rounded-lg p-2" style="margin-bottom:0">
                     <option value="">All</option>
-                    <option value="car" @selected(request('type')=='car')>CAR</option>
+                    <option value="sedan" @selected(request('type')=='sedan')>SEDAN</option>
                     <option value="van" @selected(request('type')=='van')>VAN</option>
-                    <option value="bus" @selected(request('type')=='bus')>BUS</option>
+                    <option value="suv" @selected(request('type')=='suv')>SUV</option>
                 </select>
             </div>
 

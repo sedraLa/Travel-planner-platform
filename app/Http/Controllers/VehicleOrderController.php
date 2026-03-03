@@ -1,27 +1,39 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Http\Requests\VehicleOrderRequest;
 use App\Jobs\ProcessReservationDriverMatchingJob;
 use App\Models\TransportReservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Services\GeocodingService;
+use App\Services\TransportReservation\ReservationStateManager;
 
 class VehicleOrderController extends Controller
 {
-    public function create()
-    {
+    protected ReservationStateManager $stateManager;
 
-        return view('vehicles.order');
+    public function __construct(ReservationStateManager $stateManager)
+    {
+        $this->stateManager = $stateManager;
     }
 
+    public function create(Request $request)
+    {
+        $message = null;
 
+        if ($request->error === 'no_driver_available') {
+            $message = "We couldn't find a driver for you, please try again later.";
+        }
 
+        return view('vehicles.order', compact('message'));
+    }
 
-
-    //send request and filter vehicles
+    // Send request and create reservation
     public function store(VehicleOrderRequest $request)
     {
+        // أنشئ الحجز بدون تعيين الحالة مباشرة
         $reservation = TransportReservation::create([
             'user_id' => Auth::id(),
             'pickup_location' => $request->pickup_location,
@@ -30,10 +42,12 @@ class VehicleOrderController extends Controller
             'dropoff_datetime' => $request->pickup_datetime,
             'passengers' => $request->passengers,
             'total_price' => 0,
-            'status' => 'pending_payment',
-            'driver_status' => 'pending',
         ]);
 
+        // تعيين الحالة باستخدام StateManager
+        $this->stateManager->setInitialState($reservation, 'pending_driver');
+
+        // أرسل Job لمطابقة السائق
         ProcessReservationDriverMatchingJob::dispatch($reservation->id);
 
         return redirect()->route('vehicle.searching', $reservation);
@@ -42,21 +56,33 @@ class VehicleOrderController extends Controller
     public function searching(TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
+
+        // تحقق من إمكانية الوصول حسب الحالة
+        if (!$this->stateManager->canAccessSearching($reservation)) {
+            return redirect()->route('vehicle.order', [
+                'error' => 'no_driver_available'
+            ])->withErrors('Reservation is not in searching state.');
+        }
+
         return view('vehicles.searching', compact('reservation'));
     }
-
 
     public function status(TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
         $redirectUrl = null;
-        if ($reservation->status === 'driver_assigned') {
+
+        // استخدم StateManager لتحديد الانتقال أو الصفحة التالية
+        if ($this->stateManager->isDriverAssigned($reservation)) {
             $redirectUrl = route('vehicle.assigned', $reservation);
         }
-        if ($reservation->status === 'cancelled') {
-            $redirectUrl = route('vehicle.order');
+        if ($this->stateManager->isCancelled($reservation)) {
+            $redirectUrl = route('vehicle.order', [
+                'error' => 'no_driver_available'
+            ]);
         }
+
         return response()->json([
             'status' => $reservation->status,
             'reservation_id' => $reservation->id,
@@ -68,11 +94,13 @@ class VehicleOrderController extends Controller
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        $reservation->load('driver.user', 'vehicle');
-
-        if (!$reservation->vehicle) {
-            return redirect()->route('vehicle.searching', $reservation)->withErrors('No assigned vehicle yet.');
+        // تحقق من الوصول حسب الحالة
+        if (!$this->stateManager->canAccessAssigned($reservation)) {
+            return redirect()->route('vehicle.searching', $reservation)
+                ->withErrors('Reservation not ready yet.');
         }
+
+        $reservation->load('driver.user', 'vehicle');
 
         $pickupCoords = $geocoding->geocodeAddress($reservation->pickup_location);
         $dropoffCoords = $geocoding->geocodeAddress($reservation->dropoff_location);
@@ -91,5 +119,3 @@ class VehicleOrderController extends Controller
         ]);
     }
 }
-
-

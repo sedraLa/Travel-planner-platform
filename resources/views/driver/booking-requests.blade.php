@@ -2,6 +2,14 @@
     <div class="max-w-5xl mx-auto py-10">
         <h1 class="text-2xl font-bold mb-6">Booking Requests</h1>
 
+        
+        {{-- Success messages --}}
+        @if (session('success'))
+            <div class="mb-6 px-4 py-3 bg-green-100 border border-green-200 text-green-800 rounded-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+        
         @foreach($requests as $request)
             <div class="bg-white rounded-lg shadow p-5 mb-4">
                 <p><strong>Status:</strong> {{ $request->status }}</p>
