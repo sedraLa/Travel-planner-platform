@@ -11,6 +11,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ProcessReservationDriverMatchingJob implements ShouldQueue
 {
@@ -31,8 +33,20 @@ class ProcessReservationDriverMatchingJob implements ShouldQueue
         if ($reservation->status === 'pending_payment') {
             $stateManager->transition($reservation, 'pending_driver');
         }
+        try {
+            $rankedDriverIds = $rankingService->rankedDriverIdsForReservation($reservation);
+        } catch (Throwable $exception) {
+            Log::warning('Driver ranking failed, falling back to empty chain.', [
+                'reservation_id' => $reservation->id,
+                'message' => $exception->getMessage(),
+            ]);
 
-        $rankedDriverIds = $rankingService->rankedDriverIdsForReservation($reservation);
+            $rankedDriverIds = [];
+        }
+
+        if (!is_array($rankedDriverIds)) {
+            $rankedDriverIds = [];
+        }
         $reservation->update(['ranked_driver_ids' => $rankedDriverIds]);
 
         $handler = new SendToNextDriverHandler();

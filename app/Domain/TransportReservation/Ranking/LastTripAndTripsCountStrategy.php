@@ -5,6 +5,7 @@ namespace App\Domain\TransportReservation\Ranking;
 
 
 use Illuminate\Support\Collection;
+use Carbon\Carbon;
 
 
 class LastTripAndTripsCountStrategy implements DriverRankingStrategy
@@ -12,7 +13,20 @@ class LastTripAndTripsCountStrategy implements DriverRankingStrategy
     public function rank(Collection $drivers): Collection
     {
         return $drivers->sortBy(function ($driver) {
-            return [$driver->total_trips_count ?? 0, $driver->last_trip_at ? $driver->last_trip_at->timestamp : now()->subYears(20)->timestamp];
+            $lastTripAt = $driver->last_trip_at;
+
+            if (!$lastTripAt) {
+                $lastTripTimestamp = now()->subYears(20)->timestamp;
+            } elseif ($lastTripAt instanceof \DateTimeInterface) {
+                $lastTripTimestamp = $lastTripAt->getTimestamp();
+            } else {
+                $lastTripTimestamp = Carbon::parse($lastTripAt)->timestamp;
+            }
+
+            return [
+                (int) ($driver->total_trips_count ?? 0),
+                $lastTripTimestamp,
+            ];
         })->values();
     }
 }
