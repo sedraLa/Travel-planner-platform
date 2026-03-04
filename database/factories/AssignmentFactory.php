@@ -19,6 +19,7 @@ class AssignmentFactory extends Factory
             'driver_id' => Driver::factory()->approved(),
             'transport_vehicle_id' => TransportVehicle::factory(),
             'shift_template_id' => ShiftTemplate::factory(),
+           
         ];
     }
 

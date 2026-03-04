@@ -213,32 +213,32 @@
 
                 <div class="stat">
                     <h5>Car Model</h5>
-                    <h6>{{ $vehicle->car_model }}</h6>
+                    <h6>{{ $vehicle->car_model?? 'no car model' }}</h6>
                 </div>
 
                 <div class="stat">
                     <h5>Plate Number</h5>
-                    <h6>{{ $vehicle->plate_number }}</h6>
+                    <h6>{{ $vehicle->plate_number?? 'no plate number' }}</h6>
                 </div>
 
                 <div class="stat">
                     <h5>Category</h5>
-                    <h6>{{ $vehicle->category }}</h6>
+                    <h6>{{ $vehicle->category?? 'no category' }}</h6>
                 </div>
 
                 <div class="stat">
                     <h5>Max Passengers</h5>
-                    <h6>{{ $vehicle->max_passengers }}</h6>
+                    <h6>{{ $vehicle->max_passengers?? 'no max passengers' }}</h6>
                 </div>
 
                 <div class="stat">
                     <h5>Base Price</h5>
-                    <h6>${{ number_format($vehicle->base_price, 2) }}</h6>
+                    <h6>${{ number_format($vehicle->base_price ?? 0, 2) }}</h6>
                 </div>
 
                 <div class="stat">
                     <h5>Price / KM</h5>
-                    <h6>${{ number_format($vehicle->price_per_km, 2) }}</h6>
+                    <h6>${{ number_format($vehicle->price_per_km ?? 0, 2) }}</h6>
                 </div>
 
             </div>

@@ -87,7 +87,7 @@
                 <label class="text-sm text-gray-600">number of passengers</label>
                 <input type="number" name="max_passengers"  step=0.1 value="{{ request('max_passengers') }}"     min="0" class="border rounded-lg p-2 w-20">
             </div>
-
+        
             {{-- Actions --}}
             <div class="flex gap-2">
                 <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>

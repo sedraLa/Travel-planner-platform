@@ -228,8 +228,8 @@
                                         onsubmit="return confirm('Are you sure you want to delete this driver?');">
                                         @csrf
                                         @method('DELETE')
-                                         <button type="submit" class="p-1">
-                                         <img src="{{ asset('images/icons/delete.png') }}" alt="Details Icon" class="w-6 h-6 align-middle">
+                                         <button type="submit" class="icon-btn">
+                                         <img src="{{ asset('images/icons/delete.png') }}" alt="Details Icon" class="w-6 h-6 object-contain">
                                          </button>
                                     </form>
                                    
@@ -238,13 +238,13 @@
                                        
                                         <a class="text-green-600 hover:text-green-900 mr-4 text-sm font-medium" 
                                           href="{{ route('admin.bookings.completed', $driver->id) }}">
-                                                 Completed Reservations </a>
+                                                 Completed Booking </a>
                                         
                                           <!--pending reservations button-->
                                         
                                         <a class="text-yellow-600 hover:text-yellow-900 mr-4 text-sm font-medium" 
                                           href="{{ route('admin.bookings.pending', $driver->id) }}">
-                                                Pending Reservations </a>
+                                                Pending Booking </a>
                                         </div>
                                 </td>
                             </tr>
