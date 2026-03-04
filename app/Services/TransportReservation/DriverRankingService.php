@@ -109,7 +109,8 @@ class DriverRankingService
         return TransportReservation::query()
             ->where("transport_vehicle_id", $vehicleId)
             ->when($reservationIdToIgnore, fn ($query) => $query->where("id", "!=", $reservationIdToIgnore))
-            ->whereNotIn("status", ["cancelled", "completed"])
+            ->where("status", "confirmed")
+            ->where("driver_status","pending")
             ->where(function ($query) use ($pickup, $dropoff) {
                 $query
                     ->whereBetween("pickup_datetime", [$pickup, $dropoff])

@@ -92,7 +92,11 @@ class TransportReservationController extends Controller
         $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
         if (!$isAdmin) {
-            $query->where('user_id', Auth::id());
+            $query->where('user_id', Auth::id())
+                ->where('status', 'confirmed')
+                ->whereHas('payment', function ($paymentQuery) {
+                    $paymentQuery->where('status', 'completed');
+                });
         }
 
         // Keyword search

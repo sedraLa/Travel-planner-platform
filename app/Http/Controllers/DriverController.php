@@ -161,6 +161,10 @@ class DriverController extends Controller
         $reservations = $driver->reservations()
         ->where('driver_status', 'pending')
         ->with(['vehicle', 'user'])
+        ->where('status', 'confirmed')
+        ->whereHas('payment', function ($query) {
+            $query->where('status', 'completed');
+        })
         ->get();
           return view('driver.pendingbooking', compact('driver', 'reservations'));
 }
@@ -264,7 +268,21 @@ class DriverController extends Controller
         return back()->with('error', 'Cannot complete this reservation before pickup time.');
     }
 
-    $reservation->update(['driver_status' => 'completed']);
+    $isPaidAndConfirmed = $reservation->status === 'confirmed'
+    && $reservation->payment()
+        ->where('status', 'completed')
+        ->exists();
+
+if (!$isPaidAndConfirmed) {
+    return back()->with('error', 'Cannot complete this reservation before payment is completed and confirmed.');
+}
+
+$driverEarning = round(((float) $reservation->total_price) * 0.20, 2);
+
+$reservation->update([
+    'driver_status' => 'completed',
+    'driver_earning' => $driverEarning,
+]);
 
     return redirect()->route('driverscompleted.show')->with('success', 'Reservation marked as completed.');
 }
