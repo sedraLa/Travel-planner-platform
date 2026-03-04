@@ -43,14 +43,14 @@
                 <tbody id="assignments-table-body" class="divide-y divide-gray-200 bg-white">
                     @forelse ($assignments as $assignment)
                         @php
-                            $assignment->loadMissing('vehicle.category', 'driver.user', 'shiftTemplate');
+                            $assignment->loadMissing('vehicle', 'driver.user', 'shiftTemplate');
                         @endphp
                         <tr>
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 {{ $assignment->vehicle?->car_model ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">
-                                {{ trim(($assignment->driver?->user?->name ?? '-') . ' ' . ($assignment->driver?->user?->last_name ?? '')) }}
+                              {{ trim(($assignment->driver?->user?->name ?? '') . ' ' . ($assignment->driver?->user?->last_name ?? '')) ?: '-' }}
                             </td>
                             <td class="px-6 py-4 text-sm text-gray-900">
                                 {{ $assignment->shiftTemplate?->name ?? '-' }}
@@ -270,7 +270,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleFullInfoClick(button) {
         const assignment = JSON.parse(button.dataset.assignment);
         const vehicle = assignment.vehicle || {};
-        const category = vehicle.category || {};
+        const categoryValue = typeof vehicle.category === 'string'
+            ? vehicle.category
+            : (vehicle.category?.name || '-');
         const driver = assignment.driver || {};
         const user = driver.user || {};
         const shift = assignment.shift_template || {};
@@ -281,7 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
         infoContent.innerHTML = [
             infoItem('Vehicle Name', vehicle.car_model || '-'),
             infoItem('Plate Number', vehicle.plate_number || '-'),
-            infoItem('Category', category.name || '-'),
+            infoItem('Category', categoryValue),
             infoItem('Type', vehicle.type || '-'),
             infoItem('Driver Full Name', driverFullName),
             infoItem('Shift Name', shift.name || '-'),

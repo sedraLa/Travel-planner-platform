@@ -42,6 +42,12 @@ class ShiftTemplateController extends Controller
 
         
         $shiftTemplate = ShiftTemplate::findOrFail($id);
+
+        if ($shiftTemplate->assignments()->exists()) {
+        return redirect()->route('shift-templates.index')
+       ->with('error', 'Cannot delete this shift template because it has assignments.');
+    }
+
         $shiftTemplate->delete();
         
 

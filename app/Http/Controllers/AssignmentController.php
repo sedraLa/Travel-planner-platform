@@ -180,12 +180,7 @@ class AssignmentController extends Controller
     $previousVehicleId = $assignment->transport_vehicle_id;
 
 
-     if ($previousDriver && $previousDriver->id !== $driver->id) {
-    // فرّغ driver_id في الـ assignment الحالي
-    $assignment->update([
-        'driver_id' => null,
-       ]);
-     }
+     
 
     $assignment->update([
         'transport_vehicle_id' => $validated['transport_vehicle_id'],
@@ -221,7 +216,7 @@ class AssignmentController extends Controller
      $assignment->load(['vehicle', 'shiftTemplate', 'driver.user']);
 
        if ($assignment->driver) {
-        $this->notificationService->sendDriverAssignmentNotification($assignment->driver, $assignment);
+        $this->notificationService->notifyDriverUnassigned($assignment->driver, $assignment);
     }
  
 

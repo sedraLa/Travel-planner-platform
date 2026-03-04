@@ -32,7 +32,7 @@ class AssignmentNotificationService
         ));
     }
 
-    public function notifyDriverUnassigned(Driver $driver, Assignment $assignment, string $message): void
+    public function notifyDriverUnassigned(Driver $driver, Assignment $assignment): void
     {
         if (! $driver->user) {
             return;
