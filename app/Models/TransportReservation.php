@@ -15,12 +15,15 @@ class TransportReservation extends Model
         'pickup_datetime',
         'dropoff_datetime',
         'passengers',
+        'preferred_category',
+        'preferred_type',
         'total_price',
         'driver_earning',
         'status',
         'transport_vehicle_id',
         'driver_id',
         'driver_status',
+        'ranked_driver_ids',
 
     ];
 
@@ -32,6 +35,7 @@ class TransportReservation extends Model
     protected $casts = [
         'pickup_datetime' => 'datetime',
         'dropoff_datetime' => 'datetime',
+        'ranked_driver_ids' => 'array',
     ];
 
     public function user() {
@@ -55,6 +59,6 @@ class TransportReservation extends Model
 
     public function bookingRequests()
     {
-    return $this->hasMany(BookingRequest::class);
+        return $this->hasMany(BookingRequest::class, 'reservation_id');
     }
 }

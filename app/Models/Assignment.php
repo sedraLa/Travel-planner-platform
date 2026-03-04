@@ -17,7 +17,7 @@ class Assignment extends Model
 
     public function vehicle()
     {
-         return $this->belongsTo(TransportVehicle::class, 'transport_vehicle_id');
+        return $this->belongsTo(TransportVehicle::class, 'transport_vehicle_id');
     }
 
     public function shiftTemplate()

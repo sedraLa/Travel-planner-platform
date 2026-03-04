@@ -15,10 +15,33 @@ class AssignmentFactory extends Factory
     public function definition(): array
     {
         return [
-            'driver_id'=>Driver::factory(),
+            // driver لازم يكون approved
+            'driver_id' => Driver::factory()->approved(),
             'transport_vehicle_id' => TransportVehicle::factory(),
             'shift_template_id' => ShiftTemplate::factory(),
            
         ];
+    }
+
+    // helpers لتخصيص العلاقات بالتست
+    public function forDriver($driver)
+    {
+        return $this->state(fn () => [
+            'driver_id' => $driver->id,
+        ]);
+    }
+
+    public function forVehicle($vehicle)
+    {
+        return $this->state(fn () => [
+            'transport_vehicle_id' => $vehicle->id,
+        ]);
+    }
+
+    public function forShift($shift)
+    {
+        return $this->state(fn () => [
+            'shift_template_id' => $shift->id,
+        ]);
     }
 }

@@ -7,6 +7,7 @@ use App\Mail\PaymentConfirmationMail;
 use App\Mail\TransportPaymentConfirmationMail;
 use App\Notifications\NewTransportBookingNotification;
 use Illuminate\Support\Facades\Mail;
+use App\Notifications\TransportReservationConfirmedNotification;
 
 class PaymentNotificationService
 {
@@ -30,12 +31,12 @@ class PaymentNotificationService
         // Notifications for traveler and driver
         if ($reservation->driver && $reservation->driver->user) {
             $reservation->driver->user->notify(
-                new NewTransportBookingNotification($reservation)
+                new TransportReservationConfirmedNotification($reservation)
             );
         }
 
         $reservation->user->notify(
-            new NewTransportBookingNotification($reservation)
+            new TransportReservationConfirmedNotification($reservation)
         );
     }
 }

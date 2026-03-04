@@ -2,135 +2,119 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\TransportVehicle;
-use App\Models\Transport;
-use App\Models\Assignment;
-use App\Models\TransportReservation;
-use App\Services\Payments\PaymentContext;
-use App\Services\Payments\PaypalPaymentService;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\VehicleOrderRequest;
+use Illuminate\Http\Request;
+use App\Models\TransportReservation;
+use Illuminate\Support\Facades\Auth;
 use App\Services\GeocodingService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use App\Services\TransportReservation\ReservationStateManager;
 
 class TransportReservationController extends Controller
 {
+    protected ReservationStateManager $stateManager;
+
+    public function __construct(ReservationStateManager $stateManager)
+    {
+        $this->stateManager = $stateManager;
+    }
+
     /**
      * Show the reservation page for a vehicle. (complete reservation)
      */
-    public function create(Request $request, $vehicleId)
+    public function create(Request $request, TransportReservation $reservation)
     {
-        $vehicle = TransportVehicle::findOrFail($vehicleId);
+        abort_unless($reservation->user_id === Auth::id(), 403);
 
-        // Receive data from query parameters
-        $pickup_location = $request->query('pickup_location');
-        $dropoff_location = $request->query('dropoff_location');
-        $pickup_datetime = Carbon::parse($request->query('pickup_datetime')); // Carbon object
-        $passengers = $request->query('passengers');
-        $category = $request->query('category') ?? 'standard';
-        $type= $request->query('type');
+        // استخدام State pattern بدل المقارنة المباشرة
+        $allowedStatus = ['driver_assigned'];
+        if (!in_array($reservation->status, $allowedStatus) || !$reservation->vehicle) {
+            return redirect()->route('vehicle.searching', $reservation)
+                ->withErrors('No assigned vehicle yet.');
+        }
+
         $distance = (float) $request->query('distance', 0);
-        $duration = $request->query('duration');
+        $duration = (int) $request->query('duration', 0);
 
-        // Calculate total price , for view
-        $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
+        if ($distance > 0) {
+            $totalPrice = ($distance * $reservation->vehicle->price_per_km) + $reservation->vehicle->base_price;
+            $dropoffDateTime = Carbon::parse($reservation->pickup_datetime)
+                ->addMinutes($duration > 0 ? $duration : 0);
 
+            $reservation->update([
+                'total_price' => $totalPrice,
+                'dropoff_datetime' => $dropoffDateTime,
+            ]);
+        }
+
+        $reservation->load('vehicle');
 
         return view('vehicles.reservation', [
-            'vehicle'          => $vehicle,
-            'pickup_location'  => $pickup_location,
-            'dropoff_location' => $dropoff_location,
-            'pickup_datetime'  => $pickup_datetime->format('Y-m-d\TH:i'), // For datetime-local input
-            'passengers'       => $passengers,
-            'category'         => $category,
-            'type'             => $type,
-            'distance'         => $distance,
-            'duration'         => $duration,
-            'total_price'      => $total_price,
+            'reservation' => $reservation,
+            'vehicle' => $reservation->vehicle,
         ]);
     }
 
     /**
-     * Store a new reservation.
+     * Store a new reservation (complete details before payment)
      */
-    public function store(VehicleOrderRequest $request,  $vehicleId)
-{
+    public function store(VehicleOrderRequest $request, TransportReservation $reservation)
+    {
+        abort_unless($reservation->user_id === Auth::id(), 403);
 
-    $vehicle = TransportVehicle::findOrFail($vehicleId);
+        // بدل المقارنة المباشرة للـ status، يمكننا التحقق من خلال الـ State
+        $allowedStatus = ['driver_assigned'];
+        if (!in_array($reservation->status, $allowedStatus)) {
+            return back()->withErrors('Reservation is not ready for payment.');
+        }
 
-    $pickupDatetime = Carbon::parse($request->pickup_datetime);
-    $dropoffDatetime = $pickupDatetime->copy()->addMinutes((int)$request->duration);
+        $reservation->update([
+            'pickup_location' => $request->pickup_location,
+            'dropoff_location' => $request->dropoff_location,
+            'pickup_datetime' => $request->pickup_datetime,
+            'passengers' => $request->passengers,
+            'total_price' => $request->total_price,
+        ]);
 
-    $distance = (float) $request->distance;
-    $total_price = ($distance * $vehicle->price_per_km) + $vehicle->base_price;
+        session(['transport_reservation_id' => $reservation->id]);
 
-    $assignment = Assignment::where('transport_vehicles_id', $vehicleId)
-    ->with('driver')
-    ->first();
-
-    if (!$assignment || !$assignment->driver) {
-        abort(500, 'No driver assigned to this vehicle.');
+        return redirect()->route('vehicles.paypal');
     }
 
-    $driver_id = $assignment->driver->id;
-
-
-
-    //prepare reservation data
-    $paymentData = [
-        'vehicle_id' => $vehicleId,
-        'pickup_location' => $request->pickup_location,
-        'dropoff_location' => $request->dropoff_location,
-        'pickup_datetime' => $pickupDatetime,
-        'dropoff_datetime' => $dropoffDatetime,
-        'passengers' => $request->passengers,
-        'total_price' => $total_price,
-        'driver_id' => $driver_id,
-    ];
-
-    session(['transport_reservation_data' => $paymentData]);
-
-
-    return redirect()->route('vehicles.paypal');
-}
-
-
-
-
+    /**
+     * List reservations
+     */
     public function index(Request $request)
     {
         $query = TransportReservation::with('user');
 
         $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
-
         if (!$isAdmin) {
-            $query->where('user_id', Auth::id());
+            $query->where('user_id', Auth::id())
+                ->where('status', 'confirmed')
+                ->whereHas('payment', function ($paymentQuery) {
+                    $paymentQuery->where('status', 'completed');
+                });
         }
 
-        /* =======================
-           Keyword search
-        ======================= */
+        // Keyword search
         if ($request->filled('keyword')) {
             $term = trim($request->keyword);
-
             $query->where(function ($q) use ($term, $isAdmin) {
-
                 $q->where('pickup_location', 'like', "%{$term}%")
                   ->orWhere('dropoff_location', 'like', "%{$term}%");
 
                 if ($isAdmin) {
-                    $q->orWhereHas('user', fn ($u) =>
+                    $q->orWhereHas('user', fn($u) =>
                         $u->where('name', 'like', "%{$term}%")
                     );
                 }
             });
         }
 
-        /* =======================
-           Date filters
-        ======================= */
+        // Date filters
         if ($request->filled('month')) {
             $query->whereMonth('pickup_datetime', $request->month);
         }
@@ -139,9 +123,7 @@ class TransportReservationController extends Controller
             $query->whereYear('pickup_datetime', $request->year);
         }
 
-        /* =======================
-           Status filter
-        ======================= */
+        // Status filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -153,4 +135,21 @@ class TransportReservationController extends Controller
         return view('transportreservation.index', compact('reservations'));
     }
 
+    /**
+     * Example method to confirm payment and change state
+     */
+    public function confirmPayment(TransportReservation $reservation)
+    {
+        abort_unless($reservation->user_id === Auth::id(), 403);
+
+        // استخدام StateManager لتأكيد الانتقال من driver_assigned -> confirmed
+        try {
+            $this->stateManager->transition($reservation, 'confirmed');
+        } catch (\LogicException $e) {
+            return back()->withErrors($e->getMessage());
+        }
+
+        return redirect()->route('vehicles.index', $reservation)
+            ->with('success', 'Reservation confirmed.');
+    }
 }

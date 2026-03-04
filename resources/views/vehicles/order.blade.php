@@ -20,6 +20,11 @@
                 </ul>
             </div>
         @endif
+        @if($message)
+        <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+        {{ $message }}
+    </div>
+@endif
             <div class="form-header">
                 @if (session('success'))
                 <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
@@ -90,7 +95,7 @@
                   <div class="container flex-1 min-w-[200px]  ">
                     <div class="head-row">
                         <img class="icon" src="{{asset('images/icons/type.png')}}" alt="icon">
-                        <label for="dropoff_location">Vehicle Type</label>
+                        <label for="type">Vehicle Type</label>
                     </div>
                     <select name="type" id="type" class="w-80 border rounded px-3 py-2   border-gray-300">
                               <option value="">Any type</option>

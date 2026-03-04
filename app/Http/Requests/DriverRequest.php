@@ -28,7 +28,7 @@ class DriverRequest extends FormRequest
             'license_category' => 'nullable|string|max:255',
             'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',
-            'experience'       => 'nullable|string',  
+            'experience'       => 'nullable|string',
             'last_trip_at' => 'nullable|date',
             'total_trips_count' => 'nullable|integer|min:0',
             'earnings_balance' => 'nullable|numeric|min:0',

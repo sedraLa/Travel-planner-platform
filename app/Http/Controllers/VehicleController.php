@@ -60,16 +60,13 @@ class VehicleController extends Controller
     public function Index(Request $request)
     {
         $query = TransportVehicle::query();
-        
-
-
            if ($request->filled('search')) {
             $searchTerm = $request->search;
 
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('car_model', 'like', '%' . $searchTerm . '%')
                     ->orWhere('plate_number', 'like', '%' . $searchTerm . '%');
-                    
+
             });
         }
 
@@ -94,9 +91,6 @@ class VehicleController extends Controller
         }
 
 
-      if ($request->filled('driver_id')) {
-      $query->where('driver_id', $request->driver_id);
-      }
 
 
         $vehicles=$query->get();
