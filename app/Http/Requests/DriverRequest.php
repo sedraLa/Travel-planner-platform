@@ -29,7 +29,6 @@ class DriverRequest extends FormRequest
             'status'           => 'nullable|string|in:pending,approved,rejected',
             'date_of_hire'     => 'nullable|date',
             'experience'       => 'nullable|string',
-            'assignment_id' => 'nullable|exists:assignments,id|unique:drivers,assignment_id',
             'last_trip_at' => 'nullable|date',
             'total_trips_count' => 'nullable|integer|min:0',
             'earnings_balance' => 'nullable|numeric|min:0',

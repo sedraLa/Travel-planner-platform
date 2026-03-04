@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('drivers', function (Blueprint $table) {
-            $table->foreignId('assignment_id')->nullable()->after('status');
-            $table->unique('assignment_id'); 
-            $table->foreign('assignment_id')->references('id')->on('assignments')->cascadeOnDelete();
-            $table->dateTime('last_trip_at')->nullable()->after('assignment_id');
+            $table->dateTime('last_trip_at')->nullable();
             $table->integer('total_trips_count')->default(0)->after('last_trip_at');
             $table->decimal('earnings_balance', 10, 2)->default(0)->after('total_trips_count');
 
@@ -30,8 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('drivers', function (Blueprint $table) {
-             $table->dropForeign(['assignment_id']);
-             $table->dropColumn(['assignment_id', 'last_trip_at', 'total_trips_count', 'earnings_balance']);
+             $table->dropColumn(['last_trip_at', 'total_trips_count', 'earnings_balance']);
         });
     }
 };
