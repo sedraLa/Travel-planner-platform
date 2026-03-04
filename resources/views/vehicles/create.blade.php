@@ -34,16 +34,7 @@
 
 
 
-                    <x-input-label for="driver_id" value="Select Driver" />
-                    <select id="driver_id" name="driver_id"
-                        class="block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
-                        <option value="">-- Choose a driver --</option>
-                        @foreach ($drivers as $driver)
-                            <option value="{{ $driver->id}}">
-                                {{ $driver->user->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                   
 
 
 

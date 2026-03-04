@@ -44,6 +44,12 @@
                 </div>
             @endif
 
+             @if (session('error'))
+              <div class="m-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+            {{ session('error') }}
+               </div>
+               @endif
+
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">

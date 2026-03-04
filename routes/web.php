@@ -21,7 +21,9 @@ use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiTestController;
 use App\Http\Controllers\ShiftTemplateController;
+use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Driver\BookingRequestController;
 
 
 /*
@@ -101,9 +103,16 @@ Route::get('/drivers/details/{id}',[DriverController::class, 'show'])->name('dri
 
 //Admin Shift Templates
 Route::get('/admin/shift-templates', [ShiftTemplateController::class,'index'])->name('shift-templates.index');
-Route::get('/shift-templates/create', [ShiftTemplateController::class, 'create'])->name('shift-templates.create');
 Route::post('/shift-templates', [ShiftTemplateController::class, 'store'])->name('shift-templates.store');
 Route::delete('/shift-templates/{id}', [ShiftTemplateController::class, 'destroy'])->name('shift-templates.destroy');
+
+//Admin Assignment
+Route::get('/admin/assignments',[AssignmentController::class,'index'])->name('assignments.index');
+Route::get('/admin/assignments/create',[AssignmentController::class,'create'])->name('assignments.create');
+Route::post('/admin/assignments/store', [AssignmentController::class,'store'])->name('assignments.store');
+Route::get('/admin/assignments/edit/{assignment}', [AssignmentController::class,'edit'])->name('assignments.edit');
+Route::put('/admin/assignments/update/{assignment}', [AssignmentController::class,'update'])->name('assignments.update');
+Route::delete('/admin/assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
 
 //Admin Activities
@@ -163,10 +172,13 @@ Route::get('/vehicle-reservations',  [TransportReservationController::class, 'in
 //order vehicles
 Route::get('/vehicle/order',[VehicleOrderController::class, 'create'])->name('vehicle.order');
 Route::post('/vehicles/search',  [VehicleOrderController::class, 'store'])->name('vehicle.search');
+Route::get('/vehicle/searching/{reservation}',[VehicleOrderController::class, 'searching'])->name('vehicle.searching');
+Route::get('/vehicle/searching/{reservation}/status',[VehicleOrderController::class, 'status'])->name('vehicle.searching.status');
+Route::get('/vehicle/assigned/{reservation}', [VehicleOrderController::class, 'assigned'])->name('vehicle.assigned');
 
-Route::get('/vehicle/reservation/{id}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
+Route::get('/vehicle/reservation/{reservation}',[TransportReservationController::class,'create'])->name('vehicle.reservation');
 
-Route::post('/vehicles/{vehicleId}/reservation',[TransportReservationController::class, 'store'])
+Route::post('/vehicles/{reservation}/reservation',[TransportReservationController::class, 'store'])
 ->name('vehicleReservation.store');
 
 Route::get('vehicles/paypal', [PaymentController::class, 'payWithPayPalTransport'])
@@ -216,6 +228,11 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
  Route::post('/reservations/{id}/complete',[DriverController::class, 'complete'])->name('reservations.complete');
 
  Route::post('/reservations/{id}/cancel',[DriverController::class,'cancel'])->name('reservation.cancel');
+
+ Route::get('/booking-requests', [BookingRequestController::class, 'index'])->name('driver.booking-requests.index');
+ Route::post('/booking-requests/{bookingRequest}/accept', [BookingRequestController::class, 'accept'])->name('driver.booking-requests.accept');
+ Route::post('/booking-requests/{bookingRequest}/reject', [BookingRequestController::class, 'reject'])->name('driver.booking-requests.reject');
+ Route::get('/pending-reservations', [BookingRequestController::class, 'pendingReservations'])->name('driver.pending-reservations');
 
 
     });

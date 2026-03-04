@@ -18,12 +18,9 @@ class VehicleController extends Controller
     public function create(Request $request)
     {
         // جلب الـ drivers المصرح لهم واللي ما عندهم سيارة
-        $drivers = Driver::with('user')
-            ->where('status', 'approved')
-            ->whereDoesntHave('vehicle')
-            ->get();
+       
 
-        return view('vehicles.create', compact('drivers'));
+        return view('vehicles.create');
     }
 
     /**
@@ -32,12 +29,7 @@ class VehicleController extends Controller
     public function store(VehicleRequest $request)
     {
         
-        if ($request->driver_id) {
-            $driver = Driver::with('vehicle')->find($request->driver_id);
-            if ($driver && $driver->vehicle) {
-                return back()->withErrors("You can't choose this driver, it's already assigned to another car");
-            }
-        }
+        
 
         // حفظ الصورة
         $imagePath = $request->hasFile('image')
@@ -45,7 +37,7 @@ class VehicleController extends Controller
             : null;
 
         $vehicle = TransportVehicle::create([
-            'driver_id'      => $request->driver_id,
+           
             'car_model'      => $request->car_model,
             'plate_number'   => $request->plate_number,
             'max_passengers' => $request->max_passengers,
@@ -68,7 +60,6 @@ class VehicleController extends Controller
     public function Index(Request $request)
     {
         $query = TransportVehicle::query();
-
            if ($request->filled('search')) {
             $searchTerm = $request->search;
 
@@ -116,15 +107,9 @@ class VehicleController extends Controller
         $vehicle = TransportVehicle::findOrFail($id);
 
         
-        $drivers = Driver::with('user')
-            ->where('status', 'approved')
-            ->where(function($query) use ($vehicle) {
-                $query->whereDoesntHave('vehicle')
-                      ->orWhere('id', $vehicle->driver_id);
-            })
-            ->get();
+    
 
-        return view('vehicles.edit', compact('vehicle', 'drivers'));
+        return view('vehicles.edit', compact('vehicle'));
     }
 
     /**
@@ -147,16 +132,10 @@ class VehicleController extends Controller
 
         
         // check driver is not assigned to another vehicle
-        if ($request->driver_id) {
-            $driver = Driver::with('vehicle')->find($request->driver_id);
-            if ($driver && $driver->vehicle && $driver->vehicle->id != $vehicle->id) {
-                return back()->withErrors("You can't choose this driver, it's already assigned to another car");
-            }
-        }
+      
 
         $vehicle->update([
-
-            'driver_id'      => $request->driver_id,
+            
             'car_model'      => $request->car_model,
             'plate_number'   => $request->plate_number,
             'driver_name'    => $request->driver_name,

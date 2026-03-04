@@ -13,7 +13,7 @@
 
             @if($driver)
                   <p>Hello driver {{ $driver->user->name }}</p>
-                  <h3>Your Current Car is {{ $driver->vehicle->car_model ?? 'N/A' }}</h3>
+                  <h3>Your Current Car is {{ $driver->assignment?->vehicle?->car_model ?? 'N/A' }}</h3>
             @else
                          <p>Hello driver</p>
                          <h3>Your Current Car is N/A</h3>
