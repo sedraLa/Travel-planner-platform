@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('styles')
+<link rel="stylesheet" href="{{asset('css/vehicles.css')}}">
+<link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+@endpush
     <div class="max-w-3xl mx-auto py-16 text-center">
         <h1 class="text-3xl font-bold mb-4">We are looking for a vehicle</h1>
         <p class="text-gray-600 mb-8">Please wait while we contact available drivers.</p>

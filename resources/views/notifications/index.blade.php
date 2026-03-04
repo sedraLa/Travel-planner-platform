@@ -22,18 +22,6 @@
                         <p><strong>Dropoff:</strong> {{ $notification->data['dropoff'] ?? '-' }}</p>
                         <p><strong>Pickup Date:</strong> {{ $notification->data['pickup_datetime'] ?? '-' }}</p>
                     </div>
-                    <div>
-                        <p><strong>Name:</strong> {{ $notification->data['full_name'] ?? '-' }}</p>
-                        <p><strong>Phone:</strong>
-                            @if(!empty($notification->data['phone_number']))
-                                <a href="tel:{{ $notification->data['phone_number'] }}" class="text-blue-600 hover:underline">
-                                    {{ $notification->data['phone_number'] }}
-                                </a>
-                            @else
-                                -
-                            @endif
-                        </p>
-                    </div>
                 </div>
             </div>
         @empty

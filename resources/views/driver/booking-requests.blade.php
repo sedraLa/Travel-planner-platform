@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('styles')
+<link rel="stylesheet" href="{{asset('css/vehicles.css')}}">
+<link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+@endpush
     <div class="max-w-5xl mx-auto py-10">
         <h1 class="text-2xl font-bold mb-6">Booking Requests</h1>
 

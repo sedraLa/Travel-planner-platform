@@ -10,6 +10,7 @@
               <p>Just a few more details and you are all set</p>
 
             </div>
+        </div>
         
 
             <div class="main-container">
@@ -57,6 +58,5 @@
 
             </div>
           </div>
-
   </x-app-layout>
 

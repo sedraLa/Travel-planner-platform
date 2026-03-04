@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('styles')
+<link rel="stylesheet" href="{{asset('css/vehicles.css')}}">
+<link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+@endpush
     <div class="max-w-4xl mx-auto py-12">
         <h1 class="text-3xl font-bold mb-6">Driver assigned</h1>
 
