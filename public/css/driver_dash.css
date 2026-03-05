@@ -212,3 +212,75 @@ span {
     height:auto;
     justify-content: space-between;
 }
+
+
+/* schedule button */
+
+.schedule-btn{
+    margin-top:15px;
+    background:#3b82f6;
+    color:white;
+    border:none;
+    padding:8px 16px;
+    border-radius:8px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.schedule-btn:hover{
+    background:#1d4ed8;
+}
+
+
+/* modal */
+
+.schedule-modal-container{
+    background:white;
+    padding:30px;
+    border-radius:14px;
+    width:500px;
+    position:relative;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
+
+.schedule-close-btn{
+    position:absolute;
+    top:10px;
+    right:15px;
+    font-size:26px;
+    border:none;
+    background:none;
+    cursor:pointer;
+}
+
+.schedule-title{
+    font-size:24px;
+    font-weight:700;
+    margin-bottom:20px;
+    color:#1e3a8a;
+}
+
+
+/* table */
+
+.shift-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.shift-table th{
+    background:#1e3a8a;
+    color:white;
+    padding:10px;
+}
+
+.shift-table td{
+    padding:10px;
+    text-align:center;
+    border-bottom:1px solid #eee;
+}
+
+.shift-table tr:hover{
+    background:#f3f4f6;
+}

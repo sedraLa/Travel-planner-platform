@@ -114,6 +114,9 @@ Route::get('/admin/assignments/edit/{assignment}', [AssignmentController::class,
 Route::put('/admin/assignments/update/{assignment}', [AssignmentController::class,'update'])->name('assignments.update');
 Route::delete('/admin/assignments/{assignment}', [AssignmentController::class, 'destroy'])->name('assignments.destroy');
 
+//Admin transport dashboard
+Route::get('/admin/transport/dashboard',[TransportController::class,'index'])->name('transport.dashboard');
+
 
 //Admin Activities
 Route::get('/activities/create', [ActivityController::class, 'create'])->name('activities.create');
