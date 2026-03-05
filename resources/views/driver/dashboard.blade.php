@@ -12,6 +12,10 @@
                 <span>Good day</span>
                 <h2>Welcome back, {{ $driver?->user?->name ?? auth()->user()->name }} 👋</h2>
                 <p id="rating">⭐ 4.9 rating . {{ $completedBookings }} total trips</p>
+                <button onclick="document.getElementById('schedule-modal').classList.remove('hidden')" 
+class="schedule-btn">
+    Working Schedule
+</button>
             </div>
         </div>
     </div>
@@ -95,6 +99,48 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div id="schedule-modal"
+class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+
+    <div class="schedule-modal-container">
+
+        <button onclick="document.getElementById('schedule-modal').classList.add('hidden')"
+        class="schedule-close-btn">
+            &times;
+        </button>
+
+        <h2 class="schedule-title">Working Schedule</h2>
+
+        <table class="shift-table">
+            <thead>
+                <tr>
+                    <th>Shift Name</th>
+                    <th>Time</th>
+                    <th>Days</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Morning Shift</td>
+                    <td>08:00 - 16:00</td>
+                    <td>Mon - Fri</td>
+                </tr>
+                <tr>
+                    <td>Evening Shift</td>
+                    <td>16:00 - 00:00</td>
+                    <td>Mon - Fri</td>
+                </tr>
+                <tr>
+                    <td>Weekend Shift</td>
+                    <td>10:00 - 18:00</td>
+                    <td>Sat - Sun</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 </div>
 
