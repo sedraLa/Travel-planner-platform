@@ -52,23 +52,9 @@
      
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
-                    <li><a href="{{route('admin.vehicles.index')}}">Vehicls</a></li>
-                    <li><a href="{{route('shift-templates.index')}}">ShiftTemplete</a></li>
-                    <li><a href="{{route('assignments.index')}}">Assignments</a></li>
-
+                    <li><a href="{{route('transport.dashboard')}}">Transport</a></li>
                     
-                       <li x-data="{ openDropdown: false }" class="relative">
-                        <button @click="openDropdown = !openDropdown" class="px-3 py-2  hover:bg-gray-100 rounded font-bold">
-                            Driver
-                        </button>
-                        <ul x-show="openDropdown" @click.outside="openDropdown = false"
-                            class="absolute mt-1 bg-white border rounded shadow-md">
-                            <li><a href="{{ route('drivers.request.index') }}" class="block px-4 py-2 hover:bg-gray-100">Requests</a>
-                            </li>
-                            <li><a href="{{ route('drivers.approved.index') }}"
-                                    class="block px-4 py-2 hover:bg-gray-100 whitespace-nowrap">System Drivers</a></li>
-                        </ul>
-                    </li>
+                       
 
                     <!-- Admin Reservations Dropdown -->
                     <li x-data="{ openDropdown: false }" class="relative">
@@ -79,8 +65,7 @@
                             class="absolute mt-1 bg-white border rounded shadow-md">
                             <li><a href="{{ route('reservations.index') }}" class="block px-4 py-2 hover:bg-gray-100">Hotels</a>
                             </li>
-                            <li><a href="{{ route('vehicle.reservations.index') }}"
-                                    class="block px-4 py-2 hover:bg-gray-100">Transport</a></li>
+                           
                         </ul>
                     </li>
                 @endif

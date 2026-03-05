@@ -76,6 +76,9 @@
 </div>
 </div>
 </div>
+
+
+
 <div class="right-section">
 <div class="info">
     <h3>Personal Information</h3>
@@ -250,6 +253,7 @@
         </div>
     @endif
 </div>
+
 </div>
 
 

@@ -520,3 +520,84 @@
     color: #9a3412;
 
 }
+
+
+/* ===============================
+   DRIVER DETAILS - SHIFTS CARD
+================================= */
+
+/* Container for the performance/shifts card */
+.bottomm-section.performance {
+    width: 100%;
+    max-width: 1020px;
+    margin: 20px auto;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header */
+.bottomm-section.performance h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 15px;
+}
+
+/* Shifts table */
+.shift-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.shift-table thead {
+    background-color: #f1f5f9; /* light gray header */
+}
+
+.shift-table th, .shift-table td {
+    padding: 12px 15px;
+    text-align: left;
+    font-size: 14px;
+    color: #1f2937;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.shift-table th {
+    font-weight: 600;
+}
+
+/* Row hover effect */
+.shift-table tbody tr:hover {
+    background-color: #f3f4f6;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Edit button in table */
+.shift-table .edit-btn {
+    background-color: #1e3a8a;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.shift-table .edit-btn:hover {
+    background-color: white;
+    color: #1e3a8a;
+    border: 1px solid #1e3a8a;
+}
+
+/* Optional: responsive table */
+@media (max-width: 768px) {
+    .shift-table th, .shift-table td {
+        font-size: 13px;
+        padding: 10px 8px;
+    }
+}
