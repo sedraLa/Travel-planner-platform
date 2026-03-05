@@ -522,82 +522,101 @@
 }
 
 
-/* ===============================
-   DRIVER DETAILS - SHIFTS CARD
-================================= */
+/* schedule button */
 
-/* Container for the performance/shifts card */
-.bottomm-section.performance {
-    width: 100%;
-    max-width: 1020px;
-    margin: 20px auto;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+.schedule-btn{
+    margin-top:10px;
+    padding:6px 14px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+    background:#1E3A8A;
+    color:white;
+    border:none;
+    cursor:pointer;
 }
 
-/* Header */
-.bottomm-section.performance h3 {
-    font-size: 22px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 15px;
+.schedule-btn:hover{
+    background:#0f2f6b;
 }
 
-/* Shifts table */
-.shift-table {
-    width: 100%;
-    border-collapse: collapse;
+
+/* modal container */
+
+.shift-modal-container{
+
+    position:relative;
+    width:420px;
+
+    background:white;
+
+    border-radius:16px;
+
+    padding:30px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
-.shift-table thead {
-    background-color: #f1f5f9; /* light gray header */
+
+/* close button */
+
+.shift-close-btn{
+
+    position:absolute;
+
+    top:10px;
+
+    right:15px;
+
+    font-size:26px;
+
+    border:none;
+
+    background:none;
+
+    cursor:pointer;
+
+    color:#6b7280;
 }
 
-.shift-table th, .shift-table td {
-    padding: 12px 15px;
-    text-align: left;
-    font-size: 14px;
-    color: #1f2937;
-    border-bottom: 1px solid #e5e7eb;
+
+/* title */
+
+.shift-title{
+
+    margin-bottom:20px;
+
+    font-size:20px;
+
+    font-weight:600;
 }
 
-.shift-table th {
-    font-weight: 600;
+
+/* shift table */
+
+.shift-table{
+
+    width:100%;
+
+    border-collapse:collapse;
 }
 
-/* Row hover effect */
-.shift-table tbody tr:hover {
-    background-color: #f3f4f6;
-    transition: background-color 0.2s ease-in-out;
+.shift-table th{
+
+    text-align:left;
+
+    font-size:14px;
+
+    color:#6b7280;
+
+    padding-bottom:10px;
 }
 
-/* Edit button in table */
-.shift-table .edit-btn {
-    background-color: #1e3a8a;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: 0.2s;
-}
+.shift-table td{
 
-.shift-table .edit-btn:hover {
-    background-color: white;
-    color: #1e3a8a;
-    border: 1px solid #1e3a8a;
-}
+    padding:10px 0;
 
-/* Optional: responsive table */
-@media (max-width: 768px) {
-    .shift-table th, .shift-table td {
-        font-size: 13px;
-        padding: 10px 8px;
-    }
+    border-bottom:1px solid #f1f5f9;
+
+    font-weight:500;
 }

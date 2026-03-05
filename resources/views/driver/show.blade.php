@@ -28,6 +28,10 @@
             <div class="rating">
                 ⭐ 4.9 rating
             </div>
+            <button onclick="document.getElementById('shift-modal').classList.remove('hidden')"
+        class="schedule-btn">
+    Working Schedule
+</button>
         </div>
     </div>
 
@@ -74,42 +78,6 @@
             </div>
         </div>
 </div>
-</div>
-<!-- =========================
-     SHIFTS CARD
-========================= -->
-<div class="bottomm-section performance">
-    <h3>Shifts</h3>
-    <table class="shift-table">
-        <thead>
-            <tr>
-                <th>Shift Name</th>
-                <th>Time</th>
-                <th>Days</th>
-
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Morning Shift</td>
-                <td>08:00 - 16:00</td>
-                <td>Mon-Fri</td>
-
-            </tr>
-            <tr>
-                <td>Evening Shift</td>
-                <td>16:00 - 00:00</td>
-                <td>Mon-Fri</td>
-
-            </tr>
-            <tr>
-                <td>Weekend Shift</td>
-                <td>10:00 - 18:00</td>
-                <td>Sat-Sun</td>
-
-            </tr>
-        </tbody>
-    </table>
 </div>
 </div>
 
@@ -291,6 +259,50 @@
 </div>
 
 </div>
+<!-- SHIFT MODAL -->
+<div id="shift-modal"
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
 
+    <div class="shift-modal-container">
+
+        <button onclick="document.getElementById('shift-modal').classList.add('hidden')"
+                class="shift-close-btn">
+            &times;
+        </button>
+
+        <h3 class="shift-title">Driver Working Schedule</h3>
+
+        <table class="shift-table">
+            <thead>
+                <tr>
+                    <th>Shift Name</th>
+                    <th>Time</th>
+                    <th>Days</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>Morning Shift</td>
+                    <td>08:00 - 16:00</td>
+                    <td>Mon - Fri</td>
+                </tr>
+
+                <tr>
+                    <td>Evening Shift</td>
+                    <td>16:00 - 00:00</td>
+                    <td>Mon - Fri</td>
+                </tr>
+
+                <tr>
+                    <td>Weekend Shift</td>
+                    <td>10:00 - 18:00</td>
+                    <td>Sat - Sun</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
 
 </x-app-layout>
