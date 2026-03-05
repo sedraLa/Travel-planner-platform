@@ -75,6 +75,42 @@
         </div>
 </div>
 </div>
+<!-- =========================
+     SHIFTS CARD
+========================= -->
+<div class="bottomm-section performance">
+    <h3>Shifts</h3>
+    <table class="shift-table">
+        <thead>
+            <tr>
+                <th>Shift Name</th>
+                <th>Time</th>
+                <th>Days</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Morning Shift</td>
+                <td>08:00 - 16:00</td>
+                <td>Mon-Fri</td>
+
+            </tr>
+            <tr>
+                <td>Evening Shift</td>
+                <td>16:00 - 00:00</td>
+                <td>Mon-Fri</td>
+
+            </tr>
+            <tr>
+                <td>Weekend Shift</td>
+                <td>10:00 - 18:00</td>
+                <td>Sat-Sun</td>
+
+            </tr>
+        </tbody>
+    </table>
+</div>
 </div>
 
 
@@ -152,28 +188,28 @@
    <img class="stat-icon" src="{{ asset('images/icons/icons8-category-50.png') }}" alt="Plate Icon">
       <div>
          <h5>License image</h5>
-             
+
               <button onclick="document.getElementById('license-modal-{{ $driver->id }}').classList.remove('hidden')"
                 class="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm font-medium">
                   View License
               </button>
-  
-              <div id="license-modal-{{ $driver->id }}" 
+
+              <div id="license-modal-{{ $driver->id }}"
                class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
-    
+
                   {{-- This is the main container for the modal content --}}
                   <div class="license-modal-container">
-          
+
                      {{-- Close Button --}}
                          <button onclick="document.getElementById('license-modal-{{ $driver->id }}').classList.add('hidden')"
                            class="license-modal-close-btn">
                                &times;
                          </button>
-            
+
                      {{-- License Image --}}
                          @if($driver->license_image)
-                             <img src="{{ asset('storage/' . $driver->license_image) }}" 
-                             alt="License Photo" 
+                             <img src="{{ asset('storage/' . $driver->license_image) }}"
+                             alt="License Photo"
                             class="license-modal-image">
                          @else
                         <p class="text-center text-gray-500">No license photo available</p>
