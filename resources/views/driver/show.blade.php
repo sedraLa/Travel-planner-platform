@@ -282,23 +282,17 @@
             </thead>
 
             <tbody>
+                  @if($driver->assignment && $driver->assignment->shiftTemplate )
                 <tr>
-                    <td>Morning Shift</td>
-                    <td>08:00 - 16:00</td>
-                    <td>Mon - Fri</td>
+                    <td>{{$driver->assignment?->shiftTemplate?->name ?? 'no schedule name' }}</td>
+                    <td>{{ $driver->assignment?->shiftTemplate?->start_time ?? 'no start  time' }}->{{ $driver->assignment?->shiftTemplate?->end_time ?? 'no end time' }}</td> 
+                    <td> {{is_array($driver->assignment?->shiftTemplate?->days_of_week) ? implode(', ', $driver->assignment->shiftTemplate->days_of_week)  : ($driver->assignment?->shiftTemplate?->days_of_week ?? 'no days')   }}</td>
                 </tr>
-
+                @else
                 <tr>
-                    <td>Evening Shift</td>
-                    <td>16:00 - 00:00</td>
-                    <td>Mon - Fri</td>
+                      <td colspan="3">No schedules found</td>
                 </tr>
-
-                <tr>
-                    <td>Weekend Shift</td>
-                    <td>10:00 - 18:00</td>
-                    <td>Sat - Sun</td>
-                </tr>
+                  @endif
             </tbody>
         </table>
 

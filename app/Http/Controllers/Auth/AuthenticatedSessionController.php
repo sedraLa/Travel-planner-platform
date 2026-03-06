@@ -27,8 +27,9 @@ class AuthenticatedSessionController extends Controller
         //$driver = $user->driver;
        // $vehicle = $driver?->vehicle ;//null safe operator(return null if not exist)
 
-        $driver = $user->driver()?->with('assignment.vehicle')->first();
+        $driver = $user->driver()?->with('assignment.vehicle','assignment.shiftTemplate')->first();
         $vehicle = $driver?->assignment?->vehicle;
+        $schedules = $driver?->assignment?->shiftTemplate;
         $pendingBookings = $driver?->reservations()->where('driver_status', 'pending')->count() ?? 0;
         $completedBookings = $driver?->reservations()->where('driver_status','completed')->count() ?? 0;
         $canceledBookings = $driver?->reservations()->where('driver_status','cancelled')->count() ?? 0;
@@ -38,7 +39,8 @@ class AuthenticatedSessionController extends Controller
             'vehicle',
             'pendingBookings',
             'completedBookings',
-            'canceledBookings'
+            'canceledBookings',
+            'schedules'
         ));
 
      }
