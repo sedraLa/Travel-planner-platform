@@ -116,7 +116,8 @@ class DriverController extends Controller
     {
 
 
-        $driver = Driver::with('user')->findOrFail($id);
+       $driver = Driver::with([ 'user', 'assignment.vehicle', 'assignment.shiftTemplate'])->findOrFail($id);
+       
          return view('driver.details', compact('driver'));
 
 

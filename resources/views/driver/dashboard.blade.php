@@ -123,21 +123,18 @@ class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hid
                 </tr>
             </thead>
             <tbody>
+               @if($schedules)
                 <tr>
-                    <td>Morning Shift</td>
-                    <td>08:00 - 16:00</td>
-                    <td>Mon - Fri</td>
+                    <td>{{$schedules->name??'no schedula name'}}</td>
+                    <td>{{$schedules->start_time ??'no start time'}} -> {{$schedule->end_time??'no end time'}}</td>
+                    <td>{{ is_array($schedules->days_of_week) ? implode(', ', $schedules->days_of_week) : ($schedules->days_of_week ?? 'no days') }}</td>
+                
                 </tr>
+                @else
                 <tr>
-                    <td>Evening Shift</td>
-                    <td>16:00 - 00:00</td>
-                    <td>Mon - Fri</td>
+                      <td colspan="3">No schedules found</td>
                 </tr>
-                <tr>
-                    <td>Weekend Shift</td>
-                    <td>10:00 - 18:00</td>
-                    <td>Sat - Sun</td>
-                </tr>
+                  @endif
             </tbody>
         </table>
 
