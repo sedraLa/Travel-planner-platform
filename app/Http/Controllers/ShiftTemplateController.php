@@ -27,8 +27,21 @@ class ShiftTemplateController extends Controller
 
     public function store(ShiftTemplateRequest $request)
     {
-        ShiftTemplate::create($request->validated());
-
+        $validated = $request->validated();
+    
+        $exists = ShiftTemplate::where('start_time', $validated['start_time'])
+            ->where('end_time', $validated['end_time'])
+            ->whereJsonContains('days_of_week', $validated['days_of_week'])
+            ->exists();
+    
+        if ($exists) {
+            return back()->withErrors([
+                'start_time' => 'Shift with same time and days already exists.'
+            ]);
+        }
+    
+        ShiftTemplate::create($validated);
+    
         return redirect()->route('shift-templates.index')
             ->with('success', 'Shift template created successfully.');
     }
