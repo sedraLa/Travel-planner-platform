@@ -15,7 +15,7 @@ class ShiftTemplateControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        
+
         $user = User::factory()->create([
             'role' => 'admin'
         ]);
@@ -106,6 +106,30 @@ class ShiftTemplateControllerTest extends TestCase
 
         $this->assertDatabaseCount('shift_templates', 1);
     }
+
+    /** @test */
+public function it_prevents_duplicate_even_if_days_order_different(): void
+{
+    ShiftTemplate::factory()->create([
+        'name' => 'Morning Shift',
+        'start_time' => '08:00',
+        'end_time' => '12:00',
+        'days_of_week' => ['Monday','Tuesday'],
+    ]);
+
+    $data = [
+        'name' => 'Morning Shift 2',
+        'start_time' => '08:00',
+        'end_time' => '12:00',
+        'days_of_week' => ['Tuesday','Monday'], // ترتيب مختلف
+    ];
+
+    $response = $this->from('/admin/shift-templates/create')
+        ->post(route('shift-templates.store'), $data);
+
+    $response->assertSessionHasErrors(['start_time']);
+    $this->assertDatabaseCount('shift_templates', 1);
+}
 
     /** @test */
     public function admin_can_delete_shift_template(): void

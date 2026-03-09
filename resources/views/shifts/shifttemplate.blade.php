@@ -67,8 +67,8 @@
                         @forelse($shiftTemplates as $template)
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $template->name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ \Carbon\Carbon::parse($template->start_time)->format('H:i') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ \Carbon\Carbon::parse($template->end_time)->format('H:i') }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $template->start_time_formatted }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ $template->end_time_formatted }}</td>
                                 <td class="px-6 py-4 text-sm text-gray-700">{{ implode(', ', $template->days_of_week ?? []) }}</td>
                                     <td class="px-6 py-4 text-sm text-gray-700">
                                           <form action="{{ route('shift-templates.destroy', $template->id) }}"  method="POST" class="inline"
