@@ -10,6 +10,8 @@ use App\Models\ShiftTemplate;
 use App\Models\TransportVehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Services\Notifications\AssignmentNotificationService;
+use App\Models\User;
+
 
 class AssignmentControllerTest extends TestCase
 {
@@ -19,9 +21,18 @@ class AssignmentControllerTest extends TestCase
     {
         parent::setUp();
 
-        // mock notification service
+        // إنشاء مستخدم admin
+        $user = User::factory()->create([
+            'role' => 'admin'
+        ]);
+
+        // تسجيل الدخول
+        $this->actingAs($user);
+
+        // Mock للخدمة حتى لا ترسل notifications
         $mock = Mockery::mock(AssignmentNotificationService::class);
         $mock->shouldIgnoreMissing();
+
         $this->app->instance(AssignmentNotificationService::class, $mock);
     }
 
@@ -46,7 +57,9 @@ class AssignmentControllerTest extends TestCase
         $response->assertSessionHas('success', 'Assignment created successfully.');
 
         $this->assertDatabaseHas('assignments', [
-            'driver_id' => $driver->id
+            'driver_id' => $driver->id,
+            'transport_vehicle_id' => $vehicle->id,
+            'shift_template_id' => $shift->id
         ]);
     }
 
@@ -62,13 +75,15 @@ class AssignmentControllerTest extends TestCase
         ]);
         $driver = Driver::factory()->create(['status' => 'approved']);
 
+        //create first assignment for the driver
         Assignment::factory()->create([
             'driver_id' => $driver->id,
             'transport_vehicle_id' => $vehicle1->id,
             'shift_template_id' => $shift->id
         ]);
 
-        $response = $this->post('/admin/assignments/store', [ // <--- تعديل هنا
+        //create another assignment for the same driver
+        $response = $this->post('/admin/assignments/store', [
             'transport_vehicle_id' => $vehicle2->id,
             'shift_template_id' => $shift->id,
             'driver_id' => $driver->id
@@ -93,7 +108,7 @@ class AssignmentControllerTest extends TestCase
             'shift_template_id' => $shift1->id
         ]);
 
-        $response = $this->post('/admin/assignments/store', [ // <--- تعديل هنا
+        $response = $this->post('/admin/assignments/store', [
             'transport_vehicle_id' => $vehicle->id,
             'shift_template_id' => $shift2->id,
             'driver_id' => $driver2->id
@@ -144,7 +159,7 @@ class AssignmentControllerTest extends TestCase
             'shift_template_id' => $shift1->id
         ]);
 
-        $response = $this->put("/admin/assignments/update/{$assignment->id}", [ // <--- تعديل هنا
+        $response = $this->put("/admin/assignments/update/{$assignment->id}", [
             'transport_vehicle_id' => $vehicle2->id,
             'shift_template_id' => $shift2->id,
             'driver_id' => $driver->id
@@ -162,7 +177,7 @@ class AssignmentControllerTest extends TestCase
     public function it_deletes_assignment()
     {
         $assignment = Assignment::factory()->create();
-        $response = $this->delete("/admin/assignments/{$assignment->id}"); // <--- تعديل هنا
+        $response = $this->delete("/admin/assignments/{$assignment->id}");
 
         $response->assertRedirect();
         $response->assertSessionHas('success', 'Assignment deleted successfully.');

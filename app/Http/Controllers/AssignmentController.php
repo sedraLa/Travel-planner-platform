@@ -93,13 +93,15 @@ class AssignmentController extends Controller
             ]);
         }
 
-       $driver = Driver::findOrFail($validated['driver_id']);
+        $driver = Driver::findOrFail($validated['driver_id']);
 
-       if ($driver->assignment_id !== null) {
-         return back()->withErrors([
-        'driver_id' => 'This driver already has an assignment.',
-       ]);
-          }
+        $existingAssignment = Assignment::where('driver_id', $driver->id)->first();
+
+        if ($existingAssignment) {
+            return back()->withErrors([
+                'driver_id' => 'This driver already has an assignment.',
+            ]);
+        }
 
         $assignment = Assignment::create([
             'transport_vehicle_id' => $validated['transport_vehicle_id'],
