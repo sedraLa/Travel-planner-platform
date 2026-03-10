@@ -37,6 +37,115 @@ class AssignmentControllerTest extends TestCase
     }
 
     /** @test */
+public function it_filters_assignments_by_vehicle_model()
+{
+    $vehicle1 = TransportVehicle::factory()->create(['car_model' => 'Toyota']);
+    $vehicle2 = TransportVehicle::factory()->create(['car_model' => 'BMW']);
+
+    $shift = ShiftTemplate::factory()->create();
+    $driver = Driver::factory()
+    ->for(User::factory())
+    ->create(['status' => 'approved']);
+
+    Assignment::factory()->create([
+        'transport_vehicle_id' => $vehicle1->id,
+        'shift_template_id' => $shift->id,
+        'driver_id' => $driver->id
+    ]);
+
+    Assignment::factory()->create([
+        'transport_vehicle_id' => $vehicle2->id,
+        'shift_template_id' => $shift->id,
+       'driver_id' => Driver::factory()->for(User::factory())->create(['status' => 'approved'])->id
+    ]);
+
+    $response = $this->get('/admin/assignments?search=Toyota');
+
+    $response->assertStatus(200);
+    $response->assertViewHas('assignments', function ($assignments) {
+        return $assignments->count() === 1;
+    });
+}
+
+/** @test */
+public function update_prevents_driver_having_multiple_assignments()
+{
+    $vehicle1 = TransportVehicle::factory()->create();
+    $vehicle2 = TransportVehicle::factory()->create();
+
+    $shift = ShiftTemplate::factory()->create();
+
+    $driver = Driver::factory()->create(['status' => 'approved']);
+
+    Assignment::factory()->create([
+        'driver_id' => $driver->id,
+        'transport_vehicle_id' => $vehicle1->id,
+        'shift_template_id' => $shift->id
+    ]);
+
+    $assignment = Assignment::factory()->create([
+        'driver_id' => Driver::factory()->create(['status' => 'approved'])->id,
+        'transport_vehicle_id' => $vehicle2->id,
+        'shift_template_id' => $shift->id
+    ]);
+
+    $response = $this->put("/admin/assignments/update/{$assignment->id}", [
+        'driver_id' => $driver->id,
+        'transport_vehicle_id' => $vehicle2->id,
+        'shift_template_id' => $shift->id
+    ]);
+
+    $response->assertSessionHasErrors(['driver_id']);
+}
+
+/** @test */
+public function it_filters_assignments_by_driver_name()
+{
+    $vehicle1 = TransportVehicle::factory()->create();
+    $vehicle2 = TransportVehicle::factory()->create();
+
+    $shift = ShiftTemplate::factory()->create();
+
+    $user1 = User::factory()->create([
+        'name' => 'John',
+        'last_name' => 'Smith'
+    ]);
+
+    $user2 = User::factory()->create([
+        'name' => 'Mike',
+        'last_name' => 'Brown'
+    ]);
+
+    $driver1 = Driver::factory()->create([
+        'user_id' => $user1->id,
+        'status' => 'approved'
+    ]);
+
+    $driver2 = Driver::factory()->create([
+        'user_id' => $user2->id,
+        'status' => 'approved'
+    ]);
+
+    Assignment::factory()->create([
+        'driver_id' => $driver1->id,
+        'transport_vehicle_id' => $vehicle1->id,
+        'shift_template_id' => $shift->id
+    ]);
+
+    Assignment::factory()->create([
+        'driver_id' => $driver2->id,
+        'transport_vehicle_id' => $vehicle2->id,
+        'shift_template_id' => $shift->id
+    ]);
+
+    $response = $this->get('/admin/assignments?search=John');
+
+    $response->assertStatus(200);
+}
+
+
+
+    /** @test */
     public function it_creates_assignment_successfully()
     {
         $vehicle = TransportVehicle::factory()->create();
@@ -143,6 +252,41 @@ class AssignmentControllerTest extends TestCase
         $response->assertSessionHas('success', 'Assignment created successfully.');
         $this->assertDatabaseCount('assignments', 2);
     }
+
+    /** @test */
+public function vehicle_can_have_same_time_shift_if_days_are_different()
+{
+    $vehicle = TransportVehicle::factory()->create();
+
+    $shift1 = ShiftTemplate::factory()->create([
+        'start_time' => '08:00:00',
+        'end_time' => '12:00:00',
+        'days_of_week' => ['mon']
+    ]);
+
+    $shift2 = ShiftTemplate::factory()->create([
+        'start_time' => '08:00:00',
+        'end_time' => '12:00:00',
+        'days_of_week' => ['tue']
+    ]);
+
+    $driver1 = Driver::factory()->create(['status' => 'approved']);
+    $driver2 = Driver::factory()->create(['status' => 'approved']);
+
+    Assignment::factory()->create([
+        'transport_vehicle_id' => $vehicle->id,
+        'shift_template_id' => $shift1->id,
+        'driver_id' => $driver1->id
+    ]);
+
+    $response = $this->post('/admin/assignments/store', [
+        'transport_vehicle_id' => $vehicle->id,
+        'shift_template_id' => $shift2->id,
+        'driver_id' => $driver2->id
+    ]);
+
+    $response->assertSessionHas('success');
+}
 
     /** @test */
     public function it_updates_assignment_successfully()
