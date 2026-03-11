@@ -30,6 +30,7 @@ class VehicleOrderRequest extends FormRequest
             'category' => 'nullable|string',
             'type' => 'nullable|string',
             'driver_earning' => 'nullable|numeric|min:0',
+           
         ];
     }
 }

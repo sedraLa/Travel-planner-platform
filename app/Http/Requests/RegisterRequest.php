@@ -40,7 +40,7 @@ class RegisterRequest extends FormRequest
 
             'country' => ['required', 'string', 'max:100'],
 
-            'role' => ['required', 'string', 'in:user,driver'],
+            'role' => ['required', 'string', 'in:user,driver,guide'],
 
         ];
 
@@ -74,6 +74,71 @@ class RegisterRequest extends FormRequest
             ]);
         }
 
+
+        
+        if ($role === UserRole::GUIDE->value) {
+
+            $rules = array_merge($rules, [
+
+                'bio' => ['nullable', 'string'],
+
+                'languages' => ['nullable', 'string', 'max:255'],
+
+
+                'years_of_experience' => ['nullable', 'integer', 'min:0'],
+
+                'certificate_image' => [
+                    'nullable',
+                    'image',
+                    'mimes:jpg,jpeg,png',
+                    'max:2048'
+                ],
+
+                   'personal_image' => [
+                    'required',
+                    'image',
+                    'mimes:jpg,jpeg,png',
+                    'max:2048'
+                ],
+
+                 'age' => ['nullable', 'integer', 'min:18', 'max:100'],
+
+                'address' => ['nullable', 'string', 'max:255'],
+
+                'is_tour_leader' => ['boolean'],
+
+                 'specializations' => ['nullable', 'array'],
+                 'specializations.*' => ['exists:specializations,id'],
+
+            ]);
+        }
+
+        
+
         return $rules;
     }
+     
+     public function withValidator($validator)
+      {
+             $validator->after(function ($validator) {
+
+             if ($this->input('role') === UserRole::GUIDE->value) {
+
+                $isLeader = $this->input('is_tour_leader');
+                $hasSpecializations = $this->input('specializations');
+
+              if (!$isLeader && (empty($hasSpecializations) || count($hasSpecializations) === 0)) {
+                  $validator->errors()->add(
+                     'specializations',
+                     'You must select either Tour Leader or at least one activity.'
+                      );
+                  }
+
+              }
+    
+          });
+       }
 }
+
+
+

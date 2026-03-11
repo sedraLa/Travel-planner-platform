@@ -17,6 +17,8 @@ use App\Enums\UserRole;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Driver;
+use App\Models\Guide;
+
 class RegisteredUserController extends Controller
 {
     /**
@@ -97,6 +99,57 @@ class RegisteredUserController extends Controller
         return redirect()
             ->route('login')
             ->with('success', 'Driver request sent successfully');
+    }
+
+
+      if ($role === UserRole::GUIDE->value) {
+
+        $certificatePath = null;
+
+        if ($request->hasFile('certificate_image')) {
+            $certificatePath = MediaServices::save(
+                $request->file('certificate_image'),
+                'images',
+                'guides'
+            );
+        }
+
+
+         $personalPath = MediaServices::save(
+            $request->file('personal_image'),
+            'images',
+            'guides'
+        );
+
+        Guide::create([
+            'user_id' => $user->id,
+
+            'bio' => $validated['bio'] ?? null,
+
+            'languages' => $validated['languages'] ?? null,
+
+            'years_of_experience' => $validated['years_of_experience'] ?? null,
+
+            'certificate_image' => $certificatePath,
+
+            'status' => 'pending',
+
+            'personal_image' => $personalPath,
+
+            'age' => $validated['age'] ?? null,
+
+            'address' => $validated['address'] ?? null,
+
+            'date_of_hire' => null,
+
+            'is_tour_leader' => $request->has('is_tour_leader'),
+          
+            
+        ]);
+
+          if ($request->filled('specializations')) {
+             $guide->specializations()->sync($request->specializations);
+        }
     }
 
     // normal user
