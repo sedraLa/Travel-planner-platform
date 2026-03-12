@@ -24,8 +24,6 @@ class Guide extends Model
         'total_trips_count',
         'last_trip_at',
         'is_tour_leader',
-        
-
     ];
 
     public function user()
