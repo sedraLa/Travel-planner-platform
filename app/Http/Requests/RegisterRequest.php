@@ -122,11 +122,13 @@ class RegisterRequest extends FormRequest
       {
              $validator->after(function ($validator) {
 
-             if ($this->input('role') === UserRole::GUIDE->value) {
+             if ($this->input('role') !== UserRole::GUIDE->value) {
+            return;
+        }
 
                 $isLeader = $this->input('is_tour_leader');
-                $hasSpecializations = $this->input('specializations');
-
+                $hasSpecializations = $this->input('specializations', []);
+                
               if (!$isLeader && (empty($hasSpecializations) || count($hasSpecializations) === 0)) {
                   $validator->errors()->add(
                      'specializations',
@@ -134,7 +136,7 @@ class RegisterRequest extends FormRequest
                       );
                   }
 
-              }
+              
     
           });
        }

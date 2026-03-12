@@ -24,6 +24,7 @@ use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
+use App\Http\Controllers\SpecializationController;
 
 
 /*
@@ -124,6 +125,15 @@ Route::post('/activities/store', [ActivityController::class, 'store'])->name('ac
 Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
 Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
+//Admin Specialization
+
+Route::get('/admin/specialization',[SpecializationController::class,'index'])->name('specialization.index');
+Route::post('/admin/specialization/store',[SpecializationController::class,'store'])->name('specialization.store');
+Route::delete('/admin/specialization/{id}',[SpecializationController::class,'destroy'])->name('specialization.destroy');
+
+
+
     });
 
     

@@ -1,5 +1,18 @@
 @php
     use App\Enums\UserRole;
+    
+
+     $role = request('role', UserRole::USER->value);
+    $isSpecialRole = in_array($role, [UserRole::DRIVER->value, UserRole::GUIDE->value], true);
+
+    $driverStep2Fields = ['license_image', 'personal_image', 'license_category', 'experience', 'address', 'age'];
+    $guideStep2Fields = ['bio', 'languages', 'years_of_experience', 'certificate_image', 'personal_image', 'age', 'address', 'is_tour_leader', 'specializations'];
+
+    $step2HasErrors = $role === UserRole::DRIVER->value
+        ? collect($driverStep2Fields)->contains(fn ($field) => $errors->has($field))
+        : ($role === UserRole::GUIDE->value
+            ? collect($guideStep2Fields)->contains(fn ($field) => $errors->has($field))
+            : false);
 @endphp
 
 <x-guest-layout>
@@ -9,11 +22,10 @@
             <h2 class="title" style="text-align:center;">Create Account</h2>
             <p class="subtitle" style="text-align:center;">Join the journey</p>
 
-            <!-- Indicators -->
-            @if(request('role') === UserRole::DRIVER->value)
+           @if($isSpecialRole)
                 <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <span id="step1Indicator" style="font-weight:bold; color:white; @if($errors->any() && !$errors->has('license_image')) opacity:1; @else opacity:1; @endif">Step 1</span>
-                    <span id="step2Indicator" style="opacity:0.4; color:white;">Step 2</span>
+                    <span id="step1Indicator" style="font-weight:bold; color:white; opacity: {{ $step2HasErrors ? '0.4' : '1' }}">Step 1</span>
+                    <span id="step2Indicator" style="color:white; opacity: {{ $step2HasErrors ? '1' : '0.4' }}">Step 2</span>
                 </div>
             @endif
 
@@ -21,14 +33,14 @@
                 @csrf
 
                 <!-- STEP 1 -->
-                <div id="step1" @if($errors->any() && !$errors->has('license_image')) style="display:block" @endif>
+                 <div id="step1" style="display: {{ $step2HasErrors ? 'none' : 'block' }};">
 
                     <div class="form-grid">
                         <!-- Name -->
                         <div>
                             <x-input-label for="name" :value="__('Name')" /> <span style="color:red;">*</span>
                             <div class="input-icon-wrapper">
-                                <img src="{{asset('images/icons/user-group-solid-full.svg')}}">
+                               <img src="{{ asset('images/icons/user-group-solid-full.svg') }}">
                                 <x-text-input id="name" type="text" name="name" :value="old('name')" required/>
                             </div>
                             <x-input-error :messages="$errors->get('name')" />
@@ -97,11 +109,9 @@
                         </div>
                     </div>
 
-                    <!-- Only drivers get "Continue" -->
-                    @if(request('role') === UserRole::DRIVER->value)
-                    <button type="button" class="main-btn" style="margin-top:20px;" onclick="goToStep2()">
-                        Continue
-                    </button>
+                    <!-- Only SpecialRole get "Continue" -->
+                     @if($isSpecialRole)
+                        <button type="button" class="main-btn" style="margin-top:20px;" onclick="goToStep2()">Continue</button>
                     @endif
                 </div>
 
@@ -169,65 +179,287 @@
 </div>
 @endif
 
+  @if($role === UserRole::GUIDE->value)
+
+<div id="step2" style="display: {{ $step2HasErrors ? 'block' : 'none' }};">
+
+    <div class="form-grid full">
+
+        <!-- Personal Image -->
+        <div>
+            <x-input-label for="personal_image" :value="__('Personal Image')" /> <span class="text-red-500">*</span>
+            <input id="personal_image" type="file" name="personal_image" required>
+            <x-input-error :messages="$errors->get('personal_image')" />
+        </div>
+
+        <!-- Certificate -->
+        <div>
+            <x-input-label for="certificate_image" :value="__('Certificate Image')" />
+            <input id="certificate_image" type="file" name="certificate_image">
+            <x-input-error :messages="$errors->get('certificate_image')" />
+        </div>
+
+        <!-- Languages -->
+        <div>
+            <x-input-label for="languages" value="Languages" />
+            <x-text-input id="languages" type="text" name="languages" :value="old('languages')" />
+        </div>
+
+        <!-- Experience -->
+        <div>
+            <x-input-label for="years_of_experience" value="Years of Experience" />
+            <x-text-input id="years_of_experience" type="number" name="years_of_experience" />
+        </div>
+
+        <!-- Age -->
+        <div>
+            <x-input-label for="age" value="Age" /> <span class="text-red-500">*</span>
+            <x-text-input id="age" type="number" name="age" required />
+        </div>
+
+        <!-- Address -->
+        <div>
+            <x-input-label for="address" value="Address" />
+            <x-text-input id="address" type="text" name="address" />
+        </div>
+
+        <!-- Bio -->
+        <div class="full">
+            <x-input-label for="bio" value="Bio" />
+            <textarea id="bio" name="bio"></textarea>
+        </div>
+
+        <!-- Tour leader -->
+        <div class="full">
+            <label class="tour-leader-toggle">
+                <input type="checkbox" name="is_tour_leader" value="1" id="is_tour_leader">
+                <span class="toggle-track">
+                    <span class="toggle-thumb"></span>
+                </span>
+                <span class="toggle-label">I am a Tour Leader</span>
+            </label>
+        </div>
+
+          <!-- Specializations Chips -->
+        <div class="full">
+            <x-input-label value="Specializations" />
+
+            <div class="spec-chips-wrap">
+                @foreach($specializations as $special)
+                    @php $isChecked = in_array($special->id, old('specializations', [])); @endphp
+                    <label class="spec-chip {{ $isChecked ? 'spec-chip--active' : '' }}">
+                        <input
+                            type="checkbox"
+                            name="specializations[]"
+                            value="{{ $special->id }}"
+                            @checked($isChecked)
+                            onchange="this.closest('label').classList.toggle('spec-chip--active', this.checked)"
+                        >
+                        {{ $special->name }}
+                    </label>
+                @endforeach
+            </div>
+
+            <x-input-error :messages="$errors->get('specializations')" />
+        </div>
+
+
+
+    </div>
+
+    <p class="note full">Note: Guide registration will be reviewed by management before acceptance.</p>
+
+    <div style="display:flex; gap:10px; margin-top:15px;">
+        <button type="button" class="main-btn" onclick="goToStep1()">Back</button>
+        <button type="submit" class="main-btn">Register Guide</button>
+    </div>
+
+</div>
+
+@endif
+
 <!-- Send role with the form -->
 <input type="hidden" name="role" value="{{ request('role', UserRole::USER->value) }}">
 
 <!-- Traveler submits normally -->
-@if(request('role') !== UserRole::DRIVER->value)
-    <button class="main-btn">Register</button>
-@endif
+     @if(!$isSpecialRole)
+                    <button class="main-btn">Register</button>
+                @endif
 
-    <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Already registered?</a>
-</form>
- </div>
+                <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Already registered?</a>
+            </form>
+  </div>
 </div>
 
-<style>
-   span {
-    color:red;
-}
-</style>
 
-<script>
-    function goToStep2() {
-    const step1 = document.getElementById('step1');
-    const inputs = step1.querySelectorAll('input, select, textarea'); //get all fields of step1
-    let valid = true;
 
-    // check validity of all fields
-    inputs.forEach(input => {
-        if (!input.checkValidity()) { //check each field with html5 validation
-            input.reportValidity(); // show error message
-            valid = false;
-            return false;
+
+ <style>
+        span {
+            color:red;
         }
-    });
+    </style>
 
-    if (!valid) return; // if not valid don't continue to step2
+    <script>
+        function goToStep2() {
+            const step1 = document.getElementById('step1');
+            const inputs = step1.querySelectorAll('input, select, textarea');
+            let valid = true;
 
-    // if all fields are valid
-    step1.style.display = 'none'; //hide step1
-    document.getElementById('step2').style.display = 'block';
-    document.getElementById('step1Indicator').style.opacity = "0.4";
-    document.getElementById('step2Indicator').style.opacity = "1";
-}
+            inputs.forEach(input => {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    valid = false;
+                }
+            });
+
+            if (!valid) return;
+
+            step1.style.display = 'none';
+            document.getElementById('step2').style.display = 'block';
+            document.getElementById('step1Indicator').style.opacity = '0.4';
+            document.getElementById('step2Indicator').style.opacity = '1';
+        }
     //for back
-    function goToStep1() {
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step1').style.display = 'block';
-        document.getElementById('step1Indicator').style.opacity = "1";
-        document.getElementById('step2Indicator').style.opacity = "0.4";
-    }
-
-    // don't send form unless step2 is completed
-    document.querySelector('form').addEventListener('submit', function(e){
-        if(document.getElementById('step2').style.display === 'none' && '{{ request("role") }}' === '{{ UserRole::DRIVER->value }}'){
-            e.preventDefault();
-            alert("Please complete Step 2 before submitting.");
+   function goToStep1() {
+            document.getElementById('step2').style.display = 'none';
+            document.getElementById('step1').style.display = 'block';
+            document.getElementById('step1Indicator').style.opacity = '1';
+            document.getElementById('step2Indicator').style.opacity = '0.4';
         }
-    });
-</script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+            const specialRole = @json($isSpecialRole);
+            const step2 = document.getElementById('step2');
+
+            if (specialRole && step2 && step2.style.display === 'none') {
+                e.preventDefault();
+                alert('Please complete Step 2 before submitting.');
+            }
+        });
+    </script>
 
 <!-- countries javascript library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-selector/0.4.1/crs.min.js"></script>
+
+
+
+
+<style>
+.tour-leader-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    width: fit-content;
+}
+
+/* إخفاء الـ checkbox الأصلي */
+.tour-leader-toggle input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* الـ track (الخلفية) */
+.toggle-track {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    transition: background 0.3s, border-color 0.3s;
+    flex-shrink: 0;
+}
+
+/* الدايرة */
+.toggle-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1), background 0.3s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+
+/* وقت يكون checked */
+.tour-leader-toggle input:checked ~ .toggle-track {
+    background: #4ade80;
+    border-color: #4ade80;
+}
+
+.tour-leader-toggle input:checked ~ .toggle-track .toggle-thumb {
+    transform: translateX(22px);
+    background: white;
+}
+
+/* hover effect */
+.tour-leader-toggle:hover .toggle-track {
+    border-color: rgba(255,255,255,0.5);
+}
+
+.toggle-label {
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+</style>
+
+
+<style>
+/* ===== Specialization Chips ===== */
+.spec-chips-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.spec-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: 2px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.75);
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.spec-chip:hover {
+    border-color: rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.15);
+    color: white;
+}
+
+/* إخفاء الـ checkbox الأصلي */
+.spec-chip input[type="checkbox"] {
+    display: none;
+}
+
+/* وقت يكون selected */
+.spec-chip--active {
+    background: rgba(255,255,255,0.95) !important;
+    border-color: white !important;
+    color: #1E3A8A !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+}
+
+.spec-chip--active::before {
+    content: '✓';
+    font-size: 0.8rem;
+    font-weight: 800;
+}
+</style>
+
 </x-guest-layout>

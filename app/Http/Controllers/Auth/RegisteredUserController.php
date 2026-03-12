@@ -18,6 +18,7 @@ use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Driver;
 use App\Models\Guide;
+use App\Models\Specialization;
 
 class RegisteredUserController extends Controller
 {
@@ -26,7 +27,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+
+    $specializations = Specialization::all();
+        return view('auth.register' , compact('specializations'));
     }
 
     /**
@@ -121,7 +124,7 @@ class RegisteredUserController extends Controller
             'guides'
         );
 
-        Guide::create([
+        $guide = Guide::create([
             'user_id' => $user->id,
 
             'bio' => $validated['bio'] ?? null,
@@ -143,13 +146,19 @@ class RegisteredUserController extends Controller
             'date_of_hire' => null,
 
             'is_tour_leader' => $request->has('is_tour_leader'),
+            
           
             
         ]);
 
           if ($request->filled('specializations')) {
-             $guide->specializations()->sync($request->specializations);
+            $guide->specializations()->sync($request->specializations);
         }
+
+        
+        return redirect()
+            ->route('login')
+            ->with('success', 'Guide request sent successfully. You can login after admin approval.');
     }
 
     // normal user
