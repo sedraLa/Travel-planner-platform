@@ -48,7 +48,7 @@ Route::get('/register/select-role', function () {
 })->name('register.select-role');
 
 Route::get('/dashboard',[AuthenticatedSessionController::class, 'dashboard'])
-->middleware(['auth', 'verified', 'check.driver.status'])
+->middleware(['auth', 'verified', 'check.driver.status','check.guide.status'])
 ->name('dashboard');
 
 

@@ -25,4 +25,13 @@ class SpecializationRequest extends FormRequest
               'name' => ['nullable','string','max:255','unique:specializations,name']
         ];
     }
+
+
+
+    public function messages(): array
+{
+    return [
+        'name.unique' => 'This specialization already exists. Please choose another name.',
+    ];
+}
 }
