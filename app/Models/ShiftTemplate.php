@@ -26,6 +26,28 @@ class ShiftTemplate extends Model
         'created_at',
         'updated_at'
     ];
+
+    public function getStartTimeFormattedAttribute()
+{
+    return \Carbon\Carbon::parse($this->start_time)->format('H:i');
+}
+
+public function getEndTimeFormattedAttribute()
+{
+    return \Carbon\Carbon::parse($this->end_time)->format('H:i');
+}
+
+public function scopeSameTimeAndDays($query, $start, $end, $days)
+    {
+        $days = collect($days)->sort()->values()->toArray(); // ترتيب الأيام
+
+        return $query->where('start_time', $start)
+            ->where('end_time', $end)
+            ->get()
+            ->filter(function ($template) use ($days) {
+                return collect($template->days_of_week)->sort()->values()->toArray() === $days;
+            });
+    }
   
 
      public function assignments() 

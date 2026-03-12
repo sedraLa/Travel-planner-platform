@@ -56,7 +56,7 @@ class AssignmentController extends Controller
 
   public function create()
 {
-  
+
     $vehicles = TransportVehicle::orderBy('car_model')->get();
     $shiftTemplates = ShiftTemplate::orderBy('name')->get();
     $drivers = Driver::where('status', 'approved')
@@ -93,13 +93,15 @@ class AssignmentController extends Controller
             ]);
         }
 
-       $driver = Driver::findOrFail($validated['driver_id']);
+        $driver = Driver::findOrFail($validated['driver_id']);
 
-       if ($driver->assignment_id !== null) {
-         return back()->withErrors([
-        'driver_id' => 'This driver already has an assignment.',
-       ]);
-          }
+        $existingAssignment = Assignment::where('driver_id', $driver->id)->first();
+
+        if ($existingAssignment) {
+            return back()->withErrors([
+                'driver_id' => 'This driver already has an assignment.',
+            ]);
+        }
 
         $assignment = Assignment::create([
             'transport_vehicle_id' => $validated['transport_vehicle_id'],
@@ -107,7 +109,7 @@ class AssignmentController extends Controller
             'driver_id'=> $validated['driver_id'],
                   ]);
 
-        
+
 
           $assignment->load(['vehicle', 'shiftTemplate']);
           $this->notificationService->notifyDriverAssigned($driver, $assignment);
@@ -121,7 +123,7 @@ class AssignmentController extends Controller
 
     public function edit(Assignment $assignment)
    {
-  
+
     $vehicles = TransportVehicle::orderBy('car_model')->get();
     $shiftTemplates = ShiftTemplate::orderBy('name')->get();
     $drivers = Driver::where('status', 'approved')
@@ -140,7 +142,7 @@ class AssignmentController extends Controller
     ]);
    }
 
-    
+
 
 
 
@@ -150,7 +152,7 @@ class AssignmentController extends Controller
 
     $shiftTemplate = ShiftTemplate::findOrFail($validated['shift_template_id']);
 
-    
+
     $vehicleConflict = Assignment::with('shiftTemplate')
         ->where('transport_vehicle_id', $validated['transport_vehicle_id'])
         ->where('id', '!=', $assignment->id) // تجاهل الـ assignment الحالي
@@ -163,7 +165,7 @@ class AssignmentController extends Controller
     }
 
     $driver = Driver::findOrFail($validated['driver_id']);
-    
+
 
     $existingAssignment = Assignment::where('driver_id', $driver->id)
     ->where('id', '!=', $assignment->id)
@@ -180,7 +182,7 @@ class AssignmentController extends Controller
     $previousVehicleId = $assignment->transport_vehicle_id;
 
 
-     
+
 
     $assignment->update([
         'transport_vehicle_id' => $validated['transport_vehicle_id'],
@@ -188,7 +190,7 @@ class AssignmentController extends Controller
         'driver_id'=> $validated['driver_id'],
     ]);
 
-      
+
      $assignment->load(['vehicle', 'shiftTemplate']);
 
     if ($previousDriver && $previousDriver->id !== $driver->id) {
@@ -201,31 +203,31 @@ class AssignmentController extends Controller
     } else {
       $this->notificationService->notifyDriverAssigned($driver, $assignment);
     }
-    
 
-   
+
+
     return back()->with('success', 'Assignment updated successfully.');
    }
 
 
 
- 
+
     public function destroy(Assignment $assignment)
     {
-    
+
      $assignment->load(['vehicle', 'shiftTemplate', 'driver.user']);
 
        if ($assignment->driver) {
         $this->notificationService->notifyDriverUnassigned($assignment->driver, $assignment);
     }
- 
+
 
         $assignment->delete();
 
         return back()->with('success', 'Assignment deleted successfully.');
     }
 
- 
+
 
     private function hasShiftConflict(?ShiftTemplate $firstShift, ?ShiftTemplate $secondShift): bool
     {
