@@ -16,10 +16,16 @@ class GuideSeeder extends Seeder
      */
     public function run(): void
     {
-        $guides = Guide::factory()->count(10)->create();
+
+        $approved = Guide::factory()->count(5)->approved()->create();
+        $normal = Guide::factory()->count(10)->create();
+  
+        $guides = $approved->merge($normal);
+    
+ 
         $specializations = Specialization::all();
 
-        foreach($guides as $guide) {
+        foreach ($guides as $guide) {
             $guide->specializations()->attach(
                 $specializations->random(rand(1,3))->pluck('id')
             );
