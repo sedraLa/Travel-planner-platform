@@ -13,9 +13,9 @@ class Specialization extends Model
 
      protected $fillable = ['name'];
 
-        public function guides()
+      public function guides()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Guide::class, 'guide_specialization', 'specialization_id', 'guide_id');
     }
 
 }
