@@ -11,10 +11,9 @@ use App\Models\TransportReservation;
 use Illuminate\Http\Request;
 use App\Http\Requests\DriverRequest;
 use App\Services\MediaServices;
+use App\Services\DriverApplicationStatusService;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\UserRole;
-use Illuminate\Support\Facades\Mail;
-use App\Mail\DriverStatusMail;
 use Carbon\Carbon;
 
 
@@ -200,7 +199,7 @@ class DriverController extends Controller
 
 
     //approve or reject driver request
-    public function updateStatus(DriverRequest $request, Driver $driver)
+    public function updateStatus(DriverRequest $request, Driver $driver, DriverApplicationStatusService $statusService)
     {
         if (auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized');
@@ -220,38 +219,9 @@ class DriverController extends Controller
             ->with('error', 'Please select a status before confirming.');
     }
 
+        $statusService->updateStatus($driver, $validated['status']);
 
-        $updateData = ['status' => $validated['status']];
-
-        //update date of hire if approved
-        if ($validated['status'] === 'approved') {
-            $updateData['date_of_hire'] = Carbon::now();
-        }
-
-
-        $driver->update($updateData);
-
-        $status = $validated['status'];
-
-        //email messages
-        $message = match ($status) {
-            'approved' => 'Your account has been approved! You can now log in to the system.',
-            'rejected' => 'Sorry, your account has been rejected after review of the information.',
-            default => 'Your account status has been changed to under review.',
-        };
-
-       Mail::to($driver->user->email)
-            ->send(new DriverStatusMail($driver->user->name, $status, $message));
-
-            //delete user if request rejected
-        if ($status === 'rejected') {
-            if ($driver->license_image && \Storage::disk('public')->exists($driver->license_image)) {
-                \Storage::disk('public')->delete($driver->license_image);
-            }
-
-            $driver->user()->delete();
-            $driver->delete();
-
+        if ($validated['status'] === 'rejected') {
             return redirect()->back()->with('success', 'Driver was rejected, email sent, and driver removed.');
         }
 
@@ -317,6 +287,5 @@ public function cancel($id)
 
 
 }
-
 
 
