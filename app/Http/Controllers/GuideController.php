@@ -20,9 +20,6 @@ use Carbon\Carbon;
 
 class GuideController extends Controller
 {
-    
-
-
 
 
 

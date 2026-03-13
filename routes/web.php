@@ -25,6 +25,8 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
 use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\AdminGuideApplicationController;
+
 
 
 /*
@@ -132,9 +134,12 @@ Route::get('/admin/specialization',[SpecializationController::class,'index'])->n
 Route::post('/admin/specialization/store',[SpecializationController::class,'store'])->name('specialization.store');
 Route::delete('/admin/specialization/{id}',[SpecializationController::class,'destroy'])->name('specialization.destroy');
 
+//Admin Guide Applications
+Route::get('/admin/guide/applications',[AdminGuideApplicationController::class,'index'])->name('guide-applications.index');
+Route::get('/admin/guide/application/{id}',[AdminGuideApplicationController::class,'show'])->name('guide-applications.show');
+Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::class,'updateStatus'])->name('guide.updateStatus');
 
-
-    });
+});
 
     
 Route::middleware('auth')->group(function () {
