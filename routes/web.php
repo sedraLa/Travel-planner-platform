@@ -129,6 +129,8 @@ Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->
 Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
 
+//trips dashboard
+Route::get('/admin/trips/dashboard',[TripController::class,'dashboard'])->name('trips.dashboard');
 //Admin Specialization
 
 Route::get('/admin/specialization',[SpecializationController::class,'index'])->name('specialization.index');

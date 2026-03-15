@@ -4,9 +4,32 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Trip;
+use App\Models\Activity;
+use App\Models\Guide;
+use App\Models\User;
 
 class TripController extends Controller
 {
+    /*
+    Trips dashboard
+    * */
+
+    public function dashboard() {
+        $systemGuides = Guide::with('user')
+        ->where('status','approved')
+        ->count();
+        $guidesRequests = Guide::with('user')
+        ->where('status','pending')
+        ->count();
+        $activities = Activity::with('destinations')->count();
+        return view('trips.dashboard', compact(
+            'systemGuides',
+            'guidesRequests',
+            'activities'
+        ));
+
+
+    }
     /**
      * Display a listing of the resource.
      */

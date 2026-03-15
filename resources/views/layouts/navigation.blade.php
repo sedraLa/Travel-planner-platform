@@ -52,9 +52,8 @@
      
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
-                    <li><a href="{{route('transport.dashboard')}}">Transport</a></li>
-                       <li><a href="{{route('specialization.index')}}">Specialization</a></li>
-                       <li><a href="{{route('guide-applications.index')}}">GuidesRequests</a></li>
+                    <li><a href="{{route('transport.dashboard')}}">Transport & Drivers</a></li>
+                       <li><a href="{{route('trips.dashboard')}}">Trips & Guides</a></li>
                     
                        
 
@@ -66,19 +65,6 @@
                         <ul x-show="openDropdown" @click.outside="openDropdown = false"
                             class="absolute mt-1 bg-white border rounded shadow-md">
                             <li><a href="{{ route('reservations.index') }}" class="block px-4 py-2 hover:bg-gray-100">Hotels</a>
-                            </li>
-                           
-                        </ul>
-                    </li>
-
-
-                      <li x-data="{ openDropdown: false }" class="relative">
-                        <button @click="openDropdown = !openDropdown" class="px-3 py-2 hover:bg-gray-100 rounded">
-                            Guides
-                        </button>
-                        <ul x-show="openDropdown" @click.outside="openDropdown = false"
-                            class="absolute mt-1 bg-white border rounded shadow-md">
-                            <li><a href="{{ route('guides.index') }}" class="block px-4 py-2 hover:bg-gray-100">Approved guied</a>
                             </li>
                            
                         </ul>
