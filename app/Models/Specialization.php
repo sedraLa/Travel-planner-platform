@@ -15,6 +15,7 @@ class Specialization extends Model
 
       public function guides()
     {
+
         return $this->belongsToMany(Guide::class, 'guide_specialization', 'specialization_id', 'guide_id');
     }
 
