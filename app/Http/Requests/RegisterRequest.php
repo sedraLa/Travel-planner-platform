@@ -80,12 +80,12 @@ class RegisterRequest extends FormRequest
 
             $rules = array_merge($rules, [
 
-                'bio' => ['nullable', 'string'],
+                'bio' => ['required', 'string'],
 
-                'languages' => ['nullable', 'string', 'max:255'],
+                'languages' => ['required', 'string', 'max:255'],
 
 
-                'years_of_experience' => ['nullable', 'integer', 'min:0'],
+                'years_of_experience' => ['required', 'integer', 'min:0'],
 
                 'certificate_image' => [
                     'nullable',
@@ -101,9 +101,9 @@ class RegisterRequest extends FormRequest
                     'max:2048'
                 ],
 
-                 'age' => ['nullable', 'integer', 'min:18', 'max:100'],
+                 'age' => ['required', 'integer', 'min:18', 'max:100'],
 
-                'address' => ['nullable', 'string', 'max:255'],
+                'address' => ['required', 'string', 'max:255'],
 
                 'is_tour_leader' => ['boolean'],
 

@@ -300,43 +300,74 @@
         }
     </style>
 
-    <script>
-        function goToStep2() {
-            const step1 = document.getElementById('step1');
-            const inputs = step1.querySelectorAll('input, select, textarea');
-            let valid = true;
+  <script>
+function goToStep2() {
+    const step1 = document.getElementById('step1');
+    const inputs = step1.querySelectorAll('input, select, textarea');
+    let valid = true;
 
-            inputs.forEach(input => {
-                if (!input.checkValidity()) {
-                    input.reportValidity();
-                    valid = false;
-                }
-            });
-
-            if (!valid) return;
-
-            step1.style.display = 'none';
-            document.getElementById('step2').style.display = 'block';
-            document.getElementById('step1Indicator').style.opacity = '0.4';
-            document.getElementById('step2Indicator').style.opacity = '1';
+    inputs.forEach(input => {
+        if (!input.checkValidity()) {
+            input.reportValidity();
+            valid = false;
         }
-    //for back
-   function goToStep1() {
-            document.getElementById('step2').style.display = 'none';
-            document.getElementById('step1').style.display = 'block';
-            document.getElementById('step1Indicator').style.opacity = '1';
-            document.getElementById('step2Indicator').style.opacity = '0.4';
-        }
-    document.querySelector('form').addEventListener('submit', function(e) {
-            const specialRole = @json($isSpecialRole);
-            const step2 = document.getElementById('step2');
+    });
 
-            if (specialRole && step2 && step2.style.display === 'none') {
-                e.preventDefault();
-                alert('Please complete Step 2 before submitting.');
-            }
-        });
-    </script>
+    if (!valid) return;
+
+    step1.style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    document.getElementById('step1Indicator').style.opacity = '0.4';
+    document.getElementById('step2Indicator').style.opacity = '1';
+}
+
+function goToStep1() {
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step1').style.display = 'block';
+    document.getElementById('step1Indicator').style.opacity = '1';
+    document.getElementById('step2Indicator').style.opacity = '0.4';
+}
+
+document.querySelector('form').addEventListener('submit', function(e) {
+    const specialRole = @json($isSpecialRole);
+    const step2 = document.getElementById('step2');
+
+    // مسح أي رسالة قديمة
+    const errorDiv = document.getElementById('tourLeaderError');
+    if(errorDiv) errorDiv.remove();
+
+    if (specialRole && step2 && step2.style.display === 'none') {
+        e.preventDefault();
+        // نقدر نضيف رسالة على Step2 container
+        const msg = document.createElement('div');
+        msg.id = 'tourLeaderError';
+        msg.style.color = 'red';
+        msg.style.marginTop = '6px';
+        msg.textContent = 'Please complete Step 2 before submitting.';
+        step2.parentNode.insertBefore(msg, step2);
+        return;
+    }
+
+    const role = @json($role);
+    if(role === 'guide') {
+        const isLeader = document.getElementById('is_tour_leader').checked;
+        const specializations = document.querySelectorAll('input[name="specializations[]"]:checked');
+
+        if(!isLeader && specializations.length === 0) {
+            e.preventDefault();
+            // إضافة رسالة أسفل القسم الخاص بالـ Tour Leader / Specializations
+            const specDiv = document.querySelector('.spec-chips-wrap') || document.getElementById('is_tour_leader').parentNode;
+            const msg = document.createElement('div');
+            msg.id = 'tourLeaderError';
+            msg.style.color = 'red';
+            msg.style.marginTop = '6px';
+            msg.textContent = 'Please select either Tour Leader or at least one specialization.';
+            specDiv.parentNode.insertBefore(msg, specDiv.nextSibling);
+            return;
+        }
+    }
+});
+</script>
 
 <!-- countries javascript library -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/country-region-selector/0.4.1/crs.min.js"></script>

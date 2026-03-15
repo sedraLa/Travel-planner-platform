@@ -25,6 +25,7 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
 use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
 
 
@@ -139,7 +140,16 @@ Route::get('/admin/guide/applications',[AdminGuideApplicationController::class,'
 Route::get('/admin/guide/application/{id}',[AdminGuideApplicationController::class,'show'])->name('guide-applications.show');
 Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::class,'updateStatus'])->name('guide.updateStatus');
 
-});
+//Admin Guide
+ 
+Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
+Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
+//Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
+//Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
+
+
+    });
 
     
 Route::middleware('auth')->group(function () {
