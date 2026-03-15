@@ -191,6 +191,11 @@ class DriverController extends Controller
         if ($driver->license_image && Storage::disk('public')->exists($driver->license_image)) {
             Storage::disk('public')->delete($driver->license_image);
         }
+
+
+         if ($guide->personal_image && Storage::disk('public')->exists($guide->personal_image)) {
+            Storage::disk('public')->delete($guide->personal_image);
+         }
         //delete driver
         $driver->user()->delete();
         $driver->delete();

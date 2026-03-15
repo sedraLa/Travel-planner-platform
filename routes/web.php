@@ -25,6 +25,8 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
 use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\AdminGuideController;
+
 
 
 /*
@@ -132,6 +134,14 @@ Route::get('/admin/specialization',[SpecializationController::class,'index'])->n
 Route::post('/admin/specialization/store',[SpecializationController::class,'store'])->name('specialization.store');
 Route::delete('/admin/specialization/{id}',[SpecializationController::class,'destroy'])->name('specialization.destroy');
 
+
+//Admin Guide
+ 
+Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
+Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
+//Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
+//Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
 
 
     });
