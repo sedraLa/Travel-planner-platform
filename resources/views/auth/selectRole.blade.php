@@ -37,6 +37,19 @@
                     <span class="arrow">›</span>
                 </a>
 
+
+                <!-- Guide -->
+                <a href="{{ route('register', ['role' => UserRole::GUIDE->value]) }}" class="option-box guide">
+                    <div class="icon">
+                        <img src="{{ asset('/images/icons/user-group-solid-full.svg') }}" alt="">
+                    </div>
+                    <div class="text">
+                        <h3 style="text-align:left;">Guide</h3>
+                        <p>Become a guide and lead trips or activities</p>
+                    </div>
+                    <span class="arrow">›</span>
+                </a>
+
             </div>
 
             <a href="{{ route('login') }}" class="back-link" style="text-align:center;">Back to Sign In</a>

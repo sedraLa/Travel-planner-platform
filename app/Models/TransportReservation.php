@@ -24,6 +24,7 @@ class TransportReservation extends Model
         'driver_id',
         'driver_status',
         'ranked_driver_ids',
+        
 
     ];
 

@@ -52,7 +52,8 @@
      
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
-                    <li><a href="{{route('transport.dashboard')}}">Transport</a></li>
+                    <li><a href="{{route('transport.dashboard')}}">Transport & Drivers</a></li>
+                       <li><a href="{{route('trips.dashboard')}}">Trips & Guides</a></li>
                     
                        
 
@@ -68,6 +69,7 @@
                            
                         </ul>
                     </li>
+
                 @endif
             @endif
         </ul>

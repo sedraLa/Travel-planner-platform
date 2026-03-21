@@ -35,6 +35,7 @@ class UserFactory extends Factory
             'role' => fake()->randomElement([
                 UserRole::USER->value,
                 UserRole::DRIVER->value,
+                UserRole::GUIDE->value,
             ]),
             'remember_token' => Str::random(10),
         ];

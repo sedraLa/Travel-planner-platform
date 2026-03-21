@@ -24,6 +24,10 @@ use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
+use App\Http\Controllers\SpecializationController;
+use App\Http\Controllers\AdminGuideController;
+use App\Http\Controllers\AdminGuideApplicationController;
+
 
 
 /*
@@ -47,7 +51,7 @@ Route::get('/register/select-role', function () {
 })->name('register.select-role');
 
 Route::get('/dashboard',[AuthenticatedSessionController::class, 'dashboard'])
-->middleware(['auth', 'verified', 'check.driver.status'])
+->middleware(['auth', 'verified', 'check.driver.status','check.guide.status'])
 ->name('dashboard');
 
 
@@ -124,6 +128,29 @@ Route::post('/activities/store', [ActivityController::class, 'store'])->name('ac
 Route::get('/activities/{activity}/edit', [ActivityController::class, 'edit'])->name('activities.edit');
 Route::put('/activities/{activity}', [ActivityController::class, 'update'])->name('activities.update');
 Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
+//trips dashboard
+Route::get('/admin/trips/dashboard',[TripController::class,'dashboard'])->name('trips.dashboard');
+//Admin Specialization
+
+Route::get('/admin/specialization',[SpecializationController::class,'index'])->name('specialization.index');
+Route::post('/admin/specialization/store',[SpecializationController::class,'store'])->name('specialization.store');
+Route::delete('/admin/specialization/{id}',[SpecializationController::class,'destroy'])->name('specialization.destroy');
+
+//Admin Guide Applications
+Route::get('/admin/guide/applications',[AdminGuideApplicationController::class,'index'])->name('guide-applications.index');
+Route::get('/admin/guide/application/{id}',[AdminGuideApplicationController::class,'show'])->name('guide-applications.show');
+Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::class,'updateStatus'])->name('guide.updateStatus');
+
+//Admin Guide
+ 
+Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
+Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
+//Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
+//Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
+
+
     });
 
     

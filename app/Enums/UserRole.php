@@ -4,4 +4,5 @@ enum UserRole: string {
     case ADMIN = 'admin';
     case USER = 'user';
     case DRIVER='driver';
+    case GUIDE = 'guide';
 }

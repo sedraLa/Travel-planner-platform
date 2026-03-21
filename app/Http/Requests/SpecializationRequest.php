@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VehicleOrderRequest extends FormRequest
+class SpecializationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,15 +22,16 @@ class VehicleOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pickup_location'=>'required|string',
-            'dropoff_location'=>'required|string',
-            'pickup_datetime'=>'required|date|after:now',
-            'passengers'=>'required|integer|min:1',
-            'driver_status'    => 'nullable|string|in:pending,completed',
-            'category' => 'nullable|string',
-            'type' => 'nullable|string',
-            'driver_earning' => 'nullable|numeric|min:0',
-           
+              'name' => ['nullable','string','max:255','unique:specializations,name']
         ];
     }
+
+
+
+    public function messages(): array
+{
+    return [
+        'name.unique' => 'This specialization already exists. Please choose another name.',
+    ];
+}
 }
