@@ -5,23 +5,6 @@
             <h1 style="font-weight:bold; font-size:35px;margin-top:5px">Let's go travel</h1>
             @if (Auth::user()->role === UserRole::ADMIN->value)
             <p>Hello admin</p>
-
-            @elseif (Auth::user()->role === UserRole::DRIVER->value)
-                @php
-                   $driver = Auth::user()->driver;
-                @endphp
-
-            @if($driver)
-                  <p>Hello driver {{ $driver->user->name }}</p>
-                  <h3>Your Current Car is {{ $driver->assignment?->vehicle?->car_model ?? 'N/A' }}</h3>
-            @else
-                         <p>Hello driver</p>
-                         <h3>Your Current Car is N/A</h3>
-            @endif
-
-
-
-
         @endif
         </div>
 
