@@ -25,6 +25,16 @@ return new class extends Migration
                   ->nullable()
                   ->constrained()
                   ->onDelete('cascade');
+                   $table->unsignedTinyInteger('stars')->nullable();
+            $table->json('amenities')->nullable();
+            $table->boolean('pets_allowed')->default(false);
+            $table->time('check_in_time')->nullable();
+            $table->time('check_out_time')->nullable();
+            $table->text('policies')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('email')->nullable();
+            $table->string('website')->nullable();
+            $table->text('nearby_landmarks')->nullable();
             $table->timestamps();
             
         });

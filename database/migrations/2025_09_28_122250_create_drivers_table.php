@@ -10,16 +10,19 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->foreignId('user_id')
+                  ->constrained('users') 
+                  ->onDelete('cascade') 
+                  ->after('id');
             $table->integer('age')->nullable();
             $table->string('address')->nullable();
             $table->string('license_image'); // نخزن مسار الصورة
+            $table->string('personal_image');
             $table->string('license_category');
-            $table->string('status')->nullable();
+            $table->enum('status',['pending','rejected','approved'])
+            ->default('pending');
             $table->string('date_of_hire')->nullable();
             $table->text('experience')->nullable(); // تفاصيل الخبرات
-            $table->string('email')->unique();
-            $table->string('phone');
             $table->timestamps();
         });
     }

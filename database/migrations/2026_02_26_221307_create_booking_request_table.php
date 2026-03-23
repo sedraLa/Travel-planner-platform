@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('booking_request', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reservation_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('reservation_id')
+                  ->constrained('transport_reservations')
+                  ->cascadeOnDelete();
             $table->foreignId('driver_id')->constrained()->cascadeOnDelete();
             $table->string('status')->default('sent');
             $table->dateTime('expires_at');

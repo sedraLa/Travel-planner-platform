@@ -9,11 +9,14 @@ return new class extends Migration
     {
         Schema::create('transport_vehicles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transport_id')->constrained()->onDelete('cascade');
             $table->string('car_model');
             $table->string('plate_number')->unique();
-            $table->string('driver_name');
-            $table->string('driver_contact');
+            $table->integer('max_passengers');
+            $table->decimal('base_price', 10, 2);
+            $table->decimal('price_per_km', 10, 2);
+            $table->string('category')->nullable();
+            $table->string('type')->nullable();
+            $table->string('image');
             $table->timestamps();
         });
     }

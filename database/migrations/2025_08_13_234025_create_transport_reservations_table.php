@@ -9,15 +9,18 @@ return new class extends Migration
     {
         Schema::create('transport_reservations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('transport_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('pickup_location');
             $table->string('dropoff_location');
             $table->datetime('pickup_datetime');
+            $table->dateTime('dropoff_datetime')->nullable();
             $table->integer('passengers');
             $table->decimal('total_price', 10, 2);
-            $table->string('status');
+            $table->string('status')->default('completed');
             $table->foreignId('transport_vehicle_id')->constrained()->onDelete('cascade');
+            $table->string('preferred_category')->nullable();
+            $table->string('preferred_type')->nullable();
+            
             $table->timestamps();
         });
     }

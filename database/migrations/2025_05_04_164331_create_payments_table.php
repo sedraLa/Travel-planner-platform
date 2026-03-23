@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->float('amount');
             $table->string('status');
-            $table->unsignedBigInteger('transaction_id');
+            $table->string('transaction_id', 100)->nullable();
             $table->date('payment_date');
             $table->timestamps();
             $table->softDeletes();

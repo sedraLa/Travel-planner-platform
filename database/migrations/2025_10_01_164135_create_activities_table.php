@@ -31,6 +31,43 @@ return new class extends Migration
                 Category::ENTERTAINMENT->value,
             ]);
             $table->boolean('is_active')->default(true);
+            // الوقت والتاريخ
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+
+            // التوافر
+            $table->string('availability');
+
+            // معلومات المرشد
+            $table->string('guide_name')->nullable();
+            $table->string('guide_language')->nullable();
+            $table->string('contact_number')->nullable();
+
+            // المتطلبات
+            $table->text('requirements')->nullable();
+
+            // مستوى الصعوبة
+            $table->enum('difficulty_level', ['easy', 'moderate', 'hard'])->nullable();
+
+            // المرافق
+            $table->json('amenities')->nullable();
+
+            // العنوان
+            $table->string('address');
+
+            // الحجز مطلوب
+            $table->boolean('requires_booking')->default(false);
+
+
+            $table->string('family_friendly');
+
+            // الحيوانات الأليفة
+            $table->boolean('pets_allowed')->default(false);
+
+            // المميزات
+            $table->text('highlights')->nullable();
             $table->timestamps();
         });
     }

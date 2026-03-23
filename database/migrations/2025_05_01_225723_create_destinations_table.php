@@ -14,12 +14,22 @@ return new class extends Migration
         Schema::create('destinations', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
+            $table->string('iata_code', 10)->nullable();
             $table->string('city');
             $table->string('country');
             $table->text('description')->nullable();
             $table->text('location_details');
-            $table->text('activities')->nullable();
-            $table->text('weather_info');
+            $table->string('timezone')->nullable();
+            $table->string('language')->nullable();
+            $table->string('currency')->nullable();
+    
+           
+            $table->string('nearest_airport')->nullable();
+    
+            
+            $table->string('best_time_to_visit')->nullable();
+            $table->string('emergency_numbers')->nullable();
+            $table->string('local_tip')->nullable();
             $table->timestamps();
         });
     }
