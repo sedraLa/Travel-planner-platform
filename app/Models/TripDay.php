@@ -10,10 +10,17 @@ class TripDay extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_id',
-        'day_number',
-        'hotel_id',
-        'custom_hotel',
+         'trip_id',
+          'day_number',
+          'title',
+           'description',
+            'highlights', 
+            'hotel_id',
+    ];
+
+
+    protected $casts = [
+        'highlights' => 'array'
     ];
 
     public function trip()
@@ -30,7 +37,6 @@ class TripDay extends Model
     {
         return $this->belongsTo(Hotel::class);
     }
-
   
 
 }

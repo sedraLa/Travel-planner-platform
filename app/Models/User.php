@@ -104,6 +104,11 @@ class User extends Authenticatable
         return $this->hasOne(Guide::class);
     }
 
+
+     public function tripReservations()
+    {
+        return $this->hasMany(TripReservation::class);
+    }
 }
 
 

@@ -59,4 +59,9 @@ class Destination extends Model
     {
     return $this->hasMany(Highlight::class);
     }
+
+    public function trips()
+    { 
+    return $this->hasMany(Trip::class);
+    }
 }

@@ -9,23 +9,17 @@ class Trip extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id',
-        'is_ai',
         'destination_id',
-        'destination_name',
         'name',
-        'description',
-        'travelers_number',
-        'budget',
-        'start_date',
-        'end_date',
-        'flight_number',
-        'airline',
-        'departure_airport',
-        'arrival_airport',
-        'departure_time',
-        'arrival_time',
-        'ai_itinerary',
+        'slug',
+        'duration_days',
+        'category',
+        'max_participants',
+        'meeting_point_description',
+        'meeting_point_address',
+        'is_ai_generated',
+        'ai_prompt',
+        'status',
     ];
 
     protected $hidden = [
@@ -33,13 +27,45 @@ class Trip extends Model
         'updated_at'
     ];
 
-    public function user() {
-        return $this->belongsTo(User::class);
+   public function packages()
+    {
+        return $this->hasMany(TripPackage::class);
+    }
+    public function images()
+    {
+        return $this->hasMany(TripImage::class);
+    }
+     public function schedules()
+    {
+        return $this->hasMany(TripSchedule::class);
     }
 
-    public function days() {
+   public function days()
+    {
         return $this->hasMany(TripDay::class);
     }
+      public function transports()
+    {
+        return $this->hasMany(TripTransport::class);
+    }
+     
 
+    public function assignments()
+   {
+    return $this->hasMany(GuideAssignment::class);
+   }
+   
+    public function guides()
+    {
+        return $this->belongsToMany(Guide::class, 'guide_assignments')
+            ->withPivot('status')
+            ->withTimestamps();
+    }
+
+
+  public function destination()
+  {
+    return $this->belongsTo(Destination::class);
+  }
 
 }

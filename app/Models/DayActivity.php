@@ -11,7 +11,9 @@ class DayActivity extends Model
     protected $fillable = [
         'trip_day_id',
         'activity_id',
-        'custom_activity'
+       'start_time', 
+       'end_time',
+        'notes',
     ];
 
     protected $hidden = [
@@ -19,12 +21,19 @@ class DayActivity extends Model
         'updated_at'
     ];
 
-    public function tripDay() {
+    public function tripDay()
+    {
         return $this->belongsTo(TripDay::class);
     }
 
-    public function activity() {
+    public function activity()
+    {
         return $this->belongsTo(Activity::class);
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(TripReservation::class);
     }
 
     
