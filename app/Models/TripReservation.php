@@ -9,9 +9,10 @@ class TripReservation extends Model
 {
     use HasFactory;
      protected $fillable = [
-        'day_activity_id',
-      'guide_id',
-       'status',
+    'user_id',  
+    'day_activity_id',
+    'guide_id',
+    'status',
        ];
 
         public function guide()
