@@ -19,6 +19,7 @@ class TripDayRequest extends FormRequest
             'title' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'highlights' => 'nullable|array',
+            'highlights.*' => 'string|max:255',
             'hotel_id' => 'nullable|exists:hotels,id',
         ];
     }

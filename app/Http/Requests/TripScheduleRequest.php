@@ -19,8 +19,8 @@ class TripScheduleRequest extends FormRequest
             'end_date' => 'required|date|after_or_equal:start_date',
             'booking_deadline' => 'nullable|date|before_or_equal:start_date',
             'available_seats' => 'nullable|integer|min:0',
-            'price_modifier' => 'nullable|numeric|min:-999.99|max:999.99',
-            'status' => 'nullable|string|max:100',
+            'price_modifier' => 'nullable|numeric|between:-999.99,999.99',
+            'status' => 'nullable|string|in:available,full,cancelled',
         ];
     }
 }

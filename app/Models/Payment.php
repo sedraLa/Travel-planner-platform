@@ -18,6 +18,7 @@ class Payment extends Model
         'status',
         'transaction_id',
         'payment_date',
+        'trip_reservation_id',
     ];
 
 
@@ -42,6 +43,10 @@ class Payment extends Model
     return $this->belongsTo(TransportReservation::class, 'transport_reservation_id');
 }
 
+     public function tripReservation()
+    {
+        return $this->belongsTo(TripReservation::class);
+    }
 
 
 

@@ -18,6 +18,7 @@ class TripPackageHotelRequest extends FormRequest
             'hotel_id' => 'required|exists:hotels,id',
             'room_type' => 'nullable|string|max:255',
             'amenities' => 'nullable|array',
+            'amenities.*' => 'string|max:255',
             'meal_plan' => 'nullable|string|max:255',
         ];
     }

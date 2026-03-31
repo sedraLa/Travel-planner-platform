@@ -14,6 +14,7 @@ class TripReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => 'required|exists:users,id',
             'day_activity_id' => 'required|exists:day_activities,id',
             'guide_id' => 'required|exists:guides,id',
             'status' => 'nullable|string|in:assigned,completed,cancelled',

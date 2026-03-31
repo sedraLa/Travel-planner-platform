@@ -64,4 +64,18 @@ class Hotel extends Model
     {
         return $this->morphMany(Favorite::class, 'favoritable');
     }
+  
+
+    public function packageHotels()
+    {
+        return $this->hasMany(TripPackageHotel::class);
+    }
+
+    public function tripPackages()
+    {
+        return $this->belongsToMany(TripPackage::class, 'trip_package_hotels')
+                    ->withPivot(['room_type', 'amenities', 'meal_plan'])
+                    ->withTimestamps();
+    }
+
 }

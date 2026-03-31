@@ -37,4 +37,25 @@ class Guide extends Model
         return $this->belongsToMany(Specialization::class, 'guide_specialization', 'guide_id', 'specialization_id');
     }
 
+    public function availabilities()
+    {
+        return $this->hasMany(GuideAvailability::class);
+    }
+
+    public function assignments()
+    {
+        return $this->hasMany(GuideAssignment::class);
+    }
+    
+    public function trips()
+     {
+    return $this->belongsToMany(Trip::class, 'guide_assignments')
+        ->withPivot('status')
+        ->withTimestamps();
+     }
+    public function reservations()
+    {
+        return $this->hasMany(TripReservation::class);
+    }
+
 }
