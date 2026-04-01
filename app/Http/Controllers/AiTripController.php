@@ -2,75 +2,111 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\GroqTripPlannerService;
+use App\Models\DayActivity;
+use App\Models\Destination;
 use App\Models\Trip;
-use Carbon\Carbon; 
+use App\Models\TripDay;
+use App\Services\GroqTripPlannerService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AiTripController extends Controller
 {
-    protected $groqService;
-
-    public function __construct(GroqTripPlannerService $groqService)
+    public function __construct(protected GroqTripPlannerService $groqService)
     {
-        $this->groqService = $groqService;
     }
 
     public function create()
     {
-        return view('trips.ai.create');
+        $destinations = Destination::query()->orderBy('name')->get(['id', 'name', 'city', 'country']);
+
+        return view('trips.ai.create', compact('destinations'));
     }
 
     public function generate(Request $request)
     {
-        
         $validated = $request->validate([
+            'destination_id' => 'required|exists:destinations,id',
             'description' => 'required|string|max:1000',
             'travelers_number' => 'required|integer|min:1',
-            'budget' => 'nullable|numeric',
-            'duration' => 'required|integer|min:1',
+            'budget' => 'nullable|numeric|min:0',
+            'duration' => 'required|integer|min:1|max:30',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'language' => 'nullable|in:en,ar',
         ]);
 
-        
-       
-        $startDate = $validated['start_date'] ?? now()->toDateString();
-        
-       
-        if (empty($validated['end_date'])) {
-            $endDate = Carbon::parse($startDate)->addDays($validated['duration'] - 1)->toDateString();
-        } else {
-            $endDate = $validated['end_date'];
+        $language = $validated['language'] ?? 'en';
+        $plan = $this->groqService->generateTripPlan($validated, $language);
+
+        if (! $plan) {
+            return back()->withErrors(['api_error' => 'Failed to generate trip from Groq API.']);
         }
 
-        
-        $language = $validated['language'] ?? 'en';
-        $tripPlan = $this->groqService->generateTripPlan($validated, $language);
+        $trip = DB::transaction(function () use ($validated, $plan) {
+            $name = Str::limit($plan['trip_name'] ?: $validated['description'], 120, '');
+            $slugBase = Str::slug($name ?: 'ai-trip');
 
-        
-        if ($tripPlan) {
             $trip = Trip::create([
-                'user_id' => auth()->id(),
-                'is_ai' => true,
-                'name' => 'AI Trip: ' . substr($validated['description'], 0, 30) . '...',
-                'description' => $validated['description'],
-                'travelers_number' => $validated['travelers_number'],
-                'budget' => $validated['budget'],
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'ai_itinerary' => $tripPlan,
+                'destination_id' => $validated['destination_id'],
+                'name' => $name,
+                'slug' => $this->nextUniqueSlug($slugBase),
+                'duration_days' => (int) $validated['duration'],
+                'category' => 'ai-generated',
+                'max_participants' => (int) $validated['travelers_number'],
+                // Meeting point is admin-managed (OpenStreetMap + geocoding flow), not AI-managed.
+                'meeting_point_description' => null,
+                'meeting_point_address' => null,
+                'is_ai_generated' => true,
+                'ai_prompt' => $validated['description'],
+                'status' => 'draft',
             ]);
 
-            return redirect()->route('ai.show', $trip->id)->with('success', 'Your AI trip has been generated and saved!');
-        }
+            foreach ($plan['days'] as $day) {
+                $tripDay = TripDay::create([
+                    'trip_id' => $trip->id,
+                    'day_number' => (int) $day['day_number'],
+                    'title' => $day['title'],
+                    'description' => $day['description'],
+                    'highlights' => [],
+                    'hotel_id' => $day['hotel_id'] ?? null,
+                ]);
 
-        return back()->withErrors(['api_error' => 'Failed to generate trip. Please check your API key.']);
+                foreach ($day['activities'] as $activity) {
+                    DayActivity::create([
+                        'trip_day_id' => $tripDay->id,
+                        'activity_id' => (int) $activity['activity_id'],
+                        'start_time' => $activity['start_time'] ?? null,
+                        'end_time' => $activity['end_time'] ?? null,
+                        'notes' => $activity['notes'] ?? null,
+                    ]);
+                }
+            }
+
+            return $trip;
+        });
+
+        return redirect()->route('ai.show', $trip->id)->with('success', 'Your AI trip has been generated and saved!');
     }
 
     public function show(Trip $trip)
     {
+        $trip->load(['destination', 'days.activities.activity', 'days.hotel']);
+
         return view('trips.ai.show', compact('trip'));
+    }
+
+    protected function nextUniqueSlug(string $slugBase): string
+    {
+        $slug = $slugBase ?: 'ai-trip';
+        $counter = 1;
+
+        while (Trip::query()->where('slug', $slug)->exists()) {
+            $slug = $slugBase . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
     }
 }
