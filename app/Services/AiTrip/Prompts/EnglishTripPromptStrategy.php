@@ -26,6 +26,7 @@ Create a {$tripData['duration']}-day trip plan in English using only IDs and nam
 User input:
 - Destination ID: {$tripData['destination_id']}
 - Description: {$tripData['description']}
+- Trip category: {$tripData['category']}
 - Travelers: {$tripData['travelers_number']}
 - Budget: {$tripData['budget']}
 
@@ -35,7 +36,8 @@ STRICT RULES:
 3) Do NOT generate meeting point fields (meeting_point_description / meeting_point_address); those are admin-managed via map/geocoding.
 4) If a requested item does not exist, skip it and keep the plan realistic.
 5) Prefer newest records (higher updated_at values in the catalog).
-6) Output must be JSON matching this shape exactly:
+6) The number of days in "days" MUST equal exactly {$tripData['duration']}.
+7) Output must be JSON matching this shape exactly:
 {
   "trip_name": "string",
   "trip_description": "string",

@@ -26,6 +26,7 @@ class ArabicTripPromptStrategy implements TripPromptStrategy
 مدخلات المستخدم:
 - destination_id: {$tripData['destination_id']}
 - الوصف: {$tripData['description']}
+- تصنيف الرحلة: {$tripData['category']}
 - عدد المسافرين: {$tripData['travelers_number']}
 - الميزانية: {$tripData['budget']}
 
@@ -35,7 +36,8 @@ class ArabicTripPromptStrategy implements TripPromptStrategy
 3) ممنوع توليد meeting_point_description أو meeting_point_address لأنها تدار من الأدمن عبر الخريطة وخدمة geocoding.
 4) إذا لم تجد خياراً مناسباً لا تخترع بيانات، وتجاوز العنصر.
 5) ركّز على أحدث البيانات (updated_at الأحدث).
-6) يجب أن يكون الخرج JSON مطابق تماماً للبنية التالية:
+6) عدد الأيام داخل "days" يجب أن يساوي تماماً {$tripData['duration']}.
+7) يجب أن يكون الخرج JSON مطابق تماماً للبنية التالية:
 {
   "trip_name": "string",
   "trip_description": "string",

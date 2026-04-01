@@ -40,7 +40,10 @@ class GroqTripPlannerService
         }
 
         $strategy = $this->promptStrategies[$language] ?? $this->promptStrategies['en'];
-        $catalog = $this->catalogService->buildCatalog((int) $tripData['destination_id']);
+        $catalog = $this->catalogService->buildCatalog(
+            (int) $tripData['destination_id'],
+            $tripData['category'] ?? null
+        );
 
         try {
             $response = Http::withHeaders([
@@ -74,19 +77,19 @@ class GroqTripPlannerService
                 return null;
             }
 
-            return $this->sanitizeAgainstCatalog($decoded, $catalog);
+            return $this->sanitizeAgainstCatalog($decoded, $catalog, (int) ($tripData['duration'] ?? 1));
         } catch (\Throwable $e) {
             Log::error('Groq API Exception', ['message' => $e->getMessage()]);
             return null;
         }
     }
 
-    protected function sanitizeAgainstCatalog(array $plan, array $catalog): array
+    protected function sanitizeAgainstCatalog(array $plan, array $catalog, int $requestedDuration): array
     {
         $allowedHotelIds = collect($catalog['hotels'])->pluck('id')->map(fn ($id) => (int) $id)->all();
         $allowedActivityIds = collect($catalog['activities'])->pluck('id')->map(fn ($id) => (int) $id)->all();
 
-        $plan['days'] = collect($plan['days'] ?? [])
+        $sanitizedDays = collect($plan['days'] ?? [])
             ->map(function ($day, $index) use ($allowedHotelIds, $allowedActivityIds) {
                 $activities = collect($day['activities'] ?? [])
                     ->filter(fn ($activity) => in_array((int) ($activity['activity_id'] ?? 0), $allowedActivityIds, true))
@@ -110,6 +113,26 @@ class GroqTripPlannerService
                 ];
             })
             ->values()
+            ->all();
+
+        $requestedDuration = max(1, $requestedDuration);
+        $plan['days'] = collect(range(1, $requestedDuration))
+            ->map(function (int $dayNumber) use ($sanitizedDays) {
+                $existing = $sanitizedDays[$dayNumber - 1] ?? null;
+
+                if ($existing) {
+                    $existing['day_number'] = $dayNumber;
+                    return $existing;
+                }
+
+                return [
+                    'day_number' => $dayNumber,
+                    'title' => 'Day ' . $dayNumber,
+                    'description' => '',
+                    'hotel_id' => null,
+                    'activities' => [],
+                ];
+            })
             ->all();
 
         $plan['trip_name'] = (string) ($plan['trip_name'] ?? 'AI Generated Trip');
