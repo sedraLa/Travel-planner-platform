@@ -2,42 +2,45 @@
 
 namespace App\Services;
 
+use App\Services\AiTrip\Contracts\TripPromptStrategy;
+use App\Services\AiTrip\Prompts\ArabicTripPromptStrategy;
+use App\Services\AiTrip\Prompts\EnglishTripPromptStrategy;
+use App\Services\AiTrip\TripCatalogService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class GroqTripPlannerService
 {
-    protected $apiKey;
-    protected $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
-    protected $model = 'llama-3.3-70b-versatile';
+    protected string $apiKey;
+    protected string $endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+    protected string $model = 'llama-3.3-70b-versatile';
 
-    public function __construct()
+    /** @var array<string, TripPromptStrategy> */
+    protected array $promptStrategies;
+
+    public function __construct(protected TripCatalogService $catalogService)
     {
-        $this->apiKey = env('GROQ_API_KEY');
+        $this->apiKey = (string) env('GROQ_API_KEY', '');
+
+        $strategies = [
+            new EnglishTripPromptStrategy(),
+            new ArabicTripPromptStrategy(),
+        ];
+
+        $this->promptStrategies = collect($strategies)
+            ->keyBy(fn (TripPromptStrategy $strategy) => $strategy->language())
+            ->all();
     }
 
-    /**
-     * Generates a trip plan using Groq API.
-     *
-     * @param array $tripData
-     * @param string $language 'en' or 'ar'
-     * @return string|null The generated trip plan text or null on failure.
-     */
-    public function generateTripPlan(array $tripData, string $language = 'en'): ?string
+    public function generateTripPlan(array $tripData, string $language = 'en'): ?array
     {
-        if (!$this->apiKey) {
+        if (blank($this->apiKey)) {
             Log::error('Groq API Key is missing.');
             return null;
         }
 
-        // Build the prompt based on the required language
-        if ($language === 'ar') {
-            $prompt = $this->buildArabicPrompt($tripData);
-            $systemMessage = 'أنت مخطط رحلات سياحية محترف. مهمتك هي إنشاء خطط رحلات مفصلة ومنظمة بشكل جيد باللغة العربية.';
-        } else {
-            $prompt = $this->buildEnglishPrompt($tripData);
-            $systemMessage = 'You are a professional travel planner. Your task is to create detailed and well-organized trip itineraries in English.';
-        }
+        $strategy = $this->promptStrategies[$language] ?? $this->promptStrategies['en'];
+        $catalog = $this->catalogService->buildCatalog((int) $tripData['destination_id']);
 
         try {
             $response = Http::withHeaders([
@@ -46,60 +49,73 @@ class GroqTripPlannerService
             ])->post($this->endpoint, [
                 'model' => $this->model,
                 'messages' => [
-                    [
-                        'role' => 'system',
-                        'content' => $systemMessage
-                    ],
-                    [
-                        'role' => 'user',
-                        'content' => $prompt
-                    ]
+                    ['role' => 'system', 'content' => $strategy->systemMessage()],
+                    ['role' => 'user', 'content' => $strategy->userMessage($tripData, $catalog)],
                 ],
-                'temperature' => 0.7,
-                'max_tokens' => 3000,
+                'temperature' => 0.2,
+                'max_tokens' => 3500,
+                'response_format' => ['type' => 'json_object'],
             ]);
 
-            if ($response->successful()) {
-                $data = $response->json();
-                return $data['choices'][0]['message']['content'] ?? null;
-            } else {
+            if (! $response->successful()) {
                 Log::error('Groq API Request Failed', ['status' => $response->status(), 'body' => $response->body()]);
                 return null;
             }
 
-        } catch (\Exception $e) {
+            $content = $response->json('choices.0.message.content');
+
+            if (! is_string($content) || blank($content)) {
+                return null;
+            }
+
+            $decoded = json_decode($content, true);
+
+            if (! is_array($decoded)) {
+                return null;
+            }
+
+            return $this->sanitizeAgainstCatalog($decoded, $catalog);
+        } catch (\Throwable $e) {
             Log::error('Groq API Exception', ['message' => $e->getMessage()]);
             return null;
         }
     }
 
-    protected function buildEnglishPrompt(array $data): string
+    protected function sanitizeAgainstCatalog(array $plan, array $catalog): array
     {
-        return "I want to plan a trip. Please create a detailed and well-organized trip itinerary in Markdown format.
-        - Trip Description: {$data['description']}
-        - Duration: {$data['duration']} days
-        - Number of Travelers: {$data['travelers_number']}
-        - Estimated Budget: " . ($data['budget'] ? "\${$data['budget']}" : "Not specified") . "
-        
-        **Requirements:**
-        1. The plan must be divided by day (Day 1, Day 2, etc.).
-        2. For each day, specify suggested activities (Morning, Afternoon, Evening).
-        3. The response must be in clear, professional English.
-        4. The response must be in clean, readable Markdown format (use headings and lists).";
-    }
+        $allowedHotelIds = collect($catalog['hotels'])->pluck('id')->map(fn ($id) => (int) $id)->all();
+        $allowedActivityIds = collect($catalog['activities'])->pluck('id')->map(fn ($id) => (int) $id)->all();
 
-    protected function buildArabicPrompt(array $data): string
-    {
-        return "أنا أرغب في تخطيط رحلة. الرجاء إنشاء خطة رحلة مفصلة ومنظمة بتنسيق Markdown.
-        - وصف الرحلة: {$data['description']}
-        - عدد الأيام: {$data['duration']} أيام
-        - عدد المسافرين: {$data['travelers_number']}
-        - الميزانية التقديرية: " . ($data['budget'] ? "{$data['budget']}$" : "غير محددة") . "
-        
-        **المتطلبات:**
-        1. يجب أن تكون الخطة مقسمة حسب الأيام (اليوم الأول، اليوم الثاني، إلخ).
-        2. لكل يوم، يجب تحديد الأنشطة المقترحة (صباحاً، ظهراً، مساءً).
-        3. يجب أن يكون الرد باللغة العربية الفصحى فقط.
-        4. يجب أن يكون الرد بتنسيق Markdown واضح وسهل القراءة (استخدمي العناوين والقوائم).";
+        $plan['days'] = collect($plan['days'] ?? [])
+            ->map(function ($day, $index) use ($allowedHotelIds, $allowedActivityIds) {
+                $activities = collect($day['activities'] ?? [])
+                    ->filter(fn ($activity) => in_array((int) ($activity['activity_id'] ?? 0), $allowedActivityIds, true))
+                    ->map(fn ($activity) => [
+                        'activity_id' => (int) $activity['activity_id'],
+                        'start_time' => $activity['start_time'] ?? null,
+                        'end_time' => $activity['end_time'] ?? null,
+                        'notes' => $activity['notes'] ?? null,
+                    ])
+                    ->values()
+                    ->all();
+
+                return [
+                    'day_number' => (int) ($day['day_number'] ?? ($index + 1)),
+                    'title' => (string) ($day['title'] ?? 'Day ' . ($index + 1)),
+                    'description' => (string) ($day['description'] ?? ''),
+                    'hotel_id' => in_array((int) ($day['hotel_id'] ?? 0), $allowedHotelIds, true)
+                        ? (int) $day['hotel_id']
+                        : null,
+                    'activities' => $activities,
+                ];
+            })
+            ->values()
+            ->all();
+
+        $plan['trip_name'] = (string) ($plan['trip_name'] ?? 'AI Generated Trip');
+        $plan['trip_description'] = (string) ($plan['trip_description'] ?? '');
+        $plan['markdown_summary'] = (string) ($plan['markdown_summary'] ?? '');
+
+        return $plan;
     }
 }
