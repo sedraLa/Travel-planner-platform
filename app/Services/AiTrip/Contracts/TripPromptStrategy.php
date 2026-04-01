@@ -6,7 +6,7 @@ interface TripPromptStrategy
 {
     public function language(): string;
 
-    public function systemMessage(): string;
+    public function systemMessage(): string; //Basic instructions and the main role of AI
 
-    public function userMessage(array $tripData, array $catalog): string;
+    public function userMessage(array $tripData, array $catalog): string; //the prompt
 }

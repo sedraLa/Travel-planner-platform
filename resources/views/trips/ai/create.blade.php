@@ -70,6 +70,18 @@
                                 <x-input-label for="budget">Estimated Budget ($)</x-input-label>
                                 <x-text-input type="number" name="budget" id="budget" placeholder="Optional" value="{{ old('budget') }}" class="w-full"/>
                             </div>
+
+                            <div>
+                                <x-input-label for="category">Trip Category</x-input-label>
+                                <select name="category" id="category" class="w-full rounded-md border-gray-300" required>
+                                    <option value="">Select category</option>
+                                    <option value="cultural" @selected(old('category') === 'cultural')>Cultural</option>
+                                    <option value="romantic" @selected(old('category') === 'romantic')>Romantic</option>
+                                    <option value="adventure" @selected(old('category') === 'adventure')>Adventure</option>
+                                    <option value="family" @selected(old('category') === 'family')>Family</option>
+                                </select>
+                            </div>
+                            
                             <div>
                                 <x-input-label for="language">Language</x-input-label>
                                 <select name="language" id="language" class="w-full rounded-md border-gray-300">

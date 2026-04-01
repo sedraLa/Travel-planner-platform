@@ -11,14 +11,14 @@ class ArabicTripPromptStrategy implements TripPromptStrategy
         return 'ar';
     }
 
-    public function systemMessage(): string
+    public function systemMessage(): string //rules
     {
         return 'أنت مخطط رحلات ويجب أن تلتزم فقط ببيانات الكتالوج المرسلة من قاعدة البيانات. ممنوع اختراع أي بيانات. أعد JSON صالح فقط.';
     }
 
     public function userMessage(array $tripData, array $catalog): string
     {
-        $catalogJson = json_encode($catalog, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $catalogJson = json_encode($catalog, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); //convert data to json
 
         return <<<PROMPT
 أنشئ خطة رحلة لمدة {$tripData['duration']} يوم باللغة العربية بالاعتماد فقط على معرفات البيانات الموجودة في الكتالوج.

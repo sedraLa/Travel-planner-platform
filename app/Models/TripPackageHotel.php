@@ -18,7 +18,7 @@ class TripPackageHotel extends Model
     ];
 
     protected $casts = [
-        'amenities' => 'array', // لأنه JSON
+        'amenities' => 'array', //  JSON
     ];
 
 
