@@ -29,7 +29,7 @@ class AiTripController extends Controller
         $validated = $request->validate([
             'destination_id' => 'required|exists:destinations,id',
             'description' => 'required|string|max:1000',
-            'category' => 'required|in:cultural,romantic,adventure,family',
+            'category' => 'required|in:culture,nature,shopping,sports,entertainment',
             'travelers_number' => 'required|integer|min:1',
             'budget' => 'nullable|numeric|min:0',
             'duration' => 'required|integer|min:1|max:30',

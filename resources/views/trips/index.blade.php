@@ -23,17 +23,18 @@
         @foreach($trips as $trip)
             <div class="bg-white shadow-md rounded p-4 border border-gray-200">
                 <h2 class="text-xl font-semibold">{{ $trip->name }}</h2>
-                @if($trip->is_ai)
+                @if($trip->is_ai_generated)
                     <span class="inline-block bg-blue-200 text-blue-800 px-2 py-1 text-xs rounded mt-1">AI Trip</span>
                 @endif
-                <p class="mt-2 text-gray-600">{{ Str::limit($trip->description, 100) }}</p>
+                <p class="mt-2 text-gray-600">{{ \Illuminate\Support\Str::limit($trip->ai_prompt, 100) }}</p>
                 <p class="mt-2 text-gray-500 text-sm">
-                    Dates: {{ $trip->start_date }} - {{ $trip->end_date }}
+                    Destination: {{ $trip->destination?->name ?? '-' }}
                 </p>
-                <p class="text-gray-500 text-sm">Travelers: {{ $trip->travelers_number }}</p>
+                <p class="text-gray-500 text-sm">Duration: {{ $trip->duration_days }} day(s)</p>
+                <p class="text-gray-500 text-sm">Travelers: {{ $trip->max_participants ?? '-' }}</p>
 
 
-                @if($trip->is_ai)
+                @if($trip->is_ai_generated)
                 <div class="mt-4 flex justify-between">
                     <a href="{{ route('ai.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
                     @else

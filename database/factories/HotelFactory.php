@@ -10,6 +10,17 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class HotelFactory extends Factory
 {
+    public function configure(): static
+    {
+        return $this->afterMaking(function ($hotel) {
+            if ($hotel->destination) {
+                $hotel->city = $hotel->destination->city;
+                $hotel->country = $hotel->destination->country;
+                $hotel->address = fake()->streetAddress() . ', ' . $hotel->destination->city;
+            }
+        });
+    }
+
     public function definition(): array
     {
         return [
