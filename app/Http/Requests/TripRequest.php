@@ -19,6 +19,7 @@ class TripRequest extends FormRequest
         return [
             'destination_id' => 'required|exists:destinations,id',
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'slug' => [
                 'required',
                 'string',

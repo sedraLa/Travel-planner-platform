@@ -95,7 +95,7 @@
 
         <div class="trip-actions">
             <a href="{{ route('trips.index') }}" class="btn btn-secondary">← Back to Trips</a>
-            <a href="{{ route('trips.index') }}" class="btn btn-secondary" style="background-color: #22c55e;color:white;">Complete Creating --></a>
+            <a href="{{ route('trip.complete.edit', $trip->id) }}" class="btn btn-secondary" style="background-color: #22c55e;color:white;">Complete Creating --></a>
         </div>
     </div>
 </x-app-layout>

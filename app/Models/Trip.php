@@ -12,6 +12,7 @@ class Trip extends Model
         'destination_id',
         'name',
         'slug',
+        'description',
         'duration_days',
         'category',
         'max_participants',

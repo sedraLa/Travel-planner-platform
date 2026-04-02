@@ -235,6 +235,12 @@ Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.de
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
 Route::post('/trips/ai/generate',[AiTripController::class,'generate'])->name('ai.generate');
 Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
+Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
+Route::post('/trips/{trip}/complete/basics', [AiTripController::class, 'saveBasics'])->name('trip.complete.basics');
+Route::post('/trips/{trip}/complete/days', [AiTripController::class, 'saveDaysActivities'])->name('trip.complete.days');
+Route::post('/trips/{trip}/complete/packages', [AiTripController::class, 'savePackages'])->name('trip.complete.packages');
+Route::post('/trips/{trip}/complete/schedules', [AiTripController::class, 'saveSchedules'])->name('trip.complete.schedules');
+Route::post('/trips/{trip}/complete/images', [AiTripController::class, 'saveImages'])->name('trip.complete.images');
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
