@@ -8,9 +8,17 @@ class GuideAvailabilityRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+          return $this->user()?->role === 'guide' && $this->user()?->guide !== null;
     }
 
+     protected function prepareForValidation(): void
+    {
+        if ($this->user()?->guide) {
+            $this->merge([
+                'guide_id' => $this->user()->guide->id,
+            ]);
+        }
+    }
     public function rules(): array
     {
         return [

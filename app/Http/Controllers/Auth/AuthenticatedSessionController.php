@@ -20,9 +20,9 @@ class AuthenticatedSessionController extends Controller
 
      public function dashboard() {
         $user = auth()->user(); //get user who is logged now
-        if ($user->role !==UserRole::DRIVER->value) {
-            return view('dashboard');
-        }
+        if ($user->role === UserRole::DRIVER->value) {
+            
+      
 
         //$driver = $user->driver;
        // $vehicle = $driver?->vehicle ;//null safe operator(return null if not exist)
@@ -42,6 +42,16 @@ class AuthenticatedSessionController extends Controller
             'canceledBookings',
             'schedules'
         ));
+        }elseif ($user->role === UserRole::GUIDE->value) {
+          $guide= $user->guide;
+        return view('guide.dashboard',compact('guide'));
+
+    } else {
+        // أي مستخدم آخر → صفحة dashboard عادية
+        return view('dashboard');
+    }
+
+        
 
      }
 

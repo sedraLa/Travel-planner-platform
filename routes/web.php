@@ -27,6 +27,7 @@ use App\Http\Controllers\Driver\BookingRequestController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
+use App\Http\Controllers\GuideAvailabilityController;
 
 
 
@@ -269,6 +270,13 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
 
 
 
+
+Route::middleware(['auth','check.guide.status'])->prefix('guide')->group(function () {
+Route::get('/availabilities', [GuideAvailabilityController::class, 'index'])->name('guide.availabilities.index');
+
+Route::post('/availabilities/store', [GuideAvailabilityController::class, 'store'])->name('guide.availabilities.store');
+Route::delete('/availabilities/{guideAvailability}', [GuideAvailabilityController::class, 'destroy'])->name('guide.availabilities.destroy');
+     });
 
 require __DIR__.'/auth.php';
 

@@ -21,6 +21,30 @@
                 <label class="text-sm text-gray-600">Country</label>
                 <input type="text" name="country" value="{{ request('country') }}" placeholder="Country" class="border rounded-lg p-2">
             </div>
+
+             {{-- Specializations --}}
+            <div>
+                <label class="text-sm text-gray-600">Specializations</label>
+                <select name="specialization" class="border rounded-lg p-2" style="margin-bottom:0">
+                    <option value="">All</option>
+                    @foreach($specializations as $spec)
+                        <option value="{{ $spec->id }}">
+                                        {{ $spec->name }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
+
+
+        <div>
+         <label class="text-sm text-gray-600">Tour Leader</label>
+          <select name="tour_leader" class="border rounded-lg p-2">
+            <option value="">All</option>
+            <option value="1" {{ request('tour_leader') === '1' ? 'selected' : '' }}>Yes</option>
+           <option value="0" {{ request('tour_leader') === '0' ? 'selected' : '' }}>No</option>
+         </select>
+        </div>
         
             {{-- Actions --}}
             <div class="flex gap-2">
@@ -70,7 +94,9 @@
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Date of Hire</th>
-
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                       Tour Leader
+                            </th>
 
                                 <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -88,7 +114,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900"> {{ $guide->user->name ?? '—' }} {{ $driver->user->last_name  ?? '—'  }}</div>
+                                            <div class="text-sm font-medium text-gray-900">{{ $guide->user->name ?? '—' }} {{ $guide->user->last_name  ?? '—'  }}</div>
                                         </div>
                                     </div>
                                 </td>
@@ -111,6 +137,14 @@
                                 <!-- date of hire-->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $guide->date_of_hire ? \Carbon\Carbon::parse($guide->date_of_hire)->format('d-m-Y') : 'N/A' }}
+                                </td>
+
+
+                                
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                  <span class="text-sm font-medium text-gray-900">
+                                    {{ $guide->is_tour_leader ? 'Yes' : 'No' }}
+                                  </span>
                                 </td>
 
                                  <td class="px-6 py-4 whitespace-nowrap">

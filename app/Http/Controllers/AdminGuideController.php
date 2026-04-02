@@ -21,6 +21,7 @@ class AdminGuideController extends Controller{
 
 public function index(Request $request)
     {
+        $specializations = Specialization::all();
         $query = Guide::with(['user','specializations'])->where('status', 'Approved');
 
         if ($request->filled('search')) {
@@ -38,11 +39,22 @@ public function index(Request $request)
             $query->whereHas('user', fn($u) => $u->where('country', 'like', "%{$request->country}%"));
         }
 
+
+        if ($request->filled('tour_leader')) {
+            $query->where('is_tour_leader', $request->tour_leader);
+        }
+
+        if ($request->filled('specialization')) {
+            $query->whereHas('specializations', function ($q) use ($request) {
+                $q->where('specializations.id', $request->specialization);
+            });
+        }
+
         $query->orderBy('date_of_hire', 'desc');
 
         $guides = $query->get();
 
-        return view('guide.index', compact('guides'));
+        return view('guide.index', compact('guides','specializations'));
     }
 
 
