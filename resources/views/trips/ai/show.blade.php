@@ -47,7 +47,7 @@
 
                     @if($day->hotel)
                         <section class="info-section hotel-section">
-                            <h3>🏨 Hotel Details</h3>
+                            <h3>Hotel Details :</h3>
                             <div class="detail-grid">
                                 <div class="detail-item"><strong>Name:</strong> <span>{{ $day->hotel->name }}</span></div>
                                 <div class="detail-item"><strong>Stars:</strong> <span>{{ $day->hotel->stars }} ★</span></div>
@@ -72,7 +72,7 @@
 
                     @if($day->activities->isNotEmpty())
                         <section class="info-section activities-section">
-                            <h3>🎯 Activities</h3>
+                            <h3>Activities :</h3>
                             <div class="activity-list">
                                 @foreach($day->activities as $activity)
                                     <div class="activity-card">
