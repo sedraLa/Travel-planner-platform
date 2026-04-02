@@ -75,10 +75,11 @@
                                 <x-input-label for="category">Trip Category</x-input-label>
                                 <select name="category" id="category" class="w-full rounded-md border-gray-300" required>
                                     <option value="">Select category</option>
-                                    <option value="cultural" @selected(old('category') === 'cultural')>Cultural</option>
-                                    <option value="romantic" @selected(old('category') === 'romantic')>Romantic</option>
-                                    <option value="adventure" @selected(old('category') === 'adventure')>Adventure</option>
-                                    <option value="family" @selected(old('category') === 'family')>Family</option>
+                                    <option value="culture" @selected(old('category') === 'culture')>Culture</option>
+                                    <option value="nature" @selected(old('category') === 'nature')>Nature</option>
+                                    <option value="shopping" @selected(old('category') === 'shopping')>Shopping</option>
+                                    <option value="sports" @selected(old('category') === 'sports')>Sports</option>
+                                    <option value="entertainment" @selected(old('category') === 'entertainment')>Entertainment</option>
                                 </select>
                             </div>
                             
