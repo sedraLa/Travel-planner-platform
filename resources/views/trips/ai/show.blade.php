@@ -24,49 +24,71 @@
                     $cleanTitle = trim((string) $day->title);
                     $cleanTitle = preg_replace('/^day\s*\d+\s*[-:]?\s*/i', '', $cleanTitle);
                 @endphp
-                <h2>Day {{ $day->day_number }}@if(!empty($cleanTitle)) - {{ $cleanTitle }}@endif</h2>
-                <p>{{ $day->description }}</p>
 
-                @if(!empty($day->highlights))
-                    <ul>
-                        @foreach($day->highlights as $highlight)
-                            <li>{{ $highlight }}</li>
-                        @endforeach
-                    </ul>
-                @endif
+                <article class="day-card">
+                    <header class="day-card-header">
+                        <h2>Day {{ $day->day_number }}@if(!empty($cleanTitle)) - {{ $cleanTitle }}@endif</h2>
+                    </header>
 
-                @if($day->hotel)
-                    <p><strong>Hotel:</strong> {{ $day->hotel->name }} — {{ $day->hotel->stars }} Stars / ${{ $day->hotel->price_per_night }} per night</p>
-                    @if(!empty($day->hotel->description))
-                        <p><strong>About hotel:</strong> {{ $day->hotel->description }}</p>
+                    @if(!empty($day->description))
+                        <p class="day-description">{{ $day->description }}</p>
                     @endif
-                    @if(!empty($day->hotel->amenities))
-                        <p><strong>Amenities:</strong> {{ implode(', ', $day->hotel->amenities) }}</p>
-                    @endif
-                    @if($day->hotel->check_in_time || $day->hotel->check_out_time)
-                        <p><strong>Check in/out:</strong> {{ $day->hotel->check_in_time?->format('H:i') ?? '-' }} / {{ $day->hotel->check_out_time?->format('H:i') ?? '-' }}</p>
-                    @endif
-                    @if(!empty($day->hotel->nearby_landmarks))
-                        <p><strong>Nearby landmarks:</strong> {{ $day->hotel->nearby_landmarks }}</p>
-                    @endif
-                    @if(!empty($day->hotel->policies))
-                        <p><strong>Policies:</strong> {{ $day->hotel->policies }}</p>
-                    @endif
-                    <br>
-                @endif
 
-                @if($day->activities->isNotEmpty())
-                    <ul>
-                        @foreach($day->activities as $activity)
-                            <li>
-                                <strong>{{ $activity->activity?->name }}</strong> - {{ $activity->activity?->price }}$ <br>
-                                @if($activity->notes)
-                                    <strong>Notes:</strong> {{ $activity->notes }}
-                                @endif
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
+                    @if(!empty($day->highlights))
+                        <section class="info-section highlights-section">
+                            <h3>✨ Highlights</h3>
+                            <ul class="tag-list">
+                                @foreach($day->highlights as $highlight)
+                                    <li>{{ $highlight }}</li>
+                                @endforeach
+                            </ul>
+                        </section>
+                    @endif
+
+                    @if($day->hotel)
+                        <section class="info-section hotel-section">
+                            <h3>🏨 Hotel Details</h3>
+                            <div class="detail-grid">
+                                <div class="detail-item"><strong>Name:</strong> <span>{{ $day->hotel->name }}</span></div>
+                                <div class="detail-item"><strong>Stars:</strong> <span>{{ $day->hotel->stars }} ★</span></div>
+                                <div class="detail-item"><strong>Price / Night:</strong> <span>${{ $day->hotel->price_per_night }}</span></div>
+                                <div class="detail-item"><strong>Check in / out:</strong> <span>{{ $day->hotel->check_in_time?->format('H:i') ?? '-' }} / {{ $day->hotel->check_out_time?->format('H:i') ?? '-' }}</span></div>
+                            </div>
+
+                            @if(!empty($day->hotel->description))
+                                <p><strong>About hotel:</strong> {{ $day->hotel->description }}</p>
+                            @endif
+                            @if(!empty($day->hotel->amenities))
+                                <p><strong>Amenities:</strong> {{ implode(', ', $day->hotel->amenities) }}</p>
+                            @endif
+                            @if(!empty($day->hotel->nearby_landmarks))
+                                <p><strong>Nearby landmarks:</strong> {{ $day->hotel->nearby_landmarks }}</p>
+                            @endif
+                            @if(!empty($day->hotel->policies))
+                                <p><strong>Policies:</strong> {{ $day->hotel->policies }}</p>
+                            @endif
+                        </section>
+                    @endif
+
+                    @if($day->activities->isNotEmpty())
+                        <section class="info-section activities-section">
+                            <h3>🎯 Activities</h3>
+                            <div class="activity-list">
+                                @foreach($day->activities as $activity)
+                                    <div class="activity-card">
+                                        <div class="activity-row">
+                                            <strong>{{ $activity->activity?->name }}</strong>
+                                            <span class="price-pill">${{ $activity->activity?->price }}</span>
+                                        </div>
+                                        @if($activity->notes)
+                                            <p><strong>Notes:</strong> {{ $activity->notes }}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </section>
+                    @endif
+                </article>
             @endforeach
         </div>
 
