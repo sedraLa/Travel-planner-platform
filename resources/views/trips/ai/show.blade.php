@@ -32,18 +32,17 @@
                 @endif
 
                 @if($day->hotel)
-                    <p><strong>Hotel:</strong> {{ $day->hotel->name }}</p>
+                    <p><strong>Hotel:</strong> {{ $day->hotel->name }} - {{$day->hotel->stars}} Stars / price per night:  {{ $day->hotel->price_per_night }}$ </p> <br>
                 @endif
 
                 @if($day->activities->isNotEmpty())
                     <ul>
                         @foreach($day->activities as $activity)
                             <li>
-                                <strong>{{ $activity->activity?->name }}</strong>
-                                @if($activity->start_time || $activity->end_time)
-                                    ({{ $activity->start_time }} - {{ $activity->end_time }})
-                                @endif
+                                <strong>{{ $activity->activity?->name }}</strong> - {{ $activity->activity?->price }}$ <br>
+                                
                                 @if($activity->notes)
+                                <strong>Notes:</strong>
                                     - {{ $activity->notes }}
                                 @endif
                             </li>
