@@ -61,7 +61,15 @@ class Destination extends Model
     }
 
     public function trips()
-    { 
-    return $this->hasMany(Trip::class);
+    {
+        return $this->hasMany(Trip::class);
+    }
+
+    public function catalogTrips()
+    {
+        return $this->belongsToMany(Trip::class, 'trip_destinations')
+            ->withPivot('sort_order')
+            ->orderBy('trip_destinations.sort_order');
     }
 }
+

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Category;
 use App\Models\DayActivity;
 use App\Models\Destination;
 use App\Models\Trip;
@@ -20,17 +21,22 @@ class AiTripController extends Controller
     public function create()
     {
         $destinations = Destination::query()->orderBy('name')->get(['id', 'name', 'city', 'country']);
+        $categories = Category::cases();
 
-        return view('trips.ai.create', compact('destinations'));
+        return view('trips.ai.create', compact('destinations', 'categories'));
     }
 
     public function generate(Request $request)
     {
+        $allowedCategories = implode(',', Category::values());
+
         $validated = $request->validate([
-            'destination_id' => 'required|exists:destinations,id',
+            'destination_ids' => 'required|array|min:1',
+            'destination_ids.*' => 'required|integer|exists:destinations,id',
             'description' => 'required|string|max:1000',
-            'category' => 'required|in:culture,nature,shopping,sports,entertainment',
-            'travelers_number' => 'required|integer|min:1',
+            'categories' => 'required|array|min:1',
+            'categories.*' => 'required|string|in:' . $allowedCategories,
+            'max_participants' => 'required|integer|min:1',
             'budget' => 'nullable|numeric|min:0',
             'duration' => 'required|integer|min:1|max:30',
             'start_date' => 'nullable|date',
@@ -38,7 +44,10 @@ class AiTripController extends Controller
             'language' => 'nullable|in:en,ar',
         ]);
 
+        $validated['destination_ids'] = array_values(array_unique($validated['destination_ids']));
+        $validated['categories'] = array_values(array_unique($validated['categories']));
         $language = $validated['language'] ?? 'en';
+
         $plan = $this->groqService->generateTripPlan($validated, $language);
 
         if (! $plan) {
@@ -48,14 +57,15 @@ class AiTripController extends Controller
         $trip = DB::transaction(function () use ($validated, $plan) {
             $name = Str::limit($plan['trip_name'] ?: $validated['description'], 120, '');
             $slugBase = Str::slug($name ?: 'ai-trip');
+            $primaryDestinationId = (int) $validated['destination_ids'][0];
 
             $trip = Trip::create([
-                'destination_id' => $validated['destination_id'],
+                'destination_id' => $primaryDestinationId,
                 'name' => $name,
                 'slug' => $this->nextUniqueSlug($slugBase),
                 'duration_days' => (int) $validated['duration'],
-                'category' => $validated['category'],
-                'max_participants' => (int) $validated['travelers_number'],
+                'category' => implode(',', $validated['categories']),
+                'max_participants' => (int) $validated['max_participants'],
                 // Meeting point is admin-managed (OpenStreetMap + geocoding flow), not AI-managed.
                 'meeting_point_description' => null,
                 'meeting_point_address' => null,
@@ -63,6 +73,12 @@ class AiTripController extends Controller
                 'ai_prompt' => $validated['description'],
                 'status' => 'draft',
             ]);
+
+            $trip->destinations()->sync(
+                collect($validated['destination_ids'])->values()->mapWithKeys(fn (int $destinationId, int $index) => [
+                    $destinationId => ['sort_order' => $index + 1],
+                ])->all()
+            );
 
             foreach ($plan['days'] as $day) {
                 $tripDay = TripDay::create([
@@ -93,7 +109,7 @@ class AiTripController extends Controller
 
     public function show(Trip $trip)
     {
-        $trip->load(['destination', 'days.activities.activity', 'days.hotel']);
+        $trip->load(['destination', 'destinations', 'days.activities.activity', 'days.hotel']);
 
         return view('trips.ai.show', compact('trip'));
     }

@@ -29,6 +29,11 @@ class ActivityFactory extends Factory
             'shopping' => ['Old Souk Shopping', 'Artisan Market Visit', 'Local Boutique Crawl'],
             'sports' => ['Kayaking Session', 'Cycling City Route', 'Rock Climbing Experience'],
             'entertainment' => ['Live Music Night', 'Food Festival Visit', 'City Theater Show'],
+            'family' => ['Family Park Day', 'Interactive Science Center', 'Kid-Friendly Aquarium Visit'],
+            'romance' => ['Sunset Dinner Cruise', 'Couples Spa Session', 'Private Rooftop Dinner'],
+            'adventure' => ['Desert Safari Ride', 'Zipline Challenge', 'Canyon Exploration Tour'],
+            'wellness' => ['Morning Yoga Retreat', 'Thermal Spa Visit', 'Mindfulness Nature Walk'],
+            'food' => ['Street Food Tasting', 'Local Cooking Class', 'Farm-to-Table Experience'],
         ];
 
         return [

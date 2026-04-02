@@ -2,63 +2,89 @@
 
 namespace App\Services\AiTrip;
 
+use App\Enums\Category;
 use App\Models\Destination;
 
 class TripCatalogService
 {
-    public function buildCatalog(int $destinationId, ?string $tripCategory = null): array
+    public function buildCatalog(array $destinationIds, array $tripCategories = []): array
     {
-        $normalizedCategory = $this->normalizeCategory($tripCategory);
+        $destinationIds = collect($destinationIds)->map(fn ($id) => (int) $id)->filter()->unique()->values();
+        $normalizedCategories = $this->normalizeCategories($tripCategories);
 
-        $destination = Destination::query()->with([
-            'hotels' => fn ($query) => $query->orderByDesc('updated_at')->limit(20),
-            'activities' => fn ($query) => $query
-                ->where('is_active', true)
-                ->when($normalizedCategory !== null, fn ($subQuery) => $subQuery->where('category', $normalizedCategory))
-                ->orderBy('price')
-                ->orderBy('duration')
-                ->orderByDesc('updated_at')
-                ->limit(40),
-        ])->findOrFail($destinationId);
+        $destinations = Destination::query()
+            ->whereIn('id', $destinationIds)
+            ->with([
+                'hotels' => fn ($query) => $query->orderByDesc('stars')->orderBy('price_per_night')->orderByDesc('updated_at')->limit(30),
+                'activities' => fn ($query) => $query
+                    ->where('is_active', true)
+                    ->when(! empty($normalizedCategories), fn ($subQuery) => $subQuery->whereIn('category', $normalizedCategories))
+                    ->orderBy('price')
+                    ->orderBy('duration')
+                    ->orderByDesc('updated_at')
+                    ->limit(60),
+            ])
+            ->get();
 
         return [
-            'destination' => [
+            'destinations' => $destinations->map(fn ($destination) => [
                 'id' => $destination->id,
                 'name' => $destination->name,
                 'city' => $destination->city,
                 'country' => $destination->country,
                 'updated_at' => optional($destination->updated_at)?->toDateTimeString(),
-            ],
+            ])->values()->all(),
             'filters' => [
-                'requested_trip_category' => $tripCategory,
-                'normalized_activity_category' => $normalizedCategory,
+                'requested_destination_ids' => $destinationIds->all(),
+                'requested_trip_categories' => $tripCategories,
+                'normalized_activity_categories' => $normalizedCategories,
             ],
-            'hotels' => $destination->hotels->map(fn ($hotel) => [
+            'hotels' => $destinations->flatMap(fn ($destination) => $destination->hotels->map(fn ($hotel) => [
                 'id' => $hotel->id,
+                'destination_id' => $destination->id,
+                'destination_name' => $destination->name,
                 'name' => $hotel->name,
+                'city' => $hotel->city,
+                'country' => $hotel->country,
+                'description' => $hotel->description,
                 'price_per_night' => $hotel->price_per_night,
                 'stars' => $hotel->stars,
+                'amenities' => $hotel->amenities ?? [],
+                'pets_allowed' => $hotel->pets_allowed,
+                'check_in_time' => $hotel->check_in_time?->format('H:i'),
+                'check_out_time' => $hotel->check_out_time?->format('H:i'),
+                'policies' => $hotel->policies,
+                'nearby_landmarks' => $hotel->nearby_landmarks,
                 'updated_at' => optional($hotel->updated_at)?->toDateTimeString(),
-            ])->values()->all(),
-            'activities' => $destination->activities->map(fn ($activity) => [
+            ]))->values()->all(),
+            'activities' => $destinations->flatMap(fn ($destination) => $destination->activities->map(fn ($activity) => [
                 'id' => $activity->id,
+                'destination_id' => $destination->id,
+                'destination_name' => $destination->name,
                 'name' => $activity->name,
+                'description' => $activity->description,
+                'address' => $activity->address,
                 'price' => $activity->price,
                 'category' => $activity->category,
                 'duration' => $activity->duration,
                 'duration_unit' => $activity->duration_unit,
+                'amenities' => $activity->amenities ?? [],
+                'highlights' => $activity->highlights,
                 'updated_at' => optional($activity->updated_at)?->toDateTimeString(),
-            ])->values()->all(),
+            ]))->values()->all(),
         ];
     }
 
-    protected function normalizeCategory(?string $category): ?string
+    protected function normalizeCategories(array $categories): array
     {
-        $normalized = strtolower(trim((string) $category));
-        $normalized = str_replace(' ', '_', $normalized);
+        $allowed = Category::values();
 
-        return in_array($normalized, ['culture', 'nature', 'shopping', 'sports', 'entertainment'], true)
-            ? $normalized
-            : null;
+        return collect($categories)
+            ->map(fn ($category) => strtolower(trim((string) $category)))
+            ->map(fn (string $category) => str_replace(' ', '_', $category))
+            ->filter(fn (string $category) => in_array($category, $allowed, true))
+            ->unique()
+            ->values()
+            ->all();
     }
 }

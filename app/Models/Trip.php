@@ -68,4 +68,12 @@ class Trip extends Model
     return $this->belongsTo(Destination::class);
   }
 
+  public function destinations()
+  {
+    return $this->belongsToMany(Destination::class, 'trip_destinations')
+        ->withPivot('sort_order')
+        ->orderBy('trip_destinations.sort_order');
+  }
+
 }
+
