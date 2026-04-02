@@ -24,7 +24,7 @@
     {{-- Keyword --}}
     <div class="flex-1 min-w-[200px]">
         <label class="text-sm text-gray-600">Search</label>
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search a trip by its name" class="w-full border rounded-lg p-2">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, description, or AI prompt" class="w-full border rounded-lg p-2">
     </div>
 
     
@@ -47,6 +47,7 @@
         <select name="status" class="border rounded-lg p-2" style="margin-bottom:0">
             <option value="">All</option>
             <option value="draft" @selected(request('status')=='draft')>Draft</option>
+            <option value="published" @selected(request('status')=='published')>Published</option>
         </select>
     </div>
 
@@ -77,7 +78,11 @@
                 </p>
                 <p class="text-gray-500 text-sm">Duration: {{ $trip->duration_days }} day(s)</p>
                 <p class="text-gray-500 text-sm">Travelers: {{ $trip->max_participants ?? '-' }}</p>
+                <p class="text-gray-500 text-sm">Status: {{ ucfirst($trip->status) }}</p>
 
+                @if($trip->is_ai_generated && $trip->status === 'draft')
+                    <a href="{{ route('trip.complete.edit', $trip->id) }}" class="inline-block mt-3 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">Complete Creating</a>
+                @endif
 
                 @if($trip->is_ai_generated)
                 <div class="mt-4 flex justify-between">
