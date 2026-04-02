@@ -39,8 +39,8 @@ class AiTripController extends Controller
             'max_participants' => 'required|integer|min:1',
             'budget' => 'nullable|numeric|min:0',
             'duration' => 'required|integer|min:1|max:30',
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+           // 'start_date' => 'nullable|date',
+            //'end_date' => 'nullable|date|after_or_equal:start_date',
             'language' => 'nullable|in:en,ar',
         ]);
 

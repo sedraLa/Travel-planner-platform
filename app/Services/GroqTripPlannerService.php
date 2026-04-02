@@ -84,6 +84,7 @@ class GroqTripPlannerService
         }
     }
 
+    //safety against AI
     protected function sanitizeAgainstCatalog(array $plan, array $catalog, int $requestedDuration): array
     {
         $allowedHotelIds = collect($catalog['hotels'])->pluck('id')->map(fn ($id) => (int) $id)->all();
