@@ -1,6 +1,7 @@
 <x-app-layout>
     @push('styles')
     <link rel="stylesheet" href="{{ asset('css/aiTrip.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/cardetails.css') }}">
     @endpush
 
     <div class="trip-container">
@@ -94,6 +95,8 @@
 
         <div class="trip-actions">
             <a href="{{ route('trips.index') }}" class="btn btn-secondary">← Back to Trips</a>
+            <a href="{{ route('trips.index') }}" class="btn btn-secondary" style="background-color: #007bff;color:white;">Draft</a>
+            <a href="{{ route('trips.index') }}" class="btn btn-secondary" style="background-color: #22c55e;color:white;">Complete Creating --></a>
         </div>
     </div>
 </x-app-layout>

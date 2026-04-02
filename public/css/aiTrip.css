@@ -1,6 +1,7 @@
 .trip-container {
     max-width: 1300px;
     margin: 0 auto;
+    margin-top:80px;
     padding: 30px 20px;
     background: white;
     border-radius: 14px;

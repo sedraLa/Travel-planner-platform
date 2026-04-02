@@ -44,6 +44,10 @@
                         <x-dropdown-link :href="route('trips.index')">
                             {{ ('My Trips') }}
                         </x-dropdown-link>
+                        <x-dropdown-link :href="route('trip.view')">
+                            {{ ('Draft Trips') }}
+                        </x-dropdown-link>
+
                     </x-slot>
                 </x-dropdown>
             </div>
