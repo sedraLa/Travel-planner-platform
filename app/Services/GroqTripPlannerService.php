@@ -41,8 +41,8 @@ class GroqTripPlannerService
 
         $strategy = $this->promptStrategies[$language] ?? $this->promptStrategies['en'];
         $catalog = $this->catalogService->buildCatalog(
-            (int) $tripData['destination_id'],
-            $tripData['category'] ?? null
+            $tripData['destination_ids'] ?? [],
+            $tripData['categories'] ?? []
         );
 
         try {
@@ -135,10 +135,39 @@ class GroqTripPlannerService
             })
             ->all();
 
+        $plan['days'] = $this->optimizeHotelsAcrossDays($plan['days'], $catalog['hotels'] ?? [], $requestedDuration);
+
         $plan['trip_name'] = (string) ($plan['trip_name'] ?? 'AI Generated Trip');
-        $plan['trip_description'] = (string) ($plan['trip_description'] ?? '');
+        $plan['trip_description'] = (string) ($plan['trip_description'] ?? 'A detailed trip crafted with curated local experiences, smart pacing, and practical stay recommendations from your platform catalog.');
         $plan['markdown_summary'] = (string) ($plan['markdown_summary'] ?? '');
 
         return $plan;
+    }
+
+    protected function optimizeHotelsAcrossDays(array $days, array $hotels, int $duration): array
+    {
+        if (empty($days) || empty($hotels)) {
+            return $days;
+        }
+
+        $hotelIds = collect($hotels)->pluck('id')->map(fn ($id) => (int) $id)->values()->all();
+        $activeHotelIndex = 0;
+
+        foreach ($days as $index => $day) {
+            if (! empty($day['hotel_id']) && in_array((int) $day['hotel_id'], $hotelIds, true)) {
+                $currentIndex = array_search((int) $day['hotel_id'], $hotelIds, true);
+                $activeHotelIndex = $currentIndex === false ? $activeHotelIndex : $currentIndex;
+                continue;
+            }
+
+            // For long trips (>5 days), rotate hotel every 3 days for better comfort and location fit.
+            if ($duration > 5 && $index > 0 && $index % 3 === 0) {
+                $activeHotelIndex = ($activeHotelIndex + 1) % count($hotelIds);
+            }
+
+            $days[$index]['hotel_id'] = $hotelIds[$activeHotelIndex];
+        }
+
+        return $days;
     }
 }

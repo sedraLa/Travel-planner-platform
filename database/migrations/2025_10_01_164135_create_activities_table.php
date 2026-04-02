@@ -29,6 +29,11 @@ return new class extends Migration
                 Category::SHOPPING->value,
                 Category::SPORTS->value,
                 Category::ENTERTAINMENT->value,
+                Category::FAMILY->value,
+                Category::ROMANCE->value,
+                Category::ADVENTURE->value,
+                Category::WELLNESS->value,
+                Category::FOOD->value,
             ]);
             $table->boolean('is_active')->default(true);
             // الوقت والتاريخ

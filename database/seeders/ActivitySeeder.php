@@ -22,6 +22,11 @@ class ActivitySeeder extends Seeder
                 ['name' => 'Kayaking Session', 'category' => 'sports', 'price' => 30, 'duration' => 2],
                 ['name' => 'Evening Cultural Show', 'category' => 'entertainment', 'price' => 40, 'duration' => 2],
                 ['name' => 'Food Festival Experience', 'category' => 'entertainment', 'price' => 18, 'duration' => 2],
+                ['name' => 'Family Theme Park Day', 'category' => 'family', 'price' => 45, 'duration' => 6],
+                ['name' => 'Romantic Sunset Dinner', 'category' => 'romance', 'price' => 80, 'duration' => 3],
+                ['name' => 'Desert Adventure Safari', 'category' => 'adventure', 'price' => 55, 'duration' => 5],
+                ['name' => 'Wellness Spa & Yoga Session', 'category' => 'wellness', 'price' => 65, 'duration' => 4],
+                ['name' => 'Local Culinary Workshop', 'category' => 'food', 'price' => 35, 'duration' => 3],
             ];
 
             foreach ($activities as $activity) {

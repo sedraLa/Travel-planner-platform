@@ -19,15 +19,17 @@ class ArabicTripPromptStrategy implements TripPromptStrategy
     public function userMessage(array $tripData, array $catalog): string
     {
         $catalogJson = json_encode($catalog, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); //convert data to json
+        $selectedCategories = implode('، ', $tripData['categories'] ?? []);
+        $selectedDestinations = implode('، ', array_map('strval', $tripData['destination_ids'] ?? []));
 
         return <<<PROMPT
 أنشئ خطة رحلة لمدة {$tripData['duration']} يوم باللغة العربية بالاعتماد فقط على معرفات البيانات الموجودة في الكتالوج.
 
 مدخلات المستخدم:
-- destination_id: {$tripData['destination_id']}
+- destination_ids (اختيار متعدد): {$selectedDestinations}
 - الوصف: {$tripData['description']}
-- تصنيف الرحلة: {$tripData['category']}
-- عدد المسافرين: {$tripData['travelers_number']}
+- تصنيفات الرحلة (اختيار متعدد): {$selectedCategories}
+- الحد الأقصى للمشاركين: {$tripData['max_participants']}
 - الميزانية: {$tripData['budget']}
 
 قواعد صارمة:
@@ -37,7 +39,12 @@ class ArabicTripPromptStrategy implements TripPromptStrategy
 4) إذا لم تجد خياراً مناسباً لا تخترع بيانات، وتجاوز العنصر.
 5) ركّز على أحدث البيانات (updated_at الأحدث).
 6) عدد الأيام داخل "days" يجب أن يساوي تماماً {$tripData['duration']}.
-7) يجب أن يكون الخرج JSON مطابق تماماً للبنية التالية:
+7) وصف كل يوم لازم يكون غني ومفصل (تنظيم اليوم، نصائح، مبرر ترتيب الأنشطة) وبحد أدنى 35 كلمة.
+8) قواعد توزيع الفنادق:
+   - إذا كانت الرحلة أطول من 5 أيام، بدّل الفندق بين عدة أيام عند توفر خيارات مناسبة.
+   - إذا كانت الأنشطة متباعدة بحسب المنطقة/العنوان، اختر فندق أقرب لذلك اليوم.
+   - إذا كانت الرحلة تشمل أكثر من وجهة مختارة، غيّر الفندق ليتوافق مع تسلسل الوجهات.
+9) يجب أن يكون الخرج JSON مطابق تماماً للبنية التالية:
 {
   "trip_name": "string",
   "trip_description": "string",
