@@ -18,8 +18,53 @@
             {{ session('success') }}
         </div>
     @endif
+    
+ {{-- Search Form  --}}
+ <form method="GET" action="{{ route('trips.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
+    {{-- Keyword --}}
+    <div class="flex-1 min-w-[200px]">
+        <label class="text-sm text-gray-600">Search</label>
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search a trip by its name" class="w-full border rounded-lg p-2">
+    </div>
 
+    
+
+    {{--Category --}} {{--needs editing--}}
+    <div>
+        <label class="text-sm text-gray-600">Category</label>
+        <select name="license_category" class="border rounded-lg p-2" style="margin-bottom:0">
+            <option value="">All</option>
+            <option value="A" @selected(request('license_category')=='A')>A</option>
+            <option value="B" @selected(request('license_category')=='B')>B</option>
+        </select>
+    </div>
+
+
+    
+    {{-- Status --}}
+    <div>
+        <label class="text-sm text-gray-600">Status</label>
+        <select name="status" class="border rounded-lg p-2" style="margin-bottom:0">
+            <option value="">All</option>
+            <option value="draft" @selected(request('status')=='draft')>Draft</option>
+        </select>
+    </div>
+
+    {{-- Destination --}} 
+    <div>
+        <label class="text-sm text-gray-600">Destination</label>
+        <input type="text" name="destination" value="{{ request('destination') }}" placeholder="destination" class="border rounded-lg p-2">
+    </div>
+
+    {{-- Actions --}}
+    <div class="flex gap-2">
+        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>
+        <a href="{{ route('trips.index') }}" class="px-4 py-2 border rounded-lg text-gray-600">Reset</a>
+    </div>
+</form>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        
+        
         @foreach($trips as $trip)
             <div class="bg-white shadow-md rounded p-4 border border-gray-200">
                 <h2 class="text-xl font-semibold">{{ $trip->name }}</h2>

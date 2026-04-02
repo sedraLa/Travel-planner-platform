@@ -104,7 +104,7 @@ class AiTripController extends Controller
             return $trip;
         });
 
-        return redirect()->route('ai.show', $trip->id)->with('success', 'Your AI trip has been generated and saved!');
+        return redirect()->route('ai.show', $trip->id)->with('success', 'Your AI trip has been generated and saved as draft, You have to complete creating this trip!');
     }
 
     public function show(Trip $trip)

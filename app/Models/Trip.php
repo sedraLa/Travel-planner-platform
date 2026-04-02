@@ -62,12 +62,13 @@ class Trip extends Model
             ->withTimestamps();
     }
 
-
+//primary destination
   public function destination()
   {
     return $this->belongsTo(Destination::class);
   }
 
+  //other destinations
   public function destinations()
   {
     return $this->belongsToMany(Destination::class, 'trip_destinations')
