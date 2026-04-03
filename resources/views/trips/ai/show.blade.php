@@ -12,7 +12,7 @@
         <div class="trip-header">
             <h1>{{ $trip->name }}</h1>
             <div class="trip-meta">
-                <div class="trip-meta-item"><strong>📍 Destinations:</strong> <span>{{ $trip->destinations->pluck('name')->join(' • ') ?: $trip->destination?->name }}</span></div>
+                <div class="trip-meta-item"><strong>📍 Destinations:</strong> <span>{{ $trip->itineraryDestinations->pluck('name')->join(' • ') ?: $trip->primaryDestination?->name }}</span></div>
                 <div class="trip-meta-item"><strong>📅 Duration:</strong> <span>{{ $trip->duration_days }} days</span></div>
                 <div class="trip-meta-item"><strong>👥 Max Participants:</strong> <span>{{ $trip->max_participants ?? '-' }}</span></div>
                 <div class="trip-meta-item"><strong>🤖 Source:</strong> <span>AI + DB Catalog</span></div>
