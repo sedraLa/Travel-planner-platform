@@ -63,19 +63,30 @@ class Trip extends Model
             ->withTimestamps();
     }
 
-//primary destination
-  public function destination()
-  {
-    return $this->belongsTo(Destination::class);
-  }
+    // Clear relation name for the primary destination.
+    public function primaryDestination()
+    {
+        return $this->belongsTo(Destination::class, 'destination_id');
+    }
 
-  //other destinations
-  public function destinations()
-  {
-    return $this->belongsToMany(Destination::class, 'trip_destinations')
-        ->withPivot('sort_order')
-        ->orderBy('trip_destinations.sort_order');
-  }
+    // Clear relation name for all itinerary destinations (including primary).
+    public function itineraryDestinations()
+    {
+        return $this->belongsToMany(Destination::class, 'trip_destinations')
+            ->withPivot('sort_order')
+            ->orderBy('trip_destinations.sort_order');
+    }
+
+    // Backward-compatible alias.
+    public function destination()
+    {
+        return $this->primaryDestination();
+    }
+
+    // Backward-compatible alias.
+    public function destinations()
+    {
+        return $this->itineraryDestinations();
+    }
 
 }
-

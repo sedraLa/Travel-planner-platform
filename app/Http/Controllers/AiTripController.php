@@ -81,7 +81,7 @@ class AiTripController extends Controller
                 'status' => 'draft',
             ]);
 
-            $trip->destinations()->sync(
+            $trip->itineraryDestinations()->sync(
                 collect($validated['destination_ids'])->values()->mapWithKeys(fn (int $destinationId, int $index) => [
                     $destinationId => ['sort_order' => $index + 1],
                 ])->all()
@@ -119,7 +119,7 @@ class AiTripController extends Controller
 
     public function show(Trip $trip)
     {
-        $trip->load(['destination', 'destinations', 'days.activities.activity', 'days.hotel']);
+        $trip->load(['primaryDestination', 'itineraryDestinations', 'days.activities.activity', 'days.hotel']);
 
         return view('trips.ai.show', compact('trip'));
     }
@@ -129,8 +129,8 @@ class AiTripController extends Controller
         $activeTab = request('tab', 'basics');
 
         $trip->load([
-            'destination',
-            'destinations',
+            'primaryDestination',
+            'itineraryDestinations',
             'days.activities.activity',
             'days.hotel',
             'packages.includes',
@@ -152,6 +152,8 @@ class AiTripController extends Controller
     {
         $validated = $request->validate([
             'destination_id' => 'required|exists:destinations,id',
+            'destination_ids' => 'required|array|min:1',
+            'destination_ids.*' => 'required|integer|exists:destinations,id',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'duration_days' => 'required|integer|min:1|max:30',
@@ -162,7 +164,25 @@ class AiTripController extends Controller
             'status' => 'required|string|in:draft,published',
         ]);
 
-        $trip->update($validated);
+        $destinationIds = array_values(array_unique(array_map('intval', $validated['destination_ids'])));
+        $primaryDestinationId = (int) $validated['destination_id'];
+
+        if (! in_array($primaryDestinationId, $destinationIds, true)) {
+            array_unshift($destinationIds, $primaryDestinationId);
+        }
+
+        $validated['destination_ids'] = array_values(array_unique([$primaryDestinationId, ...$destinationIds]));
+        $validated['destination_id'] = $primaryDestinationId;
+
+        DB::transaction(function () use ($trip, $validated) {
+            $trip->update(collect($validated)->except('destination_ids')->all());
+
+            $trip->itineraryDestinations()->sync(
+                collect($validated['destination_ids'])->values()->mapWithKeys(fn (int $destinationId, int $index) => [
+                    $destinationId => ['sort_order' => $index + 1],
+                ])->all()
+            );
+        });
 
         return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'basics'])
             ->with('success', 'Basics saved successfully.');
