@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/cardetails.css') }}">
+    @endpush
+
     <div class="max-w-7xl mx-auto py-8 px-4">
         <div class="flex items-center justify-between mb-4">
             <div>
