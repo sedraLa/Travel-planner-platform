@@ -46,12 +46,43 @@
                         <input name="name" value="{{ old('name', $trip->name) }}" class="w-full border rounded p-2" required>
                     </div>
                     <div>
-                        <label class="block text-sm">Destination</label>
+                        <label class="block text-sm">Primary destination</label>
                         <select name="destination_id" class="w-full border rounded p-2" required>
                             @foreach($destinations as $destination)
                                 <option value="{{ $destination->id }}" @selected(old('destination_id', $trip->destination_id) == $destination->id)>{{ $destination->name }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm">Itinerary destinations</label>
+                        @php
+                            $selectedDestinationIds = array_map('intval', old(
+                                'destination_ids',
+                                $trip->itineraryDestinations->pluck('id')->all() ?: [$trip->destination_id]
+                            ));
+                            if (empty($selectedDestinationIds)) {
+                                $selectedDestinationIds = [0];
+                            }
+                        @endphp
+                        <div id="itinerary-destinations-repeater" class="space-y-2">
+                            @foreach($selectedDestinationIds as $index => $selectedDestinationId)
+                                <div class="itinerary-destination-row flex items-center gap-2">
+                                    <select name="destination_ids[]" class="flex-1 border rounded p-2" required>
+                                        <option value="">Select destination</option>
+                                        @foreach($destinations as $destination)
+                                            <option value="{{ $destination->id }}" @selected($destination->id === (int) $selectedDestinationId)>
+                                                {{ $destination->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <button type="button" class="remove-destination-row px-3 py-2 border rounded text-red-600">Remove</button>
+                                </div>
+                            @endforeach
+                        </div>
+                        <button type="button" id="add-itinerary-destination-row" class="mt-2 px-3 py-2 border rounded bg-gray-50">
+                            + Add destination
+                        </button>
+                        <p class="text-xs text-gray-500 mt-1">Admin can add/remove itinerary destinations. Primary destination will always be included when saving.</p>
                     </div>
                     <div>
                         <label class="block text-sm">Duration (days)</label>
@@ -238,7 +269,7 @@
                 @php $otherImages = $trip->images->where('is_cover', false)->values(); @endphp
                 @for($i = 0; $i < max(3, $otherImages->count()); $i++)
                     <input name="images[{{ $i }}][image_path]" value="{{ old("images.$i.image_path", optional($otherImages->get($i))->image_path) }}" class="w-full border rounded p-2" placeholder="Other image path">
-                @endfor
+@endfor
                 <button class="px-5 py-2 bg-blue-600 text-white rounded">Save Images</button>
             </form>
         @endif
@@ -251,4 +282,72 @@
             <div class="bg-white border rounded-xl p-6 text-gray-600">Transports form is intentionally left empty for now.</div>
         @endif
     </div>
+
+    @if($activeTab === 'basics')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const repeater = document.getElementById('itinerary-destinations-repeater');
+                const addButton = document.getElementById('add-itinerary-destination-row');
+
+                if (!repeater || !addButton) return;
+
+                const destinationOptions = @json($destinations->map(fn ($destination) => [
+                    'id' => $destination->id,
+                    'name' => $destination->name,
+                ])->values());
+
+                const buildRow = () => {
+                    const row = document.createElement('div');
+                    row.className = 'itinerary-destination-row flex items-center gap-2';
+
+                    const select = document.createElement('select');
+                    select.name = 'destination_ids[]';
+                    select.required = true;
+                    select.className = 'flex-1 border rounded p-2';
+
+                    const placeholderOption = document.createElement('option');
+                    placeholderOption.value = '';
+                    placeholderOption.textContent = 'Select destination';
+                    select.appendChild(placeholderOption);
+
+                    destinationOptions.forEach((destination) => {
+                        const option = document.createElement('option');
+                        option.value = destination.id;
+                        option.textContent = destination.name;
+                        select.appendChild(option);
+                    });
+
+                    const removeButton = document.createElement('button');
+                    removeButton.type = 'button';
+                    removeButton.className = 'remove-destination-row px-3 py-2 border rounded text-red-600';
+                    removeButton.textContent = 'Remove';
+
+                    row.appendChild(select);
+                    row.appendChild(removeButton);
+
+                    return row;
+                };
+
+                addButton.addEventListener('click', function () {
+                    repeater.appendChild(buildRow());
+                });
+
+                repeater.addEventListener('click', function (event) {
+                    const removeButton = event.target.closest('.remove-destination-row');
+
+                    if (!removeButton) return;
+
+                    const row = removeButton.closest('.itinerary-destination-row');
+                    if (!row) return;
+
+                    if (repeater.querySelectorAll('.itinerary-destination-row').length === 1) {
+                        row.querySelector('select').value = '';
+                        return;
+                    }
+
+                    row.remove();
+                });
+            });
+        </script>
+    @endif
 </x-app-layout>
