@@ -24,8 +24,6 @@ class ActivityRequest extends FormRequest
             'price' => 'nullable|numeric|min:0',
             'category' => ['nullable', 'string', 'in:' . implode(',', Category::values())],
             'is_active' => 'required|boolean',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i|after_or_equal:start_time',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'availability' => 'required|string|max:50',
