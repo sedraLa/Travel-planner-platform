@@ -144,6 +144,9 @@
                             <label class="text-sm block">Description</label>
                             <textarea name="days[{{ $dayIndex }}][description]" rows="2" class="w-full border rounded p-2">{{ old("days.$dayIndex.description", $day->description) }}</textarea>
                         </div>
+                        <p class="text-xs text-gray-500">
+                            Activity start/end time and notes are saved per day in <code>day_activities</code>, not in the master activities catalog.
+                        </p>
 
                         @foreach($day->activities as $activityIndex => $activity)
                             <div class="grid md:grid-cols-4 gap-2 p-3 border rounded">
