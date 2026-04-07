@@ -98,13 +98,13 @@ class AiTripController extends Controller
                 ]);
 
                 foreach ($day['activities'] as $activity) {
-                    DayActivity::create([
-                        'trip_day_id' => $tripDay->id,
-                        'activity_id' => (int) $activity['activity_id'],
-                        'start_time' => $activity['start_time'] ?? null,
-                        'end_time' => $activity['end_time'] ?? null,
-                        'notes' => $activity['notes'] ?? null,
-                    ]);
+                    DayActivity::query()->updateOrCreate(
+                        [
+                            'trip_day_id' => $tripDay->id,
+                            'activity_id' => (int) ($activity['activity_id'] ?? 0),
+                        ],
+                        $this->dayActivityAttributes($tripDay->id, $activity)
+                    );
                 }
             }
 
@@ -231,12 +231,7 @@ class AiTripController extends Controller
                             'id' => $activityPayload['id'] ?? null,
                             'trip_day_id' => $tripDay->id,
                         ],
-                        [
-                            'activity_id' => (int) $activityPayload['activity_id'],
-                            'start_time' => $activityPayload['start_time'] ?? null,
-                            'end_time' => $activityPayload['end_time'] ?? null,
-                            'notes' => $activityPayload['notes'] ?? null,
-                        ]
+                        $this->dayActivityAttributes($tripDay->id, $activityPayload)
                     );
 
                     $sentActivityIds[] = $activity->id;
@@ -490,5 +485,19 @@ class AiTripController extends Controller
                 'notes' => $matchedPayload['notes'] ?? null,
             ]);
         }
+    }
+
+    /**
+     * Keep trip activity timing/notes scoped to day_activities only (independent from master activities table).
+     */
+    protected function dayActivityAttributes(int $tripDayId, array $activityPayload): array
+    {
+        return [
+            'trip_day_id' => $tripDayId,
+            'activity_id' => (int) ($activityPayload['activity_id'] ?? 0),
+            'start_time' => $activityPayload['start_time'] ?? null,
+            'end_time' => $activityPayload['end_time'] ?? null,
+            'notes' => $activityPayload['notes'] ?? null,
+        ];
     }
 }
