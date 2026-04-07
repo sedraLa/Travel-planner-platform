@@ -248,6 +248,22 @@ class AiTripController extends Controller
                     $tripDay->activities()->delete();
                 }
             }
+
+            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip->fresh('days'));
+            $trip->packages()->with('packageHotels')->get()->each(function (TripPackage $package) use ($canonicalHotelIds) {
+                $payload = $package->packageHotels
+                    ->map(fn (TripPackageHotel $packageHotel) => [
+                        'hotel_id' => $packageHotel->hotel_id,
+                        'room_type' => $packageHotel->room_type,
+                        'meal_plan' => $packageHotel->meal_plan,
+                        'amenities' => is_array($packageHotel->amenities) ? implode(', ', $packageHotel->amenities) : '',
+                        'notes' => $packageHotel->notes,
+                    ])
+                    ->values()
+                    ->all();
+
+                $this->syncPackageHotelsFromDays($package, $payload, $canonicalHotelIds);
+            });
         });
 
         return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'days'])
@@ -269,10 +285,12 @@ class AiTripController extends Controller
             'packages.*.hotels.*.room_type' => 'nullable|string|max:255',
             'packages.*.hotels.*.meal_plan' => 'nullable|string|max:255',
             'packages.*.hotels.*.amenities' => 'nullable|string',
+            'packages.*.hotels.*.notes' => 'nullable|string',
         ]);
 
         DB::transaction(function () use ($trip, $validated) {
             $keepPackageIds = [];
+            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip);
 
             foreach (($validated['packages'] ?? []) as $packagePayload) {
                 if (blank($packagePayload['name'] ?? null) && blank($packagePayload['price'] ?? null)) {
@@ -314,20 +332,7 @@ class AiTripController extends Controller
                         'description' => $line,
                     ]));
 
-                $package->packageHotels()->delete();
-                foreach (($packagePayload['hotels'] ?? []) as $hotelPayload) {
-                    if (empty($hotelPayload['hotel_id'])) {
-                        continue;
-                    }
-
-                    TripPackageHotel::create([
-                        'trip_package_id' => $package->id,
-                        'hotel_id' => (int) $hotelPayload['hotel_id'],
-                        'room_type' => $hotelPayload['room_type'] ?? null,
-                        'meal_plan' => $hotelPayload['meal_plan'] ?? null,
-                        'amenities' => collect(explode(',', (string) ($hotelPayload['amenities'] ?? '')))->map(fn ($item) => trim($item))->filter()->values()->all(),
-                    ]);
-                }
+                $this->syncPackageHotelsFromDays($package, $packagePayload['hotels'] ?? [], $canonicalHotelIds);
             }
 
             $trip->packages()->whereNotIn('id', $keepPackageIds ?: [0])->delete();
@@ -438,11 +443,51 @@ class AiTripController extends Controller
             'price' => 0,
         ]);
 
-        $hotelIds = $trip->days()->whereNotNull('hotel_id')->pluck('hotel_id')->unique();
+        $hotelIds = $this->canonicalHotelIdsFromDays($trip);
         foreach ($hotelIds as $hotelId) {
             TripPackageHotel::create([
                 'trip_package_id' => $package->id,
                 'hotel_id' => $hotelId,
+            ]);
+        }
+    }
+
+    protected function canonicalHotelIdsFromDays(Trip $trip): array
+    {
+        return $trip->days()
+            ->orderBy('day_number')
+            ->whereNotNull('hotel_id')
+            ->pluck('hotel_id')
+            ->map(fn ($hotelId) => (int) $hotelId)
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    protected function syncPackageHotelsFromDays(TripPackage $package, array $hotelPayloads, array $canonicalHotelIds): void
+    {
+        $payloadByHotelId = collect($hotelPayloads)
+            ->filter(fn ($payload) => ! empty($payload['hotel_id']))
+            ->keyBy(fn ($payload) => (int) $payload['hotel_id']);
+
+        $payloadByIndex = collect($hotelPayloads)->values();
+
+        $package->packageHotels()->delete();
+
+        foreach ($canonicalHotelIds as $index => $hotelId) {
+            $matchedPayload = $payloadByHotelId->get($hotelId) ?? $payloadByIndex->get($index, []);
+
+            TripPackageHotel::create([
+                'trip_package_id' => $package->id,
+                'hotel_id' => $hotelId,
+                'room_type' => $matchedPayload['room_type'] ?? null,
+                'meal_plan' => $matchedPayload['meal_plan'] ?? null,
+                'amenities' => collect(explode(',', (string) ($matchedPayload['amenities'] ?? '')))
+                    ->map(fn ($item) => trim($item))
+                    ->filter()
+                    ->values()
+                    ->all(),
+                'notes' => $matchedPayload['notes'] ?? null,
             ]);
         }
     }

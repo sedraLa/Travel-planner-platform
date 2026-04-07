@@ -193,15 +193,12 @@
 
                         @foreach($package->packageHotels as $hotelIndex => $packageHotel)
                             <div class="grid md:grid-cols-4 gap-2 p-2 border rounded">
-                                <select name="packages[{{ $packageIndex }}][hotels][{{ $hotelIndex }}][hotel_id]" class="border rounded p-2">
-                                    <option value="">Hotel</option>
-                                    @foreach($hotels as $hotel)
-                                        <option value="{{ $hotel->id }}" @selected(old("packages.$packageIndex.hotels.$hotelIndex.hotel_id", $packageHotel->hotel_id) == $hotel->id)>{{ $hotel->name }}</option>
-                                    @endforeach
-                                </select>
+                                <input type="hidden" name="packages[{{ $packageIndex }}][hotels][{{ $hotelIndex }}][hotel_id]" value="{{ $packageHotel->hotel_id }}">
+                                <input value="{{ optional($packageHotel->hotel)->name }}" class="border rounded p-2 bg-gray-100" readonly>
                                 <input name="packages[{{ $packageIndex }}][hotels][{{ $hotelIndex }}][room_type]" value="{{ old("packages.$packageIndex.hotels.$hotelIndex.room_type", $packageHotel->room_type) }}" class="border rounded p-2" placeholder="Room type">
                                 <input name="packages[{{ $packageIndex }}][hotels][{{ $hotelIndex }}][meal_plan]" value="{{ old("packages.$packageIndex.hotels.$hotelIndex.meal_plan", $packageHotel->meal_plan) }}" class="border rounded p-2" placeholder="Meal plan">
                                 <input name="packages[{{ $packageIndex }}][hotels][{{ $hotelIndex }}][amenities]" value="{{ old("packages.$packageIndex.hotels.$hotelIndex.amenities", is_array($packageHotel->amenities) ? implode(', ', $packageHotel->amenities) : '') }}" class="border rounded p-2" placeholder="Amenities comma separated">
+                                <textarea name="packages[{{ $packageIndex }}][hotels][{{ $hotelIndex }}][notes]" class="border rounded p-2 md:col-span-4" rows="2" placeholder="Notes / package differentiation">{{ old("packages.$packageIndex.hotels.$hotelIndex.notes", $packageHotel->notes) }}</textarea>
                             </div>
                         @endforeach
                     </div>
