@@ -161,7 +161,6 @@ class AiTripController extends Controller
             'max_participants' => 'nullable|integer|min:1',
             'meeting_point_description' => 'nullable|string',
             'meeting_point_address' => 'nullable|string|max:255',
-            'status' => 'required|string|in:draft,published',
         ]);
 
         $destinationIds = array_values(array_unique(array_map('intval', $validated['destination_ids'])));
@@ -175,7 +174,12 @@ class AiTripController extends Controller
         $validated['destination_id'] = $primaryDestinationId;
 
         DB::transaction(function () use ($trip, $validated) {
-            $trip->update(collect($validated)->except('destination_ids')->all());
+            $trip->update(
+                collect($validated)
+                    ->except('destination_ids')
+                    ->put('status', 'draft')
+                    ->all()
+            );
 
             $trip->itineraryDestinations()->sync(
                 collect($validated['destination_ids'])->values()->mapWithKeys(fn (int $destinationId, int $index) => [
