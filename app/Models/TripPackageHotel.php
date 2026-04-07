@@ -14,7 +14,8 @@ class TripPackageHotel extends Model
         'hotel_id',
         'room_type',
         'amenities',
-        'meal_plan'
+        'meal_plan',
+        'notes',
     ];
 
     protected $casts = [
