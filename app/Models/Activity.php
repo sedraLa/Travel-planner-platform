@@ -19,8 +19,6 @@ class Activity extends Model
         'price',
         'category',
         'is_active',
-        'start_time',
-        'end_time',
         'start_date',
         'end_date',
         'availability',
@@ -48,8 +46,6 @@ class Activity extends Model
         'pets_allowed' => 'boolean',
         'start_date' => 'date',
         'end_date' => 'date',
-        'start_time' => 'datetime:H:i',
-        'end_time' => 'datetime:H:i',
         'amenities' => 'array',
     ];
 
