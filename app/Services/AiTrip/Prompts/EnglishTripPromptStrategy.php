@@ -44,7 +44,8 @@ STRICT RULES:
    - If duration > 5 days, vary hotels across days when possible.
    - If activities look far apart by area/address, choose a closer hotel for that day.
    - If the itinerary includes multiple selected destinations, switch hotels to match destination flow.
-9) Output must be JSON matching this shape exactly:
+9) Hotels suggested by AI are only for day-level planning; package-level differences (room type, amenities, meal plan, notes/highlights) are admin-managed later.
+10) Output must be JSON matching this shape exactly:
 {
   "trip_name": "string",
   "trip_description": "string",

@@ -191,10 +191,17 @@ class ManualTripController extends Controller
 
                    //save selected activities for these days
                    foreach ($data['activities']['selected']["day_$i"] ?? [] as $activityId) {
-                    DayActivity::create([
-                        'trip_day_id' => $tripDay->id,
-                        'activity_id' => $activityId,
-                    ]);
+                    DayActivity::query()->updateOrCreate(
+                        [
+                            'trip_day_id' => $tripDay->id,
+                            'activity_id' => $activityId,
+                        ],
+                        [
+                            'start_time' => null,
+                            'end_time' => null,
+                            'notes' => null,
+                        ]
+                    );
                 }
 
                 foreach ($data['activities']['custom']["day_$i"] ?? [] as $customActivity) {

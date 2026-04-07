@@ -260,4 +260,3 @@
 }
 </style>
 </x-app-layout>
-
