@@ -350,10 +350,10 @@
             <form method="POST" action="{{ route('trip.complete.images', $trip->id) }}" enctype="multipart/form-data" class="space-y-3 bg-white border rounded-xl p-4">
                 @csrf
                 <div>
-                    <label class="block text-sm">Cover image path</label>
-                    <input name="cover_image_path" value="{{ old('cover_image_path', optional($trip->images->firstWhere('is_cover', true))->image_path) }}" class="w-full border rounded p-2" placeholder="/storage/trips/cover.jpg">
-                    <label class="block text-sm mt-2">Or choose cover image</label>
+                    <input type="hidden" name="cover_existing_path" value="{{ old('cover_existing_path', optional($trip->images->firstWhere('is_cover', true))->image_path) }}">
+                    <label class="block text-sm">Cover image</label>
                     <input type="file" name="cover_image_file" accept="image/*" class="w-full border rounded p-2">
+                    <p class="text-xs text-gray-500 mt-1">Leave empty to keep the current cover image.</p>
                 </div>
 
                 @php
@@ -371,7 +371,6 @@
                         <div class="image-row flex items-center gap-2" data-image-index="{{ $index }}">
                             <input type="hidden" name="images[{{ $index }}][id]" value="{{ $image['id'] ?? '' }}">
                             <input type="hidden" name="images[{{ $index }}][existing_path]" value="{{ $image['image_path'] ?? '' }}">
-                            <input name="images[{{ $index }}][image_path]" value="{{ $image['image_path'] ?? '' }}" class="w-full border rounded p-2" placeholder="Other image path">
                             <input type="file" name="images[{{ $index }}][image_file]" accept="image/*" class="w-full border rounded p-2">
                             <button type="button" class="remove-image-btn px-3 py-2 border rounded text-red-600">Remove</button>
                         </div>
@@ -651,7 +650,6 @@
                         <div class="image-row flex items-center gap-2" data-image-index="${index}">
                             <input type="hidden" name="images[${index}][id]" value="">
                             <input type="hidden" name="images[${index}][existing_path]" value="">
-                            <input name="images[${index}][image_path]" class="w-full border rounded p-2" placeholder="Other image path">
                             <input type="file" name="images[${index}][image_file]" accept="image/*" class="w-full border rounded p-2">
                             <button type="button" class="remove-image-btn px-3 py-2 border rounded text-red-600">Remove</button>
                         </div>

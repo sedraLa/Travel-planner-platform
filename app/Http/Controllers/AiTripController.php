@@ -383,11 +383,10 @@ class AiTripController extends Controller
     public function saveImages(Request $request, Trip $trip)
     {
         $validated = $request->validate([
-            'cover_image_path' => 'nullable|string|max:255',
+            'cover_existing_path' => 'nullable|string|max:255',
             'cover_image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'images' => 'nullable|array',
             'images.*.id' => 'nullable|exists:trip_images,id',
-            'images.*.image_path' => 'nullable|string|max:255',
             'images.*.existing_path' => 'nullable|string|max:255',
             'images.*.image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
@@ -395,7 +394,7 @@ class AiTripController extends Controller
         DB::transaction(function () use ($trip, $validated, $request) {
             $trip->images()->delete();
 
-            $coverImagePath = $validated['cover_image_path'] ?? null;
+            $coverImagePath = $validated['cover_existing_path'] ?? null;
             if ($request->hasFile('cover_image_file')) {
                 $coverImagePath = '/storage/' . Storage::disk('public')->put('trips', $request->file('cover_image_file'));
             }
@@ -409,7 +408,7 @@ class AiTripController extends Controller
             }
 
             foreach (($validated['images'] ?? []) as $index => $imagePayload) {
-                $imagePath = $imagePayload['existing_path'] ?? ($imagePayload['image_path'] ?? null);
+                $imagePath = $imagePayload['existing_path'] ?? null;
 
                 if ($request->hasFile("images.$index.image_file")) {
                     $imagePath = '/storage/' . Storage::disk('public')->put('trips', $request->file("images.$index.image_file"));
