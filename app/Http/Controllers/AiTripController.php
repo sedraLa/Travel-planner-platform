@@ -19,6 +19,7 @@ use App\Models\TripSchedule;
 use App\Services\GroqTripPlannerService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AiTripController extends Controller
@@ -382,31 +383,44 @@ class AiTripController extends Controller
     public function saveImages(Request $request, Trip $trip)
     {
         $validated = $request->validate([
-            'cover_image_path' => 'nullable|string|max:255',
+            'cover_existing_path' => 'nullable|string|max:255',
+            'cover_image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'images' => 'nullable|array',
             'images.*.id' => 'nullable|exists:trip_images,id',
-            'images.*.image_path' => 'nullable|string|max:255',
+            'images.*.existing_path' => 'nullable|string|max:255',
+            'images.*.image_file' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        DB::transaction(function () use ($trip, $validated) {
+        DB::transaction(function () use ($trip, $validated, $request) {
             $trip->images()->delete();
 
-            if (! empty($validated['cover_image_path'])) {
+            $coverImagePath = $validated['cover_existing_path'] ?? null;
+            if ($request->hasFile('cover_image_file')) {
+                $coverImagePath = '/storage/' . Storage::disk('public')->put('trips', $request->file('cover_image_file'));
+            }
+
+            if (! empty($coverImagePath)) {
                 TripImage::create([
                     'trip_id' => $trip->id,
-                    'image_path' => $validated['cover_image_path'],
+                    'image_path' => $coverImagePath,
                     'is_cover' => true,
                 ]);
             }
 
-            foreach (($validated['images'] ?? []) as $imagePayload) {
-                if (blank($imagePayload['image_path'] ?? null)) {
+            foreach (($validated['images'] ?? []) as $index => $imagePayload) {
+                $imagePath = $imagePayload['existing_path'] ?? null;
+
+                if ($request->hasFile("images.$index.image_file")) {
+                    $imagePath = '/storage/' . Storage::disk('public')->put('trips', $request->file("images.$index.image_file"));
+                }
+
+                if (blank($imagePath)) {
                     continue;
                 }
 
                 TripImage::create([
                     'trip_id' => $trip->id,
-                    'image_path' => $imagePayload['image_path'],
+                    'image_path' => $imagePath,
                     'is_cover' => false,
                 ]);
             }
