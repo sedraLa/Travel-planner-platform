@@ -102,10 +102,8 @@
                     </div>
                     <div>
                         <label class="block text-sm">Status</label>
-                        <select name="status" class="w-full border rounded p-2">
-                            <option value="draft" @selected(old('status', $trip->status)==='draft')>Draft</option>
-                            <option value="published" @selected(old('status', $trip->status)==='published')>Published</option>
-                        </select>
+                        <input value="Draft" class="w-full border rounded p-2 bg-gray-100 text-gray-600" disabled>
+                        <p class="text-xs text-gray-500 mt-1">Status stays Draft here until final Publish step.</p>
                     </div>
                 </div>
                 <div>
