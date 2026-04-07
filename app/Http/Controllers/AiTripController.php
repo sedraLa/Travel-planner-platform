@@ -272,9 +272,12 @@ class AiTripController extends Controller
             'packages.*.id' => 'nullable|exists:trip_packages,id',
             'packages.*.name' => 'nullable|string|max:255',
             'packages.*.price' => 'nullable|numeric|min:0',
-            'packages.*.includes' => 'nullable|string',
-            'packages.*.excludes' => 'nullable|string',
-            'packages.*.highlights' => 'nullable|string',
+            'packages.*.includes' => 'nullable',
+            'packages.*.includes.*' => 'nullable|string|max:255',
+            'packages.*.excludes' => 'nullable',
+            'packages.*.excludes.*' => 'nullable|string|max:255',
+            'packages.*.highlights' => 'nullable',
+            'packages.*.highlights.*' => 'nullable|string|max:255',
             'packages.*.hotels' => 'nullable|array',
             'packages.*.hotels.*.hotel_id' => 'nullable|exists:hotels,id',
             'packages.*.hotels.*.room_type' => 'nullable|string|max:255',
@@ -306,19 +309,19 @@ class AiTripController extends Controller
                 $keepPackageIds[] = $package->id;
 
                 $package->includes()->delete();
-                collect(explode(PHP_EOL, (string) ($packagePayload['includes'] ?? '')))
+                collect($this->normalizeRepeaterInput($packagePayload['includes'] ?? []))
                     ->map(fn ($line) => trim($line))
                     ->filter()
                     ->each(fn ($line) => TripInclude::create(['trip_package_id' => $package->id, 'content' => $line]));
 
                 $package->excludes()->delete();
-                collect(explode(PHP_EOL, (string) ($packagePayload['excludes'] ?? '')))
+                collect($this->normalizeRepeaterInput($packagePayload['excludes'] ?? []))
                     ->map(fn ($line) => trim($line))
                     ->filter()
                     ->each(fn ($line) => TripExclude::create(['trip_package_id' => $package->id, 'content' => $line]));
 
                 $package->highlights()->delete();
-                collect(explode(PHP_EOL, (string) ($packagePayload['highlights'] ?? '')))
+                collect($this->normalizeRepeaterInput($packagePayload['highlights'] ?? []))
                     ->map(fn ($line) => trim($line))
                     ->filter()
                     ->each(fn ($line) => TripHighlight::create([
@@ -499,5 +502,18 @@ class AiTripController extends Controller
             'end_time' => $activityPayload['end_time'] ?? null,
             'notes' => $activityPayload['notes'] ?? null,
         ];
+    }
+
+    protected function normalizeRepeaterInput(mixed $value): array
+    {
+        if (is_array($value)) {
+            return array_values($value);
+        }
+
+        if (is_string($value)) {
+            return explode(PHP_EOL, $value);
+        }
+
+        return [];
     }
 }
