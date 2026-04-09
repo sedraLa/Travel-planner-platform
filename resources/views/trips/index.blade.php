@@ -80,7 +80,7 @@
                 <p class="text-gray-500 text-sm">Travelers: {{ $trip->max_participants ?? '-' }}</p>
                 <p class="text-gray-500 text-sm">Status: {{ ucfirst($trip->status) }}</p>
 
-                @if($trip->is_ai_generated && $trip->status === 'draft')
+                @if($trip->status === 'draft')
                     <a href="{{ route('trip.complete.edit', $trip->id) }}" class="inline-block mt-3 bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-2 rounded">Complete Creating</a>
                 @endif
 
