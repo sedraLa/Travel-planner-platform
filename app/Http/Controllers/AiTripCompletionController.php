@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AiTripBasicsRequest;
-use App\Http\Requests\AiTripDriversRequest;
 use App\Http\Requests\AiTripDaysActivitiesRequest;
 use App\Http\Requests\AiTripGuidesRequest;
 use App\Http\Requests\AiTripImagesRequest;
@@ -71,11 +70,4 @@ class AiTripCompletionController extends Controller
             ->with('success', 'Guide requirements saved successfully.');
     }
 
-    public function saveDrivers(AiTripDriversRequest $request, Trip $trip)
-    {
-        $this->tripService->saveDrivers($trip, $request->validated());
-
-        return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'drivers'])
-            ->with('success', 'Driver requirements saved. Staffing process started.');
-    }
 }

@@ -252,20 +252,10 @@ class TripService
             ->values()
             ->all();
 
-        $trip->update([
-            'guide_specialization_ids' => $specializationIds,
-            'requires_tour_leader' => (bool) ($payload['requires_tour_leader'] ?? false),
-        ]);
-    }
-
-    public function saveDrivers(Trip $trip, array $payload): void
-    {
-        DB::transaction(function () use ($trip, $payload) {
+        DB::transaction(function () use ($trip, $specializationIds, $payload) {
             $trip->update([
-                'driver_vehicle_type' => $payload['vehicle_type'] ?? null,
-                'driver_vehicle_capacity' => $payload['vehicle_capacity'] ?? null,
-                'driver_trip_type' => $payload['trip_type'],
-                'driver_road_type' => $payload['road_type'],
+                'guide_specialization_ids' => $specializationIds,
+                'requires_tour_leader' => (bool) ($payload['requires_tour_leader'] ?? false),
             ]);
 
             $trip->refresh();

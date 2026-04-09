@@ -29,6 +29,5 @@ class StartTripStaffingJob implements ShouldQueue
         $stateManager->transition($trip, 'staffing_in_progress');
 
         ProcessTripGuideMatchingJob::dispatch($trip->id);
-        ProcessTripDriverMatchingJob::dispatch($trip->id);
     }
 }

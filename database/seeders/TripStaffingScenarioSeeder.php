@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Enums\UserRole;
 use App\Jobs\TripStaffing\StartTripStaffingJob;
-use App\Models\Driver;
 use App\Models\Guide;
 use App\Models\Specialization;
 use App\Models\Trip;
@@ -65,21 +64,12 @@ class TripStaffingScenarioSeeder extends Seeder
             'status' => 'ready_for_assignment',
             'guide_specialization_ids' => [$specializationId],
             'requires_tour_leader' => true,
-            'driver_vehicle_type' => 'van',
-            'driver_vehicle_capacity' => 6,
-            'driver_trip_type' => 'intercity',
-            'driver_road_type' => 'highway',
         ]);
 
         Guide::factory()->matchingTrip($trip)->create(['total_trips_count' => 1]);
         Guide::factory()->nonMatchingSpecialization($trip)->create();
         Guide::factory()->unavailableForTrip($trip)->create();
         Guide::factory()->matchingTrip($trip)->recentlyAssigned(2)->create();
-
-        Driver::factory()->matchingTrip($trip)->create(['total_trips_count' => 1]);
-        Driver::factory()->failingCapacity($trip)->create();
-        Driver::factory()->matchingTrip($trip)->failingLocation()->create();
-        Driver::factory()->unavailableForTrip($trip)->create();
 
         StartTripStaffingJob::dispatch($trip->id);
     }
@@ -93,16 +83,9 @@ class TripStaffingScenarioSeeder extends Seeder
             'status' => 'ready_for_assignment',
             'guide_specialization_ids' => [$specializationId],
             'requires_tour_leader' => false,
-            'driver_vehicle_type' => 'suv',
-            'driver_vehicle_capacity' => 8,
-            'driver_trip_type' => 'intercity',
-            'driver_road_type' => 'city',
         ]);
 
         Guide::factory()->matchingTrip($trip)->create();
-
-        Driver::factory()->failingCapacity($trip)->create();
-        Driver::factory()->matchingTrip($trip)->failingLocation()->create();
 
         StartTripStaffingJob::dispatch($trip->id);
     }
@@ -116,17 +99,10 @@ class TripStaffingScenarioSeeder extends Seeder
             'status' => 'ready_for_assignment',
             'guide_specialization_ids' => [$specializationId],
             'requires_tour_leader' => false,
-            'driver_vehicle_type' => 'van',
-            'driver_vehicle_capacity' => 5,
-            'driver_trip_type' => 'mountain',
-            'driver_road_type' => 'mixed',
         ]);
 
         Guide::factory()->matchingTrip($trip)->create();
         Guide::factory()->unavailableForTrip($trip)->create();
-
-        Driver::factory()->matchingTrip($trip)->create();
-        Driver::factory()->unavailableForTrip($trip)->create();
 
         StartTripStaffingJob::dispatch($trip->id);
     }
@@ -140,10 +116,6 @@ class TripStaffingScenarioSeeder extends Seeder
             'status' => 'ready_for_assignment',
             'guide_specialization_ids' => [$specializationId],
             'requires_tour_leader' => false,
-            'driver_vehicle_type' => 'van',
-            'driver_vehicle_capacity' => 4,
-            'driver_trip_type' => 'intercity',
-            'driver_road_type' => 'highway',
         ]);
 
         Guide::factory()->matchingTrip($trip)->create([
@@ -154,16 +126,6 @@ class TripStaffingScenarioSeeder extends Seeder
         Guide::factory()->matchingTrip($trip)->create([
             'total_trips_count' => 4,
             'last_trip_at' => now()->subDays(120),
-        ]);
-
-        Driver::factory()->matchingTrip($trip)->create([
-            'total_trips_count' => 1,
-            'last_trip_at' => now()->subDays(30),
-        ]);
-
-        Driver::factory()->matchingTrip($trip)->create([
-            'total_trips_count' => 3,
-            'last_trip_at' => now()->subDays(90),
         ]);
 
         StartTripStaffingJob::dispatch($trip->id);
