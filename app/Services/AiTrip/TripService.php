@@ -19,6 +19,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use LogicException;
 
 class TripService
 {
@@ -267,7 +268,19 @@ class TripService
                 'driver_road_type' => $payload['road_type'],
             ]);
 
-            $this->tripStateManager->transition($trip, 'ready_for_assignment');
+            $trip->refresh();
+
+            if ($trip->status === 'staffing_in_progress') {
+                $this->tripStateManager->transition($trip, 'draft');
+                $trip->refresh();
+            }
+
+            if ($trip->status === 'draft') {
+                $this->tripStateManager->transition($trip, 'ready_for_assignment');
+            } elseif ($trip->status !== 'ready_for_assignment') {
+                throw new LogicException("Cannot restart staffing from {$trip->status}.");
+            }
+
             StartTripStaffingJob::dispatch($trip->id)->afterCommit();
         });
     }
