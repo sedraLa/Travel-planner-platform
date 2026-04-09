@@ -31,13 +31,11 @@ class ProcessTripDriverMatchingJob implements ShouldQueue
         $rankedDriverIds = $rankingService->rankedDriverIdsForTrip($trip);
         $trip->update(['ranked_driver_ids' => $rankedDriverIds]);
 
-        if (empty($rankedDriverIds)) {
-            $coordinator->failTripStaffing($trip, 'No available drivers accepted requirements.');
-
-            return;
+        if (! empty($rankedDriverIds)) {
+            $handler = new SendToNextTripDriverHandler();
+            $handler->handle($trip, $rankedDriverIds, 0);
         }
 
-        $handler = new SendToNextTripDriverHandler();
-        $handler->handle($trip, $rankedDriverIds, 0);
+        $coordinator->finalizeInitialMatchingOutcome($trip);
     }
 }

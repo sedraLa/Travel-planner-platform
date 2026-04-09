@@ -31,13 +31,11 @@ class ProcessTripGuideMatchingJob implements ShouldQueue
         $rankedGuideIds = $rankingService->rankedGuideIdsForTrip($trip);
         $trip->update(['ranked_guide_ids' => $rankedGuideIds]);
 
-        if (empty($rankedGuideIds)) {
-            $coordinator->failTripStaffing($trip, 'No available guides accepted requirements.');
-
-            return;
+        if (! empty($rankedGuideIds)) {
+            $handler = new SendToNextGuideHandler();
+            $handler->handle($trip, $rankedGuideIds, 0);
         }
 
-        $handler = new SendToNextGuideHandler();
-        $handler->handle($trip, $rankedGuideIds, 0);
+        $coordinator->finalizeInitialMatchingOutcome($trip);
     }
 }
