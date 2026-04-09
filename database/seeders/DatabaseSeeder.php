@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
             DestinationSeeder::class,
             HotelSeeder::class,
             ActivitySeeder::class,
+            SpecializationSeeder::class,
+            TripStaffingScenarioSeeder::class,
         ]);
     }
 }
-
