@@ -108,6 +108,37 @@ class TripStaffingFactoryScenariosTest extends TestCase
         $this->assertDatabaseCount('driver_requests', 0);
     }
 
+
+    public function test_driver_chain_still_runs_when_guide_chain_has_no_candidates(): void
+    {
+        $trip = Trip::factory()
+            ->staffingWindow('2026-07-10', 2)
+            ->create([
+                'status' => 'staffing_in_progress',
+                'guide_specialization_ids' => [999999],
+                'requires_tour_leader' => false,
+                'driver_vehicle_type' => 'van',
+                'driver_vehicle_capacity' => 4,
+            ]);
+
+        $matchingDriver = \App\Models\Driver::factory()->matchingTrip($trip)->create();
+
+        ProcessTripGuideMatchingJob::dispatchSync($trip->id);
+        ProcessTripDriverMatchingJob::dispatchSync($trip->id);
+
+        $trip->refresh();
+
+        $this->assertSame([], $trip->ranked_guide_ids ?? []);
+        $this->assertSame([$matchingDriver->id], $trip->ranked_driver_ids ?? []);
+        $this->assertDatabaseCount('guide_requests', 0);
+        $this->assertDatabaseHas('driver_requests', [
+            'trip_id' => $trip->id,
+            'driver_id' => $matchingDriver->id,
+            'status' => 'pending',
+            'chain_index' => 0,
+        ]);
+    }
+
     public function test_conflict_case_excludes_unavailable_guides_and_drivers(): void
     {
         $specialization = Specialization::factory()->create(['name' => 'Nature Exploration']);

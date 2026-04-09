@@ -92,6 +92,38 @@ class TripStaffingCoordinator
         $this->notifyAdmins("Trip #{$trip->id} reverted to draft: {$reason}");
     }
 
+    public function finalizeInitialMatchingOutcome(Trip $trip): void
+    {
+        $trip = $trip->fresh();
+
+        if (! $trip || $trip->status !== 'staffing_in_progress') {
+            return;
+        }
+
+        if ($trip->ranked_guide_ids === null || $trip->ranked_driver_ids === null) {
+            return;
+        }
+
+        $rankedGuideIds = $trip->ranked_guide_ids ?? [];
+        $rankedDriverIds = $trip->ranked_driver_ids ?? [];
+
+        if (empty($rankedGuideIds) && empty($rankedDriverIds)) {
+            $this->failTripStaffing($trip, 'No available guides or drivers accepted requirements.');
+
+            return;
+        }
+
+        if (empty($rankedGuideIds)) {
+            $this->failTripStaffing($trip, 'No available guides accepted requirements.');
+
+            return;
+        }
+
+        if (empty($rankedDriverIds)) {
+            $this->failTripStaffing($trip, 'No available drivers accepted requirements.');
+        }
+    }
+
     private function progressTripIfFullyStaffed(Trip $trip): void
     {
         if (! $trip->assigned_guide_id || ! $trip->assigned_driver_id) {
