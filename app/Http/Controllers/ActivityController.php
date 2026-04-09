@@ -45,10 +45,19 @@ class ActivityController extends Controller
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
+
+        if ($request->filled('destination_id')) {
+            $query->where('destination_id', $request->destination_id);
+        }
+
+        $selectedDestination = null;
+        if ($request->filled('destination_id')) {
+            $selectedDestination = Destination::find($request->destination_id);
+        }
     
         $activities = $query->get();
     
-        return view('activities.index', compact('activities'));
+        return view('activities.index', compact('activities','selectedDestination'));
     }
     
 

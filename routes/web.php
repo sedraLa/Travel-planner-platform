@@ -284,8 +284,12 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
 
     });
 
+Route::middleware(['auth','check.guide.status']) ->prefix('guide') ->group(function () {
 
-
+Route::get('/booking-requests', [BookingRequestController::class, 'index'])->name('driver.booking-requests.index');
+Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
+Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('driverscompleted.show');
+  });
 
 require __DIR__.'/auth.php';
 

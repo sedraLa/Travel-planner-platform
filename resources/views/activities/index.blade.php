@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="{{ asset('css/activities.css') }}">
     @endpush
         <div class="main-wrapper">
-
+            
             <!--Success messages-->
             @if (session('success'))
                 <div class="success-message">{{ session('success') }}</div>
@@ -16,15 +16,26 @@
                 <div class="heading" style="top:35%;">
                     <h2 style="font-size:57px;">Activities</h2>
                     <p>Choose from our curated selection of premium activities</p>
-    
+    @if (Auth::user()->role === UserRole::USER->value)
+                <div class="px-6 pt-6">
+                    <a href="{{ route('destination.index') }}"
+                         class="inline-flex items-center gap-1.5 bg-blue-100 border border-blue-400
+           text-blue-900 text-sm font-medium py-2 px-4 rounded-lg
+           hover:bg-blue-200 hover:border-blue-500 transition duration-150">
+                        ← Back to Destinations
+                    </a>
+                </div>
+            @endif
                     <!-- Search & Filters -->
                     <form method="GET" action="{{ route('activities.index') }}" class="search-form">
+
+                    @if(Auth::user()->role === UserRole::ADMIN->value)
                         <div class="search-container" style="margin-top:10px;">
                             <input type="text" name="search" placeholder="Search by activity or destination" 
                                    value="{{ request('search') }}" class="search-input" style="color:black">
                             <button type="submit" class="search-button">Search</button>
                         </div>
-    
+                      @endif
                         <div class="filters">
                             <select name="availability">
                                 <option value="">Availability</option>

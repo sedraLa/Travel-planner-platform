@@ -29,6 +29,23 @@
         <!-- Search Form -->
         <form class="search-form" method="GET" action="{{ route('hotels.index') }}">
             <h1>Find Your Hotel</h1>
+             @if(request('destination_id'))
+                <input type="hidden" name="destination_id" value="{{ request('destination_id') }}">
+            @endif
+            @if(isset($selectedDestination) && $selectedDestination)
+                <p style="color:#fff; text-align:center; margin-top:10px;">Showing hotels in {{ $selectedDestination->name }}</p>
+            @endif
+
+          @if (Auth::user()->role === UserRole::USER->value)
+            <div class="px-6 pt-6">
+                <a href="{{ route('destination.index') }}"
+                    class="inline-flex items-center gap-2 bg-amber-700 border border-amber-800  text-white text-base font-semibold py-3 px-6 rounded-xl hover:bg-amber-800 hover:border-amber-900 transition duration-200">
+                        ← Back to Destinations
+                </a>
+            </div>
+         @endif
+
+             @if(Auth::user()->role === UserRole::ADMIN->value)
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" class="h-8 w-8 text-red-500"
                     viewBox="0 0 20 20">
@@ -38,6 +55,7 @@
                 <input type="search" name="search" class="search-input" placeholder="Search hotels..."  />
                 <button type="submit" class="search-button">Search</button>
             </div>
+               @endif
 
             <div class="filters">
                 <select name="city">
@@ -136,6 +154,7 @@
                     <h5>{{ $hotel->name }}</h5>
                     <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
                 </a>
+
 
                 @if(Auth::user()->role === UserRole::ADMIN->value)
                                         <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4" >

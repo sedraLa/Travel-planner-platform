@@ -11,24 +11,34 @@
                 </div>
             </a>
         </div>
+         @php
+            $role = auth()->user()->role ?? null;
+        @endphp
 
         <!-- Navigation Links -->
         <ul>
-            @if(auth()->check() && auth()->user()->role === UserRole::DRIVER->value)
-            <li><a href="{{ route('driver.booking-requests.index') }}">Booking Requests</a></li>
+              @if($role === UserRole::DRIVER->value)
+                <li><a href="{{ route('driver.booking-requests.index') }}">Booking Requests</a></li>
                 <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
                 <li><a href="{{ route('driverscompleted.show') }}">Completed Bookings</a></li>
-            @else
+            @elseif($role === UserRole::GUIDE->value)
+                  <li><p>completed trips</p></li>
+                  <li><p>upcoming trips</p></li>
+                    <li><p>booking requst</p></li>
+
+                   
+            @elseif(in_array($role, [UserRole::USER->value, UserRole::ADMIN->value], true))
                 <li><a href="{{ route('destination.index') }}">Destinations</a></li>
-                <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
-                @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
-                <li><a href="{{ route('flight.show') }}">Flights</a></li>
-                 <li><a href="{{route('vehicle.order')}}">Transport airport</a></li>
-              
+                @if($role === UserRole::ADMIN->value)
+                    <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
+                    <li><a href="{{ route('activities.index') }}">Activities</a></li>
                 @endif
-              
-                <li><a href="{{route('activities.index')}}">Activities</a></li>
-                @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
+                @if($role === UserRole::USER->value)
+                    <li><a href="{{ route('flight.show') }}">Flights</a></li>
+                    <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>
+                @endif
+               
+                @if($role === UserRole::USER->value)
                 <li>
                     <div class="hidden sm:flex sm:items-center sm:ms-6">
                     <x-dropdown align="right" width="48">
@@ -108,8 +118,7 @@
                     </form>
                 </x-slot>
             </x-dropdown>
-            @if(auth()->check() && auth()->user()->role === UserRole::USER->value || 
-            auth()->check() && auth()->user()->role === UserRole::DRIVER->value )
+            @if($role === UserRole::USER->value)
 <!-- Notifications -->
 <div x-data="{ notifOpen: false }" class="relative ml-4">
     <!-- زر الجرس -->
