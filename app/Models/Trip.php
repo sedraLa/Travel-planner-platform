@@ -27,6 +27,10 @@ class Trip extends Model
         'driver_vehicle_capacity',
         'driver_trip_type',
         'driver_road_type',
+        'ranked_guide_ids',
+        'ranked_driver_ids',
+        'assigned_guide_id',
+        'assigned_driver_id',
     ];
 
     protected $hidden = [
@@ -37,6 +41,8 @@ class Trip extends Model
     protected $casts = [
         'guide_specialization_ids' => 'array',
         'requires_tour_leader' => 'boolean',
+        'ranked_guide_ids' => 'array',
+        'ranked_driver_ids' => 'array',
     ];
 
    public function packages()
@@ -67,6 +73,27 @@ class Trip extends Model
     return $this->hasMany(GuideAssignment::class);
    }
    
+
+    public function guideRequests()
+    {
+        return $this->hasMany(GuideRequest::class);
+    }
+
+    public function driverRequests()
+    {
+        return $this->hasMany(DriverRequest::class);
+    }
+
+    public function assignedGuide()
+    {
+        return $this->belongsTo(Guide::class, 'assigned_guide_id');
+    }
+
+    public function assignedDriver()
+    {
+        return $this->belongsTo(Driver::class, 'assigned_driver_id');
+    }
+
     public function guides()
     {
         return $this->belongsToMany(Guide::class, 'guide_assignments')

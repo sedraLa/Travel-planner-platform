@@ -11,6 +11,6 @@ class StaffingInProgressTripState extends TripState
 
     protected function allowedTransitions(): array
     {
-        return ['staffed'];
+        return ['staffed', 'draft'];
     }
 }

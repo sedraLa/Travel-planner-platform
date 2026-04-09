@@ -26,6 +26,8 @@ use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
+use App\Http\Controllers\Driver\TripDriverRequestResponseController;
+use App\Http\Controllers\Guide\GuideRequestResponseController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
@@ -245,6 +247,11 @@ Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::cla
 Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
 Route::post('/trips/{trip}/complete/guides', [AiTripCompletionController::class, 'saveGuides'])->name('trip.complete.guides');
 Route::post('/trips/{trip}/complete/drivers', [AiTripCompletionController::class, 'saveDrivers'])->name('trip.complete.drivers');
+
+Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
+Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
+Route::post('/trip-driver-requests/{driverRequest}/accept', [TripDriverRequestResponseController::class, 'accept'])->name('trip.driver.requests.accept');
+Route::post('/trip-driver-requests/{driverRequest}/reject', [TripDriverRequestResponseController::class, 'reject'])->name('trip.driver.requests.reject');
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');

@@ -11,6 +11,6 @@ class ReadyForAssignmentTripState extends TripState
 
     protected function allowedTransitions(): array
     {
-        return ['ready_for_staffing'];
+        return ['ready_for_staffing', 'staffing_in_progress'];
     }
 }
