@@ -25,8 +25,7 @@ class AssignmentController extends Controller
    public function index(Request $request)
   {
 
-        $assignments = Assignment::with(['vehicle', 'driver.user', 'shiftTemplate'])
-        ->latest() ;
+        $assignments = Assignment::with(['vehicle', 'driver.user', 'shiftTemplate']) ->latest() ;
 
 
         if ($request->filled('search')) {
@@ -38,13 +37,19 @@ class AssignmentController extends Controller
             })
             ->orWhereHas('driver.user', function ($qd) use ($search) {
                 $qd->whereRaw("CONCAT(name, ' ', COALESCE(last_name, '')) like ?", ["%{$search}%"]);
+            })
+            ->orWhereHas('shiftTemplate', function ($qs) use ($search) {
+            $qs->where('name', 'like', "%{$search}%");
             });
-        });
-    }
+          });
+       }
+
+       
 
     $assignments = $assignments->get();
 
     // جلب السيارات والسائقين اللي عندهم إسناد فقط
+   
     $vehicles = $assignments->pluck('vehicle')->unique('id')->values();
     $drivers = $assignments->pluck('driver')->unique('id')->values();
 

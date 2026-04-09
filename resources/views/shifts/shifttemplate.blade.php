@@ -17,6 +17,20 @@
                 >
             </div>
 
+             <div class="dropdown">
+                    <button type="button" class="dropbtn">Select Day</button>
+                    <div class="dropdown-content">
+                        @foreach(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'] as $day_of_week)
+                            <label>
+                                <input type="checkbox" name="days_of_week[]" value="{{ strtolower($day_of_week)}}" 
+                                    {{ in_array($day_of_week, (array) request('days_of_week', [])) ? 'checked' : '' }}>
+                                {{ $day_of_week }}
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+                
+
             <div class="flex gap-2">
                 <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>
                 <a href="{{ route('shift-templates.index') }}" class="px-4 py-2 border rounded-lg text-gray-600">Reset</a>

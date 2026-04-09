@@ -17,12 +17,19 @@ class ShiftTemplateController extends Controller
             $query->where('name', 'like', "%{$search}%");
         }
 
+        if ($request->filled('days_of_week')) {
+             $query->where(function($q) use ($request) {
+                foreach ((array)$request->days_of_week as $day) {
+                $q->orWhereJsonContains('days_of_week', $day);
+        }
+    });
+}
         $shiftTemplates = $query->latest()->paginate(10)->withQueryString();
 
         return view('shifts.shifttemplate', compact('shiftTemplates'));
     }
 
-
+ 
     
 
     public function store(ShiftTemplateRequest $request)

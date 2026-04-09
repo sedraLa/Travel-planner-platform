@@ -41,9 +41,9 @@
                 <a href="{{ route('destination.index') }}"
                     class="inline-flex items-center gap-2 bg-amber-700 border border-amber-800  text-white text-base font-semibold py-3 px-6 rounded-xl hover:bg-amber-800 hover:border-amber-900 transition duration-200">
                         ← Back to Destinations
-                </a>
-            </div>
-         @endif
+                    </a>
+                </div>
+            @endif
 
              @if(Auth::user()->role === UserRole::ADMIN->value)
             <div class="search-container">

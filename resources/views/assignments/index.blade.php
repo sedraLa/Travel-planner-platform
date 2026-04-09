@@ -30,6 +30,24 @@
             </div>
         @endif
 
+         <form method="GET" action="{{ route('assignments.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
+            <div class="flex-1 min-w-[220px]">
+                <label class="text-sm text-gray-600">Search</label>
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="car model,plate_number,driver name,shift name"
+                    class="w-full border rounded-lg p-2"
+                >
+            </div>
+                
+
+            <div class="flex gap-2">
+                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>
+                <a href="{{ route('assignments.index') }}" class="px-4 py-2 border rounded-lg text-gray-600">Reset</a>
+            </div>
+        </form>
         <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white shadow-sm">
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
