@@ -42,6 +42,12 @@ class Guide extends Model
         return $this->hasMany(GuideAvailability::class);
     }
 
+
+    public function guideRequests()
+    {
+        return $this->hasMany(GuideRequest::class);
+    }
+
     public function assignments()
     {
         return $this->hasMany(GuideAssignment::class);

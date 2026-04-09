@@ -45,6 +45,12 @@ class Driver extends Model
     }
 
 
+
+    public function driverRequests()
+    {
+        return $this->hasMany(DriverRequest::class);
+    }
+
     public function bookingRequests()
     {
     return $this->hasMany(BookingRequest::class);

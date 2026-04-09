@@ -2,6 +2,7 @@
 
 namespace App\Services\AiTrip;
 
+use App\Jobs\TripStaffing\StartTripStaffingJob;
 use App\Models\DayActivity;
 use App\Models\Trip;
 use App\Models\TripDay;
@@ -267,6 +268,7 @@ class TripService
             ]);
 
             $this->tripStateManager->transition($trip, 'ready_for_assignment');
+            StartTripStaffingJob::dispatch($trip->id)->afterCommit();
         });
     }
 

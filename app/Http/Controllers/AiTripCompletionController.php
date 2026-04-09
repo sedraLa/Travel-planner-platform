@@ -76,6 +76,6 @@ class AiTripCompletionController extends Controller
         $this->tripService->saveDrivers($trip, $request->validated());
 
         return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'drivers'])
-            ->with('success', 'Driver requirements saved and trip is ready for assignment.');
+            ->with('success', 'Driver requirements saved. Staffing process started.');
     }
 }
