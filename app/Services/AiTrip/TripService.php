@@ -13,6 +13,7 @@ use App\Models\TripPackage;
 use App\Models\TripPackageHotel;
 use App\Models\TripSchedule;
 use App\Services\GroqTripPlannerService;
+use App\Services\Trip\TripStateManager;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +21,10 @@ use Illuminate\Support\Str;
 
 class TripService
 {
-    public function __construct(protected GroqTripPlannerService $groqService)
+    public function __construct(
+        protected GroqTripPlannerService $groqService,
+        protected TripStateManager $tripStateManager
+    )
     {
     }
 
@@ -235,6 +239,34 @@ class TripService
                     'is_cover' => false,
                 ]);
             }
+        });
+    }
+
+    public function saveGuides(Trip $trip, array $payload): void
+    {
+        $specializationIds = collect($payload['guide_specialization_ids'] ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values()
+            ->all();
+
+        $trip->update([
+            'guide_specialization_ids' => $specializationIds,
+            'requires_tour_leader' => (bool) ($payload['requires_tour_leader'] ?? true),
+        ]);
+    }
+
+    public function saveDrivers(Trip $trip, array $payload): void
+    {
+        DB::transaction(function () use ($trip, $payload) {
+            $trip->update([
+                'driver_vehicle_type' => $payload['vehicle_type'] ?? null,
+                'driver_vehicle_capacity' => $payload['vehicle_capacity'] ?? null,
+                'driver_trip_type' => $payload['trip_type'],
+                'driver_road_type' => $payload['road_type'],
+            ]);
+
+            $this->tripStateManager->transition($trip, 'ready_for_assignment');
         });
     }
 
