@@ -19,12 +19,14 @@
     
                     <!-- Search & Filters -->
                     <form method="GET" action="{{ route('activities.index') }}" class="search-form">
+
+                    @if(Auth::user()->role === UserRole::ADMIN->value)
                         <div class="search-container" style="margin-top:10px;">
                             <input type="text" name="search" placeholder="Search by activity or destination" 
                                    value="{{ request('search') }}" class="search-input" style="color:black">
                             <button type="submit" class="search-button">Search</button>
                         </div>
-    
+                      @endif
                         <div class="filters">
                             <select name="availability">
                                 <option value="">Availability</option>

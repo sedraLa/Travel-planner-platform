@@ -77,7 +77,7 @@ class VehicleOrderController extends Controller
 
         if ($reservation->status === 'pending_driver') {
             $rankedDriverIds = $reservation->ranked_driver_ids ?? [];
-
+ 
             $pendingRequest = BookingRequest::query()
                 ->where('reservation_id', $reservation->id)
                 ->where('status', 'pending')

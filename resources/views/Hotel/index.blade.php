@@ -29,6 +29,12 @@
         <!-- Search Form -->
         <form class="search-form" method="GET" action="{{ route('hotels.index') }}">
             <h1>Find Your Hotel</h1>
+             @if(request('destination_id'))
+                <input type="hidden" name="destination_id" value="{{ request('destination_id') }}">
+            @endif
+            @if(isset($selectedDestination) && $selectedDestination)
+                <p style="color:#fff; text-align:center; margin-top:10px;">Showing hotels in {{ $selectedDestination->name }}</p>
+            @endif
             <div class="search-container">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" class="h-8 w-8 text-red-500"
                     viewBox="0 0 20 20">
@@ -136,6 +142,7 @@
                     <h5>{{ $hotel->name }}</h5>
                     <p class="overview">{{ Str::limit($hotel->address, 80) }}</p>
                 </a>
+
 
                 @if(Auth::user()->role === UserRole::ADMIN->value)
                                         <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4" >
