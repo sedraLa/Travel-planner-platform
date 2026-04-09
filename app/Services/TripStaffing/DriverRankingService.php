@@ -18,42 +18,88 @@ class DriverRankingService
 
         $city = strtolower((string) optional($trip->primaryDestination)->city);
         $country = strtolower((string) optional($trip->primaryDestination)->country);
+
         $start = optional($trip->schedules->min('start_date'));
-        $end = optional($trip->schedules->max('end_date'));
+        $end   = optional($trip->schedules->max('start_date'));
+
+        /*
+        |--------------------------------------------------------------------------
+        | BASE QUERY
+        |--------------------------------------------------------------------------
+        */
 
         $baseQuery = Driver::query()
             ->whereIn('status', ['approved', 'Approved'])
+
+            // لازم يكون عنده assignment فعلاً
             ->whereHas('assignment', function ($assignmentQuery) use ($trip) {
+
+                // لازم يكون في vehicle مربوط
+                $assignmentQuery->whereNotNull('transport_vehicle_id');
+
                 $assignmentQuery->whereHas('vehicle', function ($vehicleQuery) use ($trip) {
-                    if (! empty($trip->driver_vehicle_type)) {
-                        $vehicleQuery->whereRaw('LOWER(type) = ?', [strtolower((string) $trip->driver_vehicle_type)]);
+
+                    if (!empty($trip->driver_vehicle_type)) {
+                        $vehicleQuery->whereRaw(
+                            'LOWER(type) = ?',
+                            [strtolower($trip->driver_vehicle_type)]
+                        );
                     }
 
-                    if (! empty($trip->driver_vehicle_capacity)) {
-                        $vehicleQuery->where('max_passengers', '>=', (int) $trip->driver_vehicle_capacity);
+                    if (!empty($trip->driver_vehicle_capacity)) {
+                        $vehicleQuery->where(
+                            'max_passengers',
+                            '>=',
+                            (int) $trip->driver_vehicle_capacity
+                        );
                     }
                 });
             })
+
+            // location filter (خفيف وما بيكسر الداتا)
             ->when($city || $country, function ($query) use ($city, $country) {
-                $query->where(function ($locationQuery) use ($city, $country) {
+                $query->where(function ($q) use ($city, $country) {
+
                     if ($city) {
-                        $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$city}%"]);
+                        $q->orWhereRaw('LOWER(address) LIKE ?', ["%{$city}%"]);
                     }
 
                     if ($country) {
-                        $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$country}%"]);
+                        $q->orWhereRaw('LOWER(address) LIKE ?', ["%{$country}%"]);
                     }
                 });
             });
+
+        /*
+        |--------------------------------------------------------------------------
+        | DEBUG (مهم جدًا)
+        |--------------------------------------------------------------------------
+        */
+
+        logger()->info('Driver ranking debug', [
+            'total_drivers' => Driver::count(),
+            'drivers_with_assignment' => Driver::whereHas('assignment')->count(),
+            'drivers_with_vehicle' => Driver::whereHas('assignment.vehicle')->count(),
+            'base_query_count' => (clone $baseQuery)->count(),
+        ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | FETCH + FILTER AVAILABILITY
+        |--------------------------------------------------------------------------
+        */
 
         $drivers = (clone $baseQuery)
             ->with(['tripTransports.trip.schedules', 'reservations'])
             ->get()
             ->filter(function (Driver $driver) use ($start, $end) {
+
+                // إذا ما في schedule ما منمنع
                 if (! $start || ! $end) {
                     return true;
                 }
 
+                // تضارب مع trips
                 foreach ($driver->tripTransports as $transport) {
                     foreach ($transport->trip?->schedules ?? [] as $schedule) {
                         if ($schedule->start_date <= $end && $schedule->end_date >= $start) {
@@ -62,12 +108,14 @@ class DriverRankingService
                     }
                 }
 
+                // تضارب مع reservations
                 foreach ($driver->reservations as $reservation) {
-                    if (! in_array($reservation->status, ['driver_assigned', 'confirmed'], true)) {
+
+                    if (!in_array($reservation->status, ['driver_assigned', 'confirmed'], true)) {
                         continue;
                     }
 
-                    $pickup = optional($reservation->pickup_datetime)?->toDateString();
+                    $pickup  = optional($reservation->pickup_datetime)?->toDateString();
                     $dropoff = optional($reservation->dropoff_datetime)?->toDateString() ?? $pickup;
 
                     if ($pickup && $dropoff && $pickup <= $end && $dropoff >= $start) {
@@ -79,15 +127,14 @@ class DriverRankingService
             })
             ->values();
 
+        /*
+        |--------------------------------------------------------------------------
+        | FINAL LOG
+        |--------------------------------------------------------------------------
+        */
+
         logger()->info('Trip driver ranking computed', [
             'trip_id' => $trip->id,
-            'driver_vehicle_type' => $trip->driver_vehicle_type,
-            'driver_vehicle_capacity' => $trip->driver_vehicle_capacity,
-            'destination_city' => $city,
-            'destination_country' => $country,
-            'schedule_start' => $start,
-            'schedule_end' => $end,
-            'db_matched_count' => (clone $baseQuery)->count(),
             'available_count' => $drivers->count(),
             'available_driver_ids' => $drivers->pluck('id')->all(),
         ]);

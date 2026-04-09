@@ -23,49 +23,71 @@ class GuideRankingService
         $end = optional($trip->schedules->max('end_date'));
 
         $baseQuery = Guide::query()
-            ->whereIn('status', ['approved', 'Approved'])
-            ->when($trip->requires_tour_leader, fn ($query) => $query->where('is_tour_leader', true))
-            ->when($specializationIds->isNotEmpty(), function ($query) use ($specializationIds) {
-                $query->whereHas('specializations', fn ($spQuery) => $spQuery->whereIn('specializations.id', $specializationIds->all()));
-            })
-            ->when($city || $country, function ($query) use ($city, $country) {
-                $query->where(function ($locationQuery) use ($city, $country) {
-                    if ($city) {
-                        $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$city}%"]);
-                    }
+        ->whereIn('status', ['approved', 'Approved'])
+        ->when($specializationIds->isNotEmpty(), function ($query) use ($specializationIds) {
+            $query->whereHas('specializations', fn ($spQuery) =>
+                $spQuery->whereIn('specializations.id', $specializationIds->all())
+            );
+        })
+        ->when($city || $country, function ($query) use ($city, $country) {
+            $query->where(function ($locationQuery) use ($city, $country) {
+                if ($city) {
+                    $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$city}%"]);
+                }
 
-                    if ($country) {
-                        $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$country}%"]);
-                    }
-                });
-            })
-            ->where(function ($query) {
-                $query->whereNull('last_trip_at')->orWhere('last_trip_at', '<=', now()->subDays(6));
+                if ($country) {
+                    $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$country}%"]);
+                }
             });
+        })
+        ->where(function ($query) {
+            $query->whereNull('last_trip_at')
+                  ->orWhere('last_trip_at', '<=', now()->subDays(6));
+        });
 
         $guides = (clone $baseQuery)
-            ->with(['assignments.trip.schedules'])
-            ->get()
-            ->filter(function (Guide $guide) use ($start, $end) {
-                if (! $start || ! $end) {
-                    return true;
-                }
-
-                foreach ($guide->assignments as $assignment) {
-                    if (! in_array($assignment->status, ['assigned', 'accepted'], true)) {
-                        continue;
-                    }
-
-                    foreach ($assignment->trip?->schedules ?? [] as $schedule) {
-                        if ($schedule->start_date <= $end && $schedule->end_date >= $start) {
-                            return false;
-                        }
-                    }
-                }
-
+        ->with(['assignments.trip.schedules'])
+        ->get()
+        ->filter(function (Guide $guide) use ($start, $end) {
+            if (! $start || ! $end) {
                 return true;
-            })
-            ->values();
+            }
+
+            foreach ($guide->assignments as $assignment) {
+                if (! in_array($assignment->status, ['assigned', 'accepted'], true)) {
+                    continue;
+                }
+
+                foreach ($assignment->trip?->schedules ?? [] as $schedule) {
+                    if ($schedule->start_date <= $end && $schedule->end_date >= $start) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        })
+        ->values();
+
+        if ($trip->requires_tour_leader) {
+            $tourLeaders = Guide::query()
+                ->whereIn('status', ['approved', 'Approved'])
+                ->where('is_tour_leader', true)
+                ->when($city || $country, function ($query) use ($city, $country) {
+                    $query->where(function ($locationQuery) use ($city, $country) {
+                        if ($city) {
+                            $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$city}%"]);
+                        }
+
+                        if ($country) {
+                            $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$country}%"]);
+                        }
+                    });
+                })
+                ->get();
+
+            $guides = $guides->merge($tourLeaders)->unique('id')->values();
+        }
 
         logger()->info('Trip guide ranking computed', [
             'trip_id' => $trip->id,
