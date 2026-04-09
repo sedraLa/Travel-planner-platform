@@ -35,7 +35,7 @@ class VehicleOrderController extends Controller
     // Send request and create reservation
     public function store(VehicleOrderRequest $request)
     {
-        // أنشئ الحجز بدون تعيين الحالة مباشرة
+
         $reservation = TransportReservation::create([
             'user_id' => Auth::id(),
             'pickup_location' => $request->pickup_location,
@@ -48,10 +48,10 @@ class VehicleOrderController extends Controller
             'total_price' => 0,
         ]);
 
-        // تعيين الحالة باستخدام StateManager
+        // set state using stateManager
         $this->stateManager->setInitialState($reservation, 'pending_driver');
 
-        // أرسل Job لمطابقة السائق
+        // send job to find a driver
         ProcessReservationDriverMatchingJob::dispatch($reservation->id);
 
         return redirect()->route('vehicle.searching', $reservation);
@@ -61,7 +61,7 @@ class VehicleOrderController extends Controller
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        // تحقق من إمكانية الوصول حسب الحالة
+        // check accessability according to status
         if (!$this->stateManager->canAccessSearching($reservation)) {
             return redirect()->route('vehicle.order', [
                 'error' => 'no_driver_available'
@@ -71,22 +71,27 @@ class VehicleOrderController extends Controller
         return view('vehicles.searching', compact('reservation'));
     }
 
+    //polling
     public function status(TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
+        //check booking requests to decide if we eant to send to the next driver or not
         if ($reservation->status === 'pending_driver') {
             $rankedDriverIds = $reservation->ranked_driver_ids ?? [];
- 
+
+            //get first pending request
             $pendingRequest = BookingRequest::query()
                 ->where('reservation_id', $reservation->id)
                 ->where('status', 'pending')
                 ->latest('id')
                 ->first();
 
+                //check if pending time has ended
             if ($pendingRequest && $pendingRequest->expires_at && $pendingRequest->expires_at->isPast()) {
                 $pendingRequest->update(['status' => 'expired']);
 
+                //send to next driver
                 $currentIndex = array_search($pendingRequest->driver_id, $rankedDriverIds, true);
 
                 ProcessNextDriverInChainJob::dispatchSync(
@@ -98,19 +103,24 @@ class VehicleOrderController extends Controller
                 $reservation->refresh();
             }
 
+            //check if no pending requests left (expired or rejected)
             if (!$pendingRequest) {
+
+                //get last request to decide who is next
                 $lastRequest = BookingRequest::query()
                     ->where('reservation_id', $reservation->id)
                     ->latest('id')
                     ->first();
 
+
                 if ($lastRequest && in_array($lastRequest->status, ['expired', 'rejected'], true)) {
-                    $currentIndex = array_search($lastRequest->driver_id, $rankedDriverIds, true);
-                    $nextIndex = $currentIndex === false ? 1 : $currentIndex + 1;
+                    $currentIndex = array_search($lastRequest->driver_id, $rankedDriverIds, true); //this driver is done
+                    $nextIndex = $currentIndex === false ? 1 : $currentIndex + 1; //move to next driver
                     $nextDriverId = $rankedDriverIds[$nextIndex] ?? null;
 
                     if ($nextDriverId) {
-                        $alreadySentToNext = BookingRequest::query()
+                        //check if request already sent to next driver (to prevent sending same request to same driver more than once)
+                        $alreadySentToNext = BookingRequest::query() 
                             ->where('reservation_id', $reservation->id)
                             ->where('driver_id', $nextDriverId)
                             ->exists();
@@ -147,7 +157,7 @@ class VehicleOrderController extends Controller
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        // تحقق من الوصول حسب الحالة
+  
         if (!$this->stateManager->canAccessAssigned($reservation)) {
             return redirect()->route('vehicle.searching', $reservation)
                 ->withErrors('Reservation not ready yet.');
