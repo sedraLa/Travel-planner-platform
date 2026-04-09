@@ -6,6 +6,7 @@ use App\Enums\Category;
 use App\Models\Activity;
 use App\Models\Destination;
 use App\Models\Hotel;
+use App\Models\Specialization;
 use App\Models\Trip;
 
 class AiTripController extends Controller
@@ -45,7 +46,8 @@ class AiTripController extends Controller
         $destinations = Destination::query()->orderBy('name')->get(['id', 'name']);
         $activities = Activity::query()->orderBy('name')->get(['id', 'name']);
         $hotels = Hotel::query()->orderBy('name')->get(['id', 'name']);
+        $specializations = Specialization::query()->orderBy('name')->get(['id', 'name']);
 
-        return view('trips.ai.complete', compact('trip', 'activeTab', 'destinations', 'activities', 'hotels'));
+        return view('trips.ai.complete', compact('trip', 'activeTab', 'destinations', 'activities', 'hotels', 'specializations'));
     }
 }

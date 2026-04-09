@@ -21,11 +21,22 @@ class Trip extends Model
         'is_ai_generated',
         'ai_prompt',
         'status',
+        'guide_specialization_ids',
+        'requires_tour_leader',
+        'driver_vehicle_type',
+        'driver_vehicle_capacity',
+        'driver_trip_type',
+        'driver_road_type',
     ];
 
     protected $hidden = [
         'created_at',
         'updated_at'
+    ];
+
+    protected $casts = [
+        'guide_specialization_ids' => 'array',
+        'requires_tour_leader' => 'boolean',
     ];
 
    public function packages()
