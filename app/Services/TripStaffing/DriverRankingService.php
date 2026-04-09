@@ -21,7 +21,7 @@ class DriverRankingService
         $start = optional($trip->schedules->min('start_date'));
         $end = optional($trip->schedules->max('end_date'));
 
-        $drivers = Driver::query()
+        $baseQuery = Driver::query()
             ->whereIn('status', ['approved', 'Approved'])
             ->whereHas('assignment', function ($assignmentQuery) use ($trip) {
                 $assignmentQuery->whereHas('vehicle', function ($vehicleQuery) use ($trip) {
@@ -44,7 +44,9 @@ class DriverRankingService
                         $locationQuery->orWhereRaw('LOWER(address) like ?', ["%{$country}%"]);
                     }
                 });
-            })
+            });
+
+        $drivers = (clone $baseQuery)
             ->with(['tripTransports.trip.schedules', 'reservations'])
             ->get()
             ->filter(function (Driver $driver) use ($start, $end) {
@@ -76,6 +78,19 @@ class DriverRankingService
                 return true;
             })
             ->values();
+
+        logger()->info('Trip driver ranking computed', [
+            'trip_id' => $trip->id,
+            'driver_vehicle_type' => $trip->driver_vehicle_type,
+            'driver_vehicle_capacity' => $trip->driver_vehicle_capacity,
+            'destination_city' => $city,
+            'destination_country' => $country,
+            'schedule_start' => $start,
+            'schedule_end' => $end,
+            'db_matched_count' => (clone $baseQuery)->count(),
+            'available_count' => $drivers->count(),
+            'available_driver_ids' => $drivers->pluck('id')->all(),
+        ]);
 
         if ($drivers->isEmpty()) {
             return [];

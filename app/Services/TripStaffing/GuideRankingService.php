@@ -22,7 +22,7 @@ class GuideRankingService
         $start = optional($trip->schedules->min('start_date'));
         $end = optional($trip->schedules->max('end_date'));
 
-        $guides = Guide::query()
+        $baseQuery = Guide::query()
             ->whereIn('status', ['approved', 'Approved'])
             ->when($trip->requires_tour_leader, fn ($query) => $query->where('is_tour_leader', true))
             ->when($specializationIds->isNotEmpty(), function ($query) use ($specializationIds) {
@@ -41,7 +41,9 @@ class GuideRankingService
             })
             ->where(function ($query) {
                 $query->whereNull('last_trip_at')->orWhere('last_trip_at', '<=', now()->subDays(6));
-            })
+            });
+
+        $guides = (clone $baseQuery)
             ->with(['assignments.trip.schedules'])
             ->get()
             ->filter(function (Guide $guide) use ($start, $end) {
@@ -64,6 +66,19 @@ class GuideRankingService
                 return true;
             })
             ->values();
+
+        logger()->info('Trip guide ranking computed', [
+            'trip_id' => $trip->id,
+            'requires_tour_leader' => (bool) $trip->requires_tour_leader,
+            'guide_specialization_ids' => $specializationIds->all(),
+            'destination_city' => $city,
+            'destination_country' => $country,
+            'schedule_start' => $start,
+            'schedule_end' => $end,
+            'db_matched_count' => (clone $baseQuery)->count(),
+            'available_count' => $guides->count(),
+            'available_guide_ids' => $guides->pluck('id')->all(),
+        ]);
 
         if ($guides->isEmpty()) {
             return [];

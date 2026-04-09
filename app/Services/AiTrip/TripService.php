@@ -254,7 +254,7 @@ class TripService
 
         $trip->update([
             'guide_specialization_ids' => $specializationIds,
-            'requires_tour_leader' => (bool) ($payload['requires_tour_leader'] ?? true),
+            'requires_tour_leader' => (bool) ($payload['requires_tour_leader'] ?? false),
         ]);
     }
 
