@@ -22,11 +22,17 @@
                 <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
                 <li><a href="{{ route('driverscompleted.show') }}">Completed Bookings</a></li>
             @elseif($role === UserRole::GUIDE->value)
-                {{-- Guide should only have profile menu items for now --}}
+                  <li><p>completed trips</p></li>
+                  <li><p>upcoming trips</p></li>
+                    <li><p>booking requst</p></li>
+
+                   
             @elseif(in_array($role, [UserRole::USER->value, UserRole::ADMIN->value], true))
                 <li><a href="{{ route('destination.index') }}">Destinations</a></li>
-                <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
-                 <li><a href="{{route('activities.index')}}">Activities</a></li>
+                @if($role === UserRole::ADMIN->value)
+                    <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
+                    <li><a href="{{ route('activities.index') }}">Activities</a></li>
+                @endif
                 @if($role === UserRole::USER->value)
                     <li><a href="{{ route('flight.show') }}">Flights</a></li>
                     <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>

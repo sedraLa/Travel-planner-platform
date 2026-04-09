@@ -7,11 +7,11 @@
     <div class="main">
     <div class="driver_profile">
         <div class="personal_info">
-            <img class="personal-photo" src="{{ $guide && $guide->personal_image ? asset('storage/' . $guide->personal_image) : asset('images/ian-dooley-d1UPkiFd04A-unsplash.jpg') }}">
+            <img class="personal-photo" src="{{ $guide&& $guide->personal_image ? asset('storage/' . $guide->personal_image) : asset('images/ian-dooley-d1UPkiFd04A-unsplash.jpg') }}">
             <div class="personal-details">
                 <span>Good day</span>
                 <h2>Welcome back, {{ $guide?->user?->name ?? auth()->user()->name }} 👋</h2>
-                <p id="rating">⭐ 4.9 rating . {{ $completedTrips }} total trips</p>
+                <p id="rating">⭐ 4.9 rating  {{ $completedTrips }} total trips</p>
                 <button onclick="document.getElementById('schedule-modal').classList.remove('hidden')" 
 class="schedule-btn">
     Working Schedule
@@ -25,7 +25,7 @@ class="schedule-btn">
             <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
             <div class="count">
             <h3>PENDING</h3>
-            <span id="pending-total">{{ $cancelledTrips }}</span>
+            <span id="pending-total">{{ $completedTrips}}</span>
             </count>
             </div>
         </div>
@@ -34,7 +34,7 @@ class="schedule-btn">
             <img class="icon" src="{{asset('images/icons/icons8-checkmark-50.png')}}">
             <div class="count">
             <h3>COMPLETED</h3>
-            <span id="completed-total">{{ $completedTrips}}</span>
+            <span id="completed-total">{{ $completedTrips }}</span>
             </count>
             </div>
         </div>
@@ -43,7 +43,7 @@ class="schedule-btn">
             <img class="icon" src="{{asset('images/icons/icons8-cancel-50.png')}}">
             <div class="count">
             <h3>CANCELED</h3>
-            <span id="canceled-total">{{ $cancelledTrips }}</span>
+            <span id="canceled-total">{{ $completedTrips }}</span>
             </count>
             </div>
         </div>
@@ -53,7 +53,7 @@ class="schedule-btn">
             <div class="count">
             <h3>EARNINGS</h3>
             <span id="earning-total">2 <!--number of pending booings--> </span>
-            {{--<span id="earning-total">${{ number_format($earnings, 2) }}</span>--}}
+            {{--<span id="earning-total">{{ $completedTrips}}</span>--}}
             </count>
             </div>
         </div>
@@ -62,38 +62,38 @@ class="schedule-btn">
     <div class="assigned-vehicle">
         <h2 class="vehicle-title">Your Assigned Vehicle</h2>
         <div class="vehicle-info">
-           <img class="vehicle-photo"  alt="Vehicle Image">
+           <img class="vehicle-photo" alt="Vehicle Image">
 
             <div class="vehicle-details">
-                <h2 class="vehicle-model">kkkkk</h2>
-                <span class="category">kkkkkkkkkk</span>
+                <h2 class="vehicle-model">{{  $completedTrips }}</h2>
+                <span class="category">{{  $completedTrips }}</span>
                 <div class="vehicle-stats">
                     <div class="stat">
                         <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
                         <div>
                             <h5>Plate Number</h5>
-                            <h6>jjjjjjjjjjjjjjjj</h6>
+                            <h6>{{  $completedTrips }}</h6>
                         </div>
                     </div>
                     <div class="stat">
                         <img class="stat-icon" src="{{ asset('images/icons/icons8-passengers-50.png') }}" alt="Passengers Icon">
                         <div>
                             <h5>Max Passengers</h5>
-                            <h6>ggggggggggggg</h6>
+                            <h6>{{  $completedTrips}}</h6>
                         </div>
                     </div>
                     <div class="stat">
                         <img class="stat-icon" src="{{ asset('images/icons/icons8-price-50.png') }}" alt="Base Price Icon">
                         <div>
                             <h5>Base Price</h5>
-                            <h6>dfghjklo;p</h6>
+                            <h6>{{  $completedTrips }}</h6>
                         </div>
                     </div>
                     <div class="stat">
                         <img class="stat-icon" src="{{ asset('images/icons/icons8-price-50.png') }}" alt="Price per Km Icon">
                         <div>
                             <h5>Price per Km</h5>
-                            <h6>dfghjk</h6>
+                            <h6>{{ $completedTrips }}</h6>
                         </div>
                     </div>
                 </div>
@@ -101,6 +101,7 @@ class="schedule-btn">
         </div>
     </div>
 </div>
+
 {{--<div id="schedule-modal"
 class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
 
