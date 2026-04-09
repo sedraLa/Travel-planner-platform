@@ -8,6 +8,8 @@
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid white; border-radius: 50%; animation: spin 0.8s linear infinite; display: none; margin-left: 10px; }
         .generate-btn.loading .spinner { display: block; }
         .generate-btn.loading .btn-text { opacity: 0.7; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(130px,1fr)); gap: 10px; margin-top: 8px; }
+        .category-box { border: 1px solid #d1d5db; border-radius: 10px; padding: 8px 10px; display: flex; gap: 8px; align-items: center; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .form-container { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
     </style>
@@ -40,15 +42,15 @@
 
                     <div class="space-y-6">
                         <div>
-                            <x-input-label for="destination_id">Destination from Database</x-input-label>
-                            <select name="destination_id" id="destination_id" class="w-full rounded-md border-gray-300" required>
-                                <option value="">Select destination</option>
+                            <x-input-label for="destination_ids">Destinations from Database (Multi-select)</x-input-label>
+                            <select name="destination_ids[]" id="destination_ids" class="w-full rounded-md border-gray-300" multiple required size="6">
                                 @foreach($destinations as $destination)
-                                    <option value="{{ $destination->id }}" @selected(old('destination_id') == $destination->id)>
+                                    <option value="{{ $destination->id }}" @selected(in_array($destination->id, old('destination_ids', [])))>
                                         {{ $destination->name }} - {{ $destination->city }}, {{ $destination->country }}
                                     </option>
                                 @endforeach
                             </select>
+                            <p class="text-sm text-gray-500 mt-2">Use Ctrl/Cmd + click to select multiple destinations.</p>
                         </div>
 
                         <div>
@@ -59,8 +61,8 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <x-input-label for="travelers_number">Number of Travelers</x-input-label>
-                                <x-text-input type="number" name="travelers_number" id="travelers_number" min="1" value="{{ old('travelers_number', 1) }}" class="w-full"/>
+                                <x-input-label for="max_participants">Max Participants</x-input-label>
+                                <x-text-input type="number" name="max_participants" id="max_participants" min="1" value="{{ old('max_participants', 1) }}" class="w-full"/>
                             </div>
                             <div>
                                 <x-input-label for="duration">Duration (Days)</x-input-label>
@@ -70,6 +72,20 @@
                                 <x-input-label for="budget">Estimated Budget ($)</x-input-label>
                                 <x-text-input type="number" name="budget" id="budget" placeholder="Optional" value="{{ old('budget') }}" class="w-full"/>
                             </div>
+
+                            <div>
+                                <x-input-label>Trip Categories (Multi-select)</x-input-label>
+                                <div class="category-grid">
+                                    @foreach($categories as $category)
+                                        <label class="category-box">
+                                            <input type="checkbox" name="categories[]" value="{{ $category->value }}"
+                                                {{ in_array($category->value, old('categories', []), true) ? 'checked' : '' }}>
+                                            <span>{{ ucfirst($category->value) }}</span>
+                                        </label>
+                                    @endforeach
+                                </div>
+                            </div>
+
                             <div>
                                 <x-input-label for="language">Language</x-input-label>
                                 <select name="language" id="language" class="w-full rounded-md border-gray-300">

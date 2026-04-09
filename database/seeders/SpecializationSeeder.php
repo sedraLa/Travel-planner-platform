@@ -2,17 +2,23 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Specialization;
+use Illuminate\Database\Seeder;
 
 class SpecializationSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Specialization::factory()->count(6)->create();
+        $names = [
+            'City Tours',
+            'Historical Tours',
+            'Nature Exploration',
+            'Museum Tours',
+            'Food Tours',
+        ];
+
+        foreach ($names as $name) {
+            Specialization::query()->updateOrCreate(['name' => $name], ['name' => $name]);
+        }
     }
 }

@@ -84,19 +84,24 @@ section {
     min-width: 300px;
     margin: 10px auto;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 75vh;
-    flex-direction: column;
+    /* justify-content: center; */
+    /* align-items: center; */
+    height: 73vh;
+    /* max-height: 24vh; */
     gap: 10px;
+    /* padding: 15px; */
+    flex-direction: column;
 }
-
 
 
 section h1 {
     color: var(--indigo);
     border-radius:10px;
 }
+
+
+
+
 section p {
     width:75%;
     font-size: 17px;
@@ -176,3 +181,12 @@ a.block.w-full.px-4.py-2.text-start.text-sm.leading-5.text-gray-700.hover\:bg-gr
 }
 
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  /*font-size: inherit;*/
+  /* font-weight: inherit; */
+}

@@ -1,63 +1,57 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+
 use App\Models\Trip;
 use App\Models\Activity;
 use App\Models\Guide;
-use App\Models\User;
 
 class TripController extends Controller
 {
-    /*
-    Trips dashboard
-    * */
-
-    public function dashboard() {
+    public function dashboard()
+    {
         $systemGuides = Guide::with('user')
-        ->where('status','approved')
-        ->count();
+            ->where('status', 'approved')
+            ->count();
         $guidesRequests = Guide::with('user')
-        ->where('status','pending')
-        ->count();
+            ->where('status', 'pending')
+            ->count();
         $activities = Activity::with('destinations')->count();
-        return view('trips.dashboard', compact(
-            'systemGuides',
-            'guidesRequests',
-            'activities'
-        ));
 
-
+        return view('trips.dashboard', compact('systemGuides', 'guidesRequests', 'activities'));
     }
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        $trips = Trip::where('user_id', Auth::id())
-        ->latest()
-        ->get();
-        return view('trips.index',compact('trips'));
+        $trips = Trip::with('destination')
+            ->when(request('search'), function ($query, $search) {
+                $query->where(function ($inner) use ($search) {
+                    $inner->where('name', 'like', "%{$search}%")
+                        ->orWhere('description', 'like', "%{$search}%")
+                        ->orWhere('ai_prompt', 'like', "%{$search}%");
+                });
+            })
+            ->when(request('status'), fn ($query, $status) => $query->where('status', $status))
+            ->when(request('destination'), function ($query, $destination) {
+                $query->whereHas('destination', fn ($destinationQuery) => $destinationQuery->where('name', 'like', "%{$destination}%"));
+            })
+            ->latest()
+            ->get();
+
+        return view('trips.index', compact('trips'));
     }
 
-    /**
-     * show the page to choose the type of planning(manual,AI)
-     */
     public function view()
     {
         return view('trips.view');
     }
 
-
-
     public function destroy(Trip $trip)
-{
-    $trip->delete();
+    {
+        $trip->delete();
 
-    return redirect()
-        ->back()
-        ->with('success', 'Trip deleted successfully');
-}
-
+        return redirect()
+            ->back()
+            ->with('success', 'Trip deleted successfully');
+    }
 }

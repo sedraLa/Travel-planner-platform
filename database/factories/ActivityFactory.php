@@ -11,22 +11,45 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ActivityFactory extends Factory
 {
+    public function configure(): static
+    {
+        return $this->afterMaking(function ($activity) {
+            if ($activity->destination) {
+                $activity->address = fake()->streetAddress() . ', ' . $activity->destination->city;
+            }
+        });
+    }
+
     public function definition(): array
     {
+        $category = fake()->randomElement(Category::cases())->value;
+        $namesByCategory = [
+            'culture' => ['City Museum Tour', 'Historic District Walk', 'Traditional Crafts Workshop'],
+            'nature' => ['Coastal Sunset Walk', 'Mountain Trail Hike', 'Botanical Garden Visit'],
+            'shopping' => ['Old Souk Shopping', 'Artisan Market Visit', 'Local Boutique Crawl'],
+            'sports' => ['Kayaking Session', 'Cycling City Route', 'Rock Climbing Experience'],
+            'entertainment' => ['Live Music Night', 'Food Festival Visit', 'City Theater Show'],
+            'family' => ['Family Park Day', 'Interactive Science Center', 'Kid-Friendly Aquarium Visit'],
+            'romance' => ['Sunset Dinner Cruise', 'Couples Spa Session', 'Private Rooftop Dinner'],
+            'adventure' => ['Desert Safari Ride', 'Zipline Challenge', 'Canyon Exploration Tour'],
+            'wellness' => ['Morning Yoga Retreat', 'Thermal Spa Visit', 'Mindfulness Nature Walk'],
+            'food' => ['Street Food Tasting', 'Local Cooking Class', 'Farm-to-Table Experience'],
+        ];
+
         return [
-            'name' => fake()->sentence(3),
+            'name' => fake()->randomElement($namesByCategory[$category]),
             'image' => fake()->imageUrl(),
             'destination_id' => Destination::factory(),
             'description' => fake()->paragraph(),
-            'duration' => fake()->numberBetween(1, 8),
-            'duration_unit' => fake()->randomElement(['minutes', 'hours', 'days']),
+            'duration' => fake()->numberBetween(1, 4),
+            'duration_unit' => 'hours',
             'price' => fake()->randomFloat(2, 5, 500),
-            'category' => fake()->randomElement(Category::cases())->value,
+            'category' => $category,
             'is_active' => true,
             'start_time' => '09:00:00',
             'end_time' => '11:00:00',
-            'start_date' => fake()->date(),
-            'end_date' => fake()->date(),
+            'start_date' => now()->toDateString(),
+            'end_date' => now()->addMonths(6)->toDateString(),
             'availability' => 'available',
             'guide_name' => fake()->name(),
             'guide_language' => 'en',

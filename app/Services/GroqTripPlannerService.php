@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Services\AiTrip\Contracts\TripPromptStrategy;
 use App\Services\AiTrip\Prompts\ArabicTripPromptStrategy;
 use App\Services\AiTrip\Prompts\EnglishTripPromptStrategy;
+use App\Services\AiTrip\Sanitizers\TripPlanSanitizer;
 use App\Services\AiTrip\TripCatalogService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -18,8 +19,10 @@ class GroqTripPlannerService
     /** @var array<string, TripPromptStrategy> */
     protected array $promptStrategies;
 
-    public function __construct(protected TripCatalogService $catalogService)
-    {
+    public function __construct(
+        protected TripCatalogService $catalogService,
+        protected TripPlanSanitizer $tripPlanSanitizer
+    ) {
         $this->apiKey = (string) env('GROQ_API_KEY', '');
 
         $strategies = [
@@ -40,7 +43,10 @@ class GroqTripPlannerService
         }
 
         $strategy = $this->promptStrategies[$language] ?? $this->promptStrategies['en'];
-        $catalog = $this->catalogService->buildCatalog((int) $tripData['destination_id']);
+        $catalog = $this->catalogService->buildCatalog(
+            $tripData['destination_ids'] ?? [],
+            $tripData['categories'] ?? []
+        );
 
         try {
             $response = Http::withHeaders([
@@ -74,48 +80,11 @@ class GroqTripPlannerService
                 return null;
             }
 
-            return $this->sanitizeAgainstCatalog($decoded, $catalog);
+            return $this->tripPlanSanitizer->sanitizeAgainstCatalog($decoded, $catalog, (int) ($tripData['duration'] ?? 1));
         } catch (\Throwable $e) {
             Log::error('Groq API Exception', ['message' => $e->getMessage()]);
             return null;
         }
     }
 
-    protected function sanitizeAgainstCatalog(array $plan, array $catalog): array
-    {
-        $allowedHotelIds = collect($catalog['hotels'])->pluck('id')->map(fn ($id) => (int) $id)->all();
-        $allowedActivityIds = collect($catalog['activities'])->pluck('id')->map(fn ($id) => (int) $id)->all();
-
-        $plan['days'] = collect($plan['days'] ?? [])
-            ->map(function ($day, $index) use ($allowedHotelIds, $allowedActivityIds) {
-                $activities = collect($day['activities'] ?? [])
-                    ->filter(fn ($activity) => in_array((int) ($activity['activity_id'] ?? 0), $allowedActivityIds, true))
-                    ->map(fn ($activity) => [
-                        'activity_id' => (int) $activity['activity_id'],
-                        'start_time' => $activity['start_time'] ?? null,
-                        'end_time' => $activity['end_time'] ?? null,
-                        'notes' => $activity['notes'] ?? null,
-                    ])
-                    ->values()
-                    ->all();
-
-                return [
-                    'day_number' => (int) ($day['day_number'] ?? ($index + 1)),
-                    'title' => (string) ($day['title'] ?? 'Day ' . ($index + 1)),
-                    'description' => (string) ($day['description'] ?? ''),
-                    'hotel_id' => in_array((int) ($day['hotel_id'] ?? 0), $allowedHotelIds, true)
-                        ? (int) $day['hotel_id']
-                        : null,
-                    'activities' => $activities,
-                ];
-            })
-            ->values()
-            ->all();
-
-        $plan['trip_name'] = (string) ($plan['trip_name'] ?? 'AI Generated Trip');
-        $plan['trip_description'] = (string) ($plan['trip_description'] ?? '');
-        $plan['markdown_summary'] = (string) ($plan['markdown_summary'] ?? '');
-
-        return $plan;
-    }
 }

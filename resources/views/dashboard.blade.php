@@ -16,4 +16,17 @@
         </p>
         @endif
     </section>
+    <style>
+        section {
+    width: 60%;
+    min-width: 300px;
+    margin: 10px auto;
+    display: flex;
+    justify-content: center; 
+     align-items: center; 
+    height: 73vh;
+    gap: 10px;
+    flex-direction: column;
+}
+        </style>
 </x-app-layout>
