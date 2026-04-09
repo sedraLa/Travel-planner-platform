@@ -35,14 +35,8 @@ class TripFactory extends Factory
             'status' => 'ready_for_assignment',
             'guide_specialization_ids' => [],
             'requires_tour_leader' => true,
-            'driver_vehicle_type' => 'van',
-            'driver_vehicle_capacity' => 8,
-            'driver_trip_type' => 'intercity',
-            'driver_road_type' => 'highway',
             'ranked_guide_ids' => null,
-            'ranked_driver_ids' => null,
             'assigned_guide_id' => null,
-            'assigned_driver_id' => null,
         ];
     }
 

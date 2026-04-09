@@ -2,11 +2,9 @@
 
 namespace App\Services\TripStaffing;
 
-use App\Models\DriverRequest;
 use App\Models\GuideAssignment;
 use App\Models\GuideRequest;
 use App\Models\Trip;
-use App\Models\TripTransport;
 use App\Models\User;
 use App\Notifications\TripStaffingAdminNotification;
 use App\Services\Trip\TripStateManager;
@@ -45,39 +43,7 @@ class TripStaffingCoordinator
         });
     }
 
-    public function acceptDriverRequest(DriverRequest $request): bool
-    {
-        return DB::transaction(function () use ($request) {
-            $request = DriverRequest::query()->lockForUpdate()->find($request->id);
-            $trip = Trip::query()->lockForUpdate()->find($request?->trip_id);
-
-            if (! $request || ! $trip || $request->status !== 'pending' || $trip->assigned_driver_id) {
-                return false;
-            }
-
-            $request->update(['status' => 'accepted', 'responded_at' => now()]);
-            $trip->update(['assigned_driver_id' => $request->driver_id]);
-
-            TripTransport::query()
-                ->where('trip_id', $trip->id)
-                ->whereNull('driver_id')
-                ->update(['driver_id' => $request->driver_id]);
-
-            $trip->driverRequests()->where('id', '!=', $request->id)->where('status', 'pending')->update(['status' => 'expired']);
-
-            $this->notifyAdmins("Driver assigned to trip #{$trip->id}.");
-            $this->progressTripIfFullyStaffed($trip->fresh());
-
-            return true;
-        });
-    }
-
     public function rejectGuideRequest(GuideRequest $request): void
-    {
-        $request->update(['status' => 'rejected', 'responded_at' => now()]);
-    }
-
-    public function rejectDriverRequest(DriverRequest $request): void
     {
         $request->update(['status' => 'rejected', 'responded_at' => now()]);
     }
@@ -100,33 +66,20 @@ class TripStaffingCoordinator
             return;
         }
 
-        if ($trip->ranked_guide_ids === null || $trip->ranked_driver_ids === null) {
+        if ($trip->ranked_guide_ids === null) {
             return;
         }
 
         $rankedGuideIds = $trip->ranked_guide_ids ?? [];
-        $rankedDriverIds = $trip->ranked_driver_ids ?? [];
-
-        if (empty($rankedGuideIds) && empty($rankedDriverIds)) {
-            $this->failTripStaffing($trip, 'No available guides or drivers accepted requirements.');
-
-            return;
-        }
 
         if (empty($rankedGuideIds)) {
             $this->failTripStaffing($trip, 'No available guides accepted requirements.');
-
-            return;
-        }
-
-        if (empty($rankedDriverIds)) {
-            $this->failTripStaffing($trip, 'No available drivers accepted requirements.');
         }
     }
 
     private function progressTripIfFullyStaffed(Trip $trip): void
     {
-        if (! $trip->assigned_guide_id || ! $trip->assigned_driver_id) {
+        if (! $trip->assigned_guide_id) {
             return;
         }
 
