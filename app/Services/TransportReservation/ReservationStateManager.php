@@ -13,8 +13,10 @@ class ReservationStateManager
      */
     public function transition(TransportReservation $reservation, string $nextStatus): TransportReservation
     {
+        //get current status
         $current = ReservationStateFactory::make($reservation->status);
 
+        //is transition allowed from current status to next status
         if (!$current->canTransitionTo($nextStatus)) {
             throw new LogicException("Cannot transition reservation from {$reservation->status} to {$nextStatus}.");
         }
@@ -50,7 +52,7 @@ class ReservationStateManager
     }
 
     /**
-     * Check if reservation can access searching page
+     * Check if reservation can access searching page (user allowed to see looking for driver page when these status)
      */
     public function canAccessSearching(TransportReservation $reservation): bool
     {

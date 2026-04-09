@@ -1,4 +1,8 @@
 <x-app-layout>
+    @push('styles')
+    <link rel="stylesheet" href="{{ asset('css/cardetails.css') }}">
+    @endpush
+
     <div class="max-w-7xl mx-auto py-8 px-4">
         <div class="flex items-center justify-between mb-4">
             <div>
@@ -24,7 +28,7 @@
                 'schedules' => 'Schedules',
                 'images' => 'Images',
                 'guides' => 'Guides',
-                'transports' => 'Transport',
+                'drivers' => 'Drivers',
             ];
         @endphp
 
@@ -383,11 +387,101 @@
         @endif
 
         @if($activeTab === 'guides')
-            <div class="bg-white border rounded-xl p-6 text-gray-600">Guides form is intentionally left empty for now.</div>
+            @php
+                $selectedSpecializationIds = collect(old('guide_specialization_ids', $trip->guide_specialization_ids ?? []))
+                    ->map(fn ($id) => (int) $id)
+                    ->all();
+                $requiresTourLeader = (bool) old('requires_tour_leader', $trip->requires_tour_leader ?? true);
+            @endphp
+            <form method="POST" action="{{ route('trip.complete.guides', $trip->id) }}" class="bg-white border rounded-xl p-6 space-y-5">
+                @csrf
+                <div>
+                    <h3 class="font-semibold text-lg mb-2">Guide requirements</h3>
+                    <p class="text-sm text-gray-600">Select the required guide specializations for this trip. This save will not change trip status.</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium">Specializations</label>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        @foreach($specializations as $specialization)
+                            <label class="flex items-center gap-2 p-3 border rounded">
+                                <input
+                                    type="checkbox"
+                                    name="guide_specialization_ids[]"
+                                    value="{{ $specialization->id }}"
+                                    @checked(in_array($specialization->id, $selectedSpecializationIds, true))
+                                >
+                                <span>{{ $specialization->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+
+                <div class="p-4 border rounded bg-gray-50">
+                    <label class="flex items-center gap-2">
+                        <input type="hidden" name="requires_tour_leader" value="0">
+                        <input type="checkbox" name="requires_tour_leader" value="1" @checked($requiresTourLeader)>
+                        <span class="font-medium">Tour Leader required</span>
+                    </label>
+                    <p class="text-xs text-gray-500 mt-1">Default is required. You can turn this off if not needed.</p>
+                </div>
+
+                <button class="px-5 py-2 bg-blue-600 text-white rounded">Save Guides & Continue</button>
+            </form>
         @endif
 
-        @if($activeTab === 'transports')
-            <div class="bg-white border rounded-xl p-6 text-gray-600">Transports form is intentionally left empty for now.</div>
+        @if($activeTab === 'drivers')
+            <form method="POST" action="{{ route('trip.complete.drivers', $trip->id) }}" class="bg-white border rounded-xl p-6 space-y-5">
+                @csrf
+                <div>
+                    <h3 class="font-semibold text-lg mb-2">Driver requirements (final step)</h3>
+                    <p class="text-sm text-gray-600">Saving this step moves trip status from Draft to Ready for Assignment.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">Vehicle type</label>
+                        <input
+                            name="vehicle_type"
+                            value="{{ old('vehicle_type', $trip->driver_vehicle_type) }}"
+                            class="w-full border rounded p-2"
+                            placeholder="SUV, Van, Bus..."
+                        >
+                        <p class="text-xs text-gray-500 mt-1">Provide vehicle type or fill capacity.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">Vehicle capacity</label>
+                        <input
+                            type="number"
+                            min="1"
+                            name="vehicle_capacity"
+                            value="{{ old('vehicle_capacity', $trip->driver_vehicle_capacity) }}"
+                            class="w-full border rounded p-2"
+                            placeholder="Seats count"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">Trip type</label>
+                        <select name="trip_type" class="w-full border rounded p-2" required>
+                            <option value="single_day" @selected(old('trip_type', $trip->driver_trip_type) === 'single_day')>Single-day</option>
+                            <option value="multi_day" @selected(old('trip_type', $trip->driver_trip_type) === 'multi_day')>Multi-day</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium">Road type</label>
+                        <select name="road_type" class="w-full border rounded p-2" required>
+                            <option value="city" @selected(old('road_type', $trip->driver_road_type) === 'city')>City</option>
+                            <option value="mountain" @selected(old('road_type', $trip->driver_road_type) === 'mountain')>Mountain</option>
+                            <option value="off_road" @selected(old('road_type', $trip->driver_road_type) === 'off_road')>Off-road</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button class="px-5 py-2 bg-blue-600 text-white rounded">Save Drivers (Finalize Staffing Requirements)</button>
+            </form>
         @endif
     </div>
 

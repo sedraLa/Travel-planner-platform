@@ -16,6 +16,8 @@ use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\AiTripController;
+use App\Http\Controllers\AiTripCompletionController;
+use App\Http\Controllers\AiTripGenerationController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
@@ -24,6 +26,8 @@ use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
+use App\Http\Controllers\Driver\TripDriverRequestResponseController;
+use App\Http\Controllers\Guide\GuideRequestResponseController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
@@ -233,14 +237,21 @@ Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.de
 
 //AI trip routes
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
-Route::post('/trips/ai/generate',[AiTripController::class,'generate'])->name('ai.generate');
+Route::post('/trips/ai/generate',[AiTripGenerationController::class,'generate'])->name('ai.generate');
 Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
 Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
-Route::post('/trips/{trip}/complete/basics', [AiTripController::class, 'saveBasics'])->name('trip.complete.basics');
-Route::post('/trips/{trip}/complete/days', [AiTripController::class, 'saveDaysActivities'])->name('trip.complete.days');
-Route::post('/trips/{trip}/complete/packages', [AiTripController::class, 'savePackages'])->name('trip.complete.packages');
-Route::post('/trips/{trip}/complete/schedules', [AiTripController::class, 'saveSchedules'])->name('trip.complete.schedules');
-Route::post('/trips/{trip}/complete/images', [AiTripController::class, 'saveImages'])->name('trip.complete.images');
+Route::post('/trips/{trip}/complete/basics', [AiTripCompletionController::class, 'saveBasics'])->name('trip.complete.basics');
+Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, 'saveDaysActivities'])->name('trip.complete.days');
+Route::post('/trips/{trip}/complete/packages', [AiTripCompletionController::class, 'savePackages'])->name('trip.complete.packages');
+Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::class, 'saveSchedules'])->name('trip.complete.schedules');
+Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
+Route::post('/trips/{trip}/complete/guides', [AiTripCompletionController::class, 'saveGuides'])->name('trip.complete.guides');
+Route::post('/trips/{trip}/complete/drivers', [AiTripCompletionController::class, 'saveDrivers'])->name('trip.complete.drivers');
+
+Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
+Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
+Route::post('/trip-driver-requests/{driverRequest}/accept', [TripDriverRequestResponseController::class, 'accept'])->name('trip.driver.requests.accept');
+Route::post('/trip-driver-requests/{driverRequest}/reject', [TripDriverRequestResponseController::class, 'reject'])->name('trip.driver.requests.reject');
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
@@ -281,7 +292,6 @@ Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('drive
   });
 
 require __DIR__.'/auth.php';
-
 
 
 
