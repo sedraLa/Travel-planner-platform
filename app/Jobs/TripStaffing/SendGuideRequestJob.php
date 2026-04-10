@@ -43,7 +43,7 @@ class SendGuideRequestJob implements ShouldQueue
         ]);
 
         if ($guide->user) {
-            $guide->user->notify(new GuideStaffingRequestNotification($trip));
+            $guide->user->notify(new GuideStaffingRequestNotification($trip, $request->id));
         }
 
         if (Queue::getDefaultDriver() !== 'sync') {

@@ -7,6 +7,7 @@ use App\Models\GuideRequest;
 use App\Models\Trip;
 use App\Models\User;
 use App\Notifications\TripStaffingAdminNotification;
+use App\Notifications\TripNoSuitableGuidesNotification;
 use App\Services\Trip\TripStateManager;
 use Illuminate\Support\Facades\DB;
 
@@ -56,6 +57,7 @@ class TripStaffingCoordinator
 
         $this->stateManager->transition($trip, 'draft');
         $this->notifyAdmins("Trip #{$trip->id} reverted to draft: {$reason}");
+        $this->notifyTripCreator($trip);
     }
 
     public function finalizeInitialMatchingOutcome(Trip $trip): void
@@ -73,7 +75,7 @@ class TripStaffingCoordinator
         $rankedGuideIds = $trip->ranked_guide_ids ?? [];
 
         if (empty($rankedGuideIds)) {
-            $this->failTripStaffing($trip, 'No available guides accepted requirements.');
+            $this->failTripStaffing($trip, 'No guides available under hard availability constraints.');
         }
     }
 
@@ -98,5 +100,16 @@ class TripStaffingCoordinator
             ->where('role', 'admin')
             ->get()
             ->each(fn (User $admin) => $admin->notify(new TripStaffingAdminNotification($message)));
+    }
+
+    private function notifyTripCreator(Trip $trip): void
+    {
+        $trip->loadMissing('creator');
+
+        if (! $trip->creator) {
+            return;
+        }
+
+        $trip->creator->notify(new TripNoSuitableGuidesNotification($trip->id));
     }
 }

@@ -4,7 +4,7 @@ namespace App\Jobs\TripStaffing;
 
 use App\Domain\TripStaffing\GuideChain\SendToNextGuideHandler;
 use App\Models\Trip;
-use App\Services\TripStaffing\GuideRankingService;
+use App\Services\TripStaffing\GuideAssignmentService;
 use App\Services\TripStaffing\TripStaffingCoordinator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,7 +20,7 @@ class ProcessTripGuideMatchingJob implements ShouldQueue
     {
     }
 
-    public function handle(GuideRankingService $rankingService, TripStaffingCoordinator $coordinator): void
+    public function handle(GuideAssignmentService $assignmentService, TripStaffingCoordinator $coordinator): void
     {
         $trip = Trip::find($this->tripId);
 
@@ -28,7 +28,7 @@ class ProcessTripGuideMatchingJob implements ShouldQueue
             return;
         }
 
-        $rankedGuideIds = $rankingService->rankedGuideIdsForTrip($trip);
+        $rankedGuideIds = $assignmentService->rankedGuideIdsForTrip($trip);
         $trip->update(['ranked_guide_ids' => $rankedGuideIds]);
 
         if (! empty($rankedGuideIds)) {

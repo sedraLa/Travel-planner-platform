@@ -9,6 +9,7 @@ class Trip extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'user_id',
         'destination_id',
         'name',
         'slug',
@@ -21,8 +22,6 @@ class Trip extends Model
         'is_ai_generated',
         'ai_prompt',
         'status',
-        'guide_specialization_ids',
-        'requires_tour_leader',
         'ranked_guide_ids',
         'assigned_guide_id',
     ];
@@ -33,8 +32,6 @@ class Trip extends Model
     ];
 
     protected $casts = [
-        'guide_specialization_ids' => 'array',
-        'requires_tour_leader' => 'boolean',
         'ranked_guide_ids' => 'array',
     ];
 
@@ -102,6 +99,11 @@ class Trip extends Model
     public function destination()
     {
         return $this->primaryDestination();
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Backward-compatible alias.

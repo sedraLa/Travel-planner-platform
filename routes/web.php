@@ -244,8 +244,7 @@ Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, '
 Route::post('/trips/{trip}/complete/packages', [AiTripCompletionController::class, 'savePackages'])->name('trip.complete.packages');
 Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::class, 'saveSchedules'])->name('trip.complete.schedules');
 Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
-Route::post('/trips/{trip}/complete/guides', [AiTripCompletionController::class, 'saveGuides'])->name('trip.complete.guides');
-
+Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionController::class, 'confirmOverview'])->name('trip.complete.overview.confirm');
 Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
 Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
 
@@ -281,12 +280,11 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
     });
 
 Route::middleware(['auth','check.guide.status']) ->prefix('guide') ->group(function () {
-
-Route::get('/booking-requests', [BookingRequestController::class, 'index'])->name('driver.booking-requests.index');
-Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
-Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('driverscompleted.show');
-  });
+    Route::get('/booking-requests', [GuideRequestResponseController::class, 'index'])->name('guide.booking-requests.index');
+    Route::post('/booking-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.booking-requests.accept');
+    Route::post('/booking-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.booking-requests.reject');
+    Route::get('/trips/upcoming', [GuideRequestResponseController::class, 'upcomingTrips'])->name('guide.trips.upcoming');
+    Route::get('/trips/completed', [GuideRequestResponseController::class, 'completedTrips'])->name('guide.trips.completed');
+});
 
 require __DIR__.'/auth.php';
-
-

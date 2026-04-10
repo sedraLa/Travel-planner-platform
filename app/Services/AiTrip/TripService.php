@@ -17,9 +17,9 @@ use App\Services\GroqTripPlannerService;
 use App\Services\Trip\TripStateManager;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use LogicException;
 
 class TripService
 {
@@ -48,6 +48,7 @@ class TripService
             $primaryDestinationId = (int) $payload['destination_ids'][0];
 
             $trip = Trip::create([
+                'user_id' => Auth::id(),
                 'destination_id' => $primaryDestinationId,
                 'name' => $name,
                 'slug' => $this->nextUniqueSlug($slugBase),
@@ -244,34 +245,26 @@ class TripService
         });
     }
 
-    public function saveGuides(Trip $trip, array $payload): void
+    public function confirmOverview(Trip $trip): void
     {
-        $specializationIds = collect($payload['guide_specialization_ids'] ?? [])
-            ->map(fn ($id) => (int) $id)
-            ->unique()
-            ->values()
-            ->all();
-
-        DB::transaction(function () use ($trip, $specializationIds, $payload) {
-            $trip->update([
-                'guide_specialization_ids' => $specializationIds,
-                'requires_tour_leader' => (bool) ($payload['requires_tour_leader'] ?? false),
-            ]);
-
+        DB::transaction(function () use ($trip) {
             $trip->refresh();
 
-            if ($trip->status === 'staffing_in_progress') {
-                $this->tripStateManager->transition($trip, 'draft');
-                $trip->refresh();
+            if (! $trip->user_id && Auth::check()) {
+                $trip->update(['user_id' => Auth::id()]);
+            }
+
+            if ($trip->status === 'staffing_in_progress' || $trip->status === 'staffed' || $trip->status === 'published') {
+                return;
             }
 
             if ($trip->status === 'draft') {
                 $this->tripStateManager->transition($trip, 'ready_for_assignment');
-            } elseif ($trip->status !== 'ready_for_assignment') {
-                throw new LogicException("Cannot restart staffing from {$trip->status}.");
             }
 
-            StartTripStaffingJob::dispatch($trip->id)->afterCommit();
+            if ($trip->fresh()->status === 'ready_for_assignment') {
+                StartTripStaffingJob::dispatch($trip->id)->afterCommit();
+            }
         });
     }
 
