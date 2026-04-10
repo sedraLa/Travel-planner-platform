@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use App\Domain\TransportReservation\Ranking\DriverRankingStrategy;
-use App\Domain\TripStaffing\Ranking\GuideRankingStrategy;
 use App\Domain\TransportReservation\Ranking\LastTripAndTripsCountStrategy;
-use App\Domain\TripStaffing\Ranking\LastTripAndTripsCountGuideStrategy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         $this->app->bind(DriverRankingStrategy::class, LastTripAndTripsCountStrategy::class);
-        $this->app->bind(GuideRankingStrategy::class, LastTripAndTripsCountGuideStrategy::class);
     }
 
     /**
