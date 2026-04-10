@@ -46,7 +46,7 @@ class AiTripController extends Controller
         $activities = Activity::query()->orderBy('name')->get(['id', 'name']);
         $hotels = Hotel::query()->orderBy('name')->get(['id', 'name']);
         if ($activeTab === 'guides') {
-            $activeTab = 'images';
+            $activeTab = 'overview';
         }
 
         return view('trips.ai.complete', compact('trip', 'activeTab', 'destinations', 'activities', 'hotels'));

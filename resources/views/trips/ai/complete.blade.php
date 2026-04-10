@@ -27,6 +27,7 @@
                 'packages' => 'Packages',
                 'schedules' => 'Schedules',
                 'images' => 'Images',
+                'overview' => 'Overview',
             ];
         @endphp
 
@@ -382,6 +383,79 @@
                 </div>
                 <button class="px-5 py-2 bg-blue-600 text-white rounded">Save Images</button>
             </form>
+        @endif
+
+        @if($activeTab === 'overview')
+            <div class="space-y-4">
+                <div class="bg-white border rounded-xl p-5">
+                    <h3 class="text-lg font-semibold mb-2">Trip overview</h3>
+                    <p class="text-sm text-gray-600">Review all trip data before sending guide assignment requests.</p>
+                </div>
+
+                <div class="bg-white border rounded-xl p-5">
+                    <h4 class="font-semibold mb-3">Basics</h4>
+                    <div class="grid md:grid-cols-2 gap-3 text-sm">
+                        <div><span class="text-gray-500">Name:</span> {{ $trip->name }}</div>
+                        <div><span class="text-gray-500">Primary destination:</span> {{ $trip->primaryDestination?->name ?? '—' }}</div>
+                        <div><span class="text-gray-500">Duration:</span> {{ $trip->duration_days }} days</div>
+                        <div><span class="text-gray-500">Max participants:</span> {{ $trip->max_participants ?? '—' }}</div>
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-xl p-5">
+                    <h4 class="font-semibold mb-3">Days & activities</h4>
+                    <div class="space-y-2 text-sm">
+                        @forelse($trip->days->sortBy('day_number') as $day)
+                            <div class="border rounded p-3">
+                                <div class="font-medium">Day {{ $day->day_number }} — {{ $day->title ?? 'No title' }}</div>
+                                <div class="text-gray-600">{{ $day->description ?? 'No description' }}</div>
+                                <div class="text-gray-500 mt-1">
+                                    Activities: {{ $day->activities->pluck('activity.name')->filter()->implode(', ') ?: 'None' }}
+                                </div>
+                            </div>
+                        @empty
+                            <div class="text-gray-500">No days configured.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-xl p-5">
+                    <h4 class="font-semibold mb-3">Packages</h4>
+                    <div class="space-y-2 text-sm">
+                        @forelse($trip->packages as $package)
+                            <div class="border rounded p-3">
+                                <div class="font-medium">{{ $package->name }} — {{ number_format((float) $package->price, 2) }}</div>
+                                <div class="text-gray-500">Includes: {{ $package->includes->pluck('content')->implode(', ') ?: 'None' }}</div>
+                                <div class="text-gray-500">Excludes: {{ $package->excludes->pluck('content')->implode(', ') ?: 'None' }}</div>
+                            </div>
+                        @empty
+                            <div class="text-gray-500">No packages configured.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="bg-white border rounded-xl p-5">
+                    <h4 class="font-semibold mb-3">Schedules</h4>
+                    <div class="space-y-2 text-sm">
+                        @forelse($trip->schedules as $schedule)
+                            <div class="border rounded p-3">
+                                {{ $schedule->start_date }} → {{ $schedule->end_date }} ({{ $schedule->status }})
+                            </div>
+                        @empty
+                            <div class="text-gray-500">No schedules configured.</div>
+                        @endforelse
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-blue-800 text-sm">
+                    By confirming, requests will be sent to the most suitable guides, we will inform you soon.
+                </div>
+
+                <form method="POST" action="{{ route('trip.complete.overview.confirm', $trip->id) }}">
+                    @csrf
+                    <button class="px-5 py-2 bg-green-600 text-white rounded">Confirm</button>
+                </form>
+            </div>
         @endif
 
     </div>

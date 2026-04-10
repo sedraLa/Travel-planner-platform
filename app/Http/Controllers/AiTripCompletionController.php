@@ -61,4 +61,12 @@ class AiTripCompletionController extends Controller
             ->with('success', 'Images saved successfully.');
     }
 
+    public function confirmOverview(Trip $trip)
+    {
+        $this->tripService->confirmOverview($trip);
+
+        return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'overview'])
+            ->with('success', 'Trip confirmed. Guide assignment has been started.');
+    }
+
 }

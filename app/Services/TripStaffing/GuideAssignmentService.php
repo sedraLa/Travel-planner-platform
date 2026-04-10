@@ -3,7 +3,6 @@
 namespace App\Services\TripStaffing;
 
 use App\Models\Guide;
-use App\Models\GuideAssignment;
 use App\Models\Trip;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -15,9 +14,10 @@ class GuideAssignmentService
         $trip->loadMissing(['primaryDestination', 'schedules']);
 
         [$start, $end] = $this->resolveTripDateRange($trip);
+        [$destinationCity, $destinationCountry] = $this->destinationLocation($trip);
         $destinationTerms = $this->destinationLanguageTerms($trip);
 
-        $availableGuides = $this->availableGuides($start, $end);
+        $availableGuides = $this->availableGuides($start, $end, $destinationCity, $destinationCountry);
 
         if ($availableGuides->isEmpty()) {
             logger()->info('Guide assignment returned empty result due to hard availability constraints.', [
@@ -62,11 +62,28 @@ class GuideAssignmentService
         return $this->rankFairly($availableGuides)->pluck('id')->all();
     }
 
-    private function availableGuides(?Carbon $start, ?Carbon $end): Collection
+    private function availableGuides(?Carbon $start, ?Carbon $end, ?string $destinationCity, ?string $destinationCountry): Collection
     {
-        return Guide::query()
+        if (! $destinationCountry && ! $destinationCity) {
+            logger()->warning('Guide assignment stopped: destination location is missing.', []);
+
+            return collect();
+        }
+
+        $baseQuery = Guide::query()
             ->whereIn('status', ['approved', 'Approved'])
             ->with(['assignments.trip.schedules'])
+            ->where(function ($query) use ($destinationCity, $destinationCountry) {
+                if ($destinationCountry) {
+                    $query->whereRaw('LOWER(TRIM(address)) LIKE ?', ['%' . $destinationCountry . '%']);
+                }
+
+                if ($destinationCity) {
+                    $query->whereRaw('LOWER(TRIM(address)) LIKE ?', ['%' . $destinationCity . '%']);
+                }
+            });
+
+        return $baseQuery
             ->get()
             ->filter(function (Guide $guide) use ($start, $end) {
                 if (! $start || ! $end) {
@@ -173,5 +190,20 @@ class GuideAssignmentService
             ->filter()
             ->values()
             ->all();
+    }
+
+    private function destinationLocation(Trip $trip): array
+    {
+        return [
+            $this->normalized(optional($trip->primaryDestination)->city),
+            $this->normalized(optional($trip->primaryDestination)->country),
+        ];
+    }
+
+    private function normalized(?string $value): ?string
+    {
+        $normalized = trim(mb_strtolower((string) $value));
+
+        return $normalized === '' ? null : $normalized;
     }
 }

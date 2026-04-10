@@ -240,10 +240,15 @@ class TripService
                     'is_cover' => false,
                 ]);
             }
+        });
+    }
 
+    public function confirmOverview(Trip $trip): void
+    {
+        DB::transaction(function () use ($trip) {
             $trip->refresh();
 
-            if ($trip->status === 'staffing_in_progress') {
+            if ($trip->status === 'staffing_in_progress' || $trip->status === 'staffed' || $trip->status === 'published') {
                 return;
             }
 
@@ -251,7 +256,9 @@ class TripService
                 $this->tripStateManager->transition($trip, 'ready_for_assignment');
             }
 
-            StartTripStaffingJob::dispatch($trip->id)->afterCommit();
+            if ($trip->fresh()->status === 'ready_for_assignment') {
+                StartTripStaffingJob::dispatch($trip->id)->afterCommit();
+            }
         });
     }
 
