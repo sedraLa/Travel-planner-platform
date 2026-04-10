@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Guide;
-use App\Models\Specialization;
 use Illuminate\Http\Request;
 use App\Http\Requests\GuideRequest;
 use App\Services\MediaServices;
@@ -21,7 +20,7 @@ class AdminGuideController extends Controller{
 
 public function index(Request $request)
     {
-        $query = Guide::with(['user','specializations'])->where('status', 'Approved');
+        $query = Guide::with(['user'])->where('status', 'approved');
 
         if ($request->filled('search')) {
             $term = $request->search;
@@ -48,7 +47,7 @@ public function index(Request $request)
 
 
     public function show(string $id) {
-        $guide= Guide::with('user','specializations')->findOrFail($id);
+        $guide= Guide::with('user')->findOrFail($id);
       
         return view('guide.show', compact('guide'));
     }
@@ -71,10 +70,9 @@ public function index(Request $request)
     }
 
         //delete guide
-        $guide->user()->delete();
-        $guide->delete();
+       $guide->user()->delete();
 
-        return redirect()->route('guides.index')->with('success', 'Guid deleted successfully');
+        return redirect()->route('guides.index')->with('success', 'Guide deleted successfully');
     }
 
 

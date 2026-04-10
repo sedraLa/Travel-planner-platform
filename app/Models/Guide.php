@@ -32,11 +32,7 @@ class Guide extends Model
     }
 
 
-     public function specializations()
-    {
-        return $this->belongsToMany(Specialization::class, 'guide_specialization', 'guide_id', 'specialization_id');
-    }
-
+   
     public function availabilities()
     {
         return $this->hasMany(GuideAvailability::class);

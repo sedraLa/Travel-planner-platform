@@ -28,8 +28,8 @@ class RegisteredUserController extends Controller
     public function create(): View
     {
 
-    $specializations = Specialization::all();
-        return view('auth.register' , compact('specializations'));
+    
+        return view('auth.register' );
     }
 
     /**
@@ -145,15 +145,13 @@ class RegisteredUserController extends Controller
 
             'date_of_hire' => null,
 
-            'is_tour_leader' => $request->has('is_tour_leader'),
+           
             
           
             
         ]);
 
-          if ($request->filled('specializations')) {
-            $guide->specializations()->sync($request->specializations);
-        }
+          
 
         
         return redirect()

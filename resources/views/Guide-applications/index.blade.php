@@ -16,19 +16,7 @@
         
             
         
-            {{-- Specializations --}}
-            <div>
-                <label class="text-sm text-gray-600">Specializations</label>
-                <select name="specialization" class="border rounded-lg p-2" style="margin-bottom:0">
-                    <option value="">All</option>
-                    @foreach($specializations as $spec)
-                        <option value="{{ $spec->id }}">
-                                        {{ $spec->name }}
-                        </option>
-                    @endforeach
-
-                </select>
-            </div>
+            
         
             {{-- Country --}}
             <div>
@@ -43,12 +31,7 @@
             </div>
 
             <div>
-    <label class="text-sm text-gray-600">Tour Leader</label>
-    <select name="tour_leader" class="border rounded-lg p-2">
-        <option value="">All</option>
-        <option value="1" {{ request('tour_leader') === '1' ? 'selected' : '' }}>Yes</option>
-        <option value="0" {{ request('tour_leader') === '0' ? 'selected' : '' }}>No</option>
-    </select>
+    
 </div>
         
             {{-- Actions --}}
@@ -93,12 +76,7 @@
                                 <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Languages</th>
-                                <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Specializations</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-Tour Leader
-</th>
+                              
                                 <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Status</th>
@@ -129,15 +107,9 @@ Tour Leader
                                     
                                 </td>
 
-                                <td class="px-6 py-4 text-center max-w-[200px]">
-                                    <div class="text-sm font-medium text-gray-900" style="margin-right:50px;">{{ $guide->specializations->pluck('name')->join(', ') }}</div>
-                                </td>
+                               
 
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-    <span class="text-sm font-medium text-gray-900">
-        {{ $guide->is_tour_leader ? 'Yes' : 'No' }}
-    </span>
-</td>
+                    
 
                                         
 

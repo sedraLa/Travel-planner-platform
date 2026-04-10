@@ -84,13 +84,7 @@
                     <span class="arrow"> → </span>
                 </a>
 
-                <a href="{{route('specialization.index')}}" class="assignments action-card">
-                    <div class="action">
-                        <img class="icon" src="{{asset('images/icons/calendar-days-solid-full (1).svg')}}">
-                        <h3>Specializations</h3>
-                    </div>
-                    <span class="arrow"> → </span>
-                </a>
+               
 
                 <a href="{{ route('guides.index') }}" class="drivers action-card">
                     <div class="action">

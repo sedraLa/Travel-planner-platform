@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         if ($user->role === UserRole::GUIDE->value) {
-            $guide = $user->guide()?->with('specializations')->first();
+            $guide = $user->guide()->first();
             $assignedTrips = $guide?->reservations()->where('status', 'assigned')->count() ?? 0;
             $completedTrips = $guide?->reservations()->where('status', 'completed')->count() ?? 0;
             $cancelledTrips = $guide?->reservations()->where('status', 'cancelled')->count() ?? 0;
