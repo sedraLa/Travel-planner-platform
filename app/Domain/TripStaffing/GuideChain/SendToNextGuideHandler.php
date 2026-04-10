@@ -13,8 +13,8 @@ class SendToNextGuideHandler extends GuideRequestHandler
             return false;
         }
 
-        SendGuideRequestJob::dispatchSync($trip->id, $rankedGuideIds[$index], $rankedGuideIds, $index);
-
+        SendGuideRequestJob::dispatch($trip->id, $rankedGuideIds[$index], $rankedGuideIds, $index);
+        
         return true;
     }
 }
