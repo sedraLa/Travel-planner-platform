@@ -10,6 +10,23 @@ use Illuminate\Http\RedirectResponse;
 
 class GuideRequestResponseController extends Controller
 {
+
+    public function index()
+    {
+        $guide = auth()->user()->guide;
+    
+        $requests = GuideRequest::with([
+            'trip.primaryDestination',
+            'trip.schedules',
+            'trip.days.activities.activity'
+        ])
+        ->where('guide_id', $guide->id)
+        ->latest()
+        ->get();
+    
+        return view('guide.requests', compact('requests'));
+    }
+
     public function accept(GuideRequest $guideRequest, TripStaffingCoordinator $coordinator): RedirectResponse
     {
         $guide = auth()->user()?->guide;

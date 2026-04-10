@@ -22,7 +22,7 @@
                 <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
                 <li><a href="{{ route('driverscompleted.show') }}">Completed Bookings</a></li>
             @elseif($role === UserRole::GUIDE->value)
-                  <li><p>completed trips</p></li>
+            <li><a href="{{ route('guide.requests') }}">Booking Requests</a></li>
                   <li><p>upcoming trips</p></li>
                     <li><p>booking requst</p></li>
 
