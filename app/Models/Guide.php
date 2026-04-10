@@ -23,7 +23,6 @@ class Guide extends Model
         'date_of_hire',
         'total_trips_count',
         'last_trip_at',
-        'is_tour_leader',
     ];
 
     public function user()

@@ -27,7 +27,6 @@
                 'packages' => 'Packages',
                 'schedules' => 'Schedules',
                 'images' => 'Images',
-                'guides' => 'Guides',
             ];
         @endphp
 
@@ -385,49 +384,6 @@
             </form>
         @endif
 
-        @if($activeTab === 'guides')
-            @php
-                $selectedSpecializationIds = collect(old('guide_specialization_ids', $trip->guide_specialization_ids ?? []))
-                    ->map(fn ($id) => (int) $id)
-                    ->all();
-                $requiresTourLeader = (bool) old('requires_tour_leader', $trip->requires_tour_leader ?? true);
-            @endphp
-            <form method="POST" action="{{ route('trip.complete.guides', $trip->id) }}" class="bg-white border rounded-xl p-6 space-y-5">
-                @csrf
-                <div>
-                    <h3 class="font-semibold text-lg mb-2">Guide requirements</h3>
-                    <p class="text-sm text-gray-600">Select the required guide specializations for this trip. This save will not change trip status.</p>
-                </div>
-
-                <div class="space-y-2">
-                    <label class="block text-sm font-medium">Specializations</label>
-                    <div class="grid md:grid-cols-3 gap-3">
-                        @foreach($specializations as $specialization)
-                            <label class="flex items-center gap-2 p-3 border rounded">
-                                <input
-                                    type="checkbox"
-                                    name="guide_specialization_ids[]"
-                                    value="{{ $specialization->id }}"
-                                    @checked(in_array($specialization->id, $selectedSpecializationIds, true))
-                                >
-                                <span>{{ $specialization->name }}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="p-4 border rounded bg-gray-50">
-                    <label class="flex items-center gap-2">
-                        <input type="hidden" name="requires_tour_leader" value="0">
-                        <input type="checkbox" name="requires_tour_leader" value="1" @checked($requiresTourLeader)>
-                        <span class="font-medium">Tour Leader required</span>
-                    </label>
-                    <p class="text-xs text-gray-500 mt-1">Default is required. You can turn this off if not needed.</p>
-                </div>
-
-                <button class="px-5 py-2 bg-blue-600 text-white rounded">Save Guides</button>
-            </form>
-        @endif
     </div>
 
     @if($activeTab === 'basics')
