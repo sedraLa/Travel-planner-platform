@@ -73,7 +73,7 @@ class TripStaffingCoordinator
         $rankedGuideIds = $trip->ranked_guide_ids ?? [];
 
         if (empty($rankedGuideIds)) {
-            $this->failTripStaffing($trip, 'No available guides accepted requirements.');
+            $this->failTripStaffing($trip, 'No guides available under hard availability constraints.');
         }
     }
 

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AiTripBasicsRequest;
 use App\Http\Requests\AiTripDaysActivitiesRequest;
-use App\Http\Requests\AiTripGuidesRequest;
 use App\Http\Requests\AiTripImagesRequest;
 use App\Http\Requests\AiTripPackagesRequest;
 use App\Http\Requests\AiTripSchedulesRequest;
@@ -62,12 +61,12 @@ class AiTripCompletionController extends Controller
             ->with('success', 'Images saved successfully.');
     }
 
-    public function saveGuides(AiTripGuidesRequest $request, Trip $trip)
+    public function confirmOverview(Trip $trip)
     {
-        $this->tripService->saveGuides($trip, $request->validated());
+        $this->tripService->confirmOverview($trip);
 
-        return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'guides'])
-            ->with('success', 'Guide requirements saved successfully.');
+        return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'overview'])
+            ->with('success', 'Trip confirmed. Guide assignment has been started.');
     }
 
 }

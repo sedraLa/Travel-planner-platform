@@ -244,8 +244,7 @@ Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, '
 Route::post('/trips/{trip}/complete/packages', [AiTripCompletionController::class, 'savePackages'])->name('trip.complete.packages');
 Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::class, 'saveSchedules'])->name('trip.complete.schedules');
 Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
-Route::post('/trips/{trip}/complete/guides', [AiTripCompletionController::class, 'saveGuides'])->name('trip.complete.guides');
-
+Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionController::class, 'confirmOverview'])->name('trip.complete.overview.confirm');
 Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
 Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
 
@@ -288,5 +287,3 @@ Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('drive
   });
 
 require __DIR__.'/auth.php';
-
-
