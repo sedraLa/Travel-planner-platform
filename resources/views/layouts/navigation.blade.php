@@ -26,7 +26,7 @@
                   <li><p>upcoming trips</p></li>
                     <li><p>booking requst</p></li>
 
-                   
+
             @elseif(in_array($role, [UserRole::USER->value, UserRole::ADMIN->value], true))
                 <li><a href="{{ route('destination.index') }}">Destinations</a></li>
                 @if($role === UserRole::ADMIN->value)
@@ -60,15 +60,15 @@
                     <li><a href="{{ route('flight.show') }}">Flights</a></li>
                     <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>
                 @endif
-               
-              
-     
+
+
+
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                     <li><a href="{{route('transport.dashboard')}}">Transport & Drivers</a></li>
                        <li><a href="{{route('trips.dashboard')}}">Trips & Guides</a></li>
-                    
-                       
+
+
 
                     <!-- Admin Reservations Dropdown -->
                     <li x-data="{ openDropdown: false }" class="relative">
@@ -79,7 +79,7 @@
                             class="absolute mt-1 bg-white border rounded shadow-md">
                             <li><a href="{{ route('reservations.index') }}" class="block px-4 py-2 hover:bg-gray-100">Hotels</a>
                             </li>
-                           
+
                         </ul>
                     </li>
 
@@ -117,7 +117,7 @@
                     </form>
                 </x-slot>
             </x-dropdown>
-            @if($role === UserRole::USER->value)
+         
 <!-- Notifications -->
 <div x-data="{ notifOpen: false }" class="relative ml-4">
     <!-- زر الجرس -->
@@ -190,7 +190,7 @@
     </div>
 </div>
 
-@endif
+
 
 
         </div>

@@ -36,7 +36,7 @@ class TripStaffingCoordinator
 
             $trip->guideRequests()->where('id', '!=', $request->id)->where('status', 'pending')->update(['status' => 'expired']);
 
-            $this->notifyAdmins("Guide assigned to trip #{$trip->id}.");
+            $this->notifyAdmins("Guide assigned to trip: #{$trip->name}.");
             $this->progressTripIfFullyStaffed($trip->fresh());
 
             return true;
@@ -55,7 +55,7 @@ class TripStaffingCoordinator
         }
 
         $this->stateManager->transition($trip, 'draft');
-        $this->notifyAdmins("Trip #{$trip->id} reverted to draft: {$reason}");
+        $this->notifyAdmins("Trip: {$trip->name} reverted to draft: {$reason}");
     }
 
     public function finalizeInitialMatchingOutcome(Trip $trip): void
@@ -73,7 +73,7 @@ class TripStaffingCoordinator
         $rankedGuideIds = $trip->ranked_guide_ids ?? [];
 
         if (empty($rankedGuideIds)) {
-            $this->failTripStaffing($trip, 'No guides available under hard availability constraints.');
+            $this->failTripStaffing($trip, 'No guides suitable. Try again later.');
         }
     }
 

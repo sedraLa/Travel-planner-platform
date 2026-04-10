@@ -28,7 +28,7 @@ class ProcessNextGuideInChainJob implements ShouldQueue
         }
 
         if (! isset($this->rankedGuideIds[$this->index])) {
-            $coordinator->failTripStaffing($trip, 'Guide assignment timed out for all candidates.');
+            $coordinator->failTripStaffing($trip, 'All guides rejected or did not respond.');
 
             return;
         }
