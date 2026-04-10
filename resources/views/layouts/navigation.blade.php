@@ -32,22 +32,15 @@
                 @if($role === UserRole::ADMIN->value)
                     <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
                     <li><a href="{{ route('activities.index') }}">Activities</a></li>
-                @endif
-                @if($role === UserRole::USER->value)
-                    <li><a href="{{ route('flight.show') }}">Flights</a></li>
-                    <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>
-                @endif
-               
-                @if($role === UserRole::USER->value)
-                <li>
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
+                    <li>
+                        <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                        <x-slot name="trigger">
                         <button>
                             <div style="font-weight:bold">Trips</div>
                         </button>
-                    </x-slot>
-                    <x-slot name="content">
+                        </x-slot>
+                        <x-slot name="content">
                         <x-dropdown-link :href="route('trip.view')">
                             {{ ('Create Trip') }}
                         </x-dropdown-link>
@@ -58,11 +51,17 @@
                             {{ ('Draft Trips') }}
                         </x-dropdown-link>
 
-                    </x-slot>
-                </x-dropdown>
-            </div>
-         </li>
-         @endif
+                        </x-slot>
+                        </x-dropdown>
+                         </div>
+                    </li>
+                @endif
+                @if($role === UserRole::USER->value)
+                    <li><a href="{{ route('flight.show') }}">Flights</a></li>
+                    <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>
+                @endif
+               
+              
      
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)

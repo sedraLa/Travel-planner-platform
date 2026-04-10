@@ -154,6 +154,29 @@ Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->
 Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
 
 
+//Admin Trip routes
+Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
+Route::get('/trips',[TripController::class,'index'])->name('trips.index');
+Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
+Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
+Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
+Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
+Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.destroy');
+
+// Admin AI trip routes
+Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
+Route::post('/trips/ai/generate',[AiTripGenerationController::class,'generate'])->name('ai.generate');
+Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
+Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
+Route::post('/trips/{trip}/complete/basics', [AiTripCompletionController::class, 'saveBasics'])->name('trip.complete.basics');
+Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, 'saveDaysActivities'])->name('trip.complete.days');
+Route::post('/trips/{trip}/complete/packages', [AiTripCompletionController::class, 'savePackages'])->name('trip.complete.packages');
+Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::class, 'saveSchedules'])->name('trip.complete.schedules');
+Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
+Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionController::class, 'confirmOverview'])->name('trip.complete.overview.confirm');
+Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
+Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
+
     });
 
     
@@ -225,28 +248,9 @@ Route::post('/favorites/{type}/{id}', [FavoriteController::class, 'store'])
     ->middleware('auth');
 Route::get('/show-favourite', [FavoriteController::class, 'showFavorites'])->name('favorites.show')->middleware('auth');
 
-//Trip routes
-Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
-Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
-Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
-Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
-Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
-Route::get('/trips',[TripController::class,'index'])->name('trips.index');
-Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.destroy');
 
-//AI trip routes
-Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
-Route::post('/trips/ai/generate',[AiTripGenerationController::class,'generate'])->name('ai.generate');
-Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
-Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
-Route::post('/trips/{trip}/complete/basics', [AiTripCompletionController::class, 'saveBasics'])->name('trip.complete.basics');
-Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, 'saveDaysActivities'])->name('trip.complete.days');
-Route::post('/trips/{trip}/complete/packages', [AiTripCompletionController::class, 'savePackages'])->name('trip.complete.packages');
-Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::class, 'saveSchedules'])->name('trip.complete.schedules');
-Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
-Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionController::class, 'confirmOverview'])->name('trip.complete.overview.confirm');
-Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
-Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
+
+
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
