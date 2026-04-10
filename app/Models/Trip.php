@@ -9,6 +9,7 @@ class Trip extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'user_id',
         'destination_id',
         'name',
         'slug',
@@ -98,6 +99,11 @@ class Trip extends Model
     public function destination()
     {
         return $this->primaryDestination();
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     // Backward-compatible alias.

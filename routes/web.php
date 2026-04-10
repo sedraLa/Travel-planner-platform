@@ -280,10 +280,11 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
     });
 
 Route::middleware(['auth','check.guide.status']) ->prefix('guide') ->group(function () {
-
-Route::get('/booking-requests', [BookingRequestController::class, 'index'])->name('driver.booking-requests.index');
-Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
-Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('driverscompleted.show');
-  });
+    Route::get('/booking-requests', [GuideRequestResponseController::class, 'index'])->name('guide.booking-requests.index');
+    Route::post('/booking-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.booking-requests.accept');
+    Route::post('/booking-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.booking-requests.reject');
+    Route::get('/trips/upcoming', [GuideRequestResponseController::class, 'upcomingTrips'])->name('guide.trips.upcoming');
+    Route::get('/trips/completed', [GuideRequestResponseController::class, 'completedTrips'])->name('guide.trips.completed');
+});
 
 require __DIR__.'/auth.php';

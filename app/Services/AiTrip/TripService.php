@@ -17,6 +17,7 @@ use App\Services\GroqTripPlannerService;
 use App\Services\Trip\TripStateManager;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -47,6 +48,7 @@ class TripService
             $primaryDestinationId = (int) $payload['destination_ids'][0];
 
             $trip = Trip::create([
+                'user_id' => Auth::id(),
                 'destination_id' => $primaryDestinationId,
                 'name' => $name,
                 'slug' => $this->nextUniqueSlug($slugBase),
@@ -247,6 +249,10 @@ class TripService
     {
         DB::transaction(function () use ($trip) {
             $trip->refresh();
+
+            if (! $trip->user_id && Auth::check()) {
+                $trip->update(['user_id' => Auth::id()]);
+            }
 
             if ($trip->status === 'staffing_in_progress' || $trip->status === 'staffed' || $trip->status === 'published') {
                 return;
