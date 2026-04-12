@@ -11,7 +11,7 @@
             <div class="personal-details">
                 <span>Good day</span>
                 <h2>Welcome back, {{ $guide?->user?->name ?? auth()->user()->name }} 👋</h2>
-                <p id="rating">⭐ 4.9 rating  {{ $completedTrips }} total trips</p>
+                <p id="rating">⭐ 4.9 rating  {{ $assignedTrips }} Assigned trips</p>
                 <button onclick="document.getElementById('schedule-modal').classList.remove('hidden')" 
 class="schedule-btn">
     Working Schedule
@@ -20,12 +20,12 @@ class="schedule-btn">
         </div>
     </div>
     <div class ="bookings-summary">
-        <!--pending bookings-->
+        <!--pending booking requests-->
         <div class ="pending">
             <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
             <div class="count">
-            <h3>PENDING</h3>
-            <span id="pending-total">{{ $completedTrips}}</span>
+            <h3>REQUESTS</h3>
+            <span id="pending-total">{{ $pendingRequests}}</span>
             </count>
             </div>
         </div>
@@ -33,8 +33,8 @@ class="schedule-btn">
         <div class ="completed">
             <img class="icon" src="{{asset('images/icons/icons8-checkmark-50.png')}}">
             <div class="count">
-            <h3>COMPLETED</h3>
-            <span id="completed-total">{{ $completedTrips }}</span>
+            <h3>TRIPS</h3>
+            <span id="completed-total">{{ $assignedTrips }}</span>
             </count>
             </div>
         </div>
@@ -43,7 +43,7 @@ class="schedule-btn">
             <img class="icon" src="{{asset('images/icons/icons8-cancel-50.png')}}">
             <div class="count">
             <h3>CANCELED</h3>
-            <span id="canceled-total">{{ $completedTrips }}</span>
+            <span id="canceled-total">{{ $rejectedTrips }}</span>
             </count>
             </div>
         </div>
@@ -60,42 +60,59 @@ class="schedule-btn">
     </div>
 
     <div class="assigned-vehicle">
-        <h2 class="vehicle-title">Your Assigned Vehicle</h2>
+        <h2 class="vehicle-title">Your Latest Assigned Trip</h2>
+    
         <div class="vehicle-info">
-           <img class="vehicle-photo" alt="Vehicle Image">
-
+            <img class="vehicle-photo"
+                 src="{{ $trip?->images->first() ? asset('storage/' . $trip->images->first()->path) : asset('images/default-trip.jpg') }}"
+                 alt="Trip Image">
+    
             <div class="vehicle-details">
-                <h2 class="vehicle-model">{{  $completedTrips }}</h2>
-                <span class="category">{{  $completedTrips }}</span>
+    
+                <h2 class="vehicle-model">
+                    {{ $trip->name ?? 'No assigned trip yet' }}
+                </h2>
+    
+                <span class="category">
+                  To:  {{ $trip?->primaryDestination?->name ?? 'No destination' }}
+                </span>
+    
                 <div class="vehicle-stats">
+    
                     <div class="stat">
-                        <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
+                        <img class="stat-icon" src="{{ asset('images/icons/calendar-days-solid-full (1).svg') }}">
                         <div>
-                            <h5>Plate Number</h5>
-                            <h6>{{  $completedTrips }}</h6>
+                            <h5>Start Date</h5>
+                            <h6>
+                                {{ optional($trip?->schedules->first())->start_date ?? 'N/A' }}
+                            </h6>
                         </div>
                     </div>
+    
                     <div class="stat">
-                        <img class="stat-icon" src="{{ asset('images/icons/icons8-passengers-50.png') }}" alt="Passengers Icon">
+                        <img class="stat-icon" src="{{ asset('images/icons/user-group-solid-full.svg') }}">
                         <div>
-                            <h5>Max Passengers</h5>
-                            <h6>{{  $completedTrips}}</h6>
+                            <h5> Participants</h5>
+                            <h6>{{ $trip->max_participants ?? 'N/A' }}</h6>
                         </div>
                     </div>
+    
                     <div class="stat">
-                        <img class="stat-icon" src="{{ asset('images/icons/icons8-price-50.png') }}" alt="Base Price Icon">
+                        <img class="stat-icon" src="{{ asset('images/icons/icons8-24-hours-50.png') }}">
                         <div>
-                            <h5>Base Price</h5>
-                            <h6>{{  $completedTrips }}</h6>
+                            <h5>Duration</h5>
+                            <h6>{{ $trip->duration_days ?? 'N/A' }} days</h6>
                         </div>
                     </div>
+    
                     <div class="stat">
-                        <img class="stat-icon" src="{{ asset('images/icons/icons8-price-50.png') }}" alt="Price per Km Icon">
+                        <img class="stat-icon" src="{{ asset('images/icons/icons8-tour-50.png') }}">
                         <div>
-                            <h5>Price per Km</h5>
-                            <h6>{{ $completedTrips }}</h6>
+                            <h5>Category</h5>
+                            <h6>{{ $trip->category ?? 'N/A' }}</h6>
                         </div>
                     </div>
+    
                 </div>
             </div>
         </div>
