@@ -258,7 +258,7 @@ Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name(
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
 
-
+//trip routes
 Route::get('/trip', [UserTripController::class, 'index'])->name('user.trips.index');
 Route::get('/trip/{trip}', [UserTripController::class, 'show'])->name('user.trips.show');
 
