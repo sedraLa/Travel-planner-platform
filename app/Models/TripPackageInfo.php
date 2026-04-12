@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TripPackageInfo extends Model
 {
+ protected $table = 'trip_package_info';
     use HasFactory;
 
        protected $fillable = [

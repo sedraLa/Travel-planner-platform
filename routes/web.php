@@ -31,6 +31,7 @@ use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
 use App\Http\Controllers\GuideController;
+use App\Http\Controllers\UserTripController;
 
 
 
@@ -181,7 +182,7 @@ Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseContro
     });
 
     
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth','role:user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -261,6 +262,10 @@ Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name(
 //notifications routes
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
+
+
+Route::get('/trip', [UserTripController::class, 'index'])->name('user.trips.index');
+Route::get('/trip/{trip}', [UserTripController::class, 'show'])->name('user.trips.show');
 
 });
 
