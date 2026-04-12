@@ -8,8 +8,8 @@ use App\Services\GeocodingService;
 class UserTripController extends Controller
 {
 
-public function index(){
-     $trips = Trip::where('status', 'published')
+public function index(Request $request){
+     $trips = Trip::where('status', 'draft')
         ->latest()
         ->get();
 
@@ -17,63 +17,41 @@ public function index(){
    }
 
 
-   public function show(string $id, GeocodingService $geo)
+  public function show(string $id, GeocodingService $geo)
 {
     $trip = Trip::with([
-        'days.activities.activity',
-        'days.hotel',
-        'packages.highlights',
-        'packages.includes',
-        'packages.excludes',
-        'packages.packageHotels.hotel',
-        'packages.infos',
-        'schedules',
-        'assignedGuide',
-        'assignments.guide',
-        'transports',
-        'primaryDestination',
-        'images',
+        'days.activities.activity', 'days.hotel', 'packages.highlights',
+        'packages.includes', 'packages.excludes', 'packages.packageHotels.hotel',
+        'packages.infos', 'schedules', 'assignedGuide', 'assignments.guide',
+        'transports', 'primaryDestination', 'images',
     ])->findOrFail($id);
 
-    // ================================
-    // Meeting point geocoding
-    // ================================
-    $fullAddress = implode(', ', array_filter([
-        $trip->meeting_point_address,
-        $trip->primaryDestination?->name,
-        $trip->primaryDestination?->city,
-        $trip->primaryDestination?->country,
-    ]));
+    // 1. جلب العنوان الذي أدخلته أنت
+    $addressToSearch = $trip->meeting_point_address;
 
     $coords = null;
-
-    if ($fullAddress) {
-        $coords = $geo->geocodeAddress($fullAddress);
+    if ($addressToSearch) {
+        // محاولة جلب الإحداثيات للعنوان المدخل (مثل Trocadéro Gardens, Paris)
+        $coords = $geo->geocodeAddress($addressToSearch);
     }
 
-    // fallback 1
+    // 2. إذا فشل البحث بالعنوان الدقيق، نجرب دمج العنوان مع المدينة والدولة
     if (!$coords && $trip->primaryDestination) {
-        $coords = $geo->geocodeAddress(
-            $trip->primaryDestination->city . ', ' . $trip->primaryDestination->country
-        );
+        $fallbackAddress = $addressToSearch . ', ' . 
+                          $trip->primaryDestination->city . ', ' . 
+                          $trip->primaryDestination->country;
+        $coords = $geo->geocodeAddress($fallbackAddress);
     }
 
-    // fallback 2
-    if (!$coords && $trip->meeting_point_address) {
-        $coords = $geo->geocodeAddress($trip->meeting_point_address);
+    // 3. إذا ظل فارغاً، نضع إحداثيات باريس يدوياً كحل أخير إذا كان العنوان يحتوي على Paris
+    if (!$coords && str_contains(strtolower($addressToSearch), 'paris')) {
+        $coords = ['latitude' => 48.8584, 'longitude' => 2.2945]; // إحداثيات برج إيفل/تروكاديرو
     }
 
-    // final fallback
-    $coords = $coords ?? [
-        'latitude' => null,
-        'longitude' => null
-    ];
+    // 4. القيم الافتراضية النهائية (إذا فشل كل شيء)
+   $coords = $coords ?? null;
 
-    // ================================
-    // lowest package price (لو بدك تستخدمه)
-    // ================================
-    $lowestPkg = $trip->packages->sortBy('price')->first();
+    return view('trips.user.show', compact('trip', 'coords'));
+}
 
-    return view('trips.user.show', compact('trip','coords','lowestPkg'));
-   }
 }
