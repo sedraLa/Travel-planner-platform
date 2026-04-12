@@ -14,11 +14,11 @@
     </div>
     <div class="trips-hero-overlay"></div>
     <div class="trips-hero-content">
-        <h1>My Trips</h1>
+        <h1>All Trips</h1>
         <p>Explore and manage all your travel experiences</p>
-        <form method="GET" action="{{ route('trips.index') }}" class="trips-hero-search">
+        <form method="GET" action="{{ route('user.trips.index') }}" class="trips-hero-search">
             <input type="text" name="search" value="{{ request('search') }}"
-                   placeholder="Search by name, destination, or description..." />
+                   placeholder="Search by name, destination" />
             <button type="submit">Search</button>
         </form>
     </div>
@@ -32,7 +32,7 @@
     @endif
 
     {{-- Filters --}}
-    <form method="GET" action="{{ route('trips.index') }}" class="trips-filters">
+    <form method="GET" action="{{ route('user.trips.index') }}" class="trips-filters">
         <div class="filter-group">
             <label>Category</label>
             <select name="license_category">
@@ -56,7 +56,7 @@
         </div>
         <div class="filter-actions">
             <button type="submit" class="btn-filter">Filter</button>
-            <a href="{{ route('trips.index') }}" class="btn-reset">Reset</a>
+            <a href="{{ route('user.trips.index') }}" class="btn-reset">Reset</a>
         </div>
     </form>
 
@@ -106,6 +106,7 @@
                     @if($trip->destination)
                         <span class="meta-tag">📍 {{ $trip->destination->name }}</span>
                     @endif
+                    
                     @if($trip->max_participants)
                         <span class="meta-tag">👥 {{ $trip->max_participants }} travelers</span>
                     @endif
