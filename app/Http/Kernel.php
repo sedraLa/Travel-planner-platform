@@ -67,6 +67,7 @@ class Kernel extends HttpKernel
         'check.driver.status' => \App\Http\Middleware\CheckDriverStatus::class,
         'check.admin' => \App\Http\Middleware\CheckAdminRole::class,
         'check.guide.status' => \App\Http\Middleware\CheckGuideStatus::class,
+        'role' => \App\Http\Middleware\RoleMiddleware::class,
     ];
 
 }
