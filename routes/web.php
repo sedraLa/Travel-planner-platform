@@ -135,11 +135,6 @@ Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])-
 
 //trips dashboard
 Route::get('/admin/trips/dashboard',[TripController::class,'dashboard'])->name('trips.dashboard');
-//Admin Specialization
-
-Route::get('/admin/specialization',[SpecializationController::class,'index'])->name('specialization.index');
-Route::post('/admin/specialization/store',[SpecializationController::class,'store'])->name('specialization.store');
-Route::delete('/admin/specialization/{id}',[SpecializationController::class,'destroy'])->name('specialization.destroy');
 
 //Admin Guide Applications
 Route::get('/admin/guide/applications',[AdminGuideApplicationController::class,'index'])->name('guide-applications.index');
@@ -150,8 +145,8 @@ Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::cl
  
 Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
 Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
-//Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
-//Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+Route::get('/guide/{guide}/trips', [AdminGuideController::class, 'guideTrips'])
+    ->name('guides.trips');
 Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
 
 
