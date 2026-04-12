@@ -132,9 +132,20 @@
 
     <div class="map-box">
 
-        <div id="trip-map-wrapper">
-            <div id="trip-map"></div>
-        </div>
+        @if($coords)
+            <div id="trip-map-wrapper">
+                <div id="trip-map"></div>
+            </div>
+        @else
+            <div class="map-no-location">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none"
+                     stroke="#B4B2A9" stroke-width="1.5">
+                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                    <circle cx="12" cy="9" r="2.5"/>
+                </svg>
+                <span>Location not available for this meeting point</span>
+            </div>
+        @endif
 
         <div class="map-info">
             @if($trip->meeting_point_description)
@@ -362,32 +373,50 @@ function toggleDay(header) {
 }
 </script>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+
+<!-- 1. تأكد من وجود روابط Leaflet في الـ Head أو قبل السكريبت -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+@if($coords)
 <script>
-let map;
+document.addEventListener("DOMContentLoaded", function() {
+    const lat = {{ $coords['latitude'] }};
+    const lng = {{ $coords['longitude'] }};
+    const address = "{{ $trip->meeting_point_address }}";
 
-document.addEventListener("DOMContentLoaded", function () {
+    const mapContainer = document.getElementById('trip-map');
+    if (!mapContainer) return;
 
-    // إذا عندك إحداثيات من الباك اند حطها هون
-    const lat = {{ $trip->latitude ?? 52.3731 }};
-    const lng = {{ $trip->longitude ?? 4.8922 }};
-
-    map = L.map('trip-map').setView([lat, lng], 13);
-
+    const map = L.map('trip-map').setView([lat, lng], 16);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    L.marker([lat, lng]).addTo(map);
+    L.marker([lat, lng]).addTo(map)
+        .bindPopup(address)
+        .openPopup();
 
-    // الحل الحقيقي
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 400);
+    setTimeout(() => { map.invalidateSize(); }, 500);
 });
 </script>
+@endif
+
+
+<style>
+/* 8. ضروري جداً لمنع تداخل تنسيقات الصور مع الخريطة */
+#trip-map img {
+    max-width: none !important;
+    background: none !important;
+    display: inline !important;
+}
+</style>
+
+
+
+
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
