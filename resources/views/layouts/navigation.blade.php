@@ -23,8 +23,7 @@
                 <li><a href="{{ route('driverscompleted.show') }}">Completed Bookings</a></li>
             @elseif($role === UserRole::GUIDE->value)
             <li><a href="{{ route('guide.requests') }}">Booking Requests</a></li>
-                  <li><p>upcoming trips</p></li>
-                    <li><p>booking requst</p></li>
+            <li><a href="{{ route('guide.assignedTrips') }}">My Trips</a></li>
 
 
             @elseif(in_array($role, [UserRole::USER->value, UserRole::ADMIN->value], true))

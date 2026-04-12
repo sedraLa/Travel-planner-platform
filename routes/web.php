@@ -30,6 +30,7 @@ use App\Http\Controllers\Guide\GuideRequestResponseController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
+use App\Http\Controllers\GuideController;
 
 
 
@@ -294,8 +295,9 @@ Route::post('/requests/{guideRequest}/accept', [GuideRequestResponseController::
 Route::post('/requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])
     ->name('guide.requests.reject');
 
-Route::get('/bookings/pending', [DriverController::class, 'pendingBookings'])->name('bookings.pending');
-Route::get('/show', [DriverController::class, 'CompletedBookings'])->name('driverscompleted.show');
+
+Route::get('/assigned-trips',[GuideController::class,'assignedTrips'])->name('guide.assignedTrips');
+
   });
 
 require __DIR__.'/auth.php';
