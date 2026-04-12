@@ -39,16 +39,30 @@ class AuthenticatedSessionController extends Controller
         }
 
         if ($user->role === UserRole::GUIDE->value) {
-            $guide = $user->guide()->first();
-            $assignedTrips = $guide?->reservations()->where('status', 'assigned')->count() ?? 0;
-            $completedTrips = $guide?->reservations()->where('status', 'completed')->count() ?? 0;
+            $guide = $user->guide()?->with('assignments','guideRequests')->first();
+            $trip = $guide?->assignments()
+            ->where('status', 'assigned')
+            ->whereHas('trip.schedules')
+            ->with(['trip.schedules' => function ($q) {
+                $q->orderBy('start_date');
+            }, 'trip.primaryDestination'])
+            ->get()
+            ->sortBy(function ($assignment) {
+                return optional($assignment->trip->schedules->first())->start_date;
+            })
+            ->first()?->trip;
+            $assignedTrips = $guide?->assignments()->where('status', 'assigned')->count() ?? 0;
+            $pendingRequests = $guide?->guideRequests()->where('status','pending')->count() ?? 0;
+            $rejectedTrips = $guide?->guideRequests()->where('status','rejected')->count() ?? 0;
             $cancelledTrips = $guide?->reservations()->where('status', 'cancelled')->count() ?? 0;
 
             return view('guide.dashboard', compact(
                 'guide',
                 'assignedTrips',
-                'completedTrips',
-                'cancelledTrips'
+                'pendingRequests',
+                'cancelledTrips',
+                'rejectedTrips',
+                'trip'
             ));
         }
 

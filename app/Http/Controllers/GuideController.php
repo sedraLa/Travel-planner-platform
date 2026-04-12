@@ -21,6 +21,24 @@ use Carbon\Carbon;
 class GuideController extends Controller
 {
 
+    public function assignedTrips()
+    {
+        $user = auth()->user();
+    
+        $guide = $user->guide;
+    
+        $assignments = $guide->assignments()
+            ->where('status', 'assigned')
+            ->with([
+                'trip.primaryDestination',
+                'trip.schedules',
+                'trip.days.activities.activity'
+            ])
+            ->latest()
+            ->get();
+    
+        return view('guide.assigned-trips', compact('assignments'));
+    }
 
 
 }
