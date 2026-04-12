@@ -59,6 +59,7 @@
                 @if($role === UserRole::USER->value)
                     <li><a href="{{ route('flight.show') }}">Flights</a></li>
                     <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>
+                    <li><a href="{{ route('user.trips.index') }}">Trips</a></li>
                 @endif
 
 
