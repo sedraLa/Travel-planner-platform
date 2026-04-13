@@ -40,4 +40,50 @@ public function storeBooking(Request $request)
 
     return redirect()->route('trip.paypal');
 }
+
+public function index(Request $request)
+{
+    $query = TripReservation::with(['user', 'trip', 'package', 'schedule']);
+
+    if (auth()->user()->role !== 'admin') {
+        $query->where('user_id', auth()->id());
+    }
+
+    // Keyword search
+    if ($request->filled('keyword')) {
+        $keyword = $request->keyword;
+
+        $query->where(function ($q) use ($keyword) {
+            $q->whereHas('trip', fn($t) =>
+                $t->where('name', 'like', "%$keyword%")
+            )
+            ->orWhereHas('package', fn($p) =>
+                $p->where('name', 'like', "%$keyword%")
+            )
+            ->orWhereHas('user', fn($u) =>
+                $u->where('name', 'like', "%$keyword%")
+                
+            );
+        });
+    }
+
+    // Month (based on schedule, مو created_at)
+    if ($request->filled('month')) {
+        $query->whereHas('schedule', function ($q) use ($request) {
+            $q->whereMonth('start_date', $request->month);
+        });
+    }
+
+    // Year (schedule)
+    if ($request->filled('year')) {
+        $query->whereHas('schedule', function ($q) use ($request) {
+            $q->whereYear('start_date', $request->year);
+        });
+    }
+
+    $reservations = $query->latest()->get();
+
+    return view('trips.reservations.index', compact('reservations'));
+}
+
 }

@@ -100,7 +100,7 @@
                     <span class="arrow"> → </span>
                 </a>
 
-                <a href="" class="vehicles action-card">
+                <a href="{{route('trip.reservations.index')}}" class="vehicles action-card">
                     <div class="action">
                         <img class="icon" src="{{asset('images\icons\icons8-date-50.png')}}">
                         <h3>Reservations</h3>

@@ -180,7 +180,7 @@ Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseContro
     });
 
 
-Route::middleware(['auth','role:user'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -200,7 +200,7 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
 Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
 Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 Route::get('/reservations/{id}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
-Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
+
 
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
@@ -216,8 +216,7 @@ Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name
 
 
 
-//transport reservations
-Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
+
 
 //vehicles routes
 // USER – browse vehicles
@@ -277,7 +276,18 @@ Route::get('/trip/payment/paypal/callback',
     [PaymentController::class, 'paypalCallbackTrip']
 )->name('payment.trip.callback');
 
+Route::get('/trip-reservations', [TripBookingController::class, 'index'])
+->name('trip.reservations.index');
+//transport reservations
+Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
+Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
+
+
 });
+
+
+
+
 
 
 

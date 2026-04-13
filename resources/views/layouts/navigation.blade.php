@@ -82,6 +82,8 @@
                         <x-dropdown-link :href="route('reservations.index')">Hotel Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('vehicle.reservations.index')">Transport
                             Reservations</x-dropdown-link>
+                            <x-dropdown-link :href="route('trip.reservations.index')">Trips
+                                Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('favorites.show')">Show Favorite</x-dropdown-link>
                     @endif
 
