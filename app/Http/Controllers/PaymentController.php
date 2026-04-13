@@ -221,6 +221,9 @@ public function paypalCallbackTrip(Request $request)
             'payment_date' => now(),
         ]);
 
+        $this->notificationService->sendTripPaymentConfirmation($reservation->refresh());
+        
+
         return redirect()->route('user.trips.index')
             ->with('success', 'Trip booked successfully!');
     }
