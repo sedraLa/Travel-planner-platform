@@ -15,18 +15,18 @@ public function index(Request $request)
     $query = Trip::with('primaryDestination');
 
   
-    if ($request->filled('name')) {
-        $query->where('name', 'like', '%' . $request->name . '%');
-    }
+   if ($request->filled('search')) {
+    $query->where('name', 'like', '%' . $request->search . '%');
+       } 
 
   
     if ($request->filled('destination_id')) {
-        $query->where('primary_destination_id', $request->destination_id);
+        $query->where('destination_id', $request->destination_id);
     }
 
    
-    if ($request->filled('people')) {
-        $query->where('max_people', '>=', $request->people);
+    if ($request->filled('max_participants')) {
+        $query->where('max_participants', '>=', $request->max_participants);
     }
 
    
@@ -36,16 +36,15 @@ public function index(Request $request)
 
    
 
-    $trips = $query->latest()->get();
+      $trips = $query->latest()->paginate(6);
 
     $categories = Trip::whereNotNull('category')->distinct()->pluck('category');
-
-   $destinations = Destination::whereIn(
-    'id',
-    Trip::whereNotNull('destination_id')->pluck('destination_id')->unique())->get();
+   $destinations = Destination::whereIn('id',Trip::whereNotNull('destination_id')->pluck('destination_id')->unique())->get();
 
     return view('trips.user.index', compact('trips', 'destinations','categories'));
     }
+
+
 
 
   public function show(string $id, GeocodingService $geo)
@@ -54,7 +53,7 @@ public function index(Request $request)
         'days.activities.activity', 'days.hotel', 'packages.highlights',
         'packages.includes', 'packages.excludes', 'packages.packageHotels.hotel',
         'packages.infos', 'schedules', 'assignedGuide', 'assignments.guide',
-        'transports', 'primaryDestination', 'images',
+        'primaryDestination', 'images',
     ])->findOrFail($id);
 
     // 1. جلب العنوان الذي أدخلته أنت
