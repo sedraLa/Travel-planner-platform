@@ -18,6 +18,7 @@ class TripReservationRequest extends FormRequest
             'day_activity_id' => 'required|exists:day_activities,id',
             'guide_id' => 'required|exists:guides,id',
             'status' => 'nullable|string|in:assigned,completed,cancelled',
+            'guide_earning'=> 'nullable|numeric|min:0',
         ];
     }
 }

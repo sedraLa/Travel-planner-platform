@@ -1,11 +1,8 @@
 <x-app-layout>
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/tripindex.css') }}">
-   <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+<link rel="stylesheet" href="{{ asset('css/transport.css') }}">
 @endpush
-
-
-
 
 {{-- ══ HERO ══ --}}
 <div class="trips-hero">
@@ -27,40 +24,48 @@
 {{-- ══ MAIN ══ --}}
 <div class="trips-page-wrap">
 
-    @if(session('success'))
-        <div class="trips-success">{{ session('success') }}</div>
-    @endif
-
     {{-- Filters --}}
-    <form method="GET" action="{{ route('user.trips.index') }}" class="trips-filters">
-        <div class="filter-group">
-            <label>Category</label>
-            <select name="license_category">
-                <option value="">All</option>
-                <option value="A" @selected(request('license_category')=='A')>A</option>
-                <option value="B" @selected(request('license_category')=='B')>B</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label>Status</label>
-            <select name="status">
-                <option value="">All</option>
-                <option value="draft"      @selected(request('status')=='draft')>Draft</option>
-                <option value="published"  @selected(request('status')=='published')>Published</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label>Destination</label>
-            <input type="text" name="destination"
-                   value="{{ request('destination') }}" placeholder="e.g. Paris">
-        </div>
-        <div class="filter-actions">
-            <button type="submit" class="btn-filter">Filter</button>
-            <a href="{{ route('user.trips.index') }}" class="btn-reset">Reset</a>
+    <form method="GET" action="{{ route('user.trips.index') }}">
+        <div class="trips-filters">
+            <div class="filter-group">
+                <label>Category</label>
+                <select name="category">
+                    <option value="">All</option>
+                    @foreach($categories as $category)
+                        <option value="{{ $category }}" @selected(request('category') == $category)>
+                            {{ ucfirst($category) }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Destination</label>
+                <select name="destination_id">
+                    <option value="">All</option>
+                    @foreach($destinations as $destination)
+                        <option value="{{ $destination->id }}"
+                            @selected(request('destination_id') == $destination->id)>
+                            {{ $destination->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Number of Passengers</label>
+                <input type="number" name="max_participants"
+                       value="{{ request('max_participants') }}" step="1">
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn-filter">Filter</button>
+                <a href="{{ route('user.trips.index') }}" class="btn-reset">Reset</a>
+            </div>
         </div>
     </form>
 
-    {{-- Header --}}
+    {{-- Section Header --}}
     <div class="trips-section-header">
         <h2>All Trips</h2>
         <span>{{ $trips->count() }} trips found</span>
@@ -68,7 +73,7 @@
 
     {{-- Cards --}}
     <div class="trips-grid">
-        @foreach($trips as $trip)
+        @forelse($trips as $trip)
         <div class="trip-card">
 
             {{-- Image --}}
@@ -86,14 +91,11 @@
                     </div>
                 @endif
 
-              
-              <span class="trip-status-dot trip-status-{{$trip->status }}">
-                 @if($trip->schedules->first())
-                    <span class="status-pill">
-                   {{ ucfirst($trip->schedules->first()->status) }}
-                   </span>
+                @if($trip->schedules->first())
+                    <span class="trip-status-dot trip-status-{{ $trip->schedules->first()->status }}">
+                        {{ ucfirst($trip->schedules->first()->status) }}
+                    </span>
                 @endif
-               </span>
             </div>
 
             {{-- Body --}}
@@ -106,7 +108,6 @@
                     @if($trip->destination)
                         <span class="meta-tag">📍 {{ $trip->destination->name }}</span>
                     @endif
-                    
                     @if($trip->max_participants)
                         <span class="meta-tag">👥 {{ $trip->max_participants }} travelers</span>
                     @endif
@@ -124,8 +125,28 @@
             </div>
 
         </div>
-        @endforeach
+
+        @empty
+        <div class="trips-empty">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none"
+                 stroke="#B4B2A9" stroke-width="1.2">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <line x1="11" y1="8" x2="11" y2="14"/>
+                <line x1="8" y1="11" x2="14" y2="11"/>
+            </svg>
+            <h3>No trips available</h3>
+            <p>Try adjusting your filters or check back later.</p>
+        </div>
+        @endforelse
     </div>
+
+    {{-- Pagination --}}
+    @if($trips->hasPages())
+        <div class="pagination-wrapper">
+            {{ $trips->appends(request()->query())->links() }}
+        </div>
+    @endif
 
 </div>
 </x-app-layout>

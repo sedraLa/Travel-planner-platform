@@ -45,14 +45,27 @@ public function index(Request $request)
     }
 
 
+public function show(string $id)
+  {
+    $guide = Guide::with([
+        'user',
+        'assignments.trip.schedules',
+        'assignments.trip.primaryDestination',
+        'assignments.trip.images'
+    ])->findOrFail($id);
 
-    public function show(string $id) {
-        $guide= Guide::with('user')->findOrFail($id);
-      
-        return view('guide.show', compact('guide'));
-    }
+    $trip = $guide->assignments
+        ->where('status', 'assigned')
+        ->filter(fn($a) => $a->trip && $a->trip->schedules->isNotEmpty())
+        ->sortBy(fn($a) => optional($a->trip->schedules->first())->start_date)
+        ->first()?->trip;
+         $assignedTrips = $guide?->assignments()->where('status', 'assigned')->count() ?? 0;
+         $pendingRequests = $guide?->guideRequests()->where('status','pending')->count() ?? 0;
+         $rejectedTrips = $guide?->guideRequests()->where('status','rejected')->count() ?? 0;
 
 
+    return view('guide.show', compact('guide', 'trip','assignedTrips','pendingRequests','rejectedTrips'));
+   }
 
 
      public function destroy(string $id)

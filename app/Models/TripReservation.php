@@ -13,6 +13,7 @@ class TripReservation extends Model
     'day_activity_id',
     'guide_id',
     'status',
+    'guide_earning',
        ];
 
         public function guide()
