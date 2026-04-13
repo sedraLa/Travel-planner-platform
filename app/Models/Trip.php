@@ -51,10 +51,7 @@ class Trip extends Model
     {
         return $this->hasMany(TripDay::class);
     }
-      public function transports()
-    {
-        return $this->hasMany(TripTransport::class);
-    }
+     
      
 
     public function assignments()

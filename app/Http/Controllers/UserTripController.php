@@ -53,7 +53,7 @@ public function index(Request $request)
         'days.activities.activity', 'days.hotel', 'packages.highlights',
         'packages.includes', 'packages.excludes', 'packages.packageHotels.hotel',
         'packages.infos', 'schedules', 'assignedGuide', 'assignments.guide',
-        'transports', 'primaryDestination', 'images',
+        'primaryDestination', 'images',
     ])->findOrFail($id);
 
     // 1. جلب العنوان الذي أدخلته أنت
