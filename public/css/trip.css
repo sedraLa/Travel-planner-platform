@@ -766,3 +766,66 @@ body {
     color: #888;
     font-size: 13px;
 }
+
+
+.btn-book {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 10px 15px;
+    border-radius: 999px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: white;
+    text-decoration: none;
+
+    background: linear-gradient(135deg, #185FA5, #3FA7F5);
+    box-shadow: 0 6px 18px rgba(24, 95, 165, 0.25);
+
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* hover */
+.btn-book:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(24, 95, 165, 0.35);
+}
+
+/* click */
+.btn-book:active {
+    transform: scale(0.96);
+}
+
+/* icon animation */
+.btn-book .btn-icon {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.25s ease;
+}
+
+.btn-book:hover .btn-icon {
+    transform: translateX(4px);
+}
+
+/* subtle shine effect */
+.btn-book::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: rgba(255,255,255,0.2);
+    transform: skewX(-20deg);
+    transition: 0.5s;
+}
+
+.btn-book:hover::before {
+    left: 130%;
+}

@@ -90,5 +90,19 @@ public function show(string $id)
 
 
 
+    public function guideTrips(Guide $guide)
+    {
+        $assignments = $guide->assignments()
+            ->where('status', 'assigned')
+            ->with([
+                'trip.primaryDestination',
+                'trip.schedules'
+            ])
+            ->latest()
+            ->get();
+    
+        return view('guide.guide-trips', compact('assignments', 'guide'));
+    }
+
 
 }

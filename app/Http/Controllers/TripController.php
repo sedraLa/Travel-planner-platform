@@ -17,8 +17,10 @@ class TripController extends Controller
             ->where('status', 'pending')
             ->count();
         $activities = Activity::with('destinations')->count();
+        $publishedTrips = Trip::where('status','published')->count();
+        $draftTrips = Trip::where('status','draft')->count();
 
-        return view('trips.dashboard', compact('systemGuides', 'guidesRequests', 'activities'));
+        return view('trips.dashboard', compact('systemGuides', 'guidesRequests', 'activities','publishedTrips','draftTrips'));
     }
 
     public function index()

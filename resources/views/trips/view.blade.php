@@ -4,7 +4,7 @@
     @endpush
     <div class="main-container">
         <header>
-            <a href="">
+            <a href="{{route('trips.index')}}">
             <button class="back">Back</button>
             </a>
             <div class="head">
@@ -29,8 +29,8 @@
                     <ul class="overview">
                         <li>Choose your destination and dates</li>
                         <li>Select hotels and accommodations</li>
-                        <li>Add activities and flight details</li>
-                        <li>Arrange transportation</li>
+                        <li>Add activities and itineraries</li>
+                        <li>Customize all information needed as you want</li>
                     </ul>
                     <div class="time">
                         <h4>Time required:</h4>

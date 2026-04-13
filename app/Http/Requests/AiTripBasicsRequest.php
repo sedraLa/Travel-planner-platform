@@ -21,7 +21,7 @@ class AiTripBasicsRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'duration_days' => ['required', 'integer', 'min:1', 'max:30'],
             'category' => ['nullable', 'string', 'max:255'],
-            'max_participants' => ['nullable', 'integer', 'min:1'],
+            'max_participants' => ['required', 'integer', 'min:1'],
             'meeting_point_description' => ['nullable', 'string'],
             'meeting_point_address' => ['nullable', 'string', 'max:255'],
         ];

@@ -31,29 +31,7 @@
                 @if($role === UserRole::ADMIN->value)
                     <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
                     <li><a href="{{ route('activities.index') }}">Activities</a></li>
-                    <li>
-                        <div class="hidden sm:flex sm:items-center sm:ms-6">
-                        <x-dropdown align="right" width="48">
-                        <x-slot name="trigger">
-                        <button>
-                            <div style="font-weight:bold">Trips</div>
-                        </button>
-                        </x-slot>
-                        <x-slot name="content">
-                        <x-dropdown-link :href="route('trip.view')">
-                            {{ ('Create Trip') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('trips.index')">
-                            {{ ('My Trips') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('trip.view')">
-                            {{ ('Draft Trips') }}
-                        </x-dropdown-link>
-
-                        </x-slot>
-                        </x-dropdown>
-                         </div>
-                    </li>
+                   
                 @endif
                 @if($role === UserRole::USER->value)
                     <li><a href="{{ route('flight.show') }}">Flights</a></li>
@@ -104,6 +82,8 @@
                         <x-dropdown-link :href="route('reservations.index')">Hotel Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('vehicle.reservations.index')">Transport
                             Reservations</x-dropdown-link>
+                            <x-dropdown-link :href="route('trip.reservations.index')">Trips
+                                Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('favorites.show')">Show Favorite</x-dropdown-link>
                     @endif
 

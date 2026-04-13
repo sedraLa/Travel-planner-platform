@@ -5,6 +5,9 @@
 @endpush
 
 {{-- ══ HERO ══ --}}
+@if(session('success'))
+<div class="trips-success">{{ session('success') }}</div>
+@endif
 <div class="trips-hero">
     <div class="trips-hero-bg"
          style="background-image: url('{{ asset('images/trip.jpg') }}')">
@@ -23,6 +26,8 @@
 
 {{-- ══ MAIN ══ --}}
 <div class="trips-page-wrap">
+
+
 
     {{-- Filters --}}
     <form method="GET" action="{{ route('user.trips.index') }}">

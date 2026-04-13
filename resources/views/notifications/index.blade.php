@@ -9,32 +9,53 @@
 
         @forelse($notifications as $notification)
 
-             @php
+            @php
                 $data = $notification->data ?? [];
+
+                $isTripNotification = ($data['type'] ?? null) === 'trip_reservation';
+                $isTransportNotification = ($data['type'] ?? null) === 'transport_reservation';
                 $isAssignmentNotification = !empty($data['assignment_id']);
-                $isReservationNotification = !empty($data['reservation_id']);
             @endphp
 
-
-            
             <div class="bg-white rounded-xl shadow-lg p-6 mb-4 {{ $notification->read_at ? '' : 'bg-gray-100' }}">
-               <div class="flex justify-between items-start mb-3 gap-3">
+
+                <div class="flex justify-between items-start mb-3 gap-3">
                     <div>
-                        <h3 class="font-semibold text-lg">{{ $data['message'] ?? '-' }}</h3>
-                        <span class="inline-block mt-1 text-xs font-semibold px-2 py-1 rounded-full {{ $isAssignmentNotification ? 'bg-indigo-300 text-indigo-900' : ($isReservationNotification ? 'bg-emerald-100 text-emerald-900' : 'bg-gray-100 text-gray-800') }}">
-                            {{ $isAssignmentNotification ? 'Assignment Notification' : ($isReservationNotification ? 'Booking Notification' : 'General Notification') }}
+                        <h3 class="font-semibold text-lg">
+                            {{ $data['message'] ?? '-' }}
+                        </h3>
+
+                        <span class="inline-block mt-1 text-xs font-semibold px-2 py-1 rounded-full
+                            @if($isAssignmentNotification)
+                                bg-indigo-300 text-indigo-900
+                            @elseif($isTripNotification)
+                                bg-emerald-100 text-emerald-900
+                            @elseif($isTransportNotification)
+                                bg-blue-100 text-blue-900
+                            @else
+                                bg-gray-100 text-gray-800
+                            @endif
+                        ">
+                            @if($isAssignmentNotification)
+                                Assignment Notification
+                            @elseif($isTripNotification)
+                                Trip Booking
+                            @elseif($isTransportNotification)
+                                Transport Booking
+                            @else
+                                General Notification
+                            @endif
                         </span>
                     </div>
-
 
                     <span class="text-sm {{ $notification->read_at ? 'text-green-600' : 'text-red-600' }}">
                         {{ $notification->read_at ? 'Read' : 'Unread' }}
                     </span>
                 </div>
 
-               
+                {{-- ASSIGNMENT --}}
+                @if ($isAssignmentNotification)
 
-                 @if ($isAssignmentNotification)
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p><strong>Vehicle:</strong> {{ $data['vehicle'] ?? '-' }}</p>
@@ -44,20 +65,32 @@
                         <div>
                             <p><strong>Shift Start:</strong> {{ $data['shift_start'] ?? '-' }}</p>
                             <p><strong>Shift End:</strong> {{ $data['shift_end'] ?? '-' }}</p>
-                            <p><strong>Days:</strong> {{ !empty($data['days_of_week']) && is_array($data['days_of_week']) ? implode(', ', $data['days_of_week']) : '-' }}</p>
                         </div>
                     </div>
-                   
 
-                      @elseif ($isReservationNotification)
+                {{-- TRIP RESERVATION --}}
+                @elseif ($isTripNotification)
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p><strong>Trip:</strong> {{ $data['trip_name'] ?? '-' }}</p>
+                            <p><strong>Reservation ID:</strong> {{ $data['reservation_id'] ?? '-' }}</p>
+                        </div>
+                    </div>
+
+                {{-- TRANSPORT RESERVATION --}}
+                @elseif ($isTransportNotification)
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <p><strong>Pickup:</strong> {{ $data['pickup'] ?? '-' }}</p>
                             <p><strong>Dropoff:</strong> {{ $data['dropoff'] ?? '-' }}</p>
-                            <p><strong>Pickup Date:</strong> {{ $data['pickup_datetime'] ?? '-' }}</p>
+                            <p><strong>Date:</strong> {{ $data['pickup_datetime'] ?? '-' }}</p>
                         </div>
+
                         <div>
                             <p><strong>Name:</strong> {{ $data['full_name'] ?? '-' }}</p>
+
                             <p><strong>Phone:</strong>
                                 @if(!empty($data['phone_number']))
                                     <a href="tel:{{ $data['phone_number'] }}" class="text-blue-600 hover:underline">
@@ -69,10 +102,15 @@
                             </p>
                         </div>
                     </div>
+
                 @else
-                    <p class="text-sm text-gray-700">No additional details for this notification type.</p>
+                    <p class="text-sm text-gray-700">
+                        No additional details for this notification type.
+                    </p>
                 @endif
+
             </div>
+
         @empty
             <div class="bg-white rounded-xl shadow-lg p-6 text-center text-gray-500">
                 No notifications found.

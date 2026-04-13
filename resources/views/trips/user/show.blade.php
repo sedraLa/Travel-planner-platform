@@ -16,7 +16,7 @@
               {{ ucfirst($trip->schedules->first()->status) }}
              </span>
             @endif
-           
+
         </div>
         <h1>{{ $trip->name }}</h1>
         @if($trip->description)
@@ -166,7 +166,7 @@
     </div>
 </div>
 @endif
-    
+
 
     {{-- ══ PACKAGES ═════════════════════════════════════ --}}
     @if($trip->packages->count())
@@ -219,6 +219,14 @@
                     </ul>
                 </div>
                 @endif
+
+                {{--change design later--}}
+                <a href="{{ route('trip.booking.form', $pkg->id) }}" class="btn-book" style="width:40%">
+                    <span style = "color:white;">Book Now</span>
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </a>
             </div>
 
             {{-- Hotels in package --}}
@@ -327,8 +335,8 @@
     </div>
 @endif
 
-          
-           
+
+
         </div>
     </div>
 
@@ -357,7 +365,7 @@
     <div class="trip-arrow left">&#10094;</div>
     <div class="trip-arrow right">&#10095;</div>
 </div>
-    
+
 </div>
 
 </x-app-layout>

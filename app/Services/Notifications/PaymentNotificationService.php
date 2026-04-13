@@ -3,11 +3,14 @@ namespace App\Services\Notifications;
 
 use App\Models\Reservation;
 use App\Models\TransportReservation;
+use App\Models\TripReservation;
 use App\Mail\PaymentConfirmationMail;
 use App\Mail\TransportPaymentConfirmationMail;
+use App\Mail\TripPaymentConfirmationMail;
 use App\Notifications\NewTransportBookingNotification;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\TransportReservationConfirmedNotification;
+use App\Notifications\TripReservationConfirmedNotification;
 
 class PaymentNotificationService
 {
@@ -39,4 +42,14 @@ class PaymentNotificationService
             new TransportReservationConfirmedNotification($reservation)
         );
     }
+
+    public function sendTripPaymentConfirmation(TripReservation $reservation)
+{
+    Mail::to($reservation->user->email)
+        ->send(new TripPaymentConfirmationMail($reservation));
+
+    $reservation->user->notify(
+        new TripReservationConfirmedNotification($reservation)
+    );
+}
 }

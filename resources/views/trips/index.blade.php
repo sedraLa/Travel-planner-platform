@@ -11,7 +11,14 @@
         </style>
 
 <div class="container mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-6">My Trips</h1>
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">All Trips</h1>
+    
+        <a href="{{ route('trip.view') }}"
+           class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow text-sm font-semibold transition">
+            + Create Trip
+        </a>
+    </div>
 
     @if(session('success'))
         <div class="bg-green-100 text-green-800 p-4 mb-4 rounded">
