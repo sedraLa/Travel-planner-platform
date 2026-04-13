@@ -32,6 +32,9 @@ use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\UserTripController;
+use App\Http\Controllers\TripBookingController;
+
+
 
 
 
@@ -98,7 +101,7 @@ Route::put('/admin/vehicles/{vehicle}', [VehicleController::class, 'update'])
 Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy'])
     ->name('admin.vehicles.destroy');
 
- //Admin Drivers 
+ //Admin Drivers
  //Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
 Route::get('/drivers/request', [DriverController::class, 'Requestindex'])->name('drivers.request.index');
 Route::get('/drivers/approved', [DriverController::class, 'Approvedtindex'])->name('drivers.approved.index');
@@ -143,7 +146,7 @@ Route::get('/admin/guide/application/{id}',[AdminGuideApplicationController::cla
 Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::class,'updateStatus'])->name('guide.updateStatus');
 
 //Admin Guide
- 
+
 Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
 Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
 Route::get('/guide/{guide}/trips', [AdminGuideController::class, 'guideTrips'])
@@ -176,7 +179,7 @@ Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseContro
 
     });
 
-    
+
 Route::middleware(['auth','role:user'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -261,6 +264,18 @@ Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name
 //trip routes
 Route::get('/trip', [UserTripController::class, 'index'])->name('user.trips.index');
 Route::get('/trip/{trip}', [UserTripController::class, 'show'])->name('user.trips.show');
+Route::get('/trip/package/{packageId}/book',
+    [TripBookingController::class, 'showBookingForm']
+)->name('trip.booking.form');
+Route::post('/trip/booking/store',
+    [TripBookingController::class, 'storeBooking']
+)->name('trip.booking.store');
+Route::get('/trip/payment/paypal',
+    [PaymentController::class, 'payTrip']
+)->name('trip.paypal');
+Route::get('/trip/payment/paypal/callback',
+    [PaymentController::class, 'paypalCallbackTrip']
+)->name('payment.trip.callback');
 
 });
 

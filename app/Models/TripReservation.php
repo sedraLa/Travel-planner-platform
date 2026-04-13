@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class TripReservation extends Model
 {
     use HasFactory;
-     protected $fillable = [
-    'user_id',  
-    'day_activity_id',
-    'guide_id',
-    'status',
-       ];
+    protected $fillable = [
+        'user_id',
+        'trip_id',
+        'trip_package_id',
+        'trip_schedule_id',
+        'people_count',
+        'total_price',
+        'status',
+    ];
 
         public function guide()
     {
@@ -34,4 +37,19 @@ class TripReservation extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function trip()
+{
+    return $this->belongsTo(Trip::class);
+}
+
+public function package()
+{
+    return $this->belongsTo(TripPackage::class, 'trip_package_id');
+}
+
+public function schedule()
+{
+    return $this->belongsTo(TripSchedule::class, 'trip_schedule_id');
+}
 }

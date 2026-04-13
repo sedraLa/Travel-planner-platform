@@ -14,7 +14,7 @@ class AiTripSchedulesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'schedules' => ['nullable', 'array'],
+            'schedules' => ['required', 'array', 'min:1'],
             'schedules.*.id' => ['nullable', 'exists:trip_schedules,id'],
             'schedules.*.start_date' => ['required', 'date'],
             'schedules.*.end_date' => ['required', 'date'],

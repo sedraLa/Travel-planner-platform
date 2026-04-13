@@ -39,4 +39,14 @@ class PaymentNotificationService
             new TransportReservationConfirmedNotification($reservation)
         );
     }
+
+    public function sendTripPaymentConfirmation(TripReservation $reservation)
+{
+    Mail::to($reservation->user->email)
+        ->send(new TripPaymentConfirmationMail($reservation));
+
+    $reservation->user->notify(
+        new TripReservationConfirmedNotification($reservation)
+    );
+}
 }

@@ -16,6 +16,16 @@
             <div class="bg-green-100 text-green-800 p-3 rounded mb-4">{{ session('success') }}</div>
         @endif
 
+        @if ($errors->any())
+        <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+            <ul class="list-disc list-inside">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
         <div class="bg-yellow-50 border border-yellow-200 text-yellow-800 p-3 rounded mb-4">
             ⚠️ Important: each tab has its own Save button. You must save before moving to another tab.
         </div>
