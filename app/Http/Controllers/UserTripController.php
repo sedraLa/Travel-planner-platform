@@ -15,27 +15,27 @@ public function index(Request $request)
     $query = Trip::with('primaryDestination')->where('status','published');
     $user = auth()->user();
      $user->load('favoriteTrips');
-  
+
    if ($request->filled('search')) {
     $query->where('name', 'like', '%' . $request->search . '%');
-       } 
+       }
 
-  
+
     if ($request->filled('destination_id')) {
         $query->where('destination_id', $request->destination_id);
     }
 
-   
+
     if ($request->filled('max_participants')) {
         $query->where('max_participants', '>=', $request->max_participants);
     }
 
-   
+
     if ($request->filled('category')) {
         $query->where('category', $request->category);
     }
 
-   
+
 
       $trips = $query->latest()->paginate(6);
 
@@ -68,8 +68,8 @@ public function index(Request $request)
 
     // 2. إذا فشل البحث بالعنوان الدقيق، نجرب دمج العنوان مع المدينة والدولة
     if (!$coords && $trip->primaryDestination) {
-        $fallbackAddress = $addressToSearch . ', ' . 
-                          $trip->primaryDestination->city . ', ' . 
+        $fallbackAddress = $addressToSearch . ', ' .
+                          $trip->primaryDestination->city . ', ' .
                           $trip->primaryDestination->country;
         $coords = $geo->geocodeAddress($fallbackAddress);
     }
