@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\TransportVehicle;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Driver extends Model
 {
@@ -52,6 +53,11 @@ class Driver extends Model
      public function tripTransports()
     {
         return $this->hasMany(TripTransport::class);
+    }
+
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
     }
 
 }

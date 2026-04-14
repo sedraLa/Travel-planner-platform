@@ -78,4 +78,9 @@ class Hotel extends Model
                     ->withTimestamps();
     }
 
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
 }
