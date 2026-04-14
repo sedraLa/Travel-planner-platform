@@ -12,7 +12,7 @@ class UserTripController extends Controller
 
 public function index(Request $request)
 {
-    $query = Trip::with('primaryDestination');
+    $query = Trip::with('primaryDestination')->where('status','published');
     $user = auth()->user();
      $user->load('favoriteTrips');
   
