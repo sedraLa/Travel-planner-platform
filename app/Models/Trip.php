@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Favorite;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Trip extends Model
 {
@@ -101,6 +103,12 @@ class Trip extends Model
     public function destinations()
     {
         return $this->itineraryDestinations();
+    }
+
+
+    public function favorites():MorphMany
+     {
+    return $this->morphMany(Favorite::class, 'favoritable');
     }
 
 }

@@ -72,6 +72,14 @@ public function show(string $id)
     {
         $guide = Guide::findOrFail($id);
 
+         $hasAssignedTrips = $guide->assignments()
+        ->where('status', 'assigned')
+        ->exists();
+
+    if ($hasAssignedTrips) {
+        return back()->with('error', 'Cannot delete guide with assigned trips.');
+    }
+
     //delete license image
         if ($guide->certificate_image && Storage::disk('public')->exists($guide->certificate_image)) {
             Storage::disk('public')->delete($guide->certificate_image);

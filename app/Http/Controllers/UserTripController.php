@@ -13,7 +13,8 @@ class UserTripController extends Controller
 public function index(Request $request)
 {
     $query = Trip::with('primaryDestination');
-
+    $user = auth()->user();
+     $user->load('favoriteTrips');
   
    if ($request->filled('search')) {
     $query->where('name', 'like', '%' . $request->search . '%');

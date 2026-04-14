@@ -75,6 +75,38 @@
                         @endif
                     </div>
 
+
+                    <div class="mb-12">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
+                            Favorite Destinations
+                        </h3>
+
+                        @if($trips->isNotEmpty())
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                @foreach ($trips as $trip)
+                                    <a href="{{ route('user.trips.show', $trip) }}"
+                                        class="bg-gray-50 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 block">
+
+                                        @php
+                                            $primaryImage = $trip->images->where('is_primary', true)->first();
+                                        @endphp
+
+                                        <img src="{{ $primaryImage ? asset('storage/' . $primaryImage->image_url) : 'https://via.placeholder.com/400x250.png/007bff/ffffff?text=Destination' }}"
+                                            alt="{{ $trip->name }}" class="w-full h-48 object-cover">
+
+                                        <div class="p-4">
+                                            <h4 class="text-lg font-semibold text-gray-900">{{ $trip->name }}</h4>
+                                            <p class="text-sm text-gray-600 mt-1">{{ $trip->city ?? 'Explore now' }}</p>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-gray-500 italic">You haven't added any favorite trips yet.</p>
+                        @endif
+                    </div>
+
+
                 </div>
             </div>
         </div>
