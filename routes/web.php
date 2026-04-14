@@ -322,6 +322,7 @@ Route::post('/requests/{guideRequest}/reject', [GuideRequestResponseController::
 
 
 Route::get('/assigned-trips',[GuideController::class,'assignedTrips'])->name('guide.assignedTrips');
+Route::post('/guide/trips/{id}/complete',[GuideController::class, 'completeTrip'])->name('guide.completed.trip');
 
   });
 

@@ -59,6 +59,24 @@
                         I want to withdraw from supervising this trip
                     </button>
                 </div>
+                        
+                                
+                 
+                         @php
+                       $reservation = $reservations[$trip->id] ?? null;
+                           $isDisabled = !$reservation ||  $reservation->guide_paid_at ||
+                          now()->lt(optional($reservation->schedule)->end_date);
+                             @endphp
+
+                   <div class="flex justify-end mt-4">
+                      <form method="POST" action="{{ $reservation ? route('guide.trips.complete', $reservation->id) : '#' }}">
+                              @csrf
+
+                              <buttontype="submit" class="px-4 py-2 rounded text-white {{ $isDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700' }}" {{ $isDisabled ? 'disabled' : '' }}>
+                                     Trip Done
+                               </button>
+                    </form>
+                </div>
 
             </div>
 

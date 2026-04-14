@@ -14,11 +14,17 @@ class TripReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
-            'day_activity_id' => 'required|exists:day_activities,id',
-            'guide_id' => 'required|exists:guides,id',
-            'status' => 'nullable|string|in:assigned,completed,cancelled',
-            'guide_earning'=> 'nullable|numeric|min:0',
+             'user_id' => ['required', 'exists:users,id'],
+            'trip_id' => ['required', 'exists:trips,id'],
+            'trip_package_id' => ['required', 'exists:trip_packages,id'],
+            'trip_schedule_id' => ['required', 'exists:trip_schedules,id'],
+
+            'people_count' => ['required', 'integer', 'min:1'],
+
+            'total_price' => ['required', 'numeric', 'min:0'],
+
+            'status' => ['nullable', 'string', 'in:pending,cancelled,completed'],
+      
         ];
     }
 }

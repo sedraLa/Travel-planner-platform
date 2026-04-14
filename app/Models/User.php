@@ -84,6 +84,11 @@ class User extends Authenticatable
         return $this->morphedByMany(Hotel::class, 'favoritable', 'favorites');
     }
 
+    public function favoriteTrips()
+     {
+    return $this->morphedByMany(Trip::class, 'favoritable', 'favorites');
+   }
+
     public function getFullNameAttribute(): string
 {
     return trim($this->name.' '.($this->last_name ?? ''));

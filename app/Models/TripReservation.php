@@ -16,6 +16,9 @@ class TripReservation extends Model
         'people_count',
         'total_price',
         'status',
+        'guide_earning',
+        'guide_id',
+        'guide_paid_at',
     ];
 
         public function guide()
