@@ -114,7 +114,7 @@
             data-url="{{ route('favorites.add', ['type' => 'trip', 'id' => $trip->id]) }}"
             style="background:none; border:none; cursor:pointer;">
 
-            @if(auth()->user()->favoriteDestinations->contains('id', $trip->id))
+            @if(auth()->user()->favoriteTrips->contains('id', $trip->id))
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500"
                      viewBox="0 0 20 20" fill="currentColor">
                     <path fill-rule="evenodd"
