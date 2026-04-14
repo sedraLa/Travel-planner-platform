@@ -24,9 +24,7 @@
             <p style="margin-bottom:10px;">
             {{$guide->bio}}
             </p>
-            <div class="status">
-                <span class="badge pending">{{$guide->is_tour_leader ? 'Tour Leader' : 'Not A Tour Leader'}}</span>
-            </div>
+           
             
         </div>
     </div>
@@ -87,13 +85,7 @@
       </div>
  </div>
 
-   <div class="stat">
-   <img class="stat-icon" src="{{ asset('images/icons/icons8-licence-plate-50.png') }}" alt="Plate Icon">
-      <div>
-         <h5>Specializations</h5>
-             {{ $guide->specializations->pluck('name')->join(', ') ?: 'N/A' }}
-      </div>
- </div>
+   
 
  <div class="stat">
    <img class="stat-icon" src="{{ asset('images/icons/icons8-category-50.png') }}" alt="Plate Icon">

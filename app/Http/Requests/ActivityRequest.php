@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Category;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ActivityRequest extends FormRequest
@@ -21,10 +22,8 @@ class ActivityRequest extends FormRequest
             'duration' => 'nullable|numeric|min:0',
             'duration_unit' => 'nullable|string|max:50',
             'price' => 'nullable|numeric|min:0',
-            'category' => 'nullable|string|max:100',
+            'category' => ['nullable', 'string', 'in:' . implode(',', Category::values())],
             'is_active' => 'required|boolean',
-            'start_time' => 'nullable|date_format:H:i',
-            'end_time' => 'nullable|date_format:H:i|after_or_equal:start_time',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'availability' => 'required|string|max:50',

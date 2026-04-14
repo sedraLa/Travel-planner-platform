@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\Guide;
-use App\Models\Specialization;
 use Illuminate\Http\Request;
 use App\Http\Requests\GuideRequest;
 use App\Services\MediaServices;
@@ -21,7 +20,7 @@ class AdminGuideController extends Controller{
 
 public function index(Request $request)
     {
-        $query = Guide::with(['user','specializations'])->where('status', 'Approved');
+        $query = Guide::with(['user'])->where('status', 'approved');
 
         if ($request->filled('search')) {
             $term = $request->search;
@@ -46,19 +45,40 @@ public function index(Request $request)
     }
 
 
+public function show(string $id)
+  {
+    $guide = Guide::with([
+        'user',
+        'assignments.trip.schedules',
+        'assignments.trip.primaryDestination',
+        'assignments.trip.images'
+    ])->findOrFail($id);
 
-    public function show(string $id) {
-        $guide= Guide::with('user','specializations')->findOrFail($id);
-      
-        return view('guide.show', compact('guide'));
-    }
+    $trip = $guide->assignments
+        ->where('status', 'assigned')
+        ->filter(fn($a) => $a->trip && $a->trip->schedules->isNotEmpty())
+        ->sortBy(fn($a) => optional($a->trip->schedules->first())->start_date)
+        ->first()?->trip;
+         $assignedTrips = $guide?->assignments()->where('status', 'assigned')->count() ?? 0;
+         $pendingRequests = $guide?->guideRequests()->where('status','pending')->count() ?? 0;
+         $rejectedTrips = $guide?->guideRequests()->where('status','rejected')->count() ?? 0;
 
 
+    return view('guide.show', compact('guide', 'trip','assignedTrips','pendingRequests','rejectedTrips'));
+   }
 
 
      public function destroy(string $id)
     {
         $guide = Guide::findOrFail($id);
+
+         $hasAssignedTrips = $guide->assignments()
+        ->where('status', 'assigned')
+        ->exists();
+
+    if ($hasAssignedTrips) {
+        return back()->with('error', 'Cannot delete guide with assigned trips.');
+    }
 
     //delete license image
         if ($guide->certificate_image && Storage::disk('public')->exists($guide->certificate_image)) {
@@ -71,13 +91,26 @@ public function index(Request $request)
     }
 
         //delete guide
-        $guide->user()->delete();
-        $guide->delete();
+       $guide->user()->delete();
 
-        return redirect()->route('guides.index')->with('success', 'Guid deleted successfully');
+        return redirect()->route('guides.index')->with('success', 'Guide deleted successfully');
     }
 
 
+
+    public function guideTrips(Guide $guide)
+    {
+        $assignments = $guide->assignments()
+            ->where('status', 'assigned')
+            ->with([
+                'trip.primaryDestination',
+                'trip.schedules'
+            ])
+            ->latest()
+            ->get();
+    
+        return view('guide.guide-trips', compact('assignments', 'guide'));
+    }
 
 
 }

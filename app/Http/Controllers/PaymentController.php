@@ -19,6 +19,7 @@ use App\Services\Payments\PaymentContext;
 use App\Services\Payments\PaypalPaymentService;
 use App\Services\Notifications\PaymentNotificationService;
 use App\Services\TransportReservation\ReservationStateManager;
+use App\Models\TripReservation;
 
 
 class PaymentController extends Controller
@@ -173,6 +174,61 @@ public function paypalCallbackTransport(Request $request)
     }
 
     return back()->withErrors('Payment failed.');
+}
+
+public function payTrip()
+{
+    $reservationId = session('trip_reservation_id');
+
+    if (!$reservationId) {
+        dd('❌ NO SESSION ID');
+    }
+
+    $reservation = TripReservation::findOrFail($reservationId);
+
+    if ($reservation->user_id !== auth()->id()) {
+        abort(403);
+    }
+
+    $context = new PaymentContext(new PaypalPaymentService());
+
+    $response = $context->sendPayment($reservation, 'trip');
+
+    if ($response['success']) {
+        return redirect()->away($response['url']);
+    }
+
+    return back()->withErrors('Payment failed');
+}
+
+public function paypalCallbackTrip(Request $request)
+{
+    $context = new PaymentContext(new PaypalPaymentService());
+    $result = $context->callBack($request);
+
+    $reservation = TripReservation::find(session('trip_reservation_id'));
+
+    if ($result['success'] && $reservation) {
+
+        $reservation->update(['status' => 'paid']);
+
+        Payment::create([
+            'trip_reservation_id' => $reservation->id,
+            'user_id' => $reservation->user_id,
+            'amount' => $reservation->total_price,
+            'status' => 'completed',
+            'transaction_id' => $result['transaction_id'],
+            'payment_date' => now(),
+        ]);
+
+        $this->notificationService->sendTripPaymentConfirmation($reservation->refresh());
+        
+
+        return redirect()->route('user.trips.index')
+            ->with('success', 'Trip booked successfully!');
+    }
+
+    return back()->withErrors('Payment failed');
 }
 
 }

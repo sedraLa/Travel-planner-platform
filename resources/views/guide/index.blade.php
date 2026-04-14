@@ -25,7 +25,7 @@
             {{-- Actions --}}
             <div class="flex gap-2">
                 <button class="bg-blue-600 text-white px-4 py-2 rounded-lg">Filter</button>
-                <a href="{{ route('drivers.approved.index') }}" class="px-4 py-2 border rounded-lg text-gray-600">Reset</a>
+                <a href="{{ route('guides.index') }}" class="px-4 py-2 border rounded-lg text-gray-600">Reset</a>
             </div>
         </form>
         
@@ -72,9 +72,7 @@
                                 Date of Hire</th>
 
 
-                                <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Specialization</th>
+                             
 
                             
                             <th scope="col" class="relative px-6 py-3">
@@ -113,9 +111,7 @@
                                     {{ $guide->date_of_hire ? \Carbon\Carbon::parse($guide->date_of_hire)->format('d-m-Y') : 'N/A' }}
                                 </td>
 
-                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="text-sm font-medium text-gray-900">{{ $guide->specializations->pluck('name')->join(', ') ?: '—' }}</div>
-                                </td>
+                                
 
 
 
@@ -131,6 +127,19 @@
                                     </a>
                                    
                              </td>
+
+                             <td class="px-6 py-4 whitespace-nowrap  text-center">
+                                <a href="{{ route('guides.trips', $guide->id) }}">
+                                      <div class="inline-flex items-center gap-2">
+                                           <button class="order-btn edit-btn px-4 py-2 bg-blue-400 text-white rounded hover:bg-blue-700">
+                                                Assigned Trips
+                                                  </button>
+                                      </div>
+                                  </a>
+                                 
+                           </td>
+
+
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <!--delete driver button-->

@@ -23,7 +23,6 @@ class Guide extends Model
         'date_of_hire',
         'total_trips_count',
         'last_trip_at',
-        'is_tour_leader',
     ];
 
     public function user()
@@ -32,14 +31,16 @@ class Guide extends Model
     }
 
 
-     public function specializations()
-    {
-        return $this->belongsToMany(Specialization::class, 'guide_specialization', 'guide_id', 'specialization_id');
-    }
-
+   
     public function availabilities()
     {
         return $this->hasMany(GuideAvailability::class);
+    }
+
+
+    public function guideRequests()
+    {
+        return $this->hasMany(GuideRequest::class);
     }
 
     public function assignments()

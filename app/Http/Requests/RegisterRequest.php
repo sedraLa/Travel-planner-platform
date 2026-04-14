@@ -105,10 +105,6 @@ class RegisterRequest extends FormRequest
 
                 'address' => ['required', 'string', 'max:255'],
 
-                'is_tour_leader' => ['boolean'],
-
-                 'specializations' => ['nullable', 'array'],
-                 'specializations.*' => ['exists:specializations,id'],
 
             ]);
         }
@@ -118,28 +114,7 @@ class RegisterRequest extends FormRequest
         return $rules;
     }
      
-     public function withValidator($validator)
-      {
-             $validator->after(function ($validator) {
-
-             if ($this->input('role') !== UserRole::GUIDE->value) {
-            return;
-        }
-
-                $isLeader = $this->input('is_tour_leader');
-                $hasSpecializations = $this->input('specializations', []);
-                
-              if (!$isLeader && (empty($hasSpecializations) || count($hasSpecializations) === 0)) {
-                  $validator->errors()->add(
-                     'specializations',
-                     'You must select either Tour Leader or at least one activity.'
-                      );
-                  }
-
-              
-    
-          });
-       }
+     
 }
 
 

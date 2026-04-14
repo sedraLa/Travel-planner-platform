@@ -16,6 +16,8 @@ use App\Http\Controllers\TransportReservationController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\AiTripController;
+use App\Http\Controllers\AiTripCompletionController;
+use App\Http\Controllers\AiTripGenerationController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
@@ -24,9 +26,15 @@ use App\Http\Controllers\ShiftTemplateController;
 use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Driver\BookingRequestController;
+use App\Http\Controllers\Guide\GuideRequestResponseController;
 use App\Http\Controllers\SpecializationController;
 use App\Http\Controllers\AdminGuideController;
 use App\Http\Controllers\AdminGuideApplicationController;
+use App\Http\Controllers\GuideController;
+use App\Http\Controllers\UserTripController;
+use App\Http\Controllers\TripBookingController;
+
+
 
 
 
@@ -93,7 +101,7 @@ Route::put('/admin/vehicles/{vehicle}', [VehicleController::class, 'update'])
 Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy'])
     ->name('admin.vehicles.destroy');
 
- //Admin Drivers 
+ //Admin Drivers
  //Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');
 Route::get('/drivers/request', [DriverController::class, 'Requestindex'])->name('drivers.request.index');
 Route::get('/drivers/approved', [DriverController::class, 'Approvedtindex'])->name('drivers.approved.index');
@@ -131,11 +139,6 @@ Route::delete('/activities/{activity}', [ActivityController::class, 'destroy'])-
 
 //trips dashboard
 Route::get('/admin/trips/dashboard',[TripController::class,'dashboard'])->name('trips.dashboard');
-//Admin Specialization
-
-Route::get('/admin/specialization',[SpecializationController::class,'index'])->name('specialization.index');
-Route::post('/admin/specialization/store',[SpecializationController::class,'store'])->name('specialization.store');
-Route::delete('/admin/specialization/{id}',[SpecializationController::class,'destroy'])->name('specialization.destroy');
 
 //Admin Guide Applications
 Route::get('/admin/guide/applications',[AdminGuideApplicationController::class,'index'])->name('guide-applications.index');
@@ -143,18 +146,41 @@ Route::get('/admin/guide/application/{id}',[AdminGuideApplicationController::cla
 Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::class,'updateStatus'])->name('guide.updateStatus');
 
 //Admin Guide
- 
+
 Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
 Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
-//Route::get('/driver/{id}/completed-bookings', [DriverController::class, 'CompletedBookings'])->name('admin.bookings.completed');
-//Route::get('/drivers/{id}/pending-bookings', [DriverController::class, 'pendingBookings'])->name('admin.bookings.pending');
+Route::get('/guide/{guide}/trips', [AdminGuideController::class, 'guideTrips'])
+    ->name('guides.trips');
 Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
 
 
+//Admin Trip routes
+Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
+Route::get('/trips',[TripController::class,'index'])->name('trips.index');
+Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
+Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
+Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
+Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
+Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.destroy');
+
+// Admin AI trip routes
+Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
+Route::post('/trips/ai/generate',[AiTripGenerationController::class,'generate'])->name('ai.generate');
+Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
+Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
+Route::post('/trips/{trip}/complete/basics', [AiTripCompletionController::class, 'saveBasics'])->name('trip.complete.basics');
+Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, 'saveDaysActivities'])->name('trip.complete.days');
+Route::post('/trips/{trip}/complete/packages', [AiTripCompletionController::class, 'savePackages'])->name('trip.complete.packages');
+Route::post('/trips/{trip}/complete/schedules', [AiTripCompletionController::class, 'saveSchedules'])->name('trip.complete.schedules');
+Route::post('/trips/{trip}/complete/images', [AiTripCompletionController::class, 'saveImages'])->name('trip.complete.images');
+Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionController::class, 'confirmOverview'])->name('trip.complete.overview.confirm');
+Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
+Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
+
     });
 
-    
-Route::middleware('auth')->group(function () {
+
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -174,7 +200,7 @@ Route::get('/weather/{city}', [WeatherController::class, 'show'])->name('weather
 Route::get('/hotels/{id}/reserve', [ReservationController::class, 'showReservationForm'])->name('reservations.form');
 Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
 Route::get('/reservations/{id}/pay', [ReservationController::class, 'pay'])->name('reservations.pay');
-Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
+
 
 // pay routes
 Route::post('/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('payment.paypal');
@@ -190,8 +216,7 @@ Route::post('/flights/search', [FlightController::class, 'searchFlights'])->name
 
 
 
-//transport reservations
-Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
+
 
 //vehicles routes
 // USER – browse vehicles
@@ -222,19 +247,9 @@ Route::post('/favorites/{type}/{id}', [FavoriteController::class, 'store'])
     ->middleware('auth');
 Route::get('/show-favourite', [FavoriteController::class, 'showFavorites'])->name('favorites.show')->middleware('auth');
 
-//Trip routes
-Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
-Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
-Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
-Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
-Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
-Route::get('/trips',[TripController::class,'index'])->name('trips.index');
-Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.destroy');
 
-//AI trip routes
-Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
-Route::post('/trips/ai/generate',[AiTripController::class,'generate'])->name('ai.generate');
-Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
+
+
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
@@ -245,7 +260,34 @@ Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name(
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name('notifications.show');
 
+//trip routes
+Route::get('/trip', [UserTripController::class, 'index'])->name('user.trips.index');
+Route::get('/trip/{trip}', [UserTripController::class, 'show'])->name('user.trips.show');
+Route::get('/trip/package/{packageId}/book',
+    [TripBookingController::class, 'showBookingForm']
+)->name('trip.booking.form');
+Route::post('/trip/booking/store',
+    [TripBookingController::class, 'storeBooking']
+)->name('trip.booking.store');
+Route::get('/trip/payment/paypal',
+    [PaymentController::class, 'payTrip']
+)->name('trip.paypal');
+Route::get('/trip/payment/paypal/callback',
+    [PaymentController::class, 'paypalCallbackTrip']
+)->name('payment.trip.callback');
+
+Route::get('/trip-reservations', [TripBookingController::class, 'index'])
+->name('trip.reservations.index');
+//transport reservations
+Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
+Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
+
+
 });
+
+
+
+
 
 
 
@@ -267,12 +309,21 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
 
     });
 
+Route::middleware(['auth','check.guide.status']) ->prefix('guide') ->group(function () {
+
+    Route::get('/requests', [GuideRequestResponseController::class, 'index'])
+    ->name('guide.requests');
+
+Route::post('/requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])
+    ->name('guide.requests.accept');
+
+Route::post('/requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])
+    ->name('guide.requests.reject');
 
 
+Route::get('/assigned-trips',[GuideController::class,'assignedTrips'])->name('guide.assignedTrips');
+Route::post('/guide/trips/{id}/complete',[GuideController::class, 'completeTrip'])->name('guide.completed.trip');
+
+  });
 
 require __DIR__.'/auth.php';
-
-
-
-
-

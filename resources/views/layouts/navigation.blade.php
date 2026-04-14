@@ -11,51 +11,42 @@
                 </div>
             </a>
         </div>
+         @php
+            $role = auth()->user()->role ?? null;
+        @endphp
 
         <!-- Navigation Links -->
         <ul>
-            @if(auth()->check() && auth()->user()->role === UserRole::DRIVER->value)
-            <li><a href="{{ route('driver.booking-requests.index') }}">Booking Requests</a></li>
+              @if($role === UserRole::DRIVER->value)
+                <li><a href="{{ route('driver.booking-requests.index') }}">Booking Requests</a></li>
                 <li><a href="{{ route('bookings.pending') }}">Pending Bookings</a></li>
                 <li><a href="{{ route('driverscompleted.show') }}">Completed Bookings</a></li>
-            @else
+            @elseif($role === UserRole::GUIDE->value)
+            <li><a href="{{ route('guide.requests') }}">Booking Requests</a></li>
+            <li><a href="{{ route('guide.assignedTrips') }}">My Trips</a></li>
+
+
+            @elseif(in_array($role, [UserRole::USER->value, UserRole::ADMIN->value], true))
                 <li><a href="{{ route('destination.index') }}">Destinations</a></li>
-                <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
-                @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
-                <li><a href="{{ route('flight.show') }}">Flights</a></li>
-                 <li><a href="{{route('vehicle.order')}}">Transport airport</a></li>
-              
+                @if($role === UserRole::ADMIN->value)
+                    <li><a href="{{ route('hotels.index') }}">Hotels</a></li>
+                    <li><a href="{{ route('activities.index') }}">Activities</a></li>
+                   
                 @endif
-              
-                <li><a href="{{route('activities.index')}}">Activities</a></li>
-                @if(auth()->check() && auth()->user()->role === UserRole::USER->value)
-                <li>
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
-                    <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button>
-                            <div style="font-weight:bold">Trips</div>
-                        </button>
-                    </x-slot>
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('trip.view')">
-                            {{ ('Create Trip') }}
-                        </x-dropdown-link>
-                        <x-dropdown-link :href="route('trips.index')">
-                            {{ ('My Trips') }}
-                        </x-dropdown-link>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-         </li>
-         @endif
-     
+                @if($role === UserRole::USER->value)
+                    <li><a href="{{ route('flight.show') }}">Flights</a></li>
+                    <li><a href="{{ route('vehicle.order') }}">Transport airport</a></li>
+                    <li><a href="{{ route('user.trips.index') }}">Trips</a></li>
+                @endif
+
+
+
 
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                     <li><a href="{{route('transport.dashboard')}}">Transport & Drivers</a></li>
                        <li><a href="{{route('trips.dashboard')}}">Trips & Guides</a></li>
-                    
-                       
+
+
 
                     <!-- Admin Reservations Dropdown -->
                     <li x-data="{ openDropdown: false }" class="relative">
@@ -66,7 +57,7 @@
                             class="absolute mt-1 bg-white border rounded shadow-md">
                             <li><a href="{{ route('reservations.index') }}" class="block px-4 py-2 hover:bg-gray-100">Hotels</a>
                             </li>
-                           
+
                         </ul>
                     </li>
 
@@ -91,6 +82,8 @@
                         <x-dropdown-link :href="route('reservations.index')">Hotel Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('vehicle.reservations.index')">Transport
                             Reservations</x-dropdown-link>
+                            <x-dropdown-link :href="route('trip.reservations.index')">Trips
+                                Reservations</x-dropdown-link>
                         <x-dropdown-link :href="route('favorites.show')">Show Favorite</x-dropdown-link>
                     @endif
 
@@ -104,8 +97,7 @@
                     </form>
                 </x-slot>
             </x-dropdown>
-            @if(auth()->check() && auth()->user()->role === UserRole::USER->value || 
-            auth()->check() && auth()->user()->role === UserRole::DRIVER->value )
+         
 <!-- Notifications -->
 <div x-data="{ notifOpen: false }" class="relative ml-4">
     <!-- زر الجرس -->
@@ -178,7 +170,7 @@
     </div>
 </div>
 
-@endif
+
 
 
         </div>

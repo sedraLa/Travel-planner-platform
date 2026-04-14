@@ -43,8 +43,8 @@
 
             <div class="total-card">
                 <div class="total-info">
-                    <h4>Trip Packages</h4>
-                    <span>5</span>
+                    <h4>Published Trips</h4>
+                    <span>{{$publishedTrips}}</span>
                 </div>
                 <div class="total-icon">
                     <img class="icon" src="{{asset('images/icons/icons8-tour-50.png')}}">
@@ -53,8 +53,8 @@
 
             <div class="total-card">
                 <div class="total-info">
-                    <h4>Pending Reservations</h4>
-                    <span>5</span>
+                    <h4>Draft Trips</h4>
+                    <span>{{$draftTrips}}</span>
                 </div>
                 <div class="total-icon">
                     <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
@@ -76,22 +76,6 @@
             <!-- Quick Actions -->
             <div class="actions">
                 <h4>Quick Actions</h4>
-                <a href="" class="shifts action-card">
-                    <div class="action">
-                        <img class="icon" src="{{asset('images/icons/icons8-24-hours-50.png')}}">
-                        <h3>Working Schedules</h3>
-                    </div>
-                    <span class="arrow"> → </span>
-                </a>
-
-                <a href="{{route('specialization.index')}}" class="assignments action-card">
-                    <div class="action">
-                        <img class="icon" src="{{asset('images/icons/calendar-days-solid-full (1).svg')}}">
-                        <h3>Specializations</h3>
-                    </div>
-                    <span class="arrow"> → </span>
-                </a>
-
                 <a href="{{ route('guides.index') }}" class="drivers action-card">
                     <div class="action">
                         <img class="icon" src="{{asset('images/icons/user-group-solid-full (1).svg')}}">
@@ -108,7 +92,7 @@
                     <span class="arrow"> → </span>
                 </a>
 
-                <a href="" class="vehicles action-card">
+                <a href="{{ route('trips.index') }}" class="vehicles action-card">
                     <div class="action">
                         <img class="icon" src="{{asset('images/icons/icons8-tour-50.png')}}">
                         <h3>Trips</h3>
@@ -116,7 +100,7 @@
                     <span class="arrow"> → </span>
                 </a>
 
-                <a href="" class="vehicles action-card">
+                <a href="{{route('trip.reservations.index')}}" class="vehicles action-card">
                     <div class="action">
                         <img class="icon" src="{{asset('images\icons\icons8-date-50.png')}}">
                         <h3>Reservations</h3>

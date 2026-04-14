@@ -44,7 +44,6 @@ class Driver extends Model
     
     }
 
-
     public function bookingRequests()
     {
     return $this->hasMany(BookingRequest::class);

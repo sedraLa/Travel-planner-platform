@@ -54,12 +54,6 @@
                         <option value="days" {{ old('duration_unit', $activity->duration_unit) == 'days' ? 'selected' : '' }}>Days</option>
                     </select>
 
-                    <x-input-label for="start_time" value="Start Time" />
-                    <x-text-input id="start_time" type="time" name="start_time" :value="old('start_time', $activity->start_time)" />
-
-                    <x-input-label for="end_time" value="End Time" />
-                    <x-text-input id="end_time" type="time" name="end_time" :value="old('end_time', $activity->end_time)" />
-
                     <x-input-label for="start_date" value="Start Date" />
                     <x-text-input id="start_date" type="date" name="start_date" :value="old('start_date', $activity->start_date)" />
 

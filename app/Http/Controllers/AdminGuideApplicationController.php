@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\GuideRequest;
 use App\Models\Guide;
-use App\Models\Specialization;
 use App\Services\GuideApplicationStatusService;
 use Illuminate\Http\Request;
 
@@ -15,8 +14,8 @@ class AdminGuideApplicationController extends Controller
      */
     public function index(Request $request)
     {
-        $specializations = Specialization::all();
-        $query = Guide::with('user', 'specializations')->where('status', 'pending');
+       
+       $query = Guide::with('user')->where('status', 'pending');
 
         if ($request->filled('search')) {
             $term = $request->search;
@@ -26,9 +25,8 @@ class AdminGuideApplicationController extends Controller
                     $u->where('name', 'like', "%$term%")
                         ->orWhere('last_name', 'like', "%$term%")
                         ->orWhere('email', 'like', "%$term%"))
-                    ->orWhere('languages', 'like', "%$term%")
-                    ->orWhereHas('specializations', fn ($s) =>
-                        $s->where('name', 'like', "%$term%"));
+                    ->orWhere('languages', 'like', "%$term%");
+                    
             });
         }
 
@@ -45,18 +43,14 @@ class AdminGuideApplicationController extends Controller
             $query->where('is_tour_leader', $request->tour_leader);
         }
 
-        if ($request->filled('specialization')) {
-            $query->whereHas('specializations', function ($q) use ($request) {
-                $q->where('specializations.id', $request->specialization);
-            });
-        }
+        
 
         $guides = $query
             ->orderBy('years_of_experience', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('Guide-applications.index', compact('guides', 'specializations'));
+        return view('Guide-applications.index', compact('guides'));
     }
 
     /*
@@ -64,7 +58,7 @@ class AdminGuideApplicationController extends Controller
     */
     public function show(string $id)
     {
-        $guide = Guide::with(['user', 'specializations'])->findOrFail($id);
+        $guide = Guide::with(['user'])->findOrFail($id);
 
         return view('Guide-applications.show', compact('guide'));
     }

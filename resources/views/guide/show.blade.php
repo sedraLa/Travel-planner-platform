@@ -35,26 +35,26 @@
         </div>
     </div>
 
-{{--<div class="bottomm-section">
+<div class="bottomm-section">
 <h3>Performance</h3>
 <div class="bookings">
  <div class ="total pending">
     <div class="type">
-            <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
-             <h3>Pending</h3>
+           <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
+             <h3>REQUESTS</h3>
     </div>
             <div class="count">
-            <span id="pending-total">{{ $pendingBookings }}</span>
+            <span id="pending-total">{{ $pendingRequests}} </span>
             </div>
         </div>
 
    <div class="total completed">
    <div class="type">
-            <img class="icon" src="{{asset('images/icons/icons8-checkmark-50.png')}}">
-             <h3>completed</h3>
+             <img class="icon" src="{{asset('images/icons/icons8-checkmark-50.png')}}">
+             <h3>TRIPS</h3>
              </div>
             <div class="count">
-            <span id="completed-total">{{ $completedBookings }}</span>
+            <span id="completed-total">{{ $assignedTrips }} </span>
             </div>
         </div>
 
@@ -64,22 +64,23 @@
             <h3>Canceled</h3>
             </div>
             <div class="count">
-            <span id="canceled-total">{{ $canceledBookings }}</span>
+            <span id="canceled-total">{{ $rejectedTrips }} </span>
             </div>
         </div>
 
         <div class ="total earning">
             <div class="type">
-            <img class="icon" src="{{asset('images/icons/icons8-earning-50.png')}}">
+           <img class="icon" src="{{asset('images/icons/icons8-earning-50.png')}}">
             <h3>Earnings</h3>
             </div>
             <div class="count">
-            <span id="earning-total">2  </span>number of pending booings
+            <span id="earning-total">2 <!--number of pending booings--> </span>
+            {{--<span id="earning-total">{{ $completedTrips}}</span>--}}
             </div>
         </div>
 </div>
 </div>
-</div>--}}
+</div>
 
 
 
@@ -234,37 +235,29 @@
 </div>
 
 
-{{--<div class="vehicle-section">
+<div class="vehicle-section">
     <div class="vehicle-header">
-        <h3>Assigned Vehicle</h3>
-
-        @if($vehicle)
-            <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}" class="edit-btn">
-                 Edit Vehicle
-            </a>
-        @endif
+        <h3>Assigned Trip</h3>
     </div>
 
-    @if($vehicle)
+    
         <div class="vehicle-card">
 
             <div class="vehicle-image">
-                <img src="{{ $vehicle->image
-                    ? asset('storage/' . $vehicle->image)
-                    : asset('images/default-car.png') }}"
-                    alt="Vehicle Image">
+                <img src="{{ $trip?->images->first() ? asset('storage/' . $trip->images->first()->path) : asset('images/default-trip.jpg') }}"
+                    alt="Trip Image">
             </div>
 
             <div class="vehicle-info">
 
                 <div class="stat">
-                    <h5>Car Model</h5>
-                    <h6>{{ $vehicle->car_model?? 'no car model' }}</h6>
+                    <h5>Trip Name</h5>
+                    <h6> {{ $trip->name ?? 'No assigned trip yet' }}</h6>
                 </div>
 
                 <div class="stat">
-                    <h5>Plate Number</h5>
-                    <h6>{{ $vehicle->plate_number?? 'no plate number' }}</h6>
+                    <h5>To:</h5>
+                    <h6>{{ $trip?->primaryDestination?->name ?? 'No destination' }}</h6>
                 </div>
 
                 <div class="stat">
@@ -272,32 +265,42 @@
                     <h6>{{ $vehicle->category?? 'no category' }}</h6>
                 </div>
 
-                <div class="stat">
-                    <h5>Max Passengers</h5>
-                    <h6>{{ $vehicle->max_passengers?? 'no max passengers' }}</h6>
-                </div>
-
-                <div class="stat">
-                    <h5>Base Price</h5>
-                    <h6>${{ number_format($vehicle->base_price ?? 0, 2) }}</h6>
-                </div>
-
-                <div class="stat">
-                    <h5>Price / KM</h5>
-                    <h6>${{ number_format($vehicle->price_per_km ?? 0, 2) }}</h6>
-                </div>
-
+                
+           <div class="stat">
+             <img class="stat-icon" src="{{ asset('images/icons/calendar-days-solid-full (1).svg') }}">
+                     <div>
+                         <h5>Start Date</h5>
+                         <h6>{{ optional($trip?->schedules->first())->start_date ?? 'N/A' }}</h6>
+                      </div>
             </div>
-        </div>
-    @else
-        <div class="no-vehicle">
-            <img src="{{ asset('images/icons/icons8-car-100.png') }}">
-            <p>No vehicle assigned yet</p>
-        </div>
-    @endif
-</div>
 
-</div>--}}
+                   <div class="stat">
+                       <img class="stat-icon" src="{{ asset('images/icons/user-group-solid-full.svg') }}">
+                           <div>
+                             <h5>Participants</h5>
+                             <h6>{{ $trip->max_participants ?? 'N/A' }}</h6>
+                          </div>
+                   </div>
+
+                   <div class="stat">
+                         <img class="stat-icon" src="{{ asset('images/icons/icons8-24-hours-50.png') }}">
+                              <div>
+                                <h5>Duration</h5>
+                                 <h6>{{ $trip->duration_days ?? 'N/A' }} days</h6>
+                               </div>
+                    </div>
+
+                         <div class="stat">
+                           <img class="stat-icon" src="{{ asset('images/icons/icons8-tour-50.png') }}">
+                              <div>
+                                    <h5>Category</h5>
+                                    <h6>{{ $trip->category ?? 'N/A' }}</h6>
+                                </div>
+                               </div>
+                          </div>
+                </div>
+            </div>
+
 <!-- SHIFT MODAL -->
 {{--<div id="shift-modal"
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
@@ -339,3 +342,25 @@
 </div>--}}
 
 </x-app-layout>
+
+
+<style>
+    .vehicle-info .stat {
+  display: flex;
+  flex-direction: row;      /* أفقي */
+  align-items: center;      /* توسيط عمودي */
+  gap: 10px;
+}
+
+.vehicle-info .stat .stat-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;           /* ما ينكمش */
+}
+
+.vehicle-info .stat div {
+  display: flex;
+  flex-direction: column;   /* h5 فوق h6 */
+  gap: 2px;
+}
+    </style>

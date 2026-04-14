@@ -19,7 +19,8 @@ class HotelController extends Controller
     ///index
     public function index(Request $request)
     {
-        $query = Hotel::with('images');
+        
+        $query = Hotel::with(['images', 'destination']);
     
         // Search
         if ($request->filled('search')) {
@@ -59,11 +60,19 @@ class HotelController extends Controller
                 }
             });
         }
-        
+
+         if ($request->filled('destination_id')) {
+            $query->where('destination_id', $request->destination_id);
+        }
+
+        $selectedDestination = null;
+        if ($request->filled('destination_id')) {
+            $selectedDestination = Destination::find($request->destination_id);
+        }
     
         $hotels = $query->paginate(9);
     
-        return view('hotel.index', compact('hotels'));
+        return view('hotel.index', compact('hotels', 'selectedDestination'));
     }
     
 

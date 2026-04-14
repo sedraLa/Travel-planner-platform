@@ -520,3 +520,51 @@ select {
   border: none;
   padding: 0;
 }
+
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropbtn {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  border: 1px solid var(--very-light-grey, #ccc);
+  font-size: 14px;
+  background-color: var(--white);
+  min-width: 150px;
+  height: 53px;
+}
+
+.dropdown input[type='checkbox'] {
+  border-radius: 15px;
+  height: 28px;
+  min-width: 25px;
+
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #fff;
+  min-width: 200px;
+  border: 1px solid #ccc;
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.dropdown-content label {
+  display: block;
+  padding: 5px;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}

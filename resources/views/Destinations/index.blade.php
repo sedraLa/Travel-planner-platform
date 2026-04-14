@@ -101,7 +101,23 @@
                     </a>
                     
 
+@if(Auth::user()->role === UserRole::USER->value)
+                        <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4">
+                            <a href="{{ route('hotels.index', ['destination_id' => $destination->id]) }}">
+                                <button
+                                    class="px-4 py-2 rounded-xl text-white bg-blue-600 hover:bg-blue-700 transition duration-200 text-sm shadow-sm">
+                                    Hotels
+                                </button>
+                            </a>
 
+                            <a href="{{ route('activities.index', ['destination_id' => $destination->id]) }}">
+                                <button
+                                    class="px-4 py-2 rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 transition duration-200 text-sm shadow-sm">
+                                    Activities
+                                </button>
+                            </a>
+                        </div>
+                    @endif
                     @if(Auth::user()->role === UserRole::ADMIN->value)
                         <div class="manage-btn flex items-center gap-3 mt-3 mb-3 px-4">
                             <a href="{{ route('destinations.edit', ['id' => $destination->id]) }}">

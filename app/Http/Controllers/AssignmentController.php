@@ -38,6 +38,9 @@ class AssignmentController extends Controller
             })
             ->orWhereHas('driver.user', function ($qd) use ($search) {
                 $qd->whereRaw("CONCAT(name, ' ', COALESCE(last_name, '')) like ?", ["%{$search}%"]);
+            })
+            ->orWhereHas('shiftTemplate', function ($qs) use ($search) {
+            $qs->where('name', 'like', "%{$search}%");
             });
         });
     }

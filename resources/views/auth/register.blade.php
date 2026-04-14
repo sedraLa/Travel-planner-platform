@@ -229,45 +229,11 @@
             <textarea id="bio" name="bio"></textarea>
         </div>
 
-        <!-- Tour leader -->
-        <div class="full">
-            <label class="tour-leader-toggle">
-                <input type="checkbox" name="is_tour_leader" value="1" id="is_tour_leader">
-                <span class="toggle-track">
-                    <span class="toggle-thumb"></span>
-                </span>
-                <span class="toggle-label">I am a Tour Leader</span>
-            </label>
-        </div>
-
-          <!-- Specializations Chips -->
-        <div class="full">
-            <x-input-label value="Specializations" />
-
-            <div class="spec-chips-wrap">
-                @foreach($specializations as $special)
-                    @php $isChecked = in_array($special->id, old('specializations', [])); @endphp
-                    <label class="spec-chip {{ $isChecked ? 'spec-chip--active' : '' }}">
-                        <input
-                            type="checkbox"
-                            name="specializations[]"
-                            value="{{ $special->id }}"
-                            @checked($isChecked)
-                            onchange="this.closest('label').classList.toggle('spec-chip--active', this.checked)"
-                        >
-                        {{ $special->name }}
-                    </label>
-                @endforeach
-            </div>
-
-            <x-input-error :messages="$errors->get('specializations')" />
-        </div>
-
-
 
     </div>
 
     <p class="note full">Note: Guide registration will be reviewed by management before acceptance.</p>
+     <p class="note full">Note:If you register as a guide, you will be assigned as a tour leader for this tour .</p>
 
     <div style="display:flex; gap:10px; margin-top:15px;">
         <button type="button" class="main-btn" onclick="goToStep1()">Back</button>
@@ -329,43 +295,7 @@ function goToStep1() {
 }
 
 document.querySelector('form').addEventListener('submit', function(e) {
-    const specialRole = @json($isSpecialRole);
-    const step2 = document.getElementById('step2');
 
-    // مسح أي رسالة قديمة
-    const errorDiv = document.getElementById('tourLeaderError');
-    if(errorDiv) errorDiv.remove();
-
-    if (specialRole && step2 && step2.style.display === 'none') {
-        e.preventDefault();
-        // نقدر نضيف رسالة على Step2 container
-        const msg = document.createElement('div');
-        msg.id = 'tourLeaderError';
-        msg.style.color = 'red';
-        msg.style.marginTop = '6px';
-        msg.textContent = 'Please complete Step 2 before submitting.';
-        step2.parentNode.insertBefore(msg, step2);
-        return;
-    }
-
-    const role = @json($role);
-    if(role === 'guide') {
-        const isLeader = document.getElementById('is_tour_leader').checked;
-        const specializations = document.querySelectorAll('input[name="specializations[]"]:checked');
-
-        if(!isLeader && specializations.length === 0) {
-            e.preventDefault();
-            // إضافة رسالة أسفل القسم الخاص بالـ Tour Leader / Specializations
-            const specDiv = document.querySelector('.spec-chips-wrap') || document.getElementById('is_tour_leader').parentNode;
-            const msg = document.createElement('div');
-            msg.id = 'tourLeaderError';
-            msg.style.color = 'red';
-            msg.style.marginTop = '6px';
-            msg.textContent = 'Please select either Tour Leader or at least one specialization.';
-            specDiv.parentNode.insertBefore(msg, specDiv.nextSibling);
-            return;
-        }
-    }
 });
 </script>
 
@@ -374,123 +304,5 @@ document.querySelector('form').addEventListener('submit', function(e) {
 
 
 
-
-<style>
-.tour-leader-toggle {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    user-select: none;
-    width: fit-content;
-}
-
-/* إخفاء الـ checkbox الأصلي */
-.tour-leader-toggle input[type="checkbox"] {
-    position: absolute;
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* الـ track (الخلفية) */
-.toggle-track {
-    position: relative;
-    width: 48px;
-    height: 26px;
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 999px;
-    transition: background 0.3s, border-color 0.3s;
-    flex-shrink: 0;
-}
-
-/* الدايرة */
-.toggle-thumb {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: 18px;
-    height: 18px;
-    background: white;
-    border-radius: 50%;
-    transition: transform 0.3s cubic-bezier(.4,0,.2,1), background 0.3s;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.25);
-}
-
-/* وقت يكون checked */
-.tour-leader-toggle input:checked ~ .toggle-track {
-    background: #4ade80;
-    border-color: #4ade80;
-}
-
-.tour-leader-toggle input:checked ~ .toggle-track .toggle-thumb {
-    transform: translateX(22px);
-    background: white;
-}
-
-/* hover effect */
-.tour-leader-toggle:hover .toggle-track {
-    border-color: rgba(255,255,255,0.5);
-}
-
-.toggle-label {
-    color: white;
-    font-size: 0.95rem;
-    font-weight: 500;
-}
-</style>
-
-
-<style>
-/* ===== Specialization Chips ===== */
-.spec-chips-wrap {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.spec-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    border-radius: 999px;
-    border: 2px solid rgba(255,255,255,0.25);
-    background: rgba(255,255,255,0.08);
-    color: rgba(255,255,255,0.75);
-    font-size: 0.88rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    user-select: none;
-}
-
-.spec-chip:hover {
-    border-color: rgba(255,255,255,0.5);
-    background: rgba(255,255,255,0.15);
-    color: white;
-}
-
-/* إخفاء الـ checkbox الأصلي */
-.spec-chip input[type="checkbox"] {
-    display: none;
-}
-
-/* وقت يكون selected */
-.spec-chip--active {
-    background: rgba(255,255,255,0.95) !important;
-    border-color: white !important;
-    color: #1E3A8A !important;
-    font-weight: 700 !important;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-}
-
-.spec-chip--active::before {
-    content: '✓';
-    font-size: 0.8rem;
-    font-weight: 800;
-}
-</style>
 
 </x-guest-layout>

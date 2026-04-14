@@ -7,19 +7,25 @@ use Illuminate\Http\Request;
 
 class PaypalPaymentService implements PaymentStrategy
 {
-    protected $base_url;   //api url
-    protected $header; //info we send with each http request/response
+    protected $base_url;
+    protected $header;
 
     public function __construct()
     {
         $this->base_url = config('services.paypal.base_url');
+
+        $token = $this->getAccessToken();
+
+        if (!$token) {
+            dd('❌ PayPal Token Failed');
+        }
+
         $this->header = [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $this->getAccessToken(),
+            'Authorization' => 'Bearer ' . $token,
         ];
     }
 
-        //get access token from paypal
     protected function getAccessToken()
     {
         $response = Http::asForm()->withBasicAuth(
@@ -29,16 +35,26 @@ class PaypalPaymentService implements PaymentStrategy
             'grant_type' => 'client_credentials',
         ]);
 
+        if (!$response->successful()) {
+            dd('❌ TOKEN ERROR', $response->status(), $response->json());
+        }
 
-        return $response->json()['access_token'];
+        return $response->json()['access_token'] ?? null;
     }
 
-    //send request to paypal to create payment order
     public function sendPayment($reservation, $type = 'hotel')
     {
-        $callback = $type === 'transport'
-            ? route('payment.transport.callback')
-            : route('payment.paypal.callback');
+        // ✅ FIXED CALLBACK
+        $callback = match ($type) {
+            'transport' => route('payment.transport.callback'),
+            'trip' => route('payment.trip.callback'),
+            default => route('payment.paypal.callback'),
+        };
+
+        // 🔥 DEBUG
+        if (!$reservation->total_price || $reservation->total_price <= 0) {
+            dd('❌ INVALID PRICE', $reservation);
+        }
 
         $data = [
             'intent' => 'CAPTURE',
@@ -63,14 +79,19 @@ class PaypalPaymentService implements PaymentStrategy
             ->asJson()
             ->post($this->base_url . '/v2/checkout/orders', $data);
 
-        if ($response->successful()) {
-            $approveLink = collect($response->json()['links'])
-                ->firstWhere('rel', 'approve')['href'];
-
-            return ['success' => true, 'url' => $approveLink];
+        // 🔥 أهم سطر بحياتك حالياً
+        if (!$response->successful()) {
+            dd('❌ PAYPAL ERROR', $response->status(), $response->json());
         }
 
-        return ['success' => false, 'message' => 'Error initiating PayPal payment'];
+        $approveLink = collect($response->json()['links'])
+            ->firstWhere('rel', 'approve')['href'] ?? null;
+
+        if (!$approveLink) {
+            dd('❌ NO APPROVE LINK', $response->json());
+        }
+
+        return ['success' => true, 'url' => $approveLink];
     }
 
     public function callBack(Request $request)
@@ -91,12 +112,12 @@ class PaypalPaymentService implements PaymentStrategy
             ->send('POST', $url, ['body' => '{}']);
 
         if (!$response->successful()) {
-            return ['success' => false, 'message' => 'HTTP failed with status ' . $response->status()];
+            dd('❌ CAPTURE ERROR', $response->status(), $response->json());
         }
 
         $data = $response->json();
 
-        if (isset($data['status']) && $data['status'] === 'COMPLETED') {
+        if (($data['status'] ?? null) === 'COMPLETED') {
             return [
                 'success' => true,
                 'transaction_id' => $data['id'] ?? null,
@@ -105,10 +126,4 @@ class PaypalPaymentService implements PaymentStrategy
 
         return ['success' => false, 'message' => 'Payment failed'];
     }
-
-
-
-
-
-
 }
