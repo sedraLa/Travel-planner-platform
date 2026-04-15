@@ -33,6 +33,7 @@ use App\Http\Controllers\AdminGuideApplicationController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\UserTripController;
 use App\Http\Controllers\TripBookingController;
+use App\Http\Controllers\ReviewController;
 
 
 
@@ -282,6 +283,18 @@ Route::get('/trip-reservations', [TripBookingController::class, 'index'])
 Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
 Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
 
+//Reviews routes
+ // create review
+ Route::post('/reviews', [ReviewController::class, 'store'])
+ ->name('reviews.store');
+
+// update review
+Route::put('/reviews/{review}', [ReviewController::class, 'update'])
+ ->name('reviews.update');
+
+// delete review
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
+ ->name('reviews.destroy');
 
 });
 
