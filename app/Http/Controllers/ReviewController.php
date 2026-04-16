@@ -16,6 +16,17 @@ use App\Models\Review;
 
 class ReviewController extends Controller
 {
+
+    //create review
+
+    public function create(Request $request)
+{
+    return view('reviews.create', [
+        'type' => $request->type,
+        'id' => $request->id
+    ]);
+}
+
     /**
      * Store new review
      */

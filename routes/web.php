@@ -281,10 +281,16 @@ Route::get('/trip-reservations', [TripBookingController::class, 'index'])
 ->name('trip.reservations.index');
 //transport reservations
 Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
+//hotel reservations
 Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
 
 //Reviews routes
- // create review
+
+//create review
+Route::get('/reviews/create', [ReviewController::class, 'create'])
+    ->name('reviews.create');
+
+ // store review
  Route::post('/reviews', [ReviewController::class, 'store'])
  ->name('reviews.store');
 
@@ -297,8 +303,6 @@ Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
  ->name('reviews.destroy');
 
 });
-
-
 
 
 

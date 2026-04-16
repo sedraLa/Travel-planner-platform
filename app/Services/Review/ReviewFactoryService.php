@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Review;
+use Illuminate\Database\Eloquent\Model;
 
 class ReviewFactoryService
 {

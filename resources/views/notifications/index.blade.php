@@ -14,6 +14,7 @@
 
                 $isTripNotification = ($data['type'] ?? null) === 'trip_reservation';
                 $isTransportNotification = ($data['type'] ?? null) === 'transport_reservation';
+                $isReviewNotification = ($data['type'] ?? null) === 'review_request';
                 $isAssignmentNotification = !empty($data['assignment_id']);
             @endphp
 
@@ -42,6 +43,8 @@
                                 Trip Booking
                             @elseif($isTransportNotification)
                                 Transport Booking
+                            @elseif($isReviewNotification)
+                                Review Notification
                             @else
                                 General Notification
                             @endif
@@ -77,6 +80,23 @@
                             <p><strong>Reservation ID:</strong> {{ $data['reservation_id'] ?? '-' }}</p>
                         </div>
                     </div>
+
+                    {{-- REVIEW RESERVATION --}}
+                    @elseif ($isReviewNotification)
+                    <div class="flex items-center justify-between">
+                        <p class="text-gray-700">
+                            {{ $data['message'] ?? 'Please rate your experience' }}
+                        </p>
+                
+                        <a href="{{ route('reviews.create', [
+                            'type' => $data['review_type'],
+                            'id' => $data['review_id']
+                        ]) }}"
+                           class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                            Rate Now
+                        </a>
+                    </div>
+
 
                 {{-- TRANSPORT RESERVATION --}}
                 @elseif ($isTransportNotification)
