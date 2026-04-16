@@ -21,6 +21,10 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\DestinationViewed::class => [
             \App\Listeners\IncrementDestinationClicks::class,
         ],
+
+        \App\Events\ReviewableItemCompleted::class => [
+            \App\Listeners\SendReviewRequestNotification::class,
+        ],
     ];
 
     /**

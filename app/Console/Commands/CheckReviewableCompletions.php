@@ -30,10 +30,11 @@ class CheckReviewableCompletions extends Command
      */
     private function checkHotels()
     {
-        $reservations = Reservation::where('reservation_status', 'completed')
+        $reservations = Reservation::where('reservation_status', 'paid')
             ->where('check_out_date', '<', now())
             ->where('review_notified', false)
             ->get();
+            $this->info('Hotels found: ' . $reservations->count());
 
         foreach ($reservations as $reservation) {
 

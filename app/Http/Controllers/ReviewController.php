@@ -34,6 +34,8 @@ class ReviewController extends Controller
         StoreReviewRequest $request,
         ReviewFactoryService $factory
     ) {
+        
+    
         $model = match ($request->type) {
             'hotel' => Hotel::findOrFail($request->id),
             'trip' => Trip::findOrFail($request->id),
@@ -43,7 +45,7 @@ class ReviewController extends Controller
     
         $factory->create($model, $request->only('rating', 'review'));
     
-        return back()->with('success', 'Review submitted');
+        return redirect()->back()->with('success', 'Thanks for your review ❤️');
     }
 
     /**

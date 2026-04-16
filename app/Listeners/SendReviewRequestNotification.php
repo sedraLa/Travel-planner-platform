@@ -4,6 +4,8 @@ namespace App\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use App\Events\ReviewableItemCompleted;
+use App\Notifications\ReviewRequestNotification;
 
 class SendReviewRequestNotification
 {
@@ -25,7 +27,7 @@ class SendReviewRequestNotification
         $user->notify(
             new ReviewRequestNotification(
                 type: $event->type,
-                id: $event->id
+                itemId: $event->id
             )
         );
     }

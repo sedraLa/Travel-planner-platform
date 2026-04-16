@@ -1,6 +1,11 @@
 <?php
 
 namespace App\Services\Review;
+use App\Models\User;
+use App\Models\Reservation;
+use App\Models\TripReservation;
+use App\Models\TransportReservation;
+
 
 class ReviewEligibilityService
 {

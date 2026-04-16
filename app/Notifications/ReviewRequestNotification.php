@@ -11,7 +11,7 @@ class ReviewRequestNotification extends Notification
 
     public function __construct(
         public string $type,
-        public int $id,
+        public int $itemId,
         public string $message = 'Please rate your experience'
     ) {}
 
@@ -25,7 +25,7 @@ class ReviewRequestNotification extends Notification
         return [
             'type' => 'review_request',
             'review_type' => $this->type,
-            'review_id' => $this->id,
+            'review_id' => $this->itemId,
             'message' => $this->message,
         ];
     }
