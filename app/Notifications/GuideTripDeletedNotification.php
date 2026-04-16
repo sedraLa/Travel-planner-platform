@@ -22,9 +22,10 @@ class GuideTripDeletedNotification extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'type' => 'trip_deleted',
             'trip_id' => $this->trip->id,
             'trip_name' => $this->trip->name,
-            'message' => 'This trip has been deleted',
+            'message' => 'The trip "' . ($this->trip->name ?? 'Unknown') . '" has been canceled',
         ];
     }
 }

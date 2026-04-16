@@ -14,6 +14,7 @@
 
                 $isTripNotification = ($data['type'] ?? null) === 'trip_reservation';
                 $isTransportNotification = ($data['type'] ?? null) === 'transport_reservation';
+                $isTripDeletedNotification = ($data['type'] ?? null) === 'trip_deleted';
                 $isAssignmentNotification = !empty($data['assignment_id']);
             @endphp
 
