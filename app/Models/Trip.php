@@ -111,4 +111,20 @@ class Trip extends Model
     return $this->morphMany(Favorite::class, 'favoritable');
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(TripReservation::class);
+    }
+
+    public function hasOpenBookingWindow(): bool
+    {
+        $today = now()->toDateString();
+
+        return $this->schedules()
+            ->whereDate('booking_deadline', '>=', $today)
+            ->where('status', 'available')
+            ->where('available_seats', '>', 0)
+            ->exists();
+    }
+
 }

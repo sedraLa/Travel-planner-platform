@@ -25,6 +25,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if(session('error'))
+        <div class="bg-red-100 text-red-800 p-4 mb-4 rounded">
+            {{ session('error') }}
+        </div>
+    @endif
     
  {{-- Search Form  --}}
  <form method="GET" action="{{ route('trips.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
@@ -99,7 +104,10 @@
                         <a href="{{ route('manual.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
                         @endif
                     
-                    <form action="{{ route('trip.destroy', $trip->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                    @if($trip->is_ai_generated)
+                        <a href="{{ route('ai.edit', $trip->id) }}" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded">Edit</a>
+                    @endif
+                    <form action="{{ route('trip.destroy', $trip->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this trip?');">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded">Delete</button>

@@ -4,6 +4,12 @@
     @endpush
 
 <div class="page-wrap">
+    @php
+        $deadlineForCountdown = null;
+        if ($upcomingSchedule?->booking_deadline) {
+            $deadlineForCountdown = \Carbon\Carbon::parse($upcomingSchedule->booking_deadline)->endOfDay();
+        }
+    @endphp
 
     {{-- ══ HERO ══════════════════════════════════════════ --}}
     <div class="hero">
@@ -221,12 +227,18 @@
                 @endif
 
                 {{--change design later--}}
-                <a href="{{ route('trip.booking.form', $pkg->id) }}" class="btn-book" style="width:40%">
-                    <span style = "color:white;">Book Now</span>
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </a>
+                @if($isBookingClosed)
+                    <div style="width:40%;padding:12px;background:#fee2e2;color:#991b1b;border-radius:10px;font-size:13px;text-align:center;">
+                        Booking is closed for this trip
+                    </div>
+                @else
+                    <a href="{{ route('trip.booking.form', $pkg->id) }}" class="btn-book" style="width:40%">
+                        <span style = "color:white;">Book Now</span>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                @endif
             </div>
 
             {{-- Hotels in package --}}
@@ -263,6 +275,14 @@
         @if($trip->schedules->count())
         <div class="side-card">
             <div class="section-title">Available schedules</div>
+            @if($isBookingClosed)
+                <p style="margin-bottom:10px;color:#b91c1c;font-weight:600;">Booking is closed for this trip.</p>
+            @elseif($deadlineForCountdown)
+                <p style="margin-bottom:10px;color:#334155;font-weight:600;">
+                    Time left until booking deadline:
+                    <span id="booking-deadline-countdown" data-deadline="{{ $deadlineForCountdown->toIso8601String() }}">--</span>
+                </p>
+            @endif
             @foreach($trip->schedules as $s)
             <div class="schedule-row">
                 <div>
@@ -369,6 +389,34 @@
 </div>
 
 </x-app-layout>
+
+@if(!$isBookingClosed && $deadlineForCountdown)
+<script>
+    (function () {
+        const el = document.getElementById('booking-deadline-countdown');
+        if (!el) return;
+        const deadline = new Date(el.dataset.deadline).getTime();
+
+        const tick = () => {
+            const now = Date.now();
+            const diff = deadline - now;
+
+            if (diff <= 0) {
+                el.textContent = 'Booking deadline reached';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            el.textContent = `${days}d ${hours}h ${minutes}m`;
+        };
+
+        tick();
+        setInterval(tick, 60000);
+    })();
+</script>
+@endif
 
 <script>
 function toggleDay(header) {
