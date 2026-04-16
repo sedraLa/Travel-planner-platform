@@ -41,7 +41,7 @@ class GuideFactory extends Factory
             'date_of_hire' => '2020-01-01',
             'total_trips_count' => 0,
             'last_trip_at' => null,
-            'is_tour_leader' => false,
+           
         ];
     }
 

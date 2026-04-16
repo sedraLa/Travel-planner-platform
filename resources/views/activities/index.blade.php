@@ -144,6 +144,12 @@
                                     Delete </button> 
                                 </form> 
                             </div> 
+
+                            @else
+
+
+                            <a href="{{route('activity.reservations.form',$activity)}}">
+                            <button class="px-4 py-2 rounded-xl text-white mb-5 ml-5 bg-blue-600 hover:bg-blue-700 transition duration-200 text-sm shadow-sm">Book </button></a>
                             @endif 
                         </div> 
                         @empty <p>No activities found.</p> 
