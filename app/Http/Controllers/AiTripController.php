@@ -66,23 +66,7 @@ class AiTripController extends Controller
                 ->with('error', 'This trip is already assigned to a guide and cannot be edited.');
         }
 
-        $destinations = Destination::query()->orderBy('name')->get(['id', 'name', 'city', 'country']);
-        $categories = Category::cases();
-        $formData = [
-            'destination_ids' => $trip->itineraryDestinations->pluck('id')->all() ?: [$trip->destination_id],
-            'description' => $trip->ai_prompt,
-            'max_participants' => $trip->max_participants,
-            'duration' => $trip->duration_days,
-            'budget' => optional($trip->packages->sortBy('price')->first())->price,
-            'categories' => collect(explode(',', (string) $trip->category))
-                ->map(fn ($value) => trim($value))
-                ->filter()
-                ->values()
-                ->all(),
-            'language' => 'en',
-        ];
-
-        return view('trips.ai.edit', compact('trip', 'destinations', 'categories', 'formData'));
+        return redirect()->route('trip.complete.edit', ['trip' => $trip, 'tab' => 'basics']);
     }
 
     public function update(AiTripUpdateRequest $request, Trip $trip)
