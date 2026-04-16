@@ -85,7 +85,10 @@
                     @elseif ($isReviewNotification)
                     <div class="flex items-center justify-between">
                         <p class="text-gray-700">
-                            {{ $data['message'] ?? 'Please rate your experience' }}
+                            Please rate your experience for:
+                            <span class="font-semibold text-indigo-600">
+                                {{ $data['review_name'] ?? 'this item' }}
+                            </span>
                         </p>
                 
                         <a href="{{ route('reviews.create', [

@@ -2,33 +2,42 @@
 
 namespace App\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Events\ReviewableItemCompleted;
 use App\Notifications\ReviewRequestNotification;
 
 class SendReviewRequestNotification
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     */
     public function handle(ReviewableItemCompleted $event)
     {
         $user = \App\Models\User::find($event->userId);
 
+        if (! $user) {
+            return;
+        }
+
         $user->notify(
             new ReviewRequestNotification(
                 type: $event->type,
-                itemId: $event->id
+                itemId: $event->id,
+                itemName: $this->getItemName($event->type, $event->id)
             )
         );
+    }
+
+
+    private function getItemName(string $type, int $id): string
+    {
+        return match ($type) {
+
+            'hotel' => \App\Models\Hotel::find($id)?->name ?? 'Hotel',
+
+            'trip' => \App\Models\Trip::find($id)?->name ?? 'Trip',
+
+            'driver' => \App\Models\Driver::find($id)?->name ?? 'Driver',
+
+            'guide' => \App\Models\Guide::find($id)?->name ?? 'Guide',
+
+            default => 'Item',
+        };
     }
 }
