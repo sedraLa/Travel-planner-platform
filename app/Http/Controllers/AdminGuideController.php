@@ -72,13 +72,16 @@ public function show(string $id)
     {
         $guide = Guide::findOrFail($id);
 
-         $hasAssignedTrips = $guide->assignments()
-        ->where('status', 'assigned')
-        ->exists();
+        $hasUpcomingTrips = $guide->assignments()
+            ->where('status', '!=', 'completed')
+            ->whereHas('trip.schedules', function ($query) {
+                $query->whereDate('start_date', '>', Carbon::today()->toDateString());
+            })
+            ->exists();
 
-    if ($hasAssignedTrips) {
-        return back()->with('error', 'Cannot delete guide with assigned trips.');
-    }
+        if ($hasUpcomingTrips) {
+            return back()->with('error', 'Cannot delete guide because they have upcoming trips that are not completed yet.');
+        }
 
     //delete license image
         if ($guide->certificate_image && Storage::disk('public')->exists($guide->certificate_image)) {

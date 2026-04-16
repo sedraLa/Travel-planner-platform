@@ -17,27 +17,19 @@
 
     <div class="main-container">
         <header class="mb-8">
-            <a href="{{route('trip.view')}}"><button class="back">Back</button></a>
+            <a href="{{route('trips.index')}}"><button class="back">Back</button></a>
             <div class="head text-center">
-                <h1 class="text-3xl font-bold">AI Trip Creator</h1>
-                <p class="text-gray-600">Groq will use only destinations/hotels/activities that already exist in your database.</p>
+                <h1 class="text-3xl font-bold">Edit AI Trip</h1>
+                <p class="text-gray-600">Update the same AI trip inputs used at creation time.</p>
             </div>
         </header>
 
         <div class="max-w-4xl mx-auto">
             @include('trips.ai.partials.form', [
-                'action' => route('ai.generate'),
-                'method' => 'POST',
-                'submitLabel' => 'Generate My Trip',
-                'formData' => [
-                    'destination_ids' => [],
-                    'description' => null,
-                    'max_participants' => 1,
-                    'duration' => 3,
-                    'budget' => null,
-                    'categories' => [],
-                    'language' => 'en',
-                ],
+                'action' => route('ai.update', $trip),
+                'method' => 'PUT',
+                'submitLabel' => 'Update Trip',
+                'formData' => $formData,
             ])
         </div>
     </div>

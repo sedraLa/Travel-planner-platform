@@ -36,14 +36,19 @@
                 <form method="POST" action="{{ route('trip.booking.store') }}">
                   @csrf
                   <input type="hidden" name="package_id" value="{{ $package->id }}">
+                  @if($availableSchedules->isEmpty())
+                    <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+                        Booking is closed for this trip.
+                    </div>
+                  @endif
                   <div class="first-section">
                     <div class="container">
                       <div class="head-row">
                         <img class="icon" src="{{asset('images/icons/calendar-days-solid-full (1).svg')}}" alt="icon">
                           <label for="trip-schedule">Choose Schedule</label>
                       </div>
-                      <select name="schedule_id" class="  w-80 border rounded px-3 py-2 border-gray-300">
-                        @foreach($package->trip->schedules as $s)
+                      <select name="schedule_id" class="  w-80 border rounded px-3 py-2 border-gray-300" @disabled($availableSchedules->isEmpty())>
+                        @foreach($availableSchedules as $s)
                             <option value="{{ $s->id }}">
                                 {{ $s->start_date }} - {{ $s->end_date }}
                             </option>
@@ -56,7 +61,7 @@
                         <img class="icon" src="{{asset('images/icons/user-group-solid-full (1).svg')}}" alt="icon">
                           <label for="people_count">People Count</label>
                       </div>
-                      <x-text-input type="number" name="people_count" id="people_count" min="1" required placeholder=" 2 people "/>
+                      <x-text-input type="number" name="people_count" id="people_count" min="1" required placeholder=" 2 people " :disabled="$availableSchedules->isEmpty()"/>
                     </div>
                   </div>
 
@@ -98,7 +103,7 @@
 
 
                 </div>
-                  <button class="order-car" style="display: flex,justify-content:center,width:200px;margin:10px auto" type="submit">Pay With Paypal</button>
+                  <button class="order-car" style="display: flex,justify-content:center,width:200px;margin:10px auto" type="submit" @disabled($availableSchedules->isEmpty())>Pay With Paypal</button>
 
 
               </form>
