@@ -254,7 +254,7 @@ Route::get('/show-favourite', [FavoriteController::class, 'showFavorites'])->nam
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
-Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
+Route::get('activity/{id}/details', [ActivityController::class, 'show'])->name('Activity.show');
 
 
 //notifications routes
@@ -291,7 +291,7 @@ Route::post('/activity-reservations', [ActivityReservationController::class, 'st
 Route::get('/actvivty-reservations/{activityreservation}/pay', [ActivityReservationController::class, 'pay'])->name('activity-reservations.pay');
 Route::post('/actvivit/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPalActivity'])->name('actvivty.payment.paypal');
 Route::get('/payment/paypal/activity/callback', [PaymentController::class, 'paypalCallbackActivity'])->name('payment.activity.callback');
-Route::get('activity/{id}/details', [ActivityController::class, 'show'])->name('Activity.show');
+
 
 
 });
