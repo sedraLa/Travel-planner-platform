@@ -302,6 +302,10 @@ Route::put('/reviews/{review}', [ReviewController::class, 'update'])
 Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
  ->name('reviews.destroy');
 
+ //show hotel reviews 
+ Route::get('/hotels/{hotel}/reviews', [ReviewController::class, 'hotelIndex'])
+ ->name('hotels.reviews.index');
+
 });
 
 

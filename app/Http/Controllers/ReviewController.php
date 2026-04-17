@@ -79,4 +79,14 @@ class ReviewController extends Controller
 
         return back()->with('success', 'Review deleted');
     }
+
+    public function hotelIndex(Hotel $hotel)
+{
+    $reviews = $hotel->reviews()
+        ->with('user')
+        ->latest()
+        ->get();
+
+    return view('reviews.hotel-index', compact('hotel', 'reviews'));
+}
 }

@@ -58,6 +58,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <p style="letter-spacing: normal; font-size: 18px;">{{$hotel->description}} </p>
             <div class="rating-location">
                 <div class="location">
+                    <a class="reviews-btn" href="{{ route('hotels.reviews.index', $hotel->id) }}">
+                        <span>Reviews</span>
+                        <span class="reviews-count">{{ $hotel->reviews->count() }}</span>
+                    </a>
                     <img src="/images/icons/location-dot-solid-full (4).svg" class="heading-icon">
                     <h5>{{$hotel->destination->city}},{{$hotel->destination->country}} </h5>
                 </div>
@@ -66,6 +70,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <span >GLOBAL RATING: {{$hotel->global_rating}} ⭐</span>
                 </div>
             </a>
+
+           
 
 
               </div>

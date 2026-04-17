@@ -20,7 +20,7 @@ class HotelController extends Controller
     public function index(Request $request)
     {
         
-        $query = Hotel::with(['images', 'destination']);
+        $query = Hotel::with(['images', 'destination','reviews.user']);
     
         // Search
         if ($request->filled('search')) {
