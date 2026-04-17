@@ -81,7 +81,7 @@ class HotelController extends Controller
 
 public function show(string $id, GeocodingService $geo)
 {
-    $hotel = Hotel::with('images')->findOrFail($id);
+    $hotel = Hotel::with(['images','reviews.user'])->findOrFail($id);
 
     
     $primaryImage = $hotel->images->where('is_primary', true)->first();

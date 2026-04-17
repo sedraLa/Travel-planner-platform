@@ -66,9 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     <h5>{{$hotel->destination->city}},{{$hotel->destination->country}} </h5>
                 </div>
                 <a style="color:#f4f4f4;" href="">
-                <div class="rating">
-                    <span >GLOBAL RATING: {{$hotel->global_rating}} ⭐</span>
-                </div>
+                    <div class="rating" style="display:flex;align-items:center;gap:6px;">
+                        <span style="color:#f59e0b;font-weight:600;">
+                            ⭐ {{ number_format($hotel->average_rating, 1) }}
+                        </span>
+                    
+                        <span style="font-size:13px;color:#ddd;">
+                            ({{ $hotel->reviews_count }} reviews)
+                        </span>
+                    </div>
             </a>
 
            
