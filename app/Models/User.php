@@ -89,14 +89,14 @@ class User extends Authenticatable
 
     public function favoriteTrips()
      {
-    return $this->morphedByMany(Activity::class, 'favoritable', 'favorites');
+     return $this->morphedByMany(Trip::class, 'favoritable', 'favorites');
    }
 
 
    
     public function favoriteActivities()
       {
-    return $this->morphedByMany(Trip::class, 'favoritable', 'favorites');
+       return $this->morphedByMany(Activity::class, 'favoritable', 'favorites');
       }
 
 

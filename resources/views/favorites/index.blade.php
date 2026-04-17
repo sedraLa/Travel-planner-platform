@@ -78,7 +78,7 @@
 
                     <div class="mb-12">
                         <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
-                            Favorite Destinations
+                            Favorite Trips
                         </h3>
 
                         @if($trips->isNotEmpty())

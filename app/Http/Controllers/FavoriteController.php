@@ -55,7 +55,8 @@ class FavoriteController extends Controller
         $favoriteDestinations = $user->favoriteDestinations()->with('images')->get();
         $favoriteHotels = $user->favoriteHotels()->with('images')->get();
         $favoriteTrips = $user->favoriteTrips()->with('images')->get();
-        $favoriteActivities = $user->favoriteActivities()->with('images')->get();
+        $favoriteActivities = $user->favoriteActivities()->with('destination')->get();
+
 
 
         // Step 2: Pass these collections to the view
@@ -63,7 +64,7 @@ class FavoriteController extends Controller
             'destinations' => $favoriteDestinations,
             'hotels'       => $favoriteHotels,
             'trips'        => $favoriteTrips,
-            'activities'   => favoriteActivities,
+            'activities'   => $favoriteActivities,
         ]);
     }
 }
