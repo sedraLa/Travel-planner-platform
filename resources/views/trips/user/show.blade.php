@@ -18,9 +18,12 @@
                 <span class="badge">{{ ucfirst($trip->category) }}</span>
             @endif
            @if($trip->schedules->first())
-            <span class="status-pill">
-              {{ ucfirst($trip->schedules->first()->status) }}
-             </span>
+           <span class="status-pill"
+      style="{{ $trip->isBookingClosed() ? 'background:#fee2e2;color:#991b1b;' : 'background:#E1F5EE;color:#0F6E56;' }}">
+
+    {{ $trip->isBookingClosed() ? 'Unavailable' : 'Available' }}
+
+</span>
             @endif
 
         </div>
@@ -94,17 +97,73 @@
                 @endif
 
                 {{-- Hotel --}}
-                @if($day->hotel)
-                    <div class="hotel-box">
-                        <div class="hotel-icon">🏨</div>
-                        <div>
-                            <div style="font-size:13px;font-weight:500;color:#1a1a1a">{{ $day->hotel->name }}</div>
-                            @if(isset($day->hotel->stars))
-                                <div style="font-size:12px;color:#888">{{ $day->hotel->stars }}-star</div>
-                            @endif
-                        </div>
-                    </div>
-                @endif
+               @if($day->hotel)
+    <div class="hotel-box" style="margin-bottom:10px;">
+        <div class="hotel-icon">🏨</div>
+        <div>
+            <div style="font-size:14px;font-weight:600;color:#1a1a1a">
+                {{ $day->hotel->name }}
+            </div>
+
+            @if(isset($day->hotel->stars))
+                <div style="font-size:12px;color:#888">
+                    {{ $day->hotel->stars }} ★ Hotel
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- تفاصيل الفندق --}}
+    <div style="padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #eee;margin-bottom:12px;">
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:8px;">
+
+            @if($day->hotel->price_per_night)
+                <div>
+                    <strong style="font-size:12px;color:#555;">Price / Night:</strong><br>
+                    <span style="font-size:13px;">${{ $day->hotel->price_per_night }}</span>
+                </div>
+            @endif
+
+            @if($day->hotel->check_in_time || $day->hotel->check_out_time)
+                <div>
+                    <strong style="font-size:12px;color:#555;">Check-in / Check-out:</strong><br>
+                    <span style="font-size:13px;">
+                        {{ $day->hotel->check_in_time?->format('H:i') ?? '-' }}
+                        /
+                        {{ $day->hotel->check_out_time?->format('H:i') ?? '-' }}
+                    </span>
+                </div>
+            @endif
+
+        </div>
+
+        @if($day->hotel->description)
+            <p style="font-size:13px;color:#444;margin-bottom:6px;">
+                <strong>About:</strong> {{ $day->hotel->description }}
+            </p>
+        @endif
+
+        @if($day->hotel->amenities)
+            <p style="font-size:13px;color:#444;margin-bottom:6px;">
+                <strong>Amenities:</strong> {{ implode(', ', $day->hotel->amenities) }}
+            </p>
+        @endif
+
+        @if($day->hotel->nearby_landmarks)
+            <p style="font-size:13px;color:#444;margin-bottom:6px;">
+                <strong>Nearby:</strong> {{ $day->hotel->nearby_landmarks }}
+            </p>
+        @endif
+
+        @if($day->hotel->policies)
+            <p style="font-size:13px;color:#444;">
+                <strong>Policies:</strong> {{ $day->hotel->policies }}
+            </p>
+        @endif
+
+    </div>
+@endif
 
                 {{-- Activities --}}
                 @if($day->activities->count())

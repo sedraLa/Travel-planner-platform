@@ -13,7 +13,7 @@
 <div class="container mx-auto py-8">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-3xl font-bold">All Trips</h1>
-    
+
         <a href="{{ route('trip.view') }}"
            class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow text-sm font-semibold transition">
             + Create Trip
@@ -30,7 +30,7 @@
             {{ session('error') }}
         </div>
     @endif
-    
+
  {{-- Search Form  --}}
  <form method="GET" action="{{ route('trips.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
     {{-- Keyword --}}
@@ -39,7 +39,7 @@
         <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by name, description, or AI prompt" class="w-full border rounded-lg p-2">
     </div>
 
-    
+
 
     {{--Category --}} {{--needs editing--}}
     <div>
@@ -52,7 +52,7 @@
     </div>
 
 
-    
+
     {{-- Status --}}
     <div>
         <label class="text-sm text-gray-600">Status</label>
@@ -63,7 +63,7 @@
         </select>
     </div>
 
-    {{-- Destination --}} 
+    {{-- Destination --}}
     <div>
         <label class="text-sm text-gray-600">Destination</label>
         <input type="text" name="destination" value="{{ request('destination') }}" placeholder="destination" class="border rounded-lg p-2">
@@ -76,8 +76,8 @@
     </div>
 </form>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        
-        
+
+
         @foreach($trips as $trip)
             <div class="bg-white shadow-md rounded p-4 border border-gray-200">
                 <h2 class="text-xl font-semibold">{{ $trip->name }}</h2>
@@ -103,7 +103,7 @@
                     <div class="mt-4 flex justify-between">
                         <a href="{{ route('manual.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
                         @endif
-                    
+
                     @if($trip->is_ai_generated)
                         <a href="{{ route('ai.edit', $trip->id) }}" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded">Edit</a>
                     @endif

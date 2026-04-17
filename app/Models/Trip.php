@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Favorite;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Carbon\Carbon;
 
 class Trip extends Model
 {
@@ -53,14 +54,14 @@ class Trip extends Model
     {
         return $this->hasMany(TripDay::class);
     }
-     
-     
+
+
 
     public function assignments()
    {
     return $this->hasMany(GuideAssignment::class);
    }
-   
+
 
     public function guideRequests()
     {
@@ -126,5 +127,22 @@ class Trip extends Model
             ->where('available_seats', '>', 0)
             ->exists();
     }
+
+
+
+public function isBookingClosed(): bool
+{
+    $today = Carbon::today();
+
+    return $this->schedules->isEmpty() || $this->schedules->every(function ($schedule) use ($today) {
+        if (! $schedule->booking_deadline) {
+            return true;
+        }
+
+        return Carbon::parse($schedule->booking_deadline)->lt($today)
+            || $schedule->status !== 'available'
+            || $schedule->available_seats <= 0;
+    });
+}
 
 }

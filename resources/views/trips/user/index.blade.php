@@ -1,6 +1,6 @@
 @php
     use App\Enums\UserRole;
-    
+
 @endphp
 
 <x-app-layout>
@@ -101,14 +101,15 @@
             {{-- ✅ Status + Heart في نفس الصف --}}
     <div class="trip-card-top-bar">
     @if($trip->schedules->first())
-        <span class="trip-status-dot trip-status-{{ $trip->schedules->first()->status }}">
-            {{ ucfirst($trip->schedules->first()->status) }}
+        <span   style="{{ $trip->isBookingClosed() ? 'background:#fee2e2;color:#991b1b;' : 'background:#E1F5EE;color:#0F6E56;' }}"
+         class="trip-status-dot trip-status-{{ $trip->schedules->first()->status }} ">
+         {{ $trip->isBookingClosed() ? 'Unavailable' : 'Available' }}
         </span>
     @else
         <span></span>
-    @endif    
-    
-    
+    @endif
+
+
     @if (Auth::user()->role === UserRole::USER->value)
         <button class="fav-btn fav-toggle"
             data-url="{{ route('favorites.add', ['type' => 'trip', 'id' => $trip->id]) }}"
@@ -129,10 +130,10 @@
                 </svg>
             @endif
         </button>
-    @endif  
+    @endif
 </div>
 
-    
+
 </div>
         {{-- Body --}}
         <div class="trip-card-body">
@@ -196,13 +197,13 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        
+
         document.addEventListener("click", async (e) => {
             let btn = e.target.closest(".fav-toggle");
             if (!btn) return;
-    
+
             let icon = btn.querySelector("svg");
-    
+
             try {
                 //get url from data-url
                 let res = await fetch(btn.dataset.url, {
@@ -212,21 +213,21 @@
                         "Accept": "application/json"
                     }
                 });
-    
+
                 //get response
                 let data = await res.json();
-    
+
                 //check if status is added (json response from controller)
                 let isAdded = data.status === "added";
                 icon.classList.toggle("text-red-500", isAdded);
                 icon.classList.toggle("text-gray-500", !isAdded);
                 icon.setAttribute("fill", isAdded ? "currentColor" : "none");
-    
+
             } catch (err) {
                 console.error(err);
             }
         });
-    
+
     });
 
     </script>
