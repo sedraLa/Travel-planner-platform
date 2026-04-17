@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Specialization;
 use App\Models\User;
 use App\Models\Guide;
 use App\Enums\UserRole;
@@ -23,12 +22,8 @@ class GuideSeeder extends Seeder
         $guides = $approved->merge($normal);
     
  
-        $specializations = Specialization::all();
+        
 
-        foreach ($guides as $guide) {
-            $guide->specializations()->attach(
-                $specializations->random(rand(1,3))->pluck('id')
-            );
-        }
+      
     }
 }

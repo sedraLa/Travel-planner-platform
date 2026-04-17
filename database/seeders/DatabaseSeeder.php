@@ -43,7 +43,6 @@ class DatabaseSeeder extends Seeder
             TransportReservationSeeder::class,
             ReservationSeeder::class,
             PaymentSeeder::class,
-            SpecializationSeeder::class,
             GuideSeeder::class,
 
 

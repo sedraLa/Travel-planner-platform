@@ -1,4 +1,3 @@
-
 /* Modal styling */
 .modal {
     display: none;
@@ -172,71 +171,134 @@
 
 .filters {
     display: flex;
-    flex-wrap: nowrap; 
-    gap: 12px; 
-    justify-content: center; 
+    flex-wrap: nowrap;
+    gap: 12px;
+    justify-content: center;
     margin-top: 20px;
-    
+
 }
 
 .filters select {
-padding: 10px 14px;
-border-radius: 8px;
-border: 1px solid var(--very-light-grey, #ccc);
-font-size: 14px;
-background-color: var(--white);
-color: var(--primary);
-cursor: pointer;
-transition: border-color 0.2s, box-shadow 0.2s;
-min-width: 150px; 
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--very-light-grey, #ccc);
+    font-size: 14px;
+    background-color: var(--white);
+    color: var(--primary);
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-width: 150px;
 }
 
 .filters select:hover {
-border-color: var(--primary-light);
-box-shadow: 0 0 5px rgba(30, 58, 138, 0.2);
+    border-color: var(--primary-light);
+    box-shadow: 0 0 5px rgba(30, 58, 138, 0.2);
 }
 
 .filters select:focus {
-outline: none;
-border-color: var(--primary);
-box-shadow: 0 0 5px rgba(30, 58, 138, 0.3);
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 5px rgba(30, 58, 138, 0.3);
 }
 
 .filters-actions .filter-btn,
 .filters-actions .reset-btn {
-padding: 10px 18px;
-border-radius: 8px;
-border: none;
-cursor: pointer;
-font-weight: 600;
-font-size: 14px;
-transition: all 0.3s ease;
-margin-bottom: 11px
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    margin-bottom: 11px
 }
 
 .filters-actions .filter-btn {
-background-color: var(--indigo);
-color: #fff;
+    background-color: var(--indigo);
+    color: #fff;
 }
 
 .filters-actions .filter-btn:hover {
-background-color: #fff;
-color: var(--indigo);
-border: 2px solid var(--indigo);
+    background-color: #fff;
+    color: var(--indigo);
+    border: 2px solid var(--indigo);
 }
 
 .filters-actions .reset-btn {
-background-color: #f3f3f3;
-color: #333;
-text-decoration: none;
-display: inline-flex;
-align-items: center;
-justify-content: center;
+    background-color: #f3f3f3;
+    color: #333;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .filters-actions .reset-btn:hover {
-background-color: #e0e0e0;
+    background-color: #e0e0e0;
 }
 
 
+/*pagination*/
 
+.pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: -50px;
+    margin-bottom: 60px;
+}
+
+.pagination-wrapper nav {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: var(--white2, #f9f9f9);
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-wrapper a,
+.pagination-wrapper span.page-info {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    border-radius: 14px;
+    transition: background-color 0.2s, transform 0.2s, border-color 0.2s;
+    color: var(--indigo, #4b4f97);
+}
+
+.pagination-wrapper a {
+    width: 48px;
+    height: 40px;
+    border: 2px solid var(--very-light-grey, #ddd);
+    background-color: white;
+    cursor: pointer;
+}
+
+.pagination-wrapper a:hover {
+    background-color: var(--light-aqua, #a0e8f9);
+    transform: translateY(-1px);
+    border-color: var(--blue, #007BFF);
+}
+
+.pagination-wrapper a.arrow {}
+
+.pagination-wrapper .active span {
+    width: 60px;
+    background-color: var(--blue, #007BFF);
+    color: white;
+    font-weight: bold;
+    border: 2px solid var(--blue, #007BFF);
+    pointer-events: none;
+    box-shadow: 0 0 10px var(--blue, #007BFF);
+    cursor: default;
+}
+
+.pagination-wrapper span.page-info {
+    min-width: 60px;
+    user-select: none;
+    color: var(--indigo, #4b4f97);
+    font-weight: 600;
+}
