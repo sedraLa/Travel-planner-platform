@@ -7,6 +7,7 @@ use App\Models\Destination;
 use App\Models\Hotel;
 use App\Models\Favorite;
 use App\Models\Trip;
+use App\Models\Activity;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -24,7 +25,8 @@ class FavoriteController extends Controller
             $item = Hotel::findOrFail($id);
         }elseif ($type === 'trip') {
         $item = Trip::findOrFail($id);
-        $modelClass = \App\Models\Trip::class;
+        }elseif ($type === 'activity') {
+        $item = Activity::findOrFail($id);
         }else {
             abort(404);
         }
@@ -53,12 +55,15 @@ class FavoriteController extends Controller
         $favoriteDestinations = $user->favoriteDestinations()->with('images')->get();
         $favoriteHotels = $user->favoriteHotels()->with('images')->get();
         $favoriteTrips = $user->favoriteTrips()->with('images')->get();
+        $favoriteActivities = $user->favoriteActivities()->with('images')->get();
+
 
         // Step 2: Pass these collections to the view
         return view('favorites.index', [
             'destinations' => $favoriteDestinations,
             'hotels'       => $favoriteHotels,
             'trips'        => $favoriteTrips,
+            'activities'   => favoriteActivities,
         ]);
     }
 }

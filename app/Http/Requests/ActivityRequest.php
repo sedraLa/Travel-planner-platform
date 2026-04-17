@@ -23,7 +23,6 @@ class ActivityRequest extends FormRequest
             'duration_unit' => 'nullable|string|max:50',
             'price' => 'nullable|numeric|min:0',
             'category' => ['nullable', 'string', 'in:' . implode(',', Category::values())],
-            'is_active' => 'required|boolean',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'availability' => 'required|string|max:50',
@@ -36,9 +35,11 @@ class ActivityRequest extends FormRequest
             'amenities.*' => 'string|max:100',
             'address' => 'required|string|max:255',
             'requires_booking' => 'required|boolean',
-            'family_friendly' => ['required', 'boolean'],
+            'family_friendly' => 'required|string|in:all_ages,adults_only,families',
             'pets_allowed' => 'required|boolean',
-            'highlights' => 'nullable|string',
+            'highlights' => 'nullable|array',
+            'highlights.*' => 'nullable|string|max:255',
+            
         ];
     }
 

@@ -19,6 +19,7 @@ class Payment extends Model
         'transaction_id',
         'payment_date',
         'trip_reservation_id',
+        'activity_reservation_id',
     ];
 
 
@@ -46,6 +47,11 @@ class Payment extends Model
      public function tripReservation()
     {
         return $this->belongsTo(TripReservation::class);
+    }
+
+     public function activityReservation()
+    {
+        return $this->belongsTo(ActivityReservation::class);
     }
 
 

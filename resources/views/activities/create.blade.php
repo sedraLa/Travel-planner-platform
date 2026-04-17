@@ -69,19 +69,25 @@
                             </option>
                         </select>
 
-                    <x-input-label for="guide_name" value="Guide Name" />
-                    <x-text-input id="guide_name" type="text" name="guide_name" :value="old('guide_name')" />
 
-                    <x-input-label for="guide_language" value="Guide Language" />
-                    <x-text-input id="guide_language" type="text" name="guide_language"
-                        :value="old('guide_language')" />
+
+                    <x-input-label for="contact_email" value="contact_email" />
+                    <x-text-input id="contact_email" type="email" name="contact_email"
+                    :value="old('contact_email')" />
 
                     <x-input-label for="contact_number" value="Contact Number" />
                     <x-text-input id="contact_number" type="text" name="contact_number"
                         :value="old('contact_number')" />
+
+                        
                     <x-input-label for="requirements" value="Requirements" />
                     <textarea id="requirements" name="requirements"
                         class="block w-full border-gray-300 rounded-md shadow-sm">{{ old('requirements') }}</textarea>
+
+                          <div class="popup-buttons mt-4 " style="display:flex; justify-content:flex-start; gap:10px;">
+                             <button type="submit" class="btn btn-primary">Save</button>
+                             <a href="{{ route('activities.index') }}" class="cancel-btn">Cancel</a>
+                           </div>
                 </div>
 
                 <div class="right">
@@ -100,11 +106,7 @@
                         @endforeach
                     </select>
 
-                    <x-input-label for="is_active" value="Is Active" />
-                    <select id="is_active" name="is_active" class="block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Active</option>
-                        <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Inactive</option>
-                    </select>
+                   
 
                     <x-input-label for="difficulty_level" value="Difficulty Level" />
                     <select id="difficulty_level" name="difficulty_level"
@@ -190,19 +192,37 @@
                         @endforeach
                     </select>
 
-                    <x-input-label for="highlights" value="Highlights" />
-                    <textarea id="highlights" name="highlights"
-                        class="block w-full border-gray-300 rounded-md shadow-sm">{{ old('highlights') }}</textarea>
-
+                   
                     <x-input-label for="image" value="Activity Image" />
                     <input type="file" id="image" name="image" accept="image/*">
+
+
+                     <div class="mt-6">
+                        <x-input-label value="Highlight" />
+
+                        <div id="highlights-wrapper">
+                          <div class="highlight-item flex items-center mb-2">
+       
+                              <input type="text" name="highlights[]"
+                                         class="block w-full border-gray-300 rounded-md shadow-sm"
+                                         placeholder="Enter a highlight"
+                                        value="{{ old('highlights.0') }}">
+                                   <button type="button" onclick="addHighlightField()"
+                                     class="ml-2 px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                                             +
+                                     </button>
+                            </div>
+                        </div>
+
+                        <p class="text-sm text-gray-500 mt-1">
+                            Click (+) to add more highlights
+                        </p>
+                    </div>
+                </div>
                 </div>
             </div>
 
-            <div class="popup-buttons mt-4">
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('activities.index') }}" class="cancel-btn">Cancel</a>
-            </div>
+          
         </form>
     </div>
 
@@ -253,4 +273,32 @@
     top: -1px;
 }
 </style>
+
+<script>
+    // دالة لإضافة حقل جديد
+    function addHighlightField() {
+        const wrapper = document.getElementById('highlights-wrapper');
+        const div = document.createElement('div');
+        div.classList.add('highlight-item', 'flex', 'items-center', 'mb-2');
+        
+        div.innerHTML = `
+            <input type="text" name="highlights[]" 
+                   class="block w-full border-gray-300 rounded-md shadow-sm" 
+                   placeholder="Enter another highlight">
+            <button type="button" onclick="removeHighlightField(this)" 
+                    class="ml-2 px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                −
+            </button>
+        `;
+        
+        wrapper.appendChild(div);
+    }
+
+    // دالة لحذف الحقل عند الضغط على الزر الأحمر
+    function removeHighlightField(button) {
+        // button.parentElement تشير إلى الـ div الذي يحتوي على الإدخال والزر
+        button.parentElement.remove();
+    }
+</script>
+
 </x-app-layout>

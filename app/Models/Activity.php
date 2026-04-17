@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Favorite;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Activity extends Model
 {
@@ -18,7 +20,6 @@ class Activity extends Model
         'duration_unit',
         'price',
         'category',
-        'is_active',
         'start_date',
         'end_date',
         'availability',
@@ -31,7 +32,7 @@ class Activity extends Model
         'requires_booking',
         'family_friendly',
         'pets_allowed',
-        'highlights',
+      
     ];
 
     protected $hidden = [
@@ -57,4 +58,21 @@ class Activity extends Model
     {
         return $this->hasMany(DayActivity::class);
     }
+
+    
+    public function favorites(): MorphMany
+    {
+        return $this->morphMany(Favorite::class, 'favoritable');
+    }
+
+
+    public function reservations()
+   {
+    return $this->hasMany(ActivityReservation::class);
+   }
+
+   public function highlights()
+{
+    return $this->hasMany(ActivityHighlight::class);
+}
 }

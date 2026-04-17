@@ -284,11 +284,14 @@ Route::get('/vehicle-reservations',  [TransportReservationController::class, 'in
 Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
 
 
+
  //Activityreservation routes
 Route::get('/activity/{id}/reserve', [ActivityReservationController::class, 'showReservationForm'])->name('activity.reservations.form');
 Route::post('/activity-reservations', [ActivityReservationController::class, 'store'])->name('activity.reservations.store');
 Route::get('/actvivty-reservations/{activityreservation}/pay', [ActivityReservationController::class, 'pay'])->name('activity-reservations.pay');
-Route::post('/actvivit/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPal'])->name('actvivty.payment.paypal');
+Route::post('/actvivit/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPalActivity'])->name('actvivty.payment.paypal');
+Route::get('/payment/paypal/activity/callback', [PaymentController::class, 'paypalCallbackActivity'])->name('payment.activity.callback');
+Route::get('activity/{id}/details', [ActivityController::class, 'show'])->name('Activity.show');
 
 
 });

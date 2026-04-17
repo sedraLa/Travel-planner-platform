@@ -6,6 +6,9 @@ use App\Models\Destination;
 use App\Http\Requests\ActivityRequest;
 use App\Models\Activity;
 use Illuminate\Support\Facades\Storage;
+use App\Services\GeocodingService;
+use App\Models\ActivityHighlight;
+use App\Http\Requests\ActivityHighlightRequest;
 
 class ActivityController extends Controller
 {
@@ -15,6 +18,8 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $query = Activity::with('destination');
+        $user = auth()->user();
+        $user->load('favoriteActivities');
     
         // Keyword search
         if ($request->filled('search')) {
@@ -55,7 +60,8 @@ class ActivityController extends Controller
             $selectedDestination = Destination::find($request->destination_id);
         }
     
-        $activities = $query->get();
+        $activities = $query->paginate(6);
+    
     
         return view('activities.index', compact('activities','selectedDestination'));
     }
@@ -81,19 +87,55 @@ class ActivityController extends Controller
             $data['image'] = $request->file('image')->store('activities', 'public');
         }
 
-        Activity::create($data);
+        $activity=Activity::create($data);
+
+        if ($request->has('highlights')) {
+        foreach ($request->highlights as $highlightTitle) {
+            if (!empty($highlightTitle)) {
+                // استخدام العلاقة لإنشاء السجل وربطه بالـ activity_id تلقائياً
+                $activity->highlights()->create([
+                    'title' => $highlightTitle
+                ]);
+            }
+        }
+    }
 
         return redirect()->route('activities.index')->with('success', 'Activity created successfully!');
     }
 
 
 
+  public function show($id, GeocodingService $geo)
+{
+    $activity = Activity::with(['destination','highlights'])->findOrFail($id);
+    $hasPaidReservation = $activity->reservations()
+        ->where('user_id', auth()->id())
+        ->where('status', 'confirmed')
+        ->exists();
+
+    
+    $addressToSearch = $activity->address ?? optional($activity->destination)->name;
+    $coords = null;
+
+    // محاولة جلب الإحداثيات فقط إذا كان هناك عنوان
+    if ($addressToSearch) {
+        $coords = $geo->geocodeAddress($addressToSearch);
+    }
+
+    // إذا كانت الإحداثيات فارغة أو غير صالحة، نضمن أنها null تماماً
+    if (!$coords || empty($coords['latitude']) || empty($coords['longitude'])) {
+        $coords = null;
+    }
+
+    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords'));
+}
+
     /**
      * Show the form for editing the specified resource.
      */
    public function edit($id)
 {
-    $activity = Activity::findOrFail($id);
+    $activity = Activity::with(['destination','highlights'])->findOrFail($id);
     $destinations = Destination::all();
     return view('activities.edit', compact('activity', 'destinations'));
 }
@@ -106,8 +148,19 @@ public function update(ActivityRequest $request, $id)
     if ($request->hasFile('image')) {
         $data['image'] = $request->file('image')->store('activities', 'public');
     }
-
     $activity->update($data);
+    $activity->highlights()->delete();
+
+
+    if ($request->has('highlights')) {
+        foreach ($request->highlights as $highlightTitle) {
+            if (!empty($highlightTitle)) {
+                $activity->highlights()->create([
+                    'title' => $highlightTitle
+                ]);
+            }
+        }
+    }
 
     return redirect()->route('activities.index')->with('success', 'Activity updated successfully!');
 }

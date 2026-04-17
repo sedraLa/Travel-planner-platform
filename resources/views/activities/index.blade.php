@@ -1,241 +1,217 @@
 @php use App\Enums\UserRole; @endphp
 <x-app-layout>
-    @push('styles')
-        <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/destinations.css') }}">
-        <link rel="stylesheet" href="{{ asset('css/activities.css') }}">
+@push('styles')  
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ asset('css/activityindex.css') }}"> 
     @endpush
-        <div class="main-wrapper">
-            
-            <!--Success messages-->
-            @if (session('success'))
-                <div class="success-message">{{ session('success') }}</div>
-            @endif
-    
-            <div class="hero-background activity-page">
-                <div class="heading" style="top:35%;">
-                    <h2 style="font-size:57px;">Activities</h2>
-                    <p>Choose from our curated selection of premium activities</p>
-    @if (Auth::user()->role === UserRole::USER->value)
-                <div class="px-6 pt-6">
-                    <a href="{{ route('destination.index') }}"
-                         class="inline-flex items-center gap-1.5 bg-blue-100 border border-blue-400
-           text-blue-900 text-sm font-medium py-2 px-4 rounded-lg
-           hover:bg-blue-200 hover:border-blue-500 transition duration-150">
+
+    <div>
+
+        {{-- ══════ HERO ══════ --}}
+        <section class="act-hero">
+
+            {{-- 📌 ضع مسار صورتك هنا --}}
+            <img
+                class="act-hero__img"
+                src="{{ asset('images/activity.jpg') }}"
+                alt="Activities"
+            >
+
+            <div class="act-hero__content">
+
+                @if (Auth::user()->role === UserRole::USER->value)
+                    <a href="{{ route('destination.index') }}" class="act-hero__back">
                         ← Back to Destinations
                     </a>
-                </div>
-            @endif
-                    <!-- Search & Filters -->
-                    <form method="GET" action="{{ route('activities.index') }}" class="search-form">
+                @endif
 
-                    @if(Auth::user()->role === UserRole::ADMIN->value)
-                        <div class="search-container" style="margin-top:10px;">
-                            <input type="text" name="search" placeholder="Search by activity or destination" 
-                                   value="{{ request('search') }}" class="search-input" style="color:black">
-                            <button type="submit" class="search-button">Search</button>
+                <h1 class="act-hero__title">Activities</h1>
+                <p class="act-hero__sub">Choose from our curated selection of premium activities</p>
+
+
+
+                @if(Auth::user()->role === UserRole::ADMIN->value)
+                    <a href="{{ route('activities.create') }}" class="act-hero__add">
+                        + Add New Activity
+                    </a>
+                @endif
+
+                <form method="GET" action="{{ route('activities.index') }}" style="width:100%;display:flex;justify-content:center;">
+                        <div class="act-hero__search">
+                            <input
+                                type="text"
+                                name="search"
+                                placeholder="Search by activity or destination"
+                                value="{{ request('search') }}"
+                            >
+                            <button type="submit">Search</button>
                         </div>
-                      @endif
-                        <div class="filters">
-                            <select name="availability">
-                                <option value="">Availability</option>
-                                <option value="available" {{ request('availability') == 'available' ? 'selected' : '' }}>Available</option>
-                                <option value="unavailable" {{ request('availability') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
-                            </select>
-    
-                            <select name="difficulty">
-                                <option value="">Difficulty Level</option>
-                                <option value="easy" {{ request('difficulty') == 'easy' ? 'selected' : '' }}>Easy</option>
-                                <option value="moderate" {{ request('difficulty') == 'moderate' ? 'selected' : '' }}>Moderate</option>
-                                <option value="hard" {{ request('difficulty') == 'hard' ? 'selected' : '' }}>Hard</option>
-                            </select>
-    
-                            <select name="guide_language">
-                                <option value="">Guide Language</option>
-                                <option value="English" {{ request('guide_language') == 'English' ? 'selected' : '' }}>English</option>
-                                <option value="Arabic" {{ request('guide_language') == 'Arabic' ? 'selected' : '' }}>Arabic</option>
-                            </select>
-    
-                            <select name="requires_booking">
-                                <option value="">Requires Booking</option>
-                                <option value="1" {{ request('requires_booking') == '1' ? 'selected' : '' }}>Yes</option>
-                                <option value="0" {{ request('requires_booking') == '0' ? 'selected' : '' }}>No</option>
-                            </select>
-    
-                            <select name="family_friendly">
-                                <option value="">Family Friendly</option>
-                                <option value="yes" {{ request('family_friendly') == 'yes' ? 'selected' : '' }}>Yes</option>
-                                <option value="no" {{ request('family_friendly') == 'no' ? 'selected' : '' }}>No</option>
-                            </select>
-    
-                            <select name="pets_allowed">
-                                <option value="">Pets Allowed</option>
-                                <option value="1" {{ request('pets_allowed') == '1' ? 'selected' : '' }}>Yes</option>
-                                <option value="0" {{ request('pets_allowed') == '0' ? 'selected' : '' }}>No</option>
-                            </select>
-    
-                            <select name="category">
-                                <option value="">Category</option>
-                                @foreach (\App\Enums\Category::cases() as $cat)
-                                    <option value="{{ $cat->value }}" {{ request('category') == $cat->value ? 'selected' : '' }}>
-                                        {{ ucfirst($cat->value) }}
-                                    </option>
-                                @endforeach
-                            </select>
-                            
-                            <div class="filters-actions" style="display:flex; gap:10px; justify-content:center;">
-                                <button type="submit" class="filter-btn">Filter</button>
-                                <a href="{{ route('activities.index') }}" class="reset-btn">Reset</a>
-                            </div>
-                            
-                            
-                        </div>
-                    </form>
-    
-                    @if (Auth::user()->role === UserRole::ADMIN->value)
-                        <a href="{{ route('activities.create') }}" class="add-btn">+ Add New Activity</a>
-                    @endif
-                </div>
+                    
+
             </div>
-    
-            <div class="main"> 
-                <!--Activities cards--> 
-                <div class="exp-cards"> 
-                    @forelse($activities as $activity) 
-                    <div class="exp-card"> 
-                        <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->name }}"> 
-                        <h3>{{ $activity->name }}</h3> 
-                        <button type="button" class="details-btn" 
-                        {{--Store activity data to view them in the modal--}}
-                        data-name="{{ $activity->name }}" 
-                        data-description="{{ $activity->description ?? 'No description available.' }}" 
-                        data-destination="{{ $activity->destination->name ?? 'N/A' }}" 
-                        data-duration="{{ $activity->duration }} {{ $activity->duration_unit }}" 
-                        data-price="{{ number_format($activity->price, 2) }}" 
-                        data-category="{{ ucfirst($activity->category) }}" 
-                        data-guide_name="{{ $activity->guide_name ?? 'N/A' }}" 
-                        data-guide_language="{{ $activity->guide_language ?? 'N/A' }}" d
-                        ata-availability="{{ $activity->availability ?? 'N/A' }}" 
-                        data-requirements="{{ $activity->requirements ?? 'N/A' }}" 
-                        data-amenities="{{ implode(', ', $activity->amenities ?? []) }}" 
-                        data-highlights="{{ $activity->highlights ?? 'N/A' }}" 
-                        data-difficulty_level="{{$activity->difficulty_level ?? 'N/A'}}"
-                        data-family_friendly="{{ ucwords(str_replace('_', ' ', $activity->family_friendly)) }}" 
-                        data-pets_allowed="{{ $activity->pets_allowed ? 'Yes' : 'No' }}" 
-                        data-requires_booking="{{ $activity->requires_booking ? 'Yes' : 'No' }}" 
-                        data-image="{{ asset('storage/' . $activity->image) }}"> More Details </button> 
+        </section>
 
-                        {{--Edit--}}
-                        @if(Auth::user()->role === UserRole::ADMIN->value) 
-                        <div class="card-actions" style="margin-top: -6px; display: flex; gap: 10px; justify-content: center;"> 
-                            <a href="{{ route('activities.edit', $activity->id) }}" 
-                                class="edit-btn" 
-                                style="background-color:#ffffff;color:rgb(18, 8, 84);
-                                padding:5px 10px;
-                                border-radius:8px;
-                                text-decoration:none;margin-top: 7px;"> Edit 
+        {{-- ══════ FILTERS ══════ --}}
+        <div class="act-filters">
+            <div class="act-filters__form">
 
-                                {{--Delete--}}
-                                </a> <form action="{{ route('activities.destroy', $activity->id) }}" method="POST" style="display:inline;"> 
-                                    @csrf 
-                                    @method('DELETE') 
-                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this activity?');" 
-                                    style="background-color:#ffffff;color:rgb(251, 2, 2);padding:5px 10px;border-radius:8px;border:none;cursor:pointer;margin-top: 5px;" ;> 
-                                    Delete </button> 
-                                </form> 
-                            </div> 
+                @if(request('search'))
+                    <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
 
-                            @else
+                <select name="availability">
+                    <option value="">Availability</option>
+                    <option value="available"   {{ request('availability') == 'available'   ? 'selected' : '' }}>Available</option>
+                    <option value="unavailable" {{ request('availability') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
+                </select>
 
+                <select name="difficulty">
+                    <option value="">Difficulty</option>
+                    <option value="easy"     {{ request('difficulty') == 'easy'     ? 'selected' : '' }}>Easy</option>
+                    <option value="moderate" {{ request('difficulty') == 'moderate' ? 'selected' : '' }}>Moderate</option>
+                    <option value="hard"     {{ request('difficulty') == 'hard'     ? 'selected' : '' }}>Hard</option>
+                </select>
 
-                            <a href="{{route('activity.reservations.form',$activity)}}">
-                            <button class="px-4 py-2 rounded-xl text-white mb-5 ml-5 bg-blue-600 hover:bg-blue-700 transition duration-200 text-sm shadow-sm">Book </button></a>
-                            @endif 
-                        </div> 
-                        @empty <p>No activities found.</p> 
-                        @endforelse 
-                    </div>
-    
-                <!-- Modal -->
-                <div id="activityModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <img id="modalImage" src="" alt="" class="modal-img">
-                        <h2 id="modalTitle"></h2>
-                        <p id="modalDescription"></p>
-                        <div class="modal-info">
-                            <p><strong>Destination:</strong> <span id="modalDestination"></span></p>
-                            <p><strong>Duration:</strong> <span id="modalDuration"></span></p>
-                            <p><strong>Price:</strong> $<span id="modalPrice"></span></p>
-                            <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-                            <p><strong>difficulty level:</strong> <span id="modalDifficultyLevel"></span></p>
-                            <p><strong>Guide Name:</strong> <span id="modalGuideName"></span></p>
-                            <p><strong>Guide Language:</strong> <span id="modalGuideLanguage"></span></p>
-                            <p><strong>Availability:</strong> <span id="modalAvailability"></span></p>
-                            <p><strong>Requirements:</strong> <span id="modalRequirements"></span></p>
-                            <p><strong>Amenities:</strong> <span id="modalAmenities"></span></p>
-                            <p><strong>Highlights:</strong> <span id="modalHighlights"></span></p>
-                            <p><strong>Family Friendly:</strong> <span id="modalFamily"></span></p>
-                            <p><strong>Pets Allowed:</strong> <span id="modalPets"></span></p>
-                            <p><strong>Requires Booking:</strong> <span id="modalBooking"></span></p>
-                        </div>
-                    </div>
+               
+
+                <select name="requires_booking">
+                    <option value="">Booking</option>
+                    <option value="1" {{ request('requires_booking') == '1' ? 'selected' : '' }}>Required</option>
+                    <option value="0" {{ request('requires_booking') == '0' ? 'selected' : '' }}>Not required</option>
+                </select>
+
+                <select name="family_friendly">
+                    <option value="">Family</option>
+                    <option value="yes" {{ request('family_friendly') == 'yes' ? 'selected' : '' }}>Friendly</option>
+                    <option value="no"  {{ request('family_friendly') == 'no'  ? 'selected' : '' }}>Not friendly</option>
+                </select>
+
+                <select name="pets_allowed">
+                    <option value="">Pets</option>
+                    <option value="1" {{ request('pets_allowed') == '1' ? 'selected' : '' }}>Allowed</option>
+                    <option value="0" {{ request('pets_allowed') == '0' ? 'selected' : '' }}>Not allowed</option>
+                </select>
+
+                <select name="category">
+                    <option value="">Category</option>
+                    @foreach (\App\Enums\Category::cases() as $cat)
+                        <option value="{{ $cat->value }}" {{ request('category') == $cat->value ? 'selected' : '' }}>
+                            {{ ucfirst($cat->value) }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <button type="submit" class="act-filters__apply">Filter</button>
+                <a href="{{ route('activities.index') }}" class="act-filters__reset">Reset</a>
                 </div>
-    
+               
+            </form>
+        </div>
 
-    
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const modal = document.getElementById('activityModal');
-                        const closeBtn = document.querySelector('.close');
-                        const title = document.getElementById('modalTitle');
-                        const description = document.getElementById('modalDescription');
-                        const destination = document.getElementById('modalDestination');
-                        const duration = document.getElementById('modalDuration');
-                        const price = document.getElementById('modalPrice');
-                        const category = document.getElementById('modalCategory');
-                        const image = document.getElementById('modalImage');
-                        const guideName = document.getElementById('modalGuideName');
-                        const guideLang = document.getElementById('modalGuideLanguage');
-                        const availability = document.getElementById('modalAvailability');
-                        const requirements = document.getElementById('modalRequirements');
-                        const amenities = document.getElementById('modalAmenities');
-                        const highlights = document.getElementById('modalHighlights');
-                        const family = document.getElementById('modalFamily');
-                        const pets = document.getElementById('modalPets');
-                        const booking = document.getElementById('modalBooking');
-                        const difficulty = document.getElementById('modalDifficultyLevel');
-    
-                        document.querySelectorAll('.details-btn').forEach(button => {
-                            button.addEventListener('click', () => {
-                                title.textContent = button.dataset.name;
-                                description.textContent = button.dataset.description;
-                                destination.textContent = button.dataset.destination;
-                                duration.textContent = button.dataset.duration;
-                                price.textContent = button.dataset.price;
-                                category.textContent = button.dataset.category;
-                                image.src = button.dataset.image;
-                                guideName.textContent = button.dataset.guide_name;
-                                guideLang.textContent = button.dataset.guide_language;
-                                availability.textContent = button.dataset.availability;
-                                difficulty.textContent = button.dataset.difficulty_level;
-                                requirements.textContent = button.dataset.requirements;
-                                amenities.textContent = button.dataset.amenities;
-                                highlights.textContent = button.dataset.highlights;
-                                family.textContent = button.dataset.family_friendly;
-                                pets.textContent = button.dataset.pets_allowed;
-                                booking.textContent = button.dataset.requires_booking;
-                                modal.style.display = 'block';
-                            });
-                        });
-    
-                        closeBtn.addEventListener('click', () => modal.style.display = 'none');
-                        window.addEventListener('click', (e) => {
-                            if (e.target === modal) modal.style.display = 'none';
-                        });
-                    });
-                </script>
+        {{-- Success --}}
+        @if (session('success'))
+            <div class="act-success">{{ session('success') }}</div>
+        @endif
+
+        {{-- ══════ CARDS ══════ --}}
+        <div class="act-main">
+            <div class="act-cards">
+
+                @forelse($activities as $activity)
+                    <div class="act-card">
+                        <div class="act-card__img-wrap">
+                            <img src="{{ asset('storage/' . $activity->image) }}" alt="{{ $activity->name }}">
+
+                            @if (Auth::user()->role === UserRole::USER->value)
+                                <button
+                                    class="act-card__fav fav-toggle"
+                                    data-url="{{ route('favorites.add', ['type' => 'activity', 'id' => $activity->id]) }}"
+                                    aria-label="Toggle favourite"
+                                >
+                                    @if(auth()->user()->favoriteActivities->contains('id', $activity->id))
+                                        <svg class="heart-filled" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                                        </svg>
+                                    @else
+                                        <svg class="heart-empty" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                        </svg>
+                                    @endif
+                                </button>
+                            @endif
+                        </div>
+
+                        <div class="act-card__body">
+                            <h3 class="act-card__name">{{ $activity->name }}</h3>
+                            <span class="act-card__badge">{{ $activity->category }}</span>
+
+                            <div class="act-card__actions">
+                                @if(Auth::user()->role === UserRole::ADMIN->value)
+                                    <a href="{{ route('activities.edit', $activity->id) }}" class="btn-edit-c">Edit</a>
+                                    <form action="{{ route('activities.destroy', $activity->id) }}" method="POST" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete-c" onclick="return confirm('Delete this activity?')">Delete</button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('activity.reservations.form', $activity) }}">
+                                        <button class="btn-book">Book</button>
+                                    </a>
+                                @endif
+
+                                <a href="{{ route('Activity.show', $activity) }}" class="btn-details">Details</a>
+                            </div>
+                        </div>
+
+                    </div>
+                @empty
+                    <p class="act-empty">No activities found.</p>
+                @endforelse
+
+            </div>
+
+            <div class="act-pagination">
+                {{ $activities->appends(request()->query())->links() }}
             </div>
         </div>
-    </x-app-layout>
-    
+
+    </div>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("click", async (e) => {
+            const btn = e.target.closest(".fav-toggle");
+            if (!btn) return;
+
+            btn.classList.remove("pop");
+            void btn.offsetWidth;
+            btn.classList.add("pop");
+
+            try {
+                const res = await fetch(btn.dataset.url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json"
+                    }
+                });
+
+                const data = await res.json();
+                const added = data.status === "added";
+
+                btn.innerHTML = added
+                    ? `<svg class="heart-filled" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+                        </svg>`
+                    : `<svg class="heart-empty" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>`;
+
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    });
+    </script>
+
+</x-app-layout>

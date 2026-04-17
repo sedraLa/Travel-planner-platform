@@ -9,6 +9,9 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\Favorite;
 use App\Models\Destination;
 use App\Models\Hotel;
+use App\Models\Trip;
+use App\Models\Activity;
+
 
 
 class User extends Authenticatable
@@ -86,8 +89,16 @@ class User extends Authenticatable
 
     public function favoriteTrips()
      {
-    return $this->morphedByMany(Trip::class, 'favoritable', 'favorites');
+    return $this->morphedByMany(Activity::class, 'favoritable', 'favorites');
    }
+
+
+   
+    public function favoriteActivities()
+      {
+    return $this->morphedByMany(Trip::class, 'favoritable', 'favorites');
+      }
+
 
     public function getFullNameAttribute(): string
 {
