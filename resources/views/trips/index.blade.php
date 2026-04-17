@@ -98,7 +98,7 @@
 
                 @if($trip->is_ai_generated)
                 <div class="mt-4 flex justify-between">
-                    <a href="{{ route('ai.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
+                    <a href="{{ route('user.trips.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
                     @else
                     <div class="mt-4 flex justify-between">
                         <a href="{{ route('manual.show', $trip->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">View Details</a>
