@@ -4,6 +4,12 @@
     @endpush
 
 <div class="page-wrap">
+    @php
+        $deadlineForCountdown = null;
+        if ($upcomingSchedule?->booking_deadline) {
+            $deadlineForCountdown = \Carbon\Carbon::parse($upcomingSchedule->booking_deadline)->endOfDay();
+        }
+    @endphp
 
     {{-- ══ HERO ══════════════════════════════════════════ --}}
     <div class="hero">
@@ -12,9 +18,12 @@
                 <span class="badge">{{ ucfirst($trip->category) }}</span>
             @endif
            @if($trip->schedules->first())
-            <span class="status-pill">
-              {{ ucfirst($trip->schedules->first()->status) }}
-             </span>
+           <span class="status-pill"
+      style="{{ $trip->isBookingClosed() ? 'background:#fee2e2;color:#991b1b;' : 'background:#E1F5EE;color:#0F6E56;' }}">
+
+    {{ $trip->isBookingClosed() ? 'Unavailable' : 'Available' }}
+
+</span>
             @endif
 
         </div>
@@ -88,17 +97,73 @@
                 @endif
 
                 {{-- Hotel --}}
-                @if($day->hotel)
-                    <div class="hotel-box">
-                        <div class="hotel-icon">🏨</div>
-                        <div>
-                            <div style="font-size:13px;font-weight:500;color:#1a1a1a">{{ $day->hotel->name }}</div>
-                            @if(isset($day->hotel->stars))
-                                <div style="font-size:12px;color:#888">{{ $day->hotel->stars }}-star</div>
-                            @endif
-                        </div>
-                    </div>
-                @endif
+               @if($day->hotel)
+    <div class="hotel-box" style="margin-bottom:10px;">
+        <div class="hotel-icon">🏨</div>
+        <div>
+            <div style="font-size:14px;font-weight:600;color:#1a1a1a">
+                {{ $day->hotel->name }}
+            </div>
+
+            @if(isset($day->hotel->stars))
+                <div style="font-size:12px;color:#888">
+                    {{ $day->hotel->stars }} ★ Hotel
+                </div>
+            @endif
+        </div>
+    </div>
+
+    {{-- تفاصيل الفندق --}}
+    <div style="padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #eee;margin-bottom:12px;">
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:8px;">
+
+            @if($day->hotel->price_per_night)
+                <div>
+                    <strong style="font-size:12px;color:#555;">Price / Night:</strong><br>
+                    <span style="font-size:13px;">${{ $day->hotel->price_per_night }}</span>
+                </div>
+            @endif
+
+            @if($day->hotel->check_in_time || $day->hotel->check_out_time)
+                <div>
+                    <strong style="font-size:12px;color:#555;">Check-in / Check-out:</strong><br>
+                    <span style="font-size:13px;">
+                        {{ $day->hotel->check_in_time?->format('H:i') ?? '-' }}
+                        /
+                        {{ $day->hotel->check_out_time?->format('H:i') ?? '-' }}
+                    </span>
+                </div>
+            @endif
+
+        </div>
+
+        @if($day->hotel->description)
+            <p style="font-size:13px;color:#444;margin-bottom:6px;">
+                <strong>About:</strong> {{ $day->hotel->description }}
+            </p>
+        @endif
+
+        @if($day->hotel->amenities)
+            <p style="font-size:13px;color:#444;margin-bottom:6px;">
+                <strong>Amenities:</strong> {{ implode(', ', $day->hotel->amenities) }}
+            </p>
+        @endif
+
+        @if($day->hotel->nearby_landmarks)
+            <p style="font-size:13px;color:#444;margin-bottom:6px;">
+                <strong>Nearby:</strong> {{ $day->hotel->nearby_landmarks }}
+            </p>
+        @endif
+
+        @if($day->hotel->policies)
+            <p style="font-size:13px;color:#444;">
+                <strong>Policies:</strong> {{ $day->hotel->policies }}
+            </p>
+        @endif
+
+    </div>
+@endif
 
                 {{-- Activities --}}
                 @if($day->activities->count())
@@ -221,12 +286,18 @@
                 @endif
 
                 {{--change design later--}}
-                <a href="{{ route('trip.booking.form', $pkg->id) }}" class="btn-book" style="width:40%">
-                    <span style = "color:white;">Book Now</span>
-                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                </a>
+                @if($isBookingClosed)
+                    <div style="width:40%;padding:12px;background:#fee2e2;color:#991b1b;border-radius:10px;font-size:13px;text-align:center;">
+                        Booking is closed for this trip
+                    </div>
+                @else
+                    <a href="{{ route('trip.booking.form', $pkg->id) }}" class="btn-book" style="width:40%">
+                        <span style = "color:white;">Book Now</span>
+                        <svg class="btn-icon" viewBox="0 0 24 24" fill="none">
+                            <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                @endif
             </div>
 
             {{-- Hotels in package --}}
@@ -263,6 +334,14 @@
         @if($trip->schedules->count())
         <div class="side-card">
             <div class="section-title">Available schedules</div>
+            @if($isBookingClosed)
+                <p style="margin-bottom:10px;color:#b91c1c;font-weight:600;">Booking is closed for this trip.</p>
+            @elseif($deadlineForCountdown)
+                <p style="margin-bottom:10px;color:#334155;font-weight:600;">
+                    Time left until booking deadline:
+                    <span id="booking-deadline-countdown" data-deadline="{{ $deadlineForCountdown->toIso8601String() }}">--</span>
+                </p>
+            @endif
             @foreach($trip->schedules as $s)
             <div class="schedule-row">
                 <div>
@@ -369,6 +448,34 @@
 </div>
 
 </x-app-layout>
+
+@if(!$isBookingClosed && $deadlineForCountdown)
+<script>
+    (function () {
+        const el = document.getElementById('booking-deadline-countdown');
+        if (!el) return;
+        const deadline = new Date(el.dataset.deadline).getTime();
+
+        const tick = () => {
+            const now = Date.now();
+            const diff = deadline - now;
+
+            if (diff <= 0) {
+                el.textContent = 'Booking deadline reached';
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            el.textContent = `${days}d ${hours}h ${minutes}m`;
+        };
+
+        tick();
+        setInterval(tick, 60000);
+    })();
+</script>
+@endif
 
 <script>
 function toggleDay(header) {

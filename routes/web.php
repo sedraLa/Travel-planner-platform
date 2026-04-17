@@ -168,6 +168,8 @@ Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.de
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
 Route::post('/trips/ai/generate',[AiTripGenerationController::class,'generate'])->name('ai.generate');
 Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
+Route::get('/trips/{trip}/edit', [AiTripController::class, 'edit'])->name('ai.edit');
+Route::put('/trips/{trip}', [AiTripController::class, 'update'])->name('ai.update');
 Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
 Route::post('/trips/{trip}/complete/basics', [AiTripCompletionController::class, 'saveBasics'])->name('trip.complete.basics');
 Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, 'saveDaysActivities'])->name('trip.complete.days');

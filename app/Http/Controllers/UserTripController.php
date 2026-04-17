@@ -5,6 +5,7 @@ use App\Models\Trip;
 use Illuminate\Http\Request;
 use App\Services\GeocodingService;
 use App\Models\Destination ;
+use Carbon\Carbon;
 
 
 class UserTripController extends Controller
@@ -82,7 +83,23 @@ public function index(Request $request)
     // 4. القيم الافتراضية النهائية (إذا فشل كل شيء)
    $coords = $coords ?? null;
 
-    return view('trips.user.show', compact('trip', 'coords'));
+    $today = Carbon::today();
+    $upcomingSchedule = $trip->schedules
+        ->filter(fn ($schedule) => $schedule->booking_deadline)
+        ->sortBy('booking_deadline')
+        ->first();
+
+    $isBookingClosed = $trip->schedules->isEmpty() || $trip->schedules->every(function ($schedule) use ($today) {
+        if (! $schedule->booking_deadline) {
+            return true;
+        }
+
+        return Carbon::parse($schedule->booking_deadline)->lt($today)
+            || $schedule->status !== 'available'
+            || $schedule->available_seats <= 0;
+    });
+
+    return view('trips.user.show', compact('trip', 'coords', 'isBookingClosed', 'upcomingSchedule'));
 }
 
 }
