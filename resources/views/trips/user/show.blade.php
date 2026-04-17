@@ -1,3 +1,4 @@
+@php use App\Enums\UserRole; @endphp
 <x-app-layout>
  @push('styles')
     <link rel="stylesheet" href="{{asset('css/trip.css')}}">
@@ -286,6 +287,7 @@
                 @endif
 
                 {{--change design later--}}
+                @if(Auth::user()->role ===UserRole::USER->value)
                 @if($isBookingClosed)
                     <div style="width:40%;padding:12px;background:#fee2e2;color:#991b1b;border-radius:10px;font-size:13px;text-align:center;">
                         Booking is closed for this trip
@@ -297,6 +299,7 @@
                             <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                     </a>
+                @endif
                 @endif
             </div>
 

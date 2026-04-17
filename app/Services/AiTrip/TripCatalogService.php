@@ -17,7 +17,7 @@ class TripCatalogService
             ->with([
                 'hotels' => fn ($query) => $query->orderByDesc('stars')->orderBy('price_per_night')->orderByDesc('updated_at')->limit(30),
                 'activities' => fn ($query) => $query
-                    ->where('is_active', true)
+                    ->where('availability', true)
                     ->when(! empty($normalizedCategories), fn ($subQuery) => $subQuery->whereIn('category', $normalizedCategories))
                     ->orderBy('price')
                     ->orderBy('duration')
