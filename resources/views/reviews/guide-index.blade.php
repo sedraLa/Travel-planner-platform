@@ -1,5 +1,4 @@
 <x-app-layout>
-
     @push('styles')
     <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
@@ -9,6 +8,29 @@
             max-width:900px;
             margin:40px auto;
             padding:0 16px;
+        }
+
+        .header-box{
+            background: linear-gradient(135deg, #185FA5, #3FA7F5);
+            color:#fff;
+            padding:20px;
+            border-radius:14px;
+            margin-bottom:20px;
+        }
+
+        .header-box h1{
+            font-size:22px;
+            margin-bottom:6px;
+        }
+
+        .header-box p{
+            font-size:13px;
+            opacity:.9;
+        }
+
+        .rating-summary{
+            margin-top:10px;
+            font-size:14px;
         }
 
         .review-card{
@@ -58,15 +80,40 @@
             color:#9ca3af;
             padding:40px;
         }
+
+        .stars-big{
+            font-size:18px;
+            margin-top:5px;
+        }
     </style>
     @endpush
 
+
     <div class="reviews-wrap">
 
-        <h1 style="font-size:22px;font-weight:700;margin-bottom:20px;">
-            Reviews for {{ $hotel->name }}
-        </h1>
+        {{-- HEADER --}}
+        <div class="header-box">
+            <h1>Reviews for {{ $guide->user?->name }}</h1>
 
+            <p>{{ $guide->years_of_experience ?? 0 }} years experience • Guide profile</p>
+
+            <div class="rating-summary">
+                @php $avg = $avg ?? 0; @endphp
+
+                <div class="stars-big">
+                    @for($i=1; $i<=5; $i++)
+                        <span style="color:{{ $i <= $avg ? '#fff' : 'rgba(255,255,255,0.4)' }}">★</span>
+                    @endfor
+                </div>
+
+                <div style="margin-top:4px;">
+                    Average rating: {{ number_format($avg,1) }}
+                </div>
+            </div>
+        </div>
+
+
+        {{-- REVIEWS LIST --}}
         @forelse($reviews as $review)
             <div class="review-card">
 
@@ -81,8 +128,8 @@
                 </div>
 
                 <div class="rating">
-                    @for($i=0; $i < $review->rating; $i++)
-                        ⭐
+                    @for($i=0; $i < 5; $i++)
+                        <span style="color:{{ $i < $review->rating ? '#f59e0b' : '#e5e7eb' }}">★</span>
                     @endfor
                 </div>
 
@@ -93,7 +140,7 @@
             </div>
         @empty
             <div class="empty">
-                No reviews yet.
+                No reviews yet for this guide.
             </div>
         @endforelse
 

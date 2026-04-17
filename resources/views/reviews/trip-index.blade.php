@@ -1,5 +1,4 @@
 <x-app-layout>
-
     @push('styles')
     <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
     <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
@@ -62,41 +61,39 @@
     @endpush
 
     <div class="reviews-wrap">
-
+    
         <h1 style="font-size:22px;font-weight:700;margin-bottom:20px;">
-            Reviews for {{ $hotel->name }}
+            Reviews for {{ $trip->name }}
         </h1>
-
+    
         @forelse($reviews as $review)
             <div class="review-card">
-
+    
                 <div class="review-top">
                     <div class="user-name">
                         {{ $review->user?->full_name ?? 'Anonymous' }}
                     </div>
-
+    
                     <div class="date">
                         {{ $review->created_at->format('d M Y') }}
                     </div>
                 </div>
-
+    
                 <div class="rating">
-                    @for($i=0; $i < $review->rating; $i++)
-                        ⭐
+                    @for($i=0; $i < 5; $i++)
+                        <span style="color:{{ $i < $review->rating ? '#f59e0b' : '#e5e7eb' }}">★</span>
                     @endfor
                 </div>
-
+    
                 <div class="review-text">
                     {{ $review->review }}
                 </div>
-
+    
             </div>
         @empty
-            <div class="empty">
-                No reviews yet.
-            </div>
+            <div class="empty">No reviews yet.</div>
         @endforelse
-
+    
     </div>
-
-</x-app-layout>
+    
+    </x-app-layout>

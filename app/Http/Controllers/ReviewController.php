@@ -88,5 +88,28 @@ class ReviewController extends Controller
         ->get();
 
     return view('reviews.hotel-index', compact('hotel', 'reviews'));
+
+    
 }
+
+public function tripIndex(string $id)
+{
+    $trip = Trip::with('reviews.user')->findOrFail($id);
+
+    $reviews = $trip->reviews()->latest()->get();
+
+    return view('reviews.trip-index', compact('trip', 'reviews'));
+}
+
+public function guideIndex(string $id)
+{
+    $guide = Guide::with('user')->findOrFail($id);
+
+    $reviews = $guide->reviews()->with('user')->latest()->get();
+
+    $avg = $guide->reviews()->avg('rating');
+
+    return view('reviews.guide-index', compact('guide', 'reviews', 'avg'));
+}
+
 }

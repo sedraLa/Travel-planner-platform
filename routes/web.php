@@ -306,6 +306,14 @@ Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
  Route::get('/hotels/{hotel}/reviews', [ReviewController::class, 'hotelIndex'])
  ->name('hotels.reviews.index');
 
+ //show trip reviews
+ Route::get('/trips/{id}/reviews', [ReviewController::class, 'tripIndex'])
+    ->name('trip.reviews.index');
+
+//show guide reviews
+Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
+    ->name('reviews.guide');
+
 });
 
 
