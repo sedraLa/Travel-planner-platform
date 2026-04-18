@@ -23,15 +23,20 @@ class NotificationController extends Controller
             ->map(fn($id) => (int) $id)
             ->all();
 
-        $notifications->getCollection()->transform(function ($notification) use ($reviewedReservationIds) {
-            $reservationId = (int) data_get($notification->data, 'reservation_id');
+            $notifications->getCollection()->transform(function ($notification) use ($reviewedReservationIds) {
 
-            if (($notification->data['type'] ?? null) === 'review_request') {
-                $notification->data['is_reviewed'] = in_array($reservationId, $reviewedReservationIds, true);
-            }
+$data = $notification->data; // خذ نسخة
 
-            return $notification;
-        });
+$reservationId = (int) data_get($data, 'reservation_id');
+
+if (($data['type'] ?? null) === 'review_request') {
+    $data['is_reviewed'] = in_array($reservationId, $reviewedReservationIds, true);
+}
+
+$notification->data = $data; // ارجعها ككل
+
+return $notification;
+});
 
         return view('notifications.index', compact('notifications'));
     }

@@ -100,14 +100,15 @@
                                 Rated
                             </button>
                         @else
-                            <a href="{{ route('reviews.create', [
-                                'type' => $data['review_type'],
-                                'id' => $data['review_id'],
-                                'reservation_id' => $data['reservation_id']
-                            ]) }}"
-                            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
-                                Rate Now
-                            </a>
+                        @if(isset($data['reservation_id']))
+                        <a href="{{ route('reviews.create', [
+                            'type' => $data['review_type'],
+                            'id' => $data['review_id'],
+                            'reservation_id' => $data['reservation_id']
+                        ]) }}">
+                            Rate Now
+                        </a>
+                    @endif
                         @endif
                     </div>
 
