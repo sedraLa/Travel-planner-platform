@@ -32,7 +32,7 @@ class CheckReviewableCompletions extends Command
     {
         $reservations = Reservation::where('reservation_status', 'paid')
             ->where('check_out_date', '<', now())
-            ->where('review_notified', false)
+            ->where('hotel_review_notification_sent', false)
             ->get();
             $this->info('Hotels found: ' . $reservations->count());
 
@@ -41,11 +41,12 @@ class CheckReviewableCompletions extends Command
             event(new ReviewableItemCompleted(
                 type: 'hotel',
                 id: $reservation->hotel_id,
-                userId: $reservation->user_id
+                userId: $reservation->user_id,
+                reservationId: $reservation->id
             ));
 
             $reservation->update([
-                'review_notified' => true
+                'hotel_review_notification_sent' => true
             ]);
         }
     }
@@ -55,33 +56,46 @@ class CheckReviewableCompletions extends Command
      */
     private function checkTrips()
     {
-        $reservations = TripReservation::where('status', 'completed')
+        $tripReservations = TripReservation::where('status', 'completed')
             ->whereHas('schedule', function ($q) {
                 $q->where('end_date', '<', now());
             })
-            ->where('review_notified', false)
+            ->where('trip_review_notification_sent', false)
             ->get();
     
-        foreach ($reservations as $reservation) {
+        foreach ($tripReservations as $reservation) {
     
-            // 1. Trip review
             event(new ReviewableItemCompleted(
                 type: 'trip',
                 id: $reservation->trip_id,
-                userId: $reservation->user_id
+                userId: $reservation->user_id,
+                reservationId: $reservation->id
             ));
     
-            // 2. Guide review 
-            if ($reservation->trip && $reservation->trip->assigned_guide_id) {
-                event(new ReviewableItemCompleted(
-                    type: 'guide',
-                    id: $reservation->trip->assigned_guide_id,
-                    userId: $reservation->user_id
-                ));
-            }
-    
             $reservation->update([
-                'review_notified' => true
+                'trip_review_notification_sent' => true
+            ]);
+        }
+
+        $guideReservations = TripReservation::where('status', 'completed')
+            ->whereHas('schedule', function ($q) {
+                $q->where('end_date', '<', now());
+            })
+            ->where('guide_review_notification_sent', false)
+            ->whereHas('trip', fn($q) => $q->whereNotNull('assigned_guide_id'))
+            ->with('trip:id,assigned_guide_id')
+            ->get();
+
+        foreach ($guideReservations as $reservation) {
+            event(new ReviewableItemCompleted(
+                type: 'guide',
+                id: $reservation->trip->assigned_guide_id,
+                userId: $reservation->user_id,
+                reservationId: $reservation->id
+            ));
+
+            $reservation->update([
+                'guide_review_notification_sent' => true,
             ]);
         }
     }
@@ -92,7 +106,7 @@ class CheckReviewableCompletions extends Command
     {
         $reservations = TransportReservation::where('status', 'completed')
             ->where('dropoff_datetime', '<', now())
-            ->where('review_notified', false)
+            ->where('driver_review_notification_sent', false)
             ->get();
 
         foreach ($reservations as $reservation) {
@@ -100,11 +114,12 @@ class CheckReviewableCompletions extends Command
             event(new ReviewableItemCompleted(
                 type: 'driver',
                 id: $reservation->driver_id,
-                userId: $reservation->user_id
+                userId: $reservation->user_id,
+                reservationId: $reservation->id
             ));
 
             $reservation->update([
-                'review_notified' => true
+                'driver_review_notification_sent' => true
             ]);
         }
     }

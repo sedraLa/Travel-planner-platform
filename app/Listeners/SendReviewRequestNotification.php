@@ -19,6 +19,7 @@ class SendReviewRequestNotification
             new ReviewRequestNotification(
                 type: $event->type,
                 itemId: $event->id,
+                reservationId: $event->reservationId,
                 itemName: $this->getItemName($event->type, $event->id)
             )
         );

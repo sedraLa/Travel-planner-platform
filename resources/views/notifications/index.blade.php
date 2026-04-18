@@ -90,14 +90,25 @@
                                 {{ $data['review_name'] ?? 'this item' }}
                             </span>
                         </p>
-                
-                        <a href="{{ route('reviews.create', [
-                            'type' => $data['review_type'],
-                            'id' => $data['review_id']
-                        ]) }}"
-                           class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
-                            Rate Now
-                        </a>
+
+                        @if(($data['is_reviewed'] ?? false) === true)
+                            <button
+                                type="button"
+                                disabled
+                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg cursor-not-allowed"
+                            >
+                                Rated
+                            </button>
+                        @else
+                            <a href="{{ route('reviews.create', [
+                                'type' => $data['review_type'],
+                                'id' => $data['review_id'],
+                                'reservation_id' => $data['reservation_id']
+                            ]) }}"
+                            class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                                Rate Now
+                            </a>
+                        @endif
                     </div>
 
 

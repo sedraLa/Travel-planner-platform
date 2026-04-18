@@ -11,6 +11,7 @@ class ReviewFactoryService
             'user_id' => auth()->id(),
             'rating' => $data['rating'],
             'review' => $data['review'] ?? null,
+            'reservation_id' => $data['reservation_id'],
         ]);
     }
 }

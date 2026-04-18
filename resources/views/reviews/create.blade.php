@@ -115,11 +115,22 @@
                 </div>
             @endif
 
+            @if($errors->any())
+                <div class="mb-4 p-3 bg-red-100 text-red-800 rounded">
+                    <ul class="list-disc list-inside">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <form method="POST" action="{{ route('reviews.store') }}">
                 @csrf
 
                 <input type="hidden" name="type" value="{{ $type }}">
                 <input type="hidden" name="id" value="{{ $id }}">
+                <input type="hidden" name="reservation_id" value="{{ $reservationId }}">
 
                 {{-- STARS --}}
                 <div class="mb-4 text-center">

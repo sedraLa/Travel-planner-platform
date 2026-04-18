@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreReviewRequest;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\QueryException;
 
 use App\Services\Review\ReviewFactoryService;
 use App\Services\Review\ReviewEligibilityService;
@@ -23,7 +25,8 @@ class ReviewController extends Controller
 {
     return view('reviews.create', [
         'type' => $request->type,
-        'id' => $request->id
+        'id' => $request->id,
+        'reservationId' => $request->reservation_id,
     ]);
 }
 
@@ -32,7 +35,8 @@ class ReviewController extends Controller
      */
     public function store(
         StoreReviewRequest $request,
-        ReviewFactoryService $factory
+        ReviewFactoryService $factory,
+        ReviewEligibilityService $eligibilityService
     ) {
         
     
@@ -42,8 +46,39 @@ class ReviewController extends Controller
             'driver' => Driver::findOrFail($request->id),
             'guide' => Guide::findOrFail($request->id),
         };
-    
-        $factory->create($model, $request->only('rating', 'review'));
+
+        $reservation = $eligibilityService->resolveOwnedReservation(
+            $request->user(),
+            $request->type,
+            (int) $request->id,
+            (int) $request->reservation_id
+        );
+
+        if (! $reservation) {
+            abort(403, 'Unauthorized reservation access.');
+        }
+
+        $alreadyReviewed = Review::where('user_id', $request->user()->id)
+            ->where('reservation_id', $request->reservation_id)
+            ->exists();
+
+        if ($alreadyReviewed) {
+            throw ValidationException::withMessages([
+                'reservation_id' => 'You have already submitted a review for this reservation.',
+            ]);
+        }
+
+        try {
+            $factory->create($model, $request->only('rating', 'review', 'reservation_id'));
+        } catch (QueryException $e) {
+            if ((string) $e->getCode() === '23000') {
+                throw ValidationException::withMessages([
+                    'reservation_id' => 'You have already submitted a review for this reservation.',
+                ]);
+            }
+
+            throw $e;
+        }
     
         return redirect()->back()->with('success', 'Thanks for your review ❤️');
     }

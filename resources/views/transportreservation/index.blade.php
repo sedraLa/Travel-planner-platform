@@ -78,6 +78,9 @@ class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
                     <th class="p-3 border">Pickup Date</th>
                     <th class="p-3 border">Passengers</th>
                     <th class="p-3 border">Total Price</th>
+                    @if(Auth::user()->role !== 'admin')
+                        <th class="p-3 border">Driver Review</th>
+                    @endif
              
                 </tr>
             </thead>
@@ -104,11 +107,26 @@ class="mb-6  p-4 rounded-xl shadow flex flex-wrap gap-4 items-end">
                         <td class="p-3 border text-green-600 font-semibold">
                             ${{ number_format($reservation->total_price, 2) }}
                         </td>
+
+                        @if(Auth::user()->role !== 'admin')
+                            <td class="p-3 border">
+                                @if(in_array((int) $reservation->id, $reviewedReservationIds ?? [], true))
+                                    <button type="button" disabled class="px-3 py-1 rounded bg-gray-300 text-gray-700 cursor-not-allowed">
+                                        Rated
+                                    </button>
+                                @else
+                                    <a href="{{ route('reviews.create', ['type' => 'driver', 'id' => $reservation->driver_id, 'reservation_id' => $reservation->id]) }}"
+                                       class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+                                        Rate Now
+                                    </a>
+                                @endif
+                            </td>
+                        @endif
                         
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="p-4 text-center text-gray-500">
+                        <td colspan="{{ Auth::user()->role === 'admin' ? 6 : 7 }}" class="p-4 text-center text-gray-500">
                             No transport reservations found.
                         </td>
                     </tr>
