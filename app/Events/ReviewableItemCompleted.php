@@ -20,7 +20,8 @@ class ReviewableItemCompleted
     public function __construct(
         public string $type,   // hotel, trip, driver, guide
         public int $id,
-        public int $userId
+        public int $userId,
+        public int $reservationId
     ) {}
 
     /**

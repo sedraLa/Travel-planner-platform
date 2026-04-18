@@ -114,6 +114,9 @@
                         <th class="p-3 border">Guests</th>
                         <th class="p-3 border">Total Price</th>
                         <th class="p-3 border">Status</th>
+                        @if(Auth::user()->role !== 'admin')
+                            <th class="p-3 border">Hotel Review</th>
+                        @endif
                     </tr>
                 </thead>
 
@@ -147,6 +150,21 @@
                                     {{ ucfirst($reservation->reservation_status) }}
                                 </span>
                             </td>
+
+                            @if(Auth::user()->role !== 'admin')
+                                <td class="p-3 border">
+                                    @if(in_array((int) $reservation->id, $reviewedReservationIds ?? [], true))
+                                        <button type="button" disabled class="px-3 py-1 rounded bg-gray-300 text-gray-700 cursor-not-allowed">
+                                            Rated
+                                        </button>
+                                    @else
+                                        <a href="{{ route('reviews.create', ['type' => 'hotel', 'id' => $reservation->hotel_id, 'reservation_id' => $reservation->id]) }}"
+                                            class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+                                            Rate Now
+                                        </a>
+                                    @endif
+                                </td>
+                            @endif
 
                         </tr>
                     @endforeach

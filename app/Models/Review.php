@@ -13,8 +13,11 @@ class Review extends Model
 
     protected $fillable = [
         'user_id',
+        'reviewable_type',
+        'reviewable_id',
         'rating',
         'review',
+        'reservation_id',
         'is_hidden_by_admin',
     ];
 

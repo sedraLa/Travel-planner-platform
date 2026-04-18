@@ -20,6 +20,7 @@ class Reservation extends Model
         'guest_count',
         'total_price',
         'reservation_status',
+        'hotel_review_notification_sent',
     ];
 
     protected $hidden = [

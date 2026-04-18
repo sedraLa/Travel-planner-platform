@@ -10,6 +10,7 @@ use App\Services\GeocodingService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Services\TransportReservation\ReservationStateManager;
+use App\Models\Review;
 
 class TransportReservationController extends Controller
 {
@@ -132,7 +133,13 @@ class TransportReservationController extends Controller
             ->orderBy('pickup_datetime', 'desc')
             ->paginate(10);
 
-        return view('transportreservation.index', compact('reservations'));
+        $reviewedReservationIds = Review::where('user_id', Auth::id())
+            ->whereIn('reservation_id', $reservations->getCollection()->pluck('id'))
+            ->pluck('reservation_id')
+            ->map(fn($id) => (int) $id)
+            ->all();
+
+        return view('transportreservation.index', compact('reservations', 'reviewedReservationIds'));
     }
 
     /**

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ReservationRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Hotel;
+use App\Models\Review;
 use Carbon\Carbon;
 
 class ReservationController extends Controller
@@ -132,6 +133,12 @@ public function index(Request $request)
 
     $reservations = $query->latest()->get();
 
-    return view('reservation.index', compact('reservations'));
+    $reviewedReservationIds = Review::where('user_id', Auth::id())
+        ->whereIn('reservation_id', $reservations->pluck('id'))
+        ->pluck('reservation_id')
+        ->map(fn($id) => (int) $id)
+        ->all();
+
+    return view('reservation.index', compact('reservations', 'reviewedReservationIds'));
 }
 }
