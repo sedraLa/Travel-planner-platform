@@ -281,6 +281,9 @@ private function syncRoomTypes(Hotel $hotel, Request $request, bool $isUpdate): 
         }
 
         $primaryChoice = $roomData['primary_image_choice'] ?? $roomData['primary_new_image_choice'] ?? null;
+        if (!$primaryChoice && array_key_exists('primary_image_index', $roomData) && $roomData['primary_image_index'] !== '') {
+            $primaryChoice = 'new:' . (int) $roomData['primary_image_index'];
+        }
         $roomType->images()->update(['is_primary' => false]);
 
         if (is_string($primaryChoice) && str_starts_with($primaryChoice, 'existing:')) {
