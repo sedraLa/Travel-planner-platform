@@ -9,6 +9,7 @@ use App\Models\HotelImage;
 use App\Models\RoomType;
 use App\Models\Reservation;
 use App\Http\Requests\HotelRequest;
+use App\Http\Requests\HotelRoomTypesRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Services\GeocodingService;
@@ -178,6 +179,25 @@ public function edit($id)
     $hotel = Hotel::with(['images', 'roomTypes.images'])->findOrFail($id);
     $destinations = Destination::all();
     return view('hotel.edit', compact('hotel', 'destinations'));
+}
+
+public function editRoomTypes($id)
+{
+    $hotel = Hotel::with(['roomTypes.images'])->findOrFail($id);
+
+    return view('Hotel.room-types-edit', compact('hotel'));
+}
+
+public function updateRoomTypes(HotelRoomTypesRequest $request, $id)
+{
+    $hotel = Hotel::with('roomTypes.images')->findOrFail($id);
+
+    DB::transaction(function () use ($request, $hotel) {
+        $this->syncRoomTypes($hotel, $request, true);
+    });
+
+    return redirect()->route('hotels.edit', $hotel->id)
+        ->with('success', 'Room types updated successfully.');
 }
 
 ///update

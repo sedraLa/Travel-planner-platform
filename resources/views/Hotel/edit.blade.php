@@ -6,7 +6,12 @@
 
 
     <div class="vehicle-form-container"> 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Hotel</h2>
+        <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Edit Hotel</h2>
+        <a href="{{ route('hotels.room-types.edit', $hotel->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            Edit Room Types
+        </a>
+        </div>
 
         <form action="{{ route('hotels.update', $hotel) }}" method="post" enctype="multipart/form-data">
             @csrf
