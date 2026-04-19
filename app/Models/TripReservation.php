@@ -19,6 +19,8 @@ class TripReservation extends Model
         'guide_earning',
         'guide_id',
         'guide_paid_at',
+        'trip_review_notification_sent',
+        'guide_review_notification_sent',
     ];
 
         public function guide()

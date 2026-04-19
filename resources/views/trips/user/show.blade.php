@@ -27,6 +27,10 @@
 </span>
             @endif
 
+            <div class="reviews-chip" onclick="document.getElementById('reviews-section').scrollIntoView({behavior:'smooth'})">
+                ⭐ {{ number_format($averageRating ?? 0, 1) }} ({{ $reviewsCount }}) Reviews
+            </div>
+
         </div>
         <h1>{{ $trip->name }}</h1>
         @if($trip->description)
@@ -331,6 +335,54 @@
     </div>
     @endif
 
+    @if($reviews->count())
+    <div class="section" id="reviews-section">
+    
+        <div class="section-title">
+            Reviews ({{ $reviewsCount }})
+        </div>
+    
+        <div style="display:grid;gap:12px;">
+    
+            @foreach($reviews as $review)
+            <div class="review-card">
+    
+                <div class="review-top">
+                    <div class="user-name">
+                        {{ $review->user?->full_name ?? 'Anonymous' }}
+                    </div>
+    
+                    <div class="date">
+                        {{ $review->created_at->format('d M Y') }}
+                    </div>
+                </div>
+    
+                <div class="rating">
+                    @for($i=0; $i < 5; $i++)
+                        <span style="color:{{ $i < $review->rating ? '#f59e0b' : '#e5e7eb' }}">★</span>
+                    @endfor
+                </div>
+    
+                <div class="review-text">
+                    {{ $review->review }}
+                </div>
+    
+            </div>
+            @endforeach
+    
+        </div>
+    
+      
+        <div style="margin-top:15px;text-align:center;">
+            <a href="{{ route('trip.reviews.index', $trip->id) }}"
+               style="display:inline-block;padding:10px 16px;background:#185FA5;color:#fff;border-radius:10px;text-decoration:none;">
+                View all reviews
+            </a>
+        </div>
+    
+    </div>
+    @endif
+
     {{-- ══ SCHEDULES + GUIDES + TRANSPORT ══════════════ --}}
     <div class="grid2">
         {{-- Schedules --}}
@@ -369,24 +421,49 @@
         </div>
         @endif
 
-        {{-- Guide  --}}
-        <div class="side-card">
-            {{-- Assigned guide --}}
-            @if($trip->assignedGuide)
-            <div style="margin-bottom:1.5rem">
-                <div class="section-title">Assigned guide</div>
-                <div class="guide-row">
-                    <div class="guide-avatar">
-                        {{ strtoupper(substr($trip->assignedGuide->name ?? 'G', 0, 1)) }}{{ strtoupper(substr(explode(' ', $trip->assignedGuide->name ?? 'G ')[1] ?? '', 0, 1)) }}
-                    </div>
-                    <div>
-                        <div style="font-size:14px;font-weight:500;color:#1a1a1a">{{ $trip->assignedGuide->name }}</div>
-                        <div style="font-size:12px;color:#888">Lead guide</div>
-                    </div>
-                    <span style="margin-left:auto;background:#E1F5EE;color:#0F6E56;font-size:11px;padding:3px 9px;border-radius:12px">Active</span>
-                </div>
-            </div>
-            @endif
+      {{-- Assigned guide --}}
+      @if($trip->assignedGuide)
+      <div class="side-card">
+      
+          <div class="section-title">Assigned Guide</div>
+      
+          <div class="guide-row">
+      
+              <div class="guide-avatar">
+                  {{ strtoupper(substr($trip->assignedGuide?->user?->name ?? 'G', 0, 1)) }}
+              </div>
+      
+              <div style="flex:1">
+                  <div style="font-size:14px;font-weight:500;">
+                      {{ $trip->assignedGuide?->user?->name }}
+                  </div>
+      
+                  <div style="font-size:12px;color:#888">
+                      {{ $trip->assignedGuide->years_of_experience ?? 0 }} years experience
+                  </div>
+      
+                  {{-- rating --}}
+                  <div style="margin-top:4px;font-size:13px;color:#f59e0b">
+                      @php $r = $guideRating ?? 0; @endphp
+                      @for($i=1; $i<=5; $i++)
+                          <span style="color:{{ $i <= $r ? '#f59e0b' : '#e5e7eb' }}">★</span>
+                      @endfor
+      
+                      <span style="color:#666;font-size:12px;">
+                          ({{ number_format($r,1) }})
+                      </span>
+                  </div>
+              </div>
+      
+              <a href="{{ route('reviews.guide', $trip->assignedGuide->id) }}"
+                 style="margin-left:auto;background:#185FA5;color:white;
+                 font-size:11px;padding:6px 10px;border-radius:12px;text-decoration:none;">
+                  Reviews
+              </a>
+      
+          </div>
+      </div>
+      @endif
 
             {{-- All guide assignments --}}
           @if($trip->assignments->count())

@@ -79,6 +79,10 @@
                     <th class="p-3 border">People</th>
                     <th class="p-3 border">Total Price</th>
                     <th class="p-3 border">Status</th>
+                    @if(Auth::user()->role !== 'admin')
+                        <th class="p-3 border">Trip Review</th>
+                        <th class="p-3 border">Guide Review</th>
+                    @endif
                 </tr>
             </thead>
     
@@ -119,11 +123,42 @@
                                 {{ ucfirst($r->status) }}
                             </span>
                         </td>
+
+                        @if(Auth::user()->role !== 'admin')
+                            <td class="p-3 border">
+                                @if(in_array((int) $r->id, $reviewedReservationIds ?? [], true))
+                                    <button type="button" disabled class="px-3 py-1 rounded bg-gray-300 text-gray-700 cursor-not-allowed">
+                                        Rated
+                                    </button>
+                                @else
+                                    <a href="{{ route('reviews.create', ['type' => 'trip', 'id' => $r->trip_id, 'reservation_id' => $r->id]) }}"
+                                       class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+                                        Rate Now
+                                    </a>
+                                @endif
+                            </td>
+
+                            <td class="p-3 border">
+                                @php($guideId = $r->trip?->assigned_guide_id)
+                                @if(!$guideId)
+                                    <span class="text-gray-500">N/A</span>
+                                @elseif(in_array((int) $r->id, $reviewedReservationIds ?? [], true))
+                                    <button type="button" disabled class="px-3 py-1 rounded bg-gray-300 text-gray-700 cursor-not-allowed">
+                                        Rated
+                                    </button>
+                                @else
+                                    <a href="{{ route('reviews.create', ['type' => 'guide', 'id' => $guideId, 'reservation_id' => $r->id]) }}"
+                                       class="px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700">
+                                        Rate Now
+                                    </a>
+                                @endif
+                            </td>
+                        @endif
     
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="p-4 text-center text-gray-500">
+                        <td colspan="{{ Auth::user()->role === 'admin' ? 7 : 9 }}" class="p-4 text-center text-gray-500">
                             No trip reservations found.
                         </td>
                     </tr>

@@ -33,6 +33,7 @@ use App\Http\Controllers\AdminGuideApplicationController;
 use App\Http\Controllers\GuideController;
 use App\Http\Controllers\UserTripController;
 use App\Http\Controllers\TripBookingController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ActivityReservationController;
 
 
@@ -180,6 +181,14 @@ Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionControll
 Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
 Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
 
+//Admin reviews
+Route::get('/admin/reviews', [ReviewController::class, 'adminIndex'])
+    ->name('admin.reviews.index');
+
+    // delete review
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
+->name('reviews.destroy');
+
     });
 
 
@@ -283,6 +292,7 @@ Route::get('/trip-reservations', [TripBookingController::class, 'index'])
 ->name('trip.reservations.index');
 //transport reservations
 Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
+//hotel reservations
 Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
 
 
@@ -294,11 +304,29 @@ Route::get('/actvivty-reservations/{activityreservation}/pay', [ActivityReservat
 Route::post('/actvivit/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPalActivity'])->name('actvivty.payment.paypal');
 Route::get('/payment/paypal/activity/callback', [PaymentController::class, 'paypalCallbackActivity'])->name('payment.activity.callback');
 
+//Reviews routes
+//create review
+Route::get('/reviews/create', [ReviewController::class, 'create'])
+    ->name('reviews.create');
 
+ // store review
+ Route::post('/reviews', [ReviewController::class, 'store'])
+ ->name('reviews.store');
+
+
+ //show hotel reviews 
+ Route::get('/hotels/{hotel}/reviews', [ReviewController::class, 'hotelIndex'])
+ ->name('hotels.reviews.index');
+
+ //show trip reviews
+ Route::get('/trips/{id}/reviews', [ReviewController::class, 'tripIndex'])
+    ->name('trip.reviews.index');
+
+//show guide reviews
+Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
+    ->name('reviews.guide');
 
 });
-
-
 
 
 

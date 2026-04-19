@@ -52,11 +52,31 @@ public function index(Request $request)
   public function show(string $id, GeocodingService $geo)
 {
     $trip = Trip::with([
-        'days.activities.activity', 'days.hotel', 'packages.highlights',
+        'reviews.user','days.activities.activity', 'days.hotel', 'packages.highlights',
         'packages.includes', 'packages.excludes', 'packages.packageHotels.hotel',
-        'packages.infos', 'schedules', 'assignedGuide', 'assignments.guide',
+        'packages.infos', 'schedules', 'assignedGuide', 'assignments.guide','assignments.guide.user',
         'primaryDestination', 'images',
     ])->findOrFail($id);
+
+    $reviewsQuery = $trip->reviews()->latest();
+
+    $averageRating = $reviewsQuery->avg('rating');
+    $reviewsCount  = $reviewsQuery->count();
+    
+    $reviews = $reviewsQuery->take(3)->get();
+
+    $guide = $trip->assignedGuide?->load('reviews.user');
+
+    $guideRating = null;
+    $guideReviews = collect();
+
+    if ($guide) {
+    $guideReviewsQuery = $guide->reviews()->latest();
+
+    $guideRating = $guideReviewsQuery->avg('rating');
+    $guideReviews = $guideReviewsQuery->take(3)->get();
+    }
+
 
     // 1. جلب العنوان الذي أدخلته أنت
     $addressToSearch = $trip->meeting_point_address;
@@ -82,7 +102,6 @@ public function index(Request $request)
 
     // 4. القيم الافتراضية النهائية (إذا فشل كل شيء)
    $coords = $coords ?? null;
-
     $today = Carbon::today();
     $upcomingSchedule = $trip->schedules
         ->filter(fn ($schedule) => $schedule->booking_deadline)
@@ -99,7 +118,9 @@ public function index(Request $request)
             || $schedule->available_seats <= 0;
     });
 
-    return view('trips.user.show', compact('trip', 'coords', 'isBookingClosed', 'upcomingSchedule'));
+        return view('trips.user.show', 
+                    compact('trip', 'coords','averageRating','reviewsCount','reviews',
+                            'guideRating','guideReviews', 'isBookingClosed', 'upcomingSchedule'));
 }
 
 }

@@ -112,6 +112,11 @@ class Trip extends Model
     return $this->morphMany(Favorite::class, 'favoritable');
     }
 
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
     public function reservations()
     {
         return $this->hasMany(TripReservation::class);

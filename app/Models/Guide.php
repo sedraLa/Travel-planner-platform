@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 class Guide extends Model
 {
     use HasFactory;
@@ -57,6 +59,11 @@ class Guide extends Model
     public function reservations()
     {
         return $this->hasMany(TripReservation::class);
+    }
+
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
     }
 
 }

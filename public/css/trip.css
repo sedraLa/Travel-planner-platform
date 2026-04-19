@@ -829,3 +829,61 @@ body {
 .btn-book:hover::before {
     left: 130%;
 }
+.reviews-chip {
+    background: rgba(255,255,255,0.18);
+    color: #fff;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: .2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.reviews-chip:hover {
+    background: rgba(255,255,255,0.28);
+    transform: translateY(-1px);
+}
+
+.review-card{
+    background:#fff;
+    border:0.5px solid rgba(0,0,0,0.08);
+    border-radius:12px;
+    padding:14px 16px;
+    transition:.2s;
+}
+
+.review-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.08);
+}
+
+.review-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:6px;
+}
+
+.user-name{
+    font-weight:500;
+    font-size:14px;
+}
+
+.date{
+    font-size:12px;
+    color:#888;
+}
+
+.rating{
+    margin-bottom:6px;
+    font-size:14px;
+}
+
+.review-text{
+    font-size:13px;
+    color:#444;
+    line-height:1.6;
+}

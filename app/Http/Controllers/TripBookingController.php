@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\TripPackage;
 use App\Models\TripSchedule;
 use App\Models\TripReservation;
+use App\Models\Review;
 
 class TripBookingController extends Controller
 {
@@ -113,7 +114,13 @@ public function index(Request $request)
 
     $reservations = $query->latest()->get();
 
-    return view('trips.reservations.index', compact('reservations'));
+    $reviewedReservationIds = Review::where('user_id', auth()->id())
+        ->whereIn('reservation_id', $reservations->pluck('id'))
+        ->pluck('reservation_id')
+        ->map(fn($id) => (int) $id)
+        ->all();
+
+    return view('trips.reservations.index', compact('reservations', 'reviewedReservationIds'));
 }
 
 }
