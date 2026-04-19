@@ -70,14 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span style="color:#f59e0b;font-weight:600;">
                             ⭐ {{ number_format($hotel->average_rating, 1) }}
                         </span>
-                    
+
                         <span style="font-size:13px;color:#ddd;">
                             ({{ $hotel->reviews_count }} reviews)
                         </span>
                     </div>
             </a>
 
-           
+
 
 
               </div>
@@ -91,6 +91,39 @@ document.addEventListener("DOMContentLoaded", function () {
           <!--Maps section-->
 <div id="hotel-map" style="width: 100%; height: 400px; margin: 20px 0; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
 
+<!-- AI SECTION FOR HOTEL -->
+<div class="ai-pro-box">
+    <div class="ai-pro-bg"></div>
+
+    <div class="ai-pro-content">
+
+        <div class="ai-pro-header">
+            <div class="ai-pro-icon">🏨</div>
+            <div>
+                <div class="ai-pro-title">AI Hotel Assistant</div>
+                <div class="ai-pro-sub">Ask anything about {{ $hotel->name }}</div>
+            </div>
+        </div>
+
+        <div class="ai-pro-actions">
+            <button class="ai-pro-btn" onclick="askHotelPreset('Is this hotel worth the price?')">Worth it?</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Is it good for couples or honeymoon?')">For Couples</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('What are the pros and cons of this hotel?')">Pros & Cons</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Which room should I choose?')">Best Rooms</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Any hidden gems nearby?')">Nearby Spots</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Tips to get best price')">Save Money</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Is it good for business travel?')">Business</button>
+        </div>
+
+        <div class="ai-pro-chat">
+            <input id="hotel-ai-input" type="text" placeholder="Ask about this hotel...">
+            <button onclick="sendHotelAI()">Ask</button>
+        </div>
+
+        <div id="hotel-ai-response" class="ai-pro-response"></div>
+
+    </div>
+</div>
         <!--Highlights section-->
         <div class="highlights-container">
             <div class="highlights-header">
@@ -316,3 +349,70 @@ document.addEventListener("DOMContentLoaded", function () {
       if (e.target === popup) popup.style.display = 'none';
     });
   </script>
+
+
+<script>
+    let hotelInput = document.getElementById("hotel-ai-input");
+    let hotelResponse = document.getElementById("hotel-ai-response");
+
+    // preset
+    function askHotelPreset(q) {
+        hotelInput.value = q;
+        sendHotelAI();
+    }
+
+    // send
+    function sendHotelAI() {
+        let question = hotelInput.value.trim();
+        if (!question) return;
+
+        hotelResponse.style.display = "block";
+        hotelResponse.innerHTML = "Thinking... 🤖";
+        fetch("{{ route('ai.hotel.ask') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                entity_id: {{ $hotel->id }},
+                question
+            })
+        })
+        .then(async (res) => {
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.answer || "Could not get AI response.");
+            }
+            return data;
+        })
+        .then((data) => {
+            hotelResponse.innerHTML = data.answer;
+        })
+        .catch((error) => {
+            hotelResponse.innerHTML = error.message || "Something went wrong. Please try again.";
+        });
+    }
+    </script>
+
+{{--animation--}}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll(".highlights-container, .exp-card, .info-combined-card, .photo, .ai-pro-box");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        elements.forEach(el => {
+            el.classList.add("animate");
+            observer.observe(el);
+        });
+    });
+    </script>

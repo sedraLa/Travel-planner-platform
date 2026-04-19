@@ -42,13 +42,13 @@ class DestinationController extends Controller
         $destinations = $query
         ->orderByDesc('clicks') // popular first
         ->paginate(8);
-    
+
     // نحتفظ فيها بس عشان الـ badge
     $popularDestinations = Destination::select('id')
         ->orderByDesc('clicks')
         ->take(6)
         ->get();
-    
+
 
 
         return view('destinations.index',compact('destinations','popularDestinations'));
@@ -114,7 +114,7 @@ class DestinationController extends Controller
             }
         }
 
-       
+
         return redirect()->route('destination.index')->with('success', 'Destination created successfully!');
     }
     /**
@@ -122,24 +122,62 @@ class DestinationController extends Controller
      */
     public function show(string $id)
     {
-        $destination = Destination::with(['images','highlights'])->findOrFail($id);
-        $primaryImage = $destination->images->where('is_primary', true)->first();
+        $destination = Destination::with([
+            'images',
+            'highlights',
+            'activities',
+            'catalogTrips.images', // إذا بدك صور لل trips (اختياري)
+        ])->findOrFail($id);
 
-        //event to increment clicks
+
+
+
+        $primaryImage = $destination->images
+            ->where('is_primary', true)
+            ->first();
+
+
+
+        $limitedActivities = $destination->activities()
+            ->latest()
+            ->take(4)
+            ->get();
+
+        $limitedTrips = $destination->catalogTrips()
+            ->take(4)
+            ->get();
+
         event(new DestinationViewed($destination));
-        return view('destinations.show', compact('destination', 'primaryImage'));
+
+        return view('destinations.show', compact(
+            'destination',
+            'primaryImage',
+            'limitedActivities',
+            'limitedTrips'
+        ));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
+    public function activities(string $id)
+{
+    $destination = Destination::findOrFail($id);
 
-    $destination = Destination::with('highlights', 'images')->findOrFail($id);
+    $activities = $destination->activities()
+        ->latest()
+        ->paginate(12);
 
-    return view('destinations.edit', compact('destination'));
-    }  
+    return view('activities.index', compact('destination', 'activities'));
+}
+
+public function trips(string $id)
+{
+    $destination = Destination::findOrFail($id);
+
+    $trips = $destination->trips()
+        ->latest()
+        ->paginate(12);
+
+    return view('trips.user.index', compact('destination', 'trips'));
+}
 
     /**
      * Update the specified resource in storage.

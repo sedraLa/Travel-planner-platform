@@ -13,24 +13,60 @@
                 <h1>{{ $destination->name }}</h1>
                 <p style="letter-spacing: normal; font-size: 18px;">{{ $destination->description }}</p>
                 <div class="rating-location">
-                    <div class="location">
+                    <div class="rating location">
                         <img src="/images/icons/location-dot-solid-full (4).svg" class="heading-icon">
                         <h5>{{ $destination->city }}, {{ $destination->country }}</h5>
                     </div>
-                    <a style="color:#f4f4f4;" href="">
+                   <!-- <a style="color:#f4f4f4;" href="">
                         <div class="rating">
                             <span>⭐ 4.8 (12487 reviews)</span>
                         </div>
-                    </a>
+                    </a>-->
                 </div>
             </div>
         </div>
     </div>
 
-    <!--Main page-->
     <div class="main-container">
+
+      <!-- AI SECTION -->
+<div class="ai-pro-box">
+    <div class="ai-pro-bg"></div>
+
+    <div class="ai-pro-content">
+
+        <div class="ai-pro-header">
+            <div class="ai-pro-icon">🤖</div>
+            <div>
+                <div class="ai-pro-title">AI Travel Assistant</div>
+                <div class="ai-pro-sub">Ask anything about {{ $destination->name }}</div>
+            </div>
+        </div>
+
+        <div class="ai-pro-actions">
+            <button class="ai-pro-btn" onclick="askPreset('Top things to do')">Top things</button>
+            <button class="ai-pro-btn" onclick="askPreset('Best time to visit')">Best time</button>
+            <button class="ai-pro-btn" onclick="askPreset('Travel tips')">Tips</button>
+            <button class="ai-pro-btn" onclick="askPreset('Laws')">Laws</button>
+            <button class="ai-pro-btn" onclick="askPreset('Hidden gems')">Hidden gems</button>
+            <button class="ai-pro-btn" onclick="askPreset('Food recommendations')">Food</button>
+            <button class="ai-pro-btn" onclick="askPreset('Safety tips')">Safety</button>
+        </div>
+
+        <div class="ai-pro-chat">
+            <input id="ai-input" type="text" placeholder="Ask about this destination...">
+            <button onclick="sendAI()">Ask</button>
+        </div>
+
+        <div id="ai-response" class="ai-pro-response"></div>
+
+    </div>
+</div>
+
+    <!--Main page-->
+
         <!--Highlights section-->
-        <div class="highlights-container">
+        <div class="highlights-container animate">
             <div class="highlights-header">
                 <h1>Must-See Highlights</h1>
                 <p>The absolute essentials that defines this destination</p>
@@ -56,41 +92,62 @@
                 <p>The absolute essentials that define this destination</p>
             </div>
             <!--Experiences cards-->
-            <div class="exp-cards">
-                @forelse ($destination->activities as $activity)
-                    <div class="exp-card">
-                        <img 
-                            src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}" 
-                            alt="{{ $activity->name }}"
-                        >
-                        <h3>{{ $activity->name }}</h3>
-                        <p>{{ $activity->description }}</p>
-                        <button type="button" class="details-btn" 
-                            data-name="{{ $activity->name }}" 
-                            data-description="{{ $activity->description ?? 'No description available.' }}" 
-                            data-destination="{{ $destination->name }}" 
-                            data-duration="{{ $activity->duration }} {{ $activity->duration_unit }}" 
-                            data-price="{{ number_format($activity->price, 2) }}" 
-                            data-category="{{ ucfirst($activity->category) }}" 
-                            data-guide_name="{{ $activity->guide_name ?? 'N/A' }}" 
-                            data-guide_language="{{ $activity->guide_language ?? 'N/A' }}" 
-                            data-availability="{{ $activity->availability ?? 'N/A' }}" 
-                            data-requirements="{{ $activity->requirements ?? 'N/A' }}" 
-                            data-amenities="{{ implode(', ', $activity->amenities ?? []) }}" 
-                            data-highlights="{{ $activity->highlights ?? 'N/A' }}" 
-                            data-difficulty_level="{{ $activity->difficulty_level ?? 'N/A' }}"
-                            data-family_friendly="{{ ucwords(str_replace('_', ' ', $activity->family_friendly)) }}" 
-                            data-pets_allowed="{{ $activity->pets_allowed ? 'Yes' : 'No' }}" 
-                            data-requires_booking="{{ $activity->requires_booking ? 'Yes' : 'No' }}" 
-                            data-image="{{ asset('storage/' . $activity->image) }}">
-                            More Details
-                        </button>
-                    </div>
-                @empty
-                    <p style="padding:20px;">No activities available for this destination.</p>
-                @endforelse
-            </div>
+
+        <div class="exp-cards">
+            @forelse ($limitedActivities as $activity)
+                <div class="exp-card">
+                    <img src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}">
+                    <h3>{{ $activity->name }}</h3>
+                    <p>{{ $activity->description }}</p>
+
+                    <button type="button" class="details-btn"
+                        data-name="{{ $activity->name }}"
+                        data-description="{{ $activity->description }}">
+                        More Details
+                    </button>
+                </div>
+            @empty
+                <p>No activities available.</p>
+            @endforelse
+
+            <!-- SEE ALL CARD -->
+
         </div>
+        <a href="{{ route('destination.activities', $destination->id) }}" class="see-all-card">
+            <div>
+                <span>→</span>
+                <p>View All Activities</p>
+            </div>
+        </a>
+        </div>
+{{--Trips section--}}
+<div class="experiences-container">
+    <div class="exp-header">
+        <h1>Available Trips</h1>
+        <p>Handpicked trips for this destination</p>
+    </div>
+
+    <div class="exp-cards">
+        @forelse ($limitedTrips as $trip)
+            <div class="exp-card">
+                <img src="{{ $trip->images->first() ? asset('storage/' . $trip->images->first()->image_path) : asset('images/default-trip.jpg') }}">
+                <h3>{{ $trip->name }}</h3>
+                <p>{{ $trip->description }}</p>
+                <p><strong>{{ $trip->duration_days }} days</strong></p>
+            </div>
+        @empty
+            <p>No trips available.</p>
+        @endforelse
+
+
+    </div>
+    <a href="{{ route('destination.trips', $destination->id) }}" class="see-all-card">
+        <div>
+            <span>→</span>
+            <p>View All Trips</p>
+        </div>
+    </a>
+</div>
 
         <!--Essential info-->
         <div class="highlights-header" style="text-align: center;">
@@ -98,7 +155,7 @@
             <p>Everything you need to know before you go</p>
         </div>
 
-        <div class="info-combined-card">
+        <div class="info-combined-card animate">
             <div class="info-sections">
                 <!-- Location Info -->
                 <div class="info-section">
@@ -147,7 +204,7 @@
         </div>
         <div class="photo-gallery">
             @forelse ($destination->images as $image)
-               <div class="photo">
+               <div class="photo animate">
                       <img src="{{ asset('storage/' . $image->image_url) }}" class="photo" alt="Destination photo">
                 </div>
             @empty
@@ -273,6 +330,74 @@
         });
     </script>
 
+    {{--Ai script--}}
+    <script>
+        let aiInput = document.getElementById("ai-input");
+let aiResponse = document.getElementById("ai-response");
+
+// preset click
+function askPreset(question) {
+    aiInput.value = question;
+    sendAI();
+}
+
+// send question
+function sendAI() {
+    let question = aiInput.value.trim();
+    if (!question) return;
+
+    aiResponse.style.display = "block";
+    aiResponse.innerHTML = "Thinking... 🤖";
+
+    fetch("{{ route('ai.destination.ask') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            entity_id: {{ $destination->id }},
+            question
+        })
+    })
+    .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.answer || "Could not get AI response.");
+        }
+        return data;
+    })
+    .then((data) => {
+        aiResponse.innerHTML = data.answer;
+    })
+    .catch((error) => {
+        aiResponse.innerHTML = error.message || "Something went wrong. Please try again.";
+    });
+}
+        </script>
+
+{{--animation--}}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll(".highlights-container, .exp-card, .info-combined-card, .photo, .ai-pro-box");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        elements.forEach(el => {
+            el.classList.add("animate");
+            observer.observe(el);
+        });
+    });
+    </script>
+
 <style>
     /* Modal styling */
     .modal {
@@ -376,4 +501,7 @@
     .close:hover {
         color: var(--indigo);
     }
+
+
 </x-app-layout>
+

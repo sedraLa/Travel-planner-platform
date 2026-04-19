@@ -35,6 +35,7 @@ use App\Http\Controllers\UserTripController;
 use App\Http\Controllers\TripBookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ActivityReservationController;
+use App\Http\Controllers\AiAssistantController;
 
 
 
@@ -290,6 +291,12 @@ Route::get('/trip/payment/paypal/callback',
 
 Route::get('/trip-reservations', [TripBookingController::class, 'index'])
 ->name('trip.reservations.index');
+
+// Entity AI assistants
+Route::post('/ai/hotel/ask', [AiAssistantController::class, 'askHotel'])->name('ai.hotel.ask');
+Route::post('/ai/destination/ask', [AiAssistantController::class, 'askDestination'])->name('ai.destination.ask');
+Route::post('/ai/activity/ask', [AiAssistantController::class, 'askActivity'])->name('ai.activity.ask');
+Route::post('/ai/trip/ask', [AiAssistantController::class, 'askTrip'])->name('ai.trip.ask');
 //transport reservations
 Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
 //hotel reservations
@@ -314,7 +321,7 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
  ->name('reviews.store');
 
 
- //show hotel reviews 
+ //show hotel reviews
  Route::get('/hotels/{hotel}/reviews', [ReviewController::class, 'hotelIndex'])
  ->name('hotels.reviews.index');
 
@@ -325,6 +332,9 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 //show guide reviews
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
+
+    Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
+Route::get('/destination/{id}/trips', [DestinationController::class, 'trips'])->name('destination.trips');
 
 });
 

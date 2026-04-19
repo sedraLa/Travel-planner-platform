@@ -790,3 +790,101 @@ body {
 .section.visible {
     animation-play-state: running;
 }
+
+/* AI BOX */
+.ai-box {
+    position: relative;
+    margin: 2rem auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0d1a2e, #0f2c55);
+    color: #fff;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.ai-box-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 30%, rgba(26,95,212,0.25), transparent),
+                radial-gradient(circle at 80% 70%, rgba(14,153,192,0.25), transparent);
+}
+
+.ai-box-content {
+    position: relative;
+    padding: 1.8rem;
+}
+
+.ai-box-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+}
+
+.ai-icon {
+    font-size: 22px;
+}
+
+.ai-title {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+.ai-sub {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.ai-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1rem;
+}
+
+.ai-btn {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 7px 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.2s;
+}
+
+.ai-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.ai-chat {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-chat input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+}
+
+.ai-chat button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.ai-response {
+    margin-top: 1rem;
+    background: rgba(255,255,255,0.08);
+    padding: 12px;
+    border-radius: 4px;
+    display: none;
+    font-size: 14px;
+    line-height: 1.6;
+}
