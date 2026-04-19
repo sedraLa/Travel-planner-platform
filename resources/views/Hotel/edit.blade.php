@@ -233,7 +233,6 @@
 
 <script>
 let allFiles = [];
-let roomFilesMap = {};
 
 function addFilesToInput(input) {
     const newFiles = Array.from(input.files);
@@ -245,41 +244,7 @@ function addFilesToInput(input) {
 
     input.files = dataTransfer.files;
 }
-
-function handleRoomImages(input, index) {
-    const newFiles = Array.from(input.files);
-
-    if (!roomFilesMap[index]) {
-        roomFilesMap[index] = [];
-    }
-
-    roomFilesMap[index] = roomFilesMap[index].concat(newFiles);
-
-    const select = document.getElementById(`room-primary-select-${index}`);
-    const wrapper = document.getElementById(`room-primary-wrapper-${index}`);
-
-    if (select && wrapper) {
-        if (roomFilesMap[index].length > 0) {
-            select.innerHTML = '';
-            wrapper.classList.remove('hidden');
-
-            roomFilesMap[index].forEach((file, i) => {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = file.name;
-                select.appendChild(option);
-            });
-        } else {
-            wrapper.classList.add('hidden');
-        }
-    }
-
-    const dt = new DataTransfer();
-    roomFilesMap[index].forEach(f => dt.items.add(f));
-    input.files = dt.files;
-}
 </script>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const container = document.getElementById('room-types-container');
@@ -387,7 +352,6 @@ function handleRoomImages(input, index) {
         addBtn.addEventListener('click', () => addRoomType());
     });
     </script>
-
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const destinationSelect = document.getElementById('destination_id');
