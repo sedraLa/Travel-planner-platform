@@ -181,6 +181,15 @@
                 </div>
 
             </div>
+
+            <div class="mt-10">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">🏨 Room Types</h3>
+                <p class="text-sm text-gray-500 mb-4">Add one or more room types with pricing, capacity, and gallery images.</p>
+                <div id="room-types-container" class="space-y-6"></div>
+                <button type="button" id="add-room-type-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    + Add Room Type
+                </button>
+            </div>
              
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Create</button>
@@ -260,5 +269,89 @@ document.addEventListener('DOMContentLoaded', function () {
     destinationSelect.addEventListener('change', function () {
         syncCityCountry();
     });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('room-types-container');
+    const addBtn = document.getElementById('add-room-type-btn');
+    let roomTypeIndex = 0;
+    const oldRoomTypes = @json(old('room_types', []));
+
+    const roomTypeTemplate = (index, values = {}) => `
+        <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm room-type-card" data-index="${index}">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="font-semibold text-lg text-gray-800">Room Type #${index + 1}</h4>
+                <button type="button" class="remove-room-type text-red-600 hover:text-red-800 text-sm">Remove</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm text-gray-700">Name</label>
+                    <input type="text" name="room_types[${index}][name]" value="${values.name ?? ''}" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-700">Price Per Night</label>
+                    <input type="number" step="0.01" min="0.01" name="room_types[${index}][price_per_night]" value="${values.price_per_night ?? ''}" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-700">Capacity</label>
+                    <input type="number" min="1" name="room_types[${index}][capacity]" value="${values.capacity ?? ''}" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+                <div>
+                    <label class="text-sm text-gray-700">Quantity</label>
+                    <input type="number" min="0" name="room_types[${index}][quantity]" value="${values.quantity ?? ''}" class="mt-1 block w-full border-gray-300 rounded-md" required>
+                </div>
+            </div>
+            <div class="mt-4">
+                <label class="text-sm text-gray-700">Description</label>
+                <textarea name="room_types[${index}][description]" rows="2" class="mt-1 block w-full border-gray-300 rounded-md">${values.description ?? ''}</textarea>
+            </div>
+            <div class="mt-4">
+                <label class="text-sm text-gray-700">Amenities (comma-separated)</label>
+                <input type="text" name="room_types[${index}][amenities]" value="${values.amenities ?? ''}" class="mt-1 block w-full border-gray-300 rounded-md" placeholder="WiFi, TV, Mini Bar">
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+                <input type="checkbox" id="room_refundable_${index}" name="room_types[${index}][is_refundable]" value="1" ${values.is_refundable ? 'checked' : ''}>
+                <label for="room_refundable_${index}" class="text-sm text-gray-700">Refundable</label>
+            </div>
+            <div class="mt-4">
+                <label class="text-sm text-gray-700">Room Images</label>
+                <input type="file" name="room_types[${index}][images][]" class="mt-1 block w-full" multiple>
+            </div>
+            <div class="mt-4">
+                <label class="text-sm text-gray-700">Primary Image</label>
+                <select name="room_types[${index}][primary_image_choice]" class="mt-1 block w-full border-gray-300 rounded-md">
+                    <option value="new:0">First uploaded image (default)</option>
+                    <option value="new:1">Second uploaded image</option>
+                    <option value="new:2">Third uploaded image</option>
+                    <option value="new:3">Fourth uploaded image</option>
+                </select>
+            </div>
+        </div>
+    `;
+
+    function attachRemoveHandler(card) {
+        card.querySelector('.remove-room-type')?.addEventListener('click', function () {
+            card.remove();
+        });
+    }
+
+    function addRoomType(values = {}) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = roomTypeTemplate(roomTypeIndex, values);
+        const card = wrapper.firstElementChild;
+        container.appendChild(card);
+        attachRemoveHandler(card);
+        roomTypeIndex++;
+    }
+
+    if (oldRoomTypes.length) {
+        oldRoomTypes.forEach(rt => addRoomType(rt));
+    } else {
+        addRoomType();
+    }
+
+    addBtn.addEventListener('click', () => addRoomType());
 });
 </script>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Hotel extends Model
 {
@@ -58,6 +59,11 @@ class Hotel extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class, 'hotel_id');
+    }
+
+    public function roomTypes(): HasMany
+    {
+        return $this->hasMany(RoomType::class, 'hotel_id');
     }
 
     public function favorites(): MorphMany
