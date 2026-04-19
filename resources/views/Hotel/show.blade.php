@@ -277,6 +277,93 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
 
 
+          <!-- Available Room Types -->
+          <div class="highlights-header" style="text-align: center; margin-top:65px;">
+            <h1>Available Room Types</h1>
+            <p>Choose the room type that fits your stay and book directly</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8 mb-10">
+            @forelse($hotel->roomTypes as $roomType)
+                @php
+                    $primaryRoomImage = $roomType->images->firstWhere('is_primary', true) ?? $roomType->images->first();
+                @endphp
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-100">
+                        @if($primaryRoomImage)
+                            <img src="{{ asset('storage/' . $primaryRoomImage->image_url) }}" alt="{{ $roomType->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-gray-500 text-sm">No primary image</div>
+                        @endif
+                    </div>
+
+                    <div class="p-5">
+                        <h3 class="text-xl font-semibold text-gray-900">{{ $roomType->name }}</h3>
+                        <p class="text-blue-700 font-semibold mt-1">${{ number_format($roomType->price_per_night, 2) }} / night</p>
+                        <p class="text-sm text-gray-600 mt-1">Capacity: {{ $roomType->capacity }} guests</p>
+                        <p class="text-sm text-gray-600 mt-1">Available now: {{ max(0, $roomType->quantity) }}</p>
+                        <p class="text-sm text-gray-700 mt-3">{{ $roomType->description }}</p>
+
+                        @if(!empty($roomType->amenities))
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach($roomType->amenities as $amenity)
+                                    <span class="px-2 py-1 rounded-full bg-gray-100 text-xs text-gray-700">{{ $amenity }}</span>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            {{ $roomType->is_refundable ? 'Refundable booking' : 'Non-refundable booking' }}
+                        </p>
+
+                        <details class="mt-4">
+                            <summary class="cursor-pointer text-sm font-medium text-blue-700">View Gallery</summary>
+                            <div class="mt-3 grid grid-cols-2 gap-2">
+                                @forelse($roomType->images as $image)
+                                    <a href="{{ asset('storage/' . $image->image_url) }}" target="_blank">
+                                        <img src="{{ asset('storage/' . $image->image_url) }}" alt="{{ $roomType->name }} image" class="w-full h-24 object-cover rounded-md border border-gray-100">
+                                    </a>
+                                @empty
+                                    <p class="text-xs text-gray-500 col-span-2">No gallery images for this room type yet.</p>
+                                @endforelse
+                            </div>
+                        </details>
+
+                        <details class="mt-4">
+                            <summary class="cursor-pointer inline-flex items-center px-3 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700">Select Room</summary>
+                            <div class="mt-4 border border-gray-100 rounded-xl p-4">
+                                <form method="POST" action="{{ route('reservations.store') }}" class="space-y-3">
+                                    @csrf
+                                    <input type="hidden" name="hotel_id" value="{{ $hotel->id }}">
+                                    <input type="hidden" name="room_type_id" value="{{ $roomType->id }}">
+
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Check In</label>
+                                        <input type="date" name="check_in" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Check Out</label>
+                                        <input type="date" name="check_out" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Guests</label>
+                                        <input type="number" min="1" name="guests" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                    </div>
+
+                                    <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700">
+                                        Confirm & Continue
+                                    </button>
+                                </form>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            @empty
+                <p class="text-gray-600 md:col-span-2 xl:col-span-3 text-center">No room types available at this hotel yet.</p>
+            @endforelse
+          </div>
+
+
                   <!--Photo Gallery-->
         <div class="highlights-header" style="text-align: center; margin-top:65px;margin-bottom:-60px">
             <h1>Photo Gallery</h1>

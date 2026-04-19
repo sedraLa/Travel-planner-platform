@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Hotel;
 use App\Models\Destination;
 use App\Models\HotelImage;
+use App\Models\RoomType;
 use App\Models\Reservation;
 use App\Http\Requests\HotelRequest;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Services\GeocodingService;
+use Illuminate\Support\Facades\DB;
 
 
 class HotelController extends Controller
@@ -81,7 +83,12 @@ class HotelController extends Controller
 
 public function show(string $id, GeocodingService $geo)
 {
-    $hotel = Hotel::with(['images','reviews.user'])->findOrFail($id);
+    $hotel = Hotel::with([
+        'images',
+        'reviews.user',
+        'roomTypes.images',
+        'roomTypes.primaryImage',
+    ])->findOrFail($id);
 
     
     $primaryImage = $hotel->images->where('is_primary', true)->first();
@@ -120,50 +127,55 @@ public function create()
  ///store
 
  public function store(HotelRequest $request) {
-    //save hotel details
-    $hotel = Hotel::create([
-        'name' => $request->name,
-        'description' => $request->description,
-        'address' => $request->address,
-        'price_per_night' => $request->price_per_night,
-        'global_rating' => $request->global_rating,
-        'total_rooms' => $request->total_rooms,
-        'destination_id' => $request->destination_id,
-        'city' => $request->city,
-        'country' => $request->country,
-        'stars'            => $request->stars,
-        'pets_allowed' => $request->pets_allowed,
-        'check_in_time'   => $request->check_in_time,
-        'check_out_time'   => $request->check_out_time,    
-        'policies'         => $request->policies,  
-        'phone_number'     => $request->phone_number,  
-        'email'            => $request->email,     
-        'website'          => $request->website, 
-        'nearby_landmarks' => $request->nearby_landmarks,    
-        'amenities'        => $request->amenities, 
-    ]);
+    $hotel = null;
 
-    //save images
+    DB::transaction(function () use ($request, &$hotel) {
+        //save hotel details
+        $hotel = Hotel::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'address' => $request->address,
+            'price_per_night' => $request->price_per_night,
+            'global_rating' => $request->global_rating,
+            'total_rooms' => $request->total_rooms,
+            'destination_id' => $request->destination_id,
+            'city' => $request->city,
+            'country' => $request->country,
+            'stars'            => $request->stars,
+            'pets_allowed' => $request->pets_allowed,
+            'check_in_time'   => $request->check_in_time,
+            'check_out_time'   => $request->check_out_time,
+            'policies'         => $request->policies,
+            'phone_number'     => $request->phone_number,
+            'email'            => $request->email,
+            'website'          => $request->website,
+            'nearby_landmarks' => $request->nearby_landmarks,
+            'amenities'        => $request->amenities,
+        ]);
 
-    if($request->hasFile('images')) {
-        foreach($request->file('images') as $index => $image) {
-            $imagePath = MediaServices::save($image,'image','Hotels');
+        //save hotel images (existing logic)
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $index => $image) {
+                $imagePath = MediaServices::save($image, 'image', 'Hotels');
 
-            $hotel->images()->create([
-                'image_url' => $imagePath,
-                'is_primary' => $request->primary_image_index==$index,
-            ]);
+                $hotel->images()->create([
+                    'image_url' => $imagePath,
+                    'is_primary' => $request->primary_image_index == $index,
+                ]);
+            }
         }
-    }
+
+        $this->syncRoomTypes($hotel, $request, false);
+    });
 
     return redirect()->route('hotels.index')->with('success','Hotel has been created successfully');
  }
 
  ///edit
 
- public function edit($id)
+public function edit($id)
 {
-    $hotel = Hotel::with('images')->findOrFail($id);
+    $hotel = Hotel::with(['images', 'roomTypes.images'])->findOrFail($id);
     $destinations = Destination::all();
     return view('hotel.edit', compact('hotel', 'destinations'));
 }
@@ -171,24 +183,123 @@ public function create()
 ///update
 
 public function update(HotelRequest $request, $id) {
-    $hotel = Hotel::findOrFail($id);
-    $hotel->update($request->validated());
+    $hotel = Hotel::with('roomTypes.images')->findOrFail($id);
 
-//handle new image upload
-    if ($request->hasFile('images')) {
-        foreach ($request->file('images') as $imageFile) {
-            $path = MediaServices::save($imageFile, 'image', 'hotels');
+    DB::transaction(function () use ($request, $hotel) {
+        $hotel->update($request->validated());
 
-            HotelImage::create([
-                'hotel_id' => $hotel->id,
-                'image_url' => $path,
-                'is_primary' => false,
-            ]);
+        //handle new image upload (existing logic)
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imageFile) {
+                $path = MediaServices::save($imageFile, 'image', 'hotels');
+
+                HotelImage::create([
+                    'hotel_id' => $hotel->id,
+                    'image_url' => $path,
+                    'is_primary' => false,
+                ]);
+            }
         }
-    }
+
+        $this->syncRoomTypes($hotel, $request, true);
+    });
 
     return redirect()->route('hotels.index', $hotel->id)->with('success', 'Hotel updated successfully');
 
+}
+
+private function syncRoomTypes(Hotel $hotel, Request $request, bool $isUpdate): void
+{
+    $roomTypesData = $request->input('room_types', []);
+    $roomTypeFiles = $request->file('room_types', []);
+    $submittedIds = collect($roomTypesData)
+        ->pluck('id')
+        ->filter()
+        ->map(fn ($id) => (int) $id)
+        ->all();
+
+    if ($isUpdate) {
+        $deletedRoomTypes = $hotel->roomTypes()->whereNotIn('id', $submittedIds)->with('images')->get();
+        foreach ($deletedRoomTypes as $deletedRoomType) {
+            foreach ($deletedRoomType->images as $image) {
+                Storage::delete('public/' . $image->image_url);
+            }
+            $deletedRoomType->delete();
+        }
+    }
+
+    foreach ($roomTypesData as $index => $roomData) {
+        $amenities = array_values(array_filter(array_map('trim', explode(',', (string) ($roomData['amenities'] ?? '')))));
+
+        $roomType = isset($roomData['id']) && $roomData['id']
+            ? $hotel->roomTypes()->where('id', $roomData['id'])->first()
+            : null;
+
+        if (!$roomType) {
+            $roomType = $hotel->roomTypes()->create([
+                'name' => $roomData['name'],
+                'price_per_night' => $roomData['price_per_night'],
+                'capacity' => $roomData['capacity'],
+                'quantity' => $roomData['quantity'],
+                'description' => $roomData['description'] ?? null,
+                'amenities' => $amenities,
+                'is_refundable' => isset($roomData['is_refundable']),
+            ]);
+        } else {
+            $roomType->update([
+                'name' => $roomData['name'],
+                'price_per_night' => $roomData['price_per_night'],
+                'capacity' => $roomData['capacity'],
+                'quantity' => $roomData['quantity'],
+                'description' => $roomData['description'] ?? null,
+                'amenities' => $amenities,
+                'is_refundable' => isset($roomData['is_refundable']),
+            ]);
+        }
+
+        $removeImageIds = collect($roomData['remove_existing_image_ids'] ?? [])
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        if (!empty($removeImageIds)) {
+            $imagesToDelete = $roomType->images()->whereIn('id', $removeImageIds)->get();
+            foreach ($imagesToDelete as $imageToDelete) {
+                Storage::delete('public/' . $imageToDelete->image_url);
+                $imageToDelete->delete();
+            }
+        }
+
+        $newImageIds = [];
+        $uploadedImages = data_get($roomTypeFiles, "{$index}.images", []);
+        foreach ($uploadedImages as $imageFile) {
+            $imagePath = MediaServices::save($imageFile, 'image', 'room-types');
+            $newImage = $roomType->images()->create([
+                'image_url' => $imagePath,
+                'is_primary' => false,
+            ]);
+            $newImageIds[] = $newImage->id;
+        }
+
+        $primaryChoice = $roomData['primary_image_choice'] ?? $roomData['primary_new_image_choice'] ?? null;
+        $roomType->images()->update(['is_primary' => false]);
+
+        if (is_string($primaryChoice) && str_starts_with($primaryChoice, 'existing:')) {
+            $primaryId = (int) str_replace('existing:', '', $primaryChoice);
+            $roomType->images()->where('id', $primaryId)->update(['is_primary' => true]);
+        } elseif (is_string($primaryChoice) && str_starts_with($primaryChoice, 'new:')) {
+            $newIndex = (int) str_replace('new:', '', $primaryChoice);
+            if (isset($newImageIds[$newIndex])) {
+                $roomType->images()->where('id', $newImageIds[$newIndex])->update(['is_primary' => true]);
+            }
+        }
+
+        if (!$roomType->images()->where('is_primary', true)->exists()) {
+            $firstImage = $roomType->images()->first();
+            if ($firstImage) {
+                $firstImage->update(['is_primary' => true]);
+            }
+        }
+    }
 }
 
 //delete image
