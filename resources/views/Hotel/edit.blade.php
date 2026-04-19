@@ -222,6 +222,50 @@
     </div>
 </div>
         @endif
+
+@if($hotel->roomTypes->count())
+<div class="mt-10">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Room Types & Images</h3>
+
+    <div class="space-y-8">
+        @foreach($hotel->roomTypes as $roomType)
+            <div class="border rounded-xl p-4 bg-white dark:bg-gray-900">
+                <div class="mb-4">
+                    <h4 class="text-md font-semibold text-gray-800 dark:text-gray-100">{{ $roomType->name }}</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Price: ${{ number_format($roomType->price_per_night, 2) }} |
+                        Capacity: {{ $roomType->capacity }} |
+                        Quantity: {{ $roomType->quantity }}
+                    </p>
+                    @if($roomType->description)
+                        <p class="text-sm text-gray-500 mt-1">{{ $roomType->description }}</p>
+                    @endif
+                </div>
+
+                @if($roomType->images->count())
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        @foreach($roomType->images as $image)
+                            <div class="relative group border rounded shadow overflow-hidden h-48 bg-white dark:bg-gray-900">
+                                <img src="{{ asset('storage/' . $image->image_url) }}"
+                                    class="w-full h-full object-cover"
+                                    alt="{{ $roomType->name }} image">
+
+                                @if ($image->is_primary)
+                                    <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
+                                        Primary
+                                    </span>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500">No images uploaded for this room type.</p>
+                @endif
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
             </div>
         </div>
     </div>
