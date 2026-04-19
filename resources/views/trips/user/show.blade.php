@@ -719,14 +719,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 <script>
     function askAI(type) {
+        const presetQuestions = {
+            laws: "What important local laws or rules should I know for this trip?",
+            tips: "Give me practical tips to enjoy this trip smoothly.",
+            warnings: "What are the main cautions or common mistakes to avoid on this trip?",
+            costs: "How should I think about budgeting and extra costs for this trip?"
+        };
+        const question = presetQuestions[type] ?? "Give me helpful advice about this trip.";
         const responseBox = document.getElementById('ai-response');
         responseBox.style.display = 'block';
-        responseBox.innerHTML = "Loading...";
+        responseBox.innerHTML = "Thinking...";
 
-        fetch(`/ai/trip/{{ $trip->id }}?type=` + type)
-            .then(res => res.json())
+        fetch("{{ route('ai.trip.ask') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                entity_id: {{ $trip->id }},
+                question
+            })
+        })
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.answer || "Could not get AI response.");
+                }
+                return data;
+            })
             .then(data => {
                 responseBox.innerHTML = data.answer;
+            })
+            .catch((error) => {
+                responseBox.innerHTML = error.message || "Something went wrong. Please try again.";
             });
     }
 
@@ -739,17 +765,29 @@ document.addEventListener('DOMContentLoaded', function () {
         responseBox.style.display = 'block';
         responseBox.innerHTML = "Thinking...";
 
-        fetch(`/ai/trip/{{ $trip->id }}`, {
+        fetch("{{ route('ai.trip.ask') }}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
             },
-            body: JSON.stringify({ question: input })
+            body: JSON.stringify({
+                entity_id: {{ $trip->id }},
+                question: input
+            })
         })
-        .then(res => res.json())
+        .then(async (res) => {
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.answer || "Could not get AI response.");
+            }
+            return data;
+        })
         .then(data => {
             responseBox.innerHTML = data.answer;
+        })
+        .catch((error) => {
+            responseBox.innerHTML = error.message || "Something went wrong. Please try again.";
         });
     }
     </script>

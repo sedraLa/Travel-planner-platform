@@ -349,25 +349,30 @@ function sendAI() {
     aiResponse.style.display = "block";
     aiResponse.innerHTML = "Thinking... 🤖";
 
-    setTimeout(() => {
-        aiResponse.innerHTML = generateResponse(question);
-    }, 800);
-}
-
-// fake AI brain (مؤقت)
-function generateResponse(q) {
-    q = q.toLowerCase();
-
-    if (q.includes("top")) return "Top attractions include landmarks, viewpoints, and cultural spots worth visiting.";
-    if (q.includes("best time")) return "Best time is usually spring or autumn depending on weather conditions.";
-    if (q.includes("tips")) return "Always plan ahead, avoid peak hours, and keep local currency.";
-    if (q.includes("laws")) return "Laws depends on lifestyle, but mid-range travel is usually safe.";
-    if (q.includes("hidden")) return "Hidden gems are local streets, small cafes, and non-touristic spots.";
-    if (q.includes("food")) return "Try local cuisine, street food, and traditional restaurants.";
-    if (q.includes("safety")) return "Generally safe, just stay aware of surroundings.";
-    if (q.includes("days")) return "Usually 2–5 days are enough depending on itinerary depth.";
-
-    return "Ask me about attractions, food, transport, budget, or travel tips.";
+    fetch("{{ route('ai.destination.ask') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({
+            entity_id: {{ $destination->id }},
+            question
+        })
+    })
+    .then(async (res) => {
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.answer || "Could not get AI response.");
+        }
+        return data;
+    })
+    .then((data) => {
+        aiResponse.innerHTML = data.answer;
+    })
+    .catch((error) => {
+        aiResponse.innerHTML = error.message || "Something went wrong. Please try again.";
+    });
 }
         </script>
 
@@ -499,5 +504,4 @@ function generateResponse(q) {
 
 
 </x-app-layout>
-
 
