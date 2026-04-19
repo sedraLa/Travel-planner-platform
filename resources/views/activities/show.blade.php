@@ -11,12 +11,12 @@
 <div class="hero">
   <div class="hero-img-wrap">
    <img id="heroImg"class="hero-img"src="{{ asset('storage/' . $activity->image) }}"alt="activity ph"onerror="this.style.display='none'">
-  
+
   </div>
   <div class="hero-pattern"></div>
   <div class="hero-overlay"></div>
 
-  
+
   <input type="file" id="imgUpload" accept="image/*" style="display:none;">
 
   <div class="hero-content">
@@ -53,6 +53,57 @@
 
     </div>
   </div>
+</div>
+
+{{-- ══ AI ACTIVITY ASSISTANT ═════════════════════════ --}}
+<div class="ai-box">
+
+    <div class="ai-box-bg"></div>
+
+    <div class="ai-box-content">
+
+        <div class="ai-box-header">
+            <div class="ai-icon">✨</div>
+
+            <div>
+                <div class="ai-title">
+                    Smart Activity Assistant
+                </div>
+                <div class="ai-sub">
+                    Ask anything about this activity
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-actions">
+
+            <button onclick="askActivityAI('tips')" class="ai-btn">
+                💡 Tips
+            </button>
+
+            <button onclick="askActivityAI('safety')" class="ai-btn">
+                ⚠️ Safety
+            </button>
+
+            <button onclick="askActivityAI('what_to_bring')" class="ai-btn">
+                🎒 What to bring
+            </button>
+
+            <button onclick="askActivityAI('best_time')" class="ai-btn">
+                🕒 Best time
+            </button>
+
+        </div>
+
+        <div class="ai-chat">
+            <input id="activity-ai-input" placeholder="Ask anything..." />
+            <button onclick="sendActivityQuestion()">Ask</button>
+        </div>
+
+        <div id="activity-ai-response" class="ai-response"></div>
+
+    </div>
+
 </div>
 
 <!-- STICKY NAV -->
@@ -111,7 +162,7 @@
       </p>
       <div class="category-strip">
         <span class="tag tag-accent">{{ ucfirst($activity->category) }}</span>
-        
+
       </div>
     </div>
 
@@ -187,7 +238,7 @@
     </span>
   </div>
 
-  
+
 </div>
     <!-- POLICIES -->
     <div class="section">
@@ -226,7 +277,7 @@
              {{ $activity->pets_allowed ? 'Yes' : 'No'}}
           </div></td>
         </tr>
-        
+
       </table>
     </div>
 
@@ -283,10 +334,10 @@
     <div class="side-card" id="contact">
       <div class="side-card-head">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0e99c0" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.63A2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14h-2 2v2.92z"/></svg>
-       Contact information 
+       Contact information
       </div>
       <div class="side-card-body" style="padding-top:0.5rem;">
-        
+
           @if($isAdmin||$hasPaidReservation)
         <div class="contact-row">
           <div class="contact-icon">
@@ -406,7 +457,7 @@
     setTimeout(function() {
         map.invalidateSize();
     }, 500);
-    
+
     // محاولة ثانية للتأكيد بعد ثانية واحدة
     setTimeout(function() {
         map.invalidateSize();
@@ -464,5 +515,39 @@
   document.querySelectorAll('.section').forEach(s => observer.observe(s));
 </script>
 
+<script>
+    function askActivityAI(type) {
+        const box = document.getElementById('activity-ai-response');
+        box.style.display = 'block';
+        box.innerHTML = "Loading...";
 
+        fetch(`/ai/activity/{{ $activity->id }}?type=` + type)
+            .then(res => res.json())
+            .then(data => {
+                box.innerHTML = data.answer;
+            });
+    }
 
+    function sendActivityQuestion() {
+        const input = document.getElementById('activity-ai-input').value;
+        const box = document.getElementById('activity-ai-response');
+
+        if (!input) return;
+
+        box.style.display = 'block';
+        box.innerHTML = "Thinking...";
+
+        fetch(`/ai/activity/{{ $activity->id }}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ question: input })
+        })
+        .then(res => res.json())
+        .then(data => {
+            box.innerHTML = data.answer;
+        });
+    }
+    </script>

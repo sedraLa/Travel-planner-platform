@@ -70,14 +70,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         <span style="color:#f59e0b;font-weight:600;">
                             ⭐ {{ number_format($hotel->average_rating, 1) }}
                         </span>
-                    
+
                         <span style="font-size:13px;color:#ddd;">
                             ({{ $hotel->reviews_count }} reviews)
                         </span>
                     </div>
             </a>
 
-           
+
 
 
               </div>
@@ -91,6 +91,39 @@ document.addEventListener("DOMContentLoaded", function () {
           <!--Maps section-->
 <div id="hotel-map" style="width: 100%; height: 400px; margin: 20px 0; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"></div>
 
+<!-- AI SECTION FOR HOTEL -->
+<div class="ai-pro-box">
+    <div class="ai-pro-bg"></div>
+
+    <div class="ai-pro-content">
+
+        <div class="ai-pro-header">
+            <div class="ai-pro-icon">🏨</div>
+            <div>
+                <div class="ai-pro-title">AI Hotel Assistant</div>
+                <div class="ai-pro-sub">Ask anything about {{ $hotel->name }}</div>
+            </div>
+        </div>
+
+        <div class="ai-pro-actions">
+            <button class="ai-pro-btn" onclick="askHotelPreset('Is this hotel worth the price?')">Worth it?</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Is it good for couples or honeymoon?')">For Couples</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('What are the pros and cons of this hotel?')">Pros & Cons</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Which room should I choose?')">Best Rooms</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Any hidden gems nearby?')">Nearby Spots</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Tips to get best price')">Save Money</button>
+            <button class="ai-pro-btn" onclick="askHotelPreset('Is it good for business travel?')">Business</button>
+        </div>
+
+        <div class="ai-pro-chat">
+            <input id="hotel-ai-input" type="text" placeholder="Ask about this hotel...">
+            <button onclick="sendHotelAI()">Ask</button>
+        </div>
+
+        <div id="hotel-ai-response" class="ai-pro-response"></div>
+
+    </div>
+</div>
         <!--Highlights section-->
         <div class="highlights-container">
             <div class="highlights-header">
@@ -316,3 +349,105 @@ document.addEventListener("DOMContentLoaded", function () {
       if (e.target === popup) popup.style.display = 'none';
     });
   </script>
+
+
+<script>
+    let hotelInput = document.getElementById("hotel-ai-input");
+    let hotelResponse = document.getElementById("hotel-ai-response");
+
+    // preset
+    function askHotelPreset(q) {
+        hotelInput.value = q;
+        sendHotelAI();
+    }
+
+    // send
+    function sendHotelAI() {
+        let question = hotelInput.value.trim();
+        if (!question) return;
+
+        hotelResponse.style.display = "block";
+        hotelResponse.innerHTML = "Thinking... 🤖";
+
+        setTimeout(() => {
+            hotelResponse.innerHTML = generateHotelResponse(question);
+        }, 700);
+    }
+
+    // fake brain
+    function generateHotelResponse(q) {
+    q = q.toLowerCase();
+
+    const price = {{ $hotel->price_per_night }};
+    const city = "{{ $hotel->destination->city }}";
+    const country = "{{ $hotel->destination->country }}";
+    const amenities = @json($hotel->amenities ?? []);
+    const nearby = "{{ $hotel->nearby_landmarks }}";
+    const pets = "{{ $hotel->pets_allowed }}";
+
+    // 💰 value / worth
+    if (q.includes("worth") || q.includes("price")) {
+        return `At $${price} per night in ${city}, this hotel is ${price > 150 ? "mid-to-high range" : "budget-friendly"}. It offers decent value depending on season and demand.`;
+    }
+
+    // 💑 couples / honeymoon
+    if (q.includes("couple") || q.includes("honeymoon")) {
+        return "This hotel is suitable for couples looking for comfort and convenience. If you want privacy and quiet stay, higher floors are recommended.";
+    }
+
+    // ⚖️ pros & cons
+    if (q.includes("pros") || q.includes("cons")) {
+        return `Pros: good location in ${city}, ${amenities.slice(0,2).join(", ")}. Cons: depends on availability and seasonal pricing.`;
+    }
+
+    // 🛏️ rooms
+    if (q.includes("room")) {
+        return "Higher floors usually offer better views and less noise. Rooms facing city side are more recommended.";
+    }
+
+    // 💸 saving money
+    if (q.includes("save") || q.includes("best price")) {
+        return "Book early or during off-season. Weekdays are usually cheaper than weekends.";
+    }
+
+    // 📍 nearby
+    if (q.includes("nearby")) {
+        return `Around the hotel you can find: ${nearby}. Some hidden local spots are usually within walking distance.`;
+    }
+
+    // 💼 business
+    if (q.includes("business")) {
+        return "Good for business travel due to location and accessibility, but check Wi-Fi speed and workspace availability.";
+    }
+
+    // 🐾 pets
+    if (q.includes("pets")) {
+        return `Pets allowed: ${pets}. Always confirm restrictions for size or breed.`;
+    }
+
+    // default
+    return "I can help you decide if this hotel is worth it, good for couples, business travel, or how to get the best deal.";
+}
+    </script>
+
+{{--animation--}}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll(".highlights-container, .exp-card, .info-combined-card, .photo, .ai-pro-box");
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("show");
+                }
+            });
+        }, {
+            threshold: 0.15
+        });
+
+        elements.forEach(el => {
+            el.classList.add("animate");
+            observer.observe(el);
+        });
+    });
+    </script>

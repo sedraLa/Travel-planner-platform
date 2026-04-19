@@ -48,6 +48,57 @@
         </div>
     </div>
 
+   {{-- ══ AI TRAVEL INSIGHTS PRO ═════════════════════════ --}}
+<div class="ai-pro-box">
+
+    <div class="ai-pro-bg"></div>
+
+    <div class="ai-pro-content">
+
+        <div class="ai-pro-header">
+            <div class="ai-pro-icon">✨</div>
+
+            <div>
+                <div class="ai-pro-title">
+                    Smart Travel Assistant
+                </div>
+                <div class="ai-pro-sub">
+                    Get instant insights about your trip
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-pro-actions">
+
+            <button onclick="askAI('laws')" class="ai-pro-btn">
+                <span>📜</span> Laws
+            </button>
+
+            <button onclick="askAI('tips')" class="ai-pro-btn">
+                <span>💡</span> Tips
+            </button>
+
+            <button onclick="askAI('warnings')" class="ai-pro-btn">
+                <span>⚠️</span> Warnings
+            </button>
+
+            <button onclick="askAI('costs')" class="ai-pro-btn">
+                <span>💰</span> Costs
+            </button>
+
+        </div>
+
+        <div class="ai-pro-chat">
+            <input id="ai-input" placeholder="Ask something smart..." />
+            <button onclick="sendCustomQuestion()">Ask</button>
+        </div>
+
+        <div id="ai-response" class="ai-pro-response"></div>
+
+    </div>
+
+</div>
+
     {{-- ══ STAT CARDS ═══════════════════════════════════ --}}
     <div class="grid3">
         <div class="stat-card">
@@ -337,49 +388,49 @@
 
     @if($reviews->count())
     <div class="section" id="reviews-section">
-    
+
         <div class="section-title">
             Reviews ({{ $reviewsCount }})
         </div>
-    
+
         <div style="display:grid;gap:12px;">
-    
+
             @foreach($reviews as $review)
             <div class="review-card">
-    
+
                 <div class="review-top">
                     <div class="user-name">
                         {{ $review->user?->full_name ?? 'Anonymous' }}
                     </div>
-    
+
                     <div class="date">
                         {{ $review->created_at->format('d M Y') }}
                     </div>
                 </div>
-    
+
                 <div class="rating">
                     @for($i=0; $i < 5; $i++)
                         <span style="color:{{ $i < $review->rating ? '#f59e0b' : '#e5e7eb' }}">★</span>
                     @endfor
                 </div>
-    
+
                 <div class="review-text">
                     {{ $review->review }}
                 </div>
-    
+
             </div>
             @endforeach
-    
+
         </div>
-    
-      
+
+
         <div style="margin-top:15px;text-align:center;">
             <a href="{{ route('trip.reviews.index', $trip->id) }}"
                style="display:inline-block;padding:10px 16px;background:#185FA5;color:#fff;border-radius:10px;text-decoration:none;">
                 View all reviews
             </a>
         </div>
-    
+
     </div>
     @endif
 
@@ -424,43 +475,43 @@
       {{-- Assigned guide --}}
       @if($trip->assignedGuide)
       <div class="side-card">
-      
+
           <div class="section-title">Assigned Guide</div>
-      
+
           <div class="guide-row">
-      
+
               <div class="guide-avatar">
                   {{ strtoupper(substr($trip->assignedGuide?->user?->name ?? 'G', 0, 1)) }}
               </div>
-      
+
               <div style="flex:1">
                   <div style="font-size:14px;font-weight:500;">
                       {{ $trip->assignedGuide?->user?->name }}
                   </div>
-      
+
                   <div style="font-size:12px;color:#888">
                       {{ $trip->assignedGuide->years_of_experience ?? 0 }} years experience
                   </div>
-      
+
                   {{-- rating --}}
                   <div style="margin-top:4px;font-size:13px;color:#f59e0b">
                       @php $r = $guideRating ?? 0; @endphp
                       @for($i=1; $i<=5; $i++)
                           <span style="color:{{ $i <= $r ? '#f59e0b' : '#e5e7eb' }}">★</span>
                       @endfor
-      
+
                       <span style="color:#666;font-size:12px;">
                           ({{ number_format($r,1) }})
                       </span>
                   </div>
               </div>
-      
+
               <a href="{{ route('reviews.guide', $trip->assignedGuide->id) }}"
                  style="margin-left:auto;background:#185FA5;color:white;
                  font-size:11px;padding:6px 10px;border-radius:12px;text-decoration:none;">
                   Reviews
               </a>
-      
+
           </div>
       </div>
       @endif
@@ -665,3 +716,40 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
+
+<script>
+    function askAI(type) {
+        const responseBox = document.getElementById('ai-response');
+        responseBox.style.display = 'block';
+        responseBox.innerHTML = "Loading...";
+
+        fetch(`/ai/trip/{{ $trip->id }}?type=` + type)
+            .then(res => res.json())
+            .then(data => {
+                responseBox.innerHTML = data.answer;
+            });
+    }
+
+    function sendCustomQuestion() {
+        const input = document.getElementById('ai-input').value;
+        const responseBox = document.getElementById('ai-response');
+
+        if (!input) return;
+
+        responseBox.style.display = 'block';
+        responseBox.innerHTML = "Thinking...";
+
+        fetch(`/ai/trip/{{ $trip->id }}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ question: input })
+        })
+        .then(res => res.json())
+        .then(data => {
+            responseBox.innerHTML = data.answer;
+        });
+    }
+    </script>

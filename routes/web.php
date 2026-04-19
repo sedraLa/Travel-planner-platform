@@ -314,7 +314,7 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
  ->name('reviews.store');
 
 
- //show hotel reviews 
+ //show hotel reviews
  Route::get('/hotels/{hotel}/reviews', [ReviewController::class, 'hotelIndex'])
  ->name('hotels.reviews.index');
 
@@ -325,6 +325,9 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 //show guide reviews
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
+
+    Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
+Route::get('/destination/{id}/trips', [DestinationController::class, 'trips'])->name('destination.trips');
 
 });
 

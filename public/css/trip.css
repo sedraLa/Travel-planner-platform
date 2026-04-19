@@ -887,3 +887,139 @@ body {
     color:#444;
     line-height:1.6;
 }
+
+/* ── AI PRO SECTION ───────────────────────── */
+
+.ai-pro-box {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    margin: 25px 0;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+}
+
+/* خلفية fancy */
+.ai-pro-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #185FA5, #3FA7F5, #1D9E75);
+    opacity: 0.9;
+}
+
+/* محتوى */
+.ai-pro-content {
+    position: relative;
+    padding: 20px;
+    color: white;
+}
+
+/* header */
+.ai-pro-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.ai-pro-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.ai-pro-title {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.ai-pro-sub {
+    font-size: 12px;
+    opacity: 0.85;
+}
+
+/* actions */
+.ai-pro-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.ai-pro-btn {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.25s ease;
+}
+
+.ai-pro-btn:hover {
+    background: white;
+    color: #185FA5;
+    transform: translateY(-2px) scale(1.03);
+}
+
+/* chat */
+.ai-pro-chat {
+    display: flex;
+    gap: 8px;
+}
+
+.ai-pro-chat input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    font-size: 13px;
+
+    background: #fff;
+    color: #1a1a1a;
+}
+.ai-pro-chat button {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: #fff;
+    color: #185FA5;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.ai-pro-chat button:hover {
+    transform: scale(1.05);
+}
+
+/* response */
+.ai-pro-response {
+    margin-top: 12px;
+    background: white;
+    color: #1a1a1a;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    display: none;
+    line-height: 1.6;
+}
+
+.ai-pro-box::after {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    top: -50px;
+    right: -50px;
+}
