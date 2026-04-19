@@ -82,6 +82,8 @@ Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDesti
 Route::get('/hotels/create',[HotelController::class,'create'])->name('hotels.create');
 Route::post('/hotels',[HotelController::class,'store'])->name('hotels.store');
 Route::get('/hotels/{hotel}/edit', [HotelController::class, 'edit'])->name('hotels.edit');
+Route::get('/hotels/{id}/room-types/edit', [HotelController::class, 'editRoomTypes'])->name('hotels.room-types.edit');
+Route::put('/hotels/{id}/room-types', [HotelController::class, 'updateRoomTypes'])->name('hotels.room-types.update');
 Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update');
 Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
 Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
