@@ -31,7 +31,7 @@ class HotelRequest extends FormRequest
             'destination_id' => 'required|exists:destinations,id',
             'primary_image_index' => 'nullable|integer|min:0',
             'stars'             => 'nullable|in:1,2,3,4,5',
-            'pets_allowed'       => 'nullable|in:allowed,not_allowed',
+            'pets_allowed'       => 'nullable|boolean',
             'check_in_time'     => 'nullable|date_format:H:i',
             'check_out_time'    => 'nullable|date_format:H:i|after:check_in_time', 
             'policies'          => 'nullable|string',
