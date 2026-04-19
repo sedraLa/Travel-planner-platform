@@ -34,6 +34,7 @@ use App\Http\Controllers\GuideController;
 use App\Http\Controllers\UserTripController;
 use App\Http\Controllers\TripBookingController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ActivityReservationController;
 
 
 
@@ -168,6 +169,8 @@ Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.de
 Route::get('/trips/ai/create',[AiTripController::class,'create'])->name('ai.create');
 Route::post('/trips/ai/generate',[AiTripGenerationController::class,'generate'])->name('ai.generate');
 Route::get('/trips/{trip}', [AiTripController::class, 'show'])->name('ai.show');
+Route::get('/trips/{trip}/edit', [AiTripController::class, 'edit'])->name('ai.edit');
+Route::put('/trips/{trip}', [AiTripController::class, 'update'])->name('ai.update');
 Route::get('/trips/{trip}/complete', [AiTripController::class, 'editCompletion'])->name('trip.complete.edit');
 Route::post('/trips/{trip}/complete/basics', [AiTripCompletionController::class, 'saveBasics'])->name('trip.complete.basics');
 Route::post('/trips/{trip}/complete/days', [AiTripCompletionController::class, 'saveDaysActivities'])->name('trip.complete.days');
@@ -262,7 +265,7 @@ Route::get('/show-favourite', [FavoriteController::class, 'showFavorites'])->nam
 
 //Activities routes
 Route::get('/activities',[ActivityController::class,'index'])->name('activities.index');
-Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
+Route::get('activity/{id}/details', [ActivityController::class, 'show'])->name('Activity.show');
 
 
 //notifications routes
@@ -292,10 +295,16 @@ Route::get('/vehicle-reservations',  [TransportReservationController::class, 'in
 //hotel reservations
 Route::get('/reservations', [ReservationController::class, 'index']) ->name('reservations.index');
 
+
+
+ //Activityreservation routes
+Route::get('/activity/{id}/reserve', [ActivityReservationController::class, 'showReservationForm'])->name('activity.reservations.form');
+Route::post('/activity-reservations', [ActivityReservationController::class, 'store'])->name('activity.reservations.store');
+Route::get('/actvivty-reservations/{activityreservation}/pay', [ActivityReservationController::class, 'pay'])->name('activity-reservations.pay');
+Route::post('/actvivit/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPalActivity'])->name('actvivty.payment.paypal');
+Route::get('/payment/paypal/activity/callback', [PaymentController::class, 'paypalCallbackActivity'])->name('payment.activity.callback');
+
 //Reviews routes
-
-
-
 //create review
 Route::get('/reviews/create', [ReviewController::class, 'create'])
     ->name('reviews.create');
@@ -318,6 +327,7 @@ Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
 
 });
+
 
 
 

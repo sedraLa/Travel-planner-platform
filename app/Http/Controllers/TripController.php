@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Trip;
 use App\Models\Activity;
 use App\Models\Guide;
+use App\Notifications\GuideTripDeletedNotification;
+use Illuminate\Support\Facades\DB;
 
 class TripController extends Controller
 {
@@ -50,7 +52,24 @@ class TripController extends Controller
 
     public function destroy(Trip $trip)
     {
-        $trip->delete();
+        if ($trip->reservations()->exists()) {
+            return back()->with('error', 'This trip has reservations and cannot be deleted.');
+        }
+
+        DB::transaction(function () use ($trip): void {
+            if ($trip->status === 'staffing_in_progress') {
+                $trip->guideRequests()->update(['status' => 'expired']);
+            }
+
+            if ($trip->assignedGuide?->user) {
+                $trip->assignedGuide->user->notify(new GuideTripDeletedNotification($trip));
+            }
+
+            $trip->assignments()->where('status', 'assigned')->update(['status' => 'cancelled']);
+            $trip->assigned_guide_id = null;
+            $trip->save();
+            $trip->delete();
+        });
 
         return redirect()
             ->back()

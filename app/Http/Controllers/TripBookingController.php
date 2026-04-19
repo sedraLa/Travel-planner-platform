@@ -12,27 +12,57 @@ class TripBookingController extends Controller
 {
 
     //show booking form
-    public function showBookingForm($packageId)
+public function showBookingForm($packageId)
 {
     $package = TripPackage::with('trip.schedules')->findOrFail($packageId);
+    $today = now()->toDateString();
 
-    return view('trips.user.booking-form', compact('package'));
+    $availableSchedules = $package->trip->schedules
+        ->filter(fn ($schedule) => $schedule->status === 'available'
+            && $schedule->available_seats > 0
+            && $schedule->booking_deadline
+            && $schedule->booking_deadline >= $today)
+        ->values();
+
+    return view('trips.user.booking-form', compact('package', 'availableSchedules'));
 }
 
 
 public function storeBooking(Request $request)
 {
-    $package = TripPackage::findOrFail($request->package_id);
-    $schedule = TripSchedule::findOrFail($request->schedule_id);
+    $validated = $request->validate([
+        'package_id' => ['required', 'exists:trip_packages,id'],
+        'schedule_id' => ['required', 'exists:trip_schedules,id'],
+        'people_count' => ['required', 'integer', 'min:1'],
+    ]);
 
-    $total = $package->price * $request->people_count;
+    $package = TripPackage::findOrFail($validated['package_id']);
+    $schedule = TripSchedule::findOrFail($validated['schedule_id']);
+
+    if ((int) $schedule->trip_id !== (int) $package->trip_id) {
+        return back()->withErrors(['schedule_id' => 'Invalid schedule selected for this trip.'])->withInput();
+    }
+
+    if ($schedule->status !== 'available' || $schedule->available_seats <= 0) {
+        return back()->withErrors(['schedule_id' => 'This schedule is no longer available for booking.'])->withInput();
+    }
+
+    if (!$schedule->booking_deadline || now()->gt(\Carbon\Carbon::parse($schedule->booking_deadline)->endOfDay())) {
+        return back()->withErrors(['schedule_id' => 'Booking deadline has passed for this trip schedule.'])->withInput();
+    }
+
+    if ($validated['people_count'] > (int) $schedule->available_seats) {
+        return back()->withErrors(['people_count' => 'People count exceeds available seats.'])->withInput();
+    }
+
+    $total = $package->price * $validated['people_count'];
 
     $reservation = TripReservation::create([
         'user_id' => auth()->id(),
         'trip_id' => $package->trip_id,
         'trip_package_id' => $package->id,
         'trip_schedule_id' => $schedule->id,
-        'people_count' => $request->people_count,
+        'people_count' => $validated['people_count'],
         'total_price' => $total,
         'status' => 'pending',
     ]);

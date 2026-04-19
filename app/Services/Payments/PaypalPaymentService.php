@@ -48,6 +48,7 @@ class PaypalPaymentService implements PaymentStrategy
         $callback = match ($type) {
             'transport' => route('payment.transport.callback'),
             'trip' => route('payment.trip.callback'),
+            'activity' => route('payment.activity.callback'),
             default => route('payment.paypal.callback'),
         };
 

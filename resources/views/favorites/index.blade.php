@@ -78,7 +78,7 @@
 
                     <div class="mb-12">
                         <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
-                            Favorite Destinations
+                            Favorite Trips
                         </h3>
 
                         @if($trips->isNotEmpty())
@@ -103,6 +103,33 @@
                             </div>
                         @else
                             <p class="text-gray-500 italic">You haven't added any favorite trips yet.</p>
+                        @endif
+                    </div>
+
+
+
+                     <div class="mb-12">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-blue-500 pl-4">
+                            Favorite Activities
+                        </h3>
+
+                        @if($activities->isNotEmpty())
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                @foreach ($activities as $activity)
+                                    <a href="{{ route('Activity.show', $activity) }}"
+                                        class="bg-gray-50 rounded-lg shadow-md overflow-hidden transform hover:scale-105 transition-transform duration-300 block">
+                                        @if($activity->image)
+                                              <img src="{{ asset('storage/' . $activity->image) }}"  alt="{{ $activity->name }}" class="w-full h-48 object-cover">
+                                        @endif
+                                        <div class="p-4">
+                                            <h4 class="text-lg font-semibold text-gray-900">{{ $activity->name }}</h4>
+                                            <p class="text-sm text-gray-600 mt-1">{{ $activity->destination->city ?? 'Explore now' }}</p>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-gray-500 italic">You haven't added any favorite activity yet.</p>
                         @endif
                     </div>
 

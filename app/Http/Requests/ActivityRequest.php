@@ -23,13 +23,11 @@ class ActivityRequest extends FormRequest
             'duration_unit' => 'nullable|string|max:50',
             'price' => 'nullable|numeric|min:0',
             'category' => ['nullable', 'string', 'in:' . implode(',', Category::values())],
-            'is_active' => 'required|boolean',
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
             'availability' => 'required|string|max:50',
-            'guide_name' => 'nullable|string|max:255',
-            'guide_language' => 'nullable|string|max:100',
             'contact_number' => 'nullable|string|max:50',
+            'contact_email' => ['nullable', 'email', 'max:255'],
             'requirements' => 'nullable|string',
             'difficulty_level' => 'nullable|in:easy,moderate,hard',
             // amenities JSON
@@ -39,7 +37,19 @@ class ActivityRequest extends FormRequest
             'requires_booking' => 'required|boolean',
             'family_friendly' => 'required|string|in:all_ages,adults_only,families',
             'pets_allowed' => 'required|boolean',
-            'highlights' => 'nullable|string',
+            'highlights' => 'nullable|array',
+            'highlights.*' => 'nullable|string|max:255',
+            
+        ];
+    }
+
+
+         public function messages(): array
+    {
+        return [
+            'contact_email.email' => 'Please enter a valid email address.',
+
+            
         ];
     }
 }

@@ -14,7 +14,7 @@ class TripReservationRequest extends FormRequest
     public function rules(): array
     {
         return [
-             'user_id' => ['required', 'exists:users,id'],
+            'user_id' => ['required', 'exists:users,id'],
             'trip_id' => ['required', 'exists:trips,id'],
             'trip_package_id' => ['required', 'exists:trip_packages,id'],
             'trip_schedule_id' => ['required', 'exists:trip_schedules,id'],

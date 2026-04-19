@@ -53,15 +53,7 @@
                     Assigned at: {{ $assignment->created_at }}
                 </p>
 
-                <div class="flex justify-end mt-4">
-                    <button
-                        class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200 text-sm font-semibold shadow">
-                        I want to withdraw from supervising this trip
-                    </button>
-                </div>
-                        
-                                
-                 
+                
                          @php
                        $reservation = $reservations[$trip->id] ?? null;
                            $isDisabled = !$reservation ||  $reservation->guide_paid_at ||
