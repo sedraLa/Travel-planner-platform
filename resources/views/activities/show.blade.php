@@ -517,14 +517,40 @@
 
 <script>
     function askActivityAI(type) {
+        const presetQuestions = {
+            tips: "Give me practical tips to enjoy this activity.",
+            safety: "What safety advice should I follow for this activity?",
+            what_to_bring: "What should I bring for this activity?",
+            best_time: "What is the best time to do this activity?"
+        };
+        const question = presetQuestions[type] ?? "Give me useful planning advice for this activity.";
         const box = document.getElementById('activity-ai-response');
         box.style.display = 'block';
-        box.innerHTML = "Loading...";
+        box.innerHTML = "Thinking...";
 
-        fetch(`/ai/activity/{{ $activity->id }}?type=` + type)
-            .then(res => res.json())
+        fetch("{{ route('ai.activity.ask') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                entity_id: {{ $activity->id }},
+                question
+            })
+        })
+            .then(async (res) => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.answer || "Could not get AI response.");
+                }
+                return data;
+            })
             .then(data => {
                 box.innerHTML = data.answer;
+            })
+            .catch((error) => {
+                box.innerHTML = error.message || "Something went wrong. Please try again.";
             });
     }
 
@@ -537,17 +563,29 @@
         box.style.display = 'block';
         box.innerHTML = "Thinking...";
 
-        fetch(`/ai/activity/{{ $activity->id }}`, {
+        fetch("{{ route('ai.activity.ask') }}", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "X-CSRF-TOKEN": "{{ csrf_token() }}"
             },
-            body: JSON.stringify({ question: input })
+            body: JSON.stringify({
+                entity_id: {{ $activity->id }},
+                question: input
+            })
         })
-        .then(res => res.json())
+        .then(async (res) => {
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.answer || "Could not get AI response.");
+            }
+            return data;
+        })
         .then(data => {
             box.innerHTML = data.answer;
+        })
+        .catch((error) => {
+            box.innerHTML = error.message || "Something went wrong. Please try again.";
         });
     }
     </script>

@@ -35,6 +35,7 @@ use App\Http\Controllers\UserTripController;
 use App\Http\Controllers\TripBookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ActivityReservationController;
+use App\Http\Controllers\AiAssistantController;
 
 
 
@@ -290,6 +291,12 @@ Route::get('/trip/payment/paypal/callback',
 
 Route::get('/trip-reservations', [TripBookingController::class, 'index'])
 ->name('trip.reservations.index');
+
+// Entity AI assistants
+Route::post('/ai/hotel/ask', [AiAssistantController::class, 'askHotel'])->name('ai.hotel.ask');
+Route::post('/ai/destination/ask', [AiAssistantController::class, 'askDestination'])->name('ai.destination.ask');
+Route::post('/ai/activity/ask', [AiAssistantController::class, 'askActivity'])->name('ai.activity.ask');
+Route::post('/ai/trip/ask', [AiAssistantController::class, 'askTrip'])->name('ai.trip.ask');
 //transport reservations
 Route::get('/vehicle-reservations',  [TransportReservationController::class, 'index'])->name('vehicle.reservations.index');
 //hotel reservations

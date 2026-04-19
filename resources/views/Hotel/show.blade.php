@@ -368,66 +368,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
         hotelResponse.style.display = "block";
         hotelResponse.innerHTML = "Thinking... 🤖";
-
-        setTimeout(() => {
-            hotelResponse.innerHTML = generateHotelResponse(question);
-        }, 700);
+        fetch("{{ route('ai.hotel.ask') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({
+                entity_id: {{ $hotel->id }},
+                question
+            })
+        })
+        .then(async (res) => {
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.answer || "Could not get AI response.");
+            }
+            return data;
+        })
+        .then((data) => {
+            hotelResponse.innerHTML = data.answer;
+        })
+        .catch((error) => {
+            hotelResponse.innerHTML = error.message || "Something went wrong. Please try again.";
+        });
     }
-
-    // fake brain
-    function generateHotelResponse(q) {
-    q = q.toLowerCase();
-
-    const price = {{ $hotel->price_per_night }};
-    const city = "{{ $hotel->destination->city }}";
-    const country = "{{ $hotel->destination->country }}";
-    const amenities = @json($hotel->amenities ?? []);
-    const nearby = "{{ $hotel->nearby_landmarks }}";
-    const pets = "{{ $hotel->pets_allowed }}";
-
-    // 💰 value / worth
-    if (q.includes("worth") || q.includes("price")) {
-        return `At $${price} per night in ${city}, this hotel is ${price > 150 ? "mid-to-high range" : "budget-friendly"}. It offers decent value depending on season and demand.`;
-    }
-
-    // 💑 couples / honeymoon
-    if (q.includes("couple") || q.includes("honeymoon")) {
-        return "This hotel is suitable for couples looking for comfort and convenience. If you want privacy and quiet stay, higher floors are recommended.";
-    }
-
-    // ⚖️ pros & cons
-    if (q.includes("pros") || q.includes("cons")) {
-        return `Pros: good location in ${city}, ${amenities.slice(0,2).join(", ")}. Cons: depends on availability and seasonal pricing.`;
-    }
-
-    // 🛏️ rooms
-    if (q.includes("room")) {
-        return "Higher floors usually offer better views and less noise. Rooms facing city side are more recommended.";
-    }
-
-    // 💸 saving money
-    if (q.includes("save") || q.includes("best price")) {
-        return "Book early or during off-season. Weekdays are usually cheaper than weekends.";
-    }
-
-    // 📍 nearby
-    if (q.includes("nearby")) {
-        return `Around the hotel you can find: ${nearby}. Some hidden local spots are usually within walking distance.`;
-    }
-
-    // 💼 business
-    if (q.includes("business")) {
-        return "Good for business travel due to location and accessibility, but check Wi-Fi speed and workspace availability.";
-    }
-
-    // 🐾 pets
-    if (q.includes("pets")) {
-        return `Pets allowed: ${pets}. Always confirm restrictions for size or breed.`;
-    }
-
-    // default
-    return "I can help you decide if this hotel is worth it, good for couples, business travel, or how to get the best deal.";
-}
     </script>
 
 {{--animation--}}
