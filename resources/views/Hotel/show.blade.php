@@ -316,18 +316,11 @@ document.addEventListener("DOMContentLoaded", function () {
                             {{ $roomType->is_refundable ? 'Refundable booking' : 'Non-refundable booking' }}
                         </p>
 
-                        <details class="mt-4">
-                            <summary class="cursor-pointer text-sm font-medium text-blue-700">View Gallery</summary>
-                            <div class="mt-3 grid grid-cols-2 gap-2">
-                                @forelse($roomType->images as $image)
-                                    <a href="{{ asset('storage/' . $image->image_url) }}" target="_blank">
-                                        <img src="{{ asset('storage/' . $image->image_url) }}" alt="{{ $roomType->name }} image" class="w-full h-24 object-cover rounded-md border border-gray-100">
-                                    </a>
-                                @empty
-                                    <p class="text-xs text-gray-500 col-span-2">No gallery images for this room type yet.</p>
-                                @endforelse
-                            </div>
-                        </details>
+                        <button 
+                        class="view-room-gallery-btn mt-4 text-sm font-medium text-blue-700"
+                        data-images='@json($roomType->images->pluck("image_url"))'>
+                        View Gallery
+                    </button>
 
                         <details class="mt-4">
                             <summary class="cursor-pointer inline-flex items-center px-3 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700">Select Room</summary>
@@ -392,6 +385,14 @@ document.addEventListener("DOMContentLoaded", function () {
     <div class="arrow left">&#10094;</div>
     <div class="arrow right">&#10095;</div>
   </div>
+
+  <!-- ROOM IMAGE POPUP -->
+<div id="room-popup" class="popup-overlay">
+    <span class="room-close-btn">&times;</span>
+    <img id="room-popup-image" src="" alt="Room View">
+    <div class="room-arrow left">&#10094;</div>
+    <div class="room-arrow right">&#10095;</div>
+</div>
 
 
 
@@ -501,5 +502,60 @@ document.addEventListener("DOMContentLoaded", function () {
             el.classList.add("animate");
             observer.observe(el);
         });
+    });
+    </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    
+        const buttons = document.querySelectorAll('.view-room-gallery-btn');
+    
+        const popup = document.getElementById('room-popup');
+        const popupImage = document.getElementById('room-popup-image');
+        const closeBtn = document.querySelector('.room-close-btn');
+        const leftArrow = document.querySelector('.room-arrow.left');
+        const rightArrow = document.querySelector('.room-arrow.right');
+    
+        let images = [];
+        let currentIndex = 0;
+    
+        // فتح الجاليري
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const imgs = JSON.parse(btn.dataset.images);
+    
+                if (!imgs.length) return;
+    
+                images = imgs.map(img => `/storage/${img}`);
+                currentIndex = 0;
+    
+                popup.style.display = 'flex';
+                popupImage.src = images[currentIndex];
+            });
+        });
+    
+        // إغلاق
+        closeBtn.addEventListener('click', () => {
+            popup.style.display = 'none';
+        });
+    
+
+        leftArrow.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + images.length) % images.length;
+            popupImage.src = images[currentIndex];
+        });
+    
+  
+        rightArrow.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % images.length;
+            popupImage.src = images[currentIndex];
+        });
+    
+     
+        popup.addEventListener('click', (e) => {
+            if (e.target === popup) {
+                popup.style.display = 'none';
+            }
+        });
+    
     });
     </script>

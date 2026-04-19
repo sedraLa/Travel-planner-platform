@@ -142,7 +142,7 @@ public function create()
             'city' => $request->city,
             'country' => $request->country,
             'stars'            => $request->stars,
-            'pets_allowed' => $request->pets_allowed,
+            'pets_allowed' => $request->has('pets_allowed'),
             'check_in_time'   => $request->check_in_time,
             'check_out_time'   => $request->check_out_time,
             'policies'         => $request->policies,
