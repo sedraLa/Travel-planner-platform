@@ -314,22 +314,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const existingImages = Array.isArray(values.images) ? values.images : [];
 
         const existingImagesHtml = existingImages.length
-            ? `<div class="mt-4">
-                    <p class="text-sm text-gray-700 mb-2">Existing Images</p>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            ? `<div class="mt-6">
+                    <p class="text-sm font-medium text-gray-700 mb-3">Current Room Type Images</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         ${existingImages.map((image) => `
-                            <div class="border rounded-lg p-2">
-                                <img src="/storage/${image.image_url}" class="w-full h-20 object-cover rounded" alt="Room image">
-                                <div class="mt-2">
-                                    <label class="flex items-center gap-2 text-xs text-gray-700">
-                                        <input type="radio" name="room_types[${index}][primary_image_choice]" value="existing:${image.id}" ${image.is_primary ? 'checked' : ''}>
-                                        Primary
-                                    </label>
-                                    <label class="flex items-center gap-2 text-xs text-red-700 mt-1">
-                                        <input type="checkbox" name="room_types[${index}][remove_existing_image_ids][]" value="${image.id}">
-                                        Delete image
-                                    </label>
-                                </div>
+                            <div class="relative group border rounded shadow overflow-hidden h-48 bg-white">
+                                <img src="/storage/${image.image_url}" class="w-full h-full object-cover" alt="Room image">
+
+                                <label class="absolute bottom-2 left-2 z-10 flex items-center gap-2 text-xs bg-white/90 text-gray-700 px-2 py-1 rounded shadow">
+                                    <input type="radio" name="room_types[${index}][primary_image_choice]" value="existing:${image.id}" ${image.is_primary ? 'checked' : ''}>
+                                    Primary
+                                </label>
+
+                                <label class="absolute top-2 right-2 z-10 flex items-center gap-1 text-xs bg-red-600 text-white px-2 py-1 rounded shadow cursor-pointer">
+                                    <input type="checkbox" class="accent-red-600" name="room_types[${index}][remove_existing_image_ids][]" value="${image.id}">
+                                    Delete
+                                </label>
                             </div>
                         `).join('')}
                     </div>
