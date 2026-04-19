@@ -14,10 +14,24 @@ use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
-   public function showReservationForm($id)
+   public function showReservationForm(Request $request, $id)
 {
-    $hotel = Hotel::findOrFail($id);
-    return view('reservation.create', compact('hotel'));
+    $hotel = Hotel::with('roomTypes')->findOrFail($id);
+
+    $selectedRoomType = null;
+    $roomTypeId = $request->integer('room_type_id');
+
+    if ($roomTypeId) {
+        $selectedRoomType = $hotel->roomTypes->firstWhere('id', $roomTypeId);
+    }
+
+    $prefill = [
+        'check_in_date' => $request->input('check_in_date', $request->input('check_in')),
+        'check_out_date' => $request->input('check_out_date', $request->input('check_out')),
+        'guest_count' => $request->input('guest_count', $request->input('guests')),
+    ];
+
+    return view('reservation.create', compact('hotel', 'selectedRoomType', 'prefill'));
 }
 public function store(ReservationRequest $request)
 {

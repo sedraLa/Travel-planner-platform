@@ -325,26 +325,24 @@ document.addEventListener("DOMContentLoaded", function () {
                         <details class="mt-4">
                             <summary class="cursor-pointer inline-flex items-center px-3 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700">Select Room</summary>
                             <div class="mt-4 border border-gray-100 rounded-xl p-4">
-                                <form method="POST" action="{{ route('reservations.store') }}" class="space-y-3">
-                                    @csrf
-                                    <input type="hidden" name="hotel_id" value="{{ $hotel->id }}">
+                                <form method="GET" action="{{ route('reservations.form', $hotel->id) }}" class="space-y-3">
                                     <input type="hidden" name="room_type_id" value="{{ $roomType->id }}">
 
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Check In</label>
-                                        <input type="date" name="check_in" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                        <input type="date" name="check_in_date" class="w-full border-gray-300 rounded-lg text-sm" required>
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Check Out</label>
-                                        <input type="date" name="check_out" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                        <input type="date" name="check_out_date" class="w-full border-gray-300 rounded-lg text-sm" required>
                                     </div>
                                     <div>
                                         <label class="block text-xs text-gray-600 mb-1">Guests</label>
-                                        <input type="number" min="1" name="guests" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                        <input type="number" min="1" name="guest_count" class="w-full border-gray-300 rounded-lg text-sm" required>
                                     </div>
 
                                     <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700">
-                                        Confirm & Continue
+                                        Continue
                                     </button>
                                 </form>
                             </div>

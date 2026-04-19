@@ -233,6 +233,7 @@
 
 <script>
 let allFiles = [];
+let roomFilesMap = {};
 
 function addFilesToInput(input) {
     const newFiles = Array.from(input.files);
@@ -243,6 +244,39 @@ function addFilesToInput(input) {
     allFiles.forEach(file => dataTransfer.items.add(file));
 
     input.files = dataTransfer.files;
+}
+
+function handleRoomImages(input, index) {
+    const newFiles = Array.from(input.files);
+
+    if (!roomFilesMap[index]) {
+        roomFilesMap[index] = [];
+    }
+
+    roomFilesMap[index] = roomFilesMap[index].concat(newFiles);
+
+    const select = document.getElementById(`room-primary-select-${index}`);
+    const wrapper = document.getElementById(`room-primary-wrapper-${index}`);
+
+    if (select && wrapper) {
+        if (roomFilesMap[index].length > 0) {
+            select.innerHTML = '';
+            wrapper.classList.remove('hidden');
+
+            roomFilesMap[index].forEach((file, i) => {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = file.name;
+                select.appendChild(option);
+            });
+        } else {
+            wrapper.classList.add('hidden');
+        }
+    }
+
+    const dt = new DataTransfer();
+    roomFilesMap[index].forEach(f => dt.items.add(f));
+    input.files = dt.files;
 }
 </script>
 
@@ -342,14 +376,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 ${existingImagesHtml}
                 <div class="mt-4">
                     <label class="text-sm text-gray-700">Add New Room Images</label>
-                    <input type="file" name="room_types[${index}][images][]" class="mt-1 block w-full" multiple>
-                    <p class="text-xs text-gray-500 mt-1">To set a newly uploaded image as primary, select an option below.</p>
-                    <select name="room_types[${index}][primary_new_image_choice]" class="mt-1 block w-full border-gray-300 rounded-md">
-                        <option value="">Keep current primary</option>
-                        <option value="new:0">First new uploaded image</option>
-                        <option value="new:1">Second new uploaded image</option>
-                        <option value="new:2">Third new uploaded image</option>
-                        <option value="new:3">Fourth new uploaded image</option>
+                    <input type="file"
+                        name="room_types[${index}][images][]"
+                        class="mt-1 block w-full"
+                        multiple
+                        onchange="handleRoomImages(this, ${index})">
+                </div>
+                <div id="room-primary-wrapper-${index}" class="mt-4 hidden">
+                    <label class="text-sm text-gray-700">Primary Image</label>
+                    <select name="room_types[${index}][primary_image_index]"
+                            id="room-primary-select-${index}"
+                            class="mt-1 block w-full border-gray-300 rounded-md">
                     </select>
                 </div>
             </div>

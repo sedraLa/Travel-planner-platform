@@ -31,34 +31,46 @@
                 <form action="{{ route('reservations.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="hotel_id" value="{{ $hotel->id }}">
+                    @if(!empty($selectedRoomType))
+                        <input type="hidden" name="room_type_id" value="{{ $selectedRoomType->id }}">
+                    @endif
                     <div class="mb-6">
                         <p class="font-semibold text-xl text-indigo-900 leading-tight">
-                            Room price per night in this hotel is {{$hotel->price_per_night}}</p>
+                            @if(!empty($selectedRoomType))
+                                Selected room type: {{ $selectedRoomType->name }} ({{ number_format($selectedRoomType->price_per_night, 2) }} / night)
+                            @else
+                                Room price per night in this hotel is {{ $hotel->price_per_night }}
+                            @endif
+                        </p>
                     </div>
 
 
                     <!-- Guest Count -->
                     <div class="mb-4">
                         <label class="block text-gray-700">Number of Guests</label>
-                        <input type="number" name="guest_count" class="form-input w-full" required>
+                        <input type="number" name="guest_count" class="form-input w-full" value="{{ old('guest_count', $prefill['guest_count'] ?? '') }}" required>
                     </div>
 
                     <!-- Rooms Count -->
-                    <div class="mb-4">
-                        <label class="block text-gray-700">Number of Rooms</label>
-                        <input type="number" name="rooms_count" class="form-input w-full" required>
-                    </div>
+                    @if(empty($selectedRoomType))
+                        <div class="mb-4">
+                            <label class="block text-gray-700">Number of Rooms</label>
+                            <input type="number" name="rooms_count" class="form-input w-full" value="{{ old('rooms_count', 1) }}" required>
+                        </div>
+                    @else
+                        <input type="hidden" name="rooms_count" value="1">
+                    @endif
 
                     <!-- Check-in Date -->
                     <div class="mb-4">
                         <label class="block text-gray-700">Check-In Date</label>
-                        <input type="date" name="check_in_date" class="form-input w-full" required>
+                        <input type="date" name="check_in_date" class="form-input w-full" value="{{ old('check_in_date', $prefill['check_in_date'] ?? '') }}" required>
                     </div>
 
                     <!-- Check-out Date -->
                     <div class="mb-4">
                         <label class="block text-gray-700">Check-Out Date</label>
-                        <input type="date" name="check_out_date" class="form-input w-full" required>
+                        <input type="date" name="check_out_date" class="form-input w-full" value="{{ old('check_out_date', $prefill['check_out_date'] ?? '') }}" required>
                     </div>
 
                     <!-- Name -->
