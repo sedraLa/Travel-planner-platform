@@ -178,6 +178,14 @@ Route::post('/trips/{trip}/complete/overview/confirm', [AiTripCompletionControll
 Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseController::class, 'accept'])->name('guide.requests.accept');
 Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
 
+//Admin reviews
+Route::get('/admin/reviews', [ReviewController::class, 'adminIndex'])
+    ->name('admin.reviews.index');
+
+    // delete review
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
+->name('reviews.destroy');
+
     });
 
 
@@ -286,6 +294,8 @@ Route::get('/reservations', [ReservationController::class, 'index']) ->name('res
 
 //Reviews routes
 
+
+
 //create review
 Route::get('/reviews/create', [ReviewController::class, 'create'])
     ->name('reviews.create');
@@ -294,13 +304,6 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
  Route::post('/reviews', [ReviewController::class, 'store'])
  ->name('reviews.store');
 
-// update review
-Route::put('/reviews/{review}', [ReviewController::class, 'update'])
- ->name('reviews.update');
-
-// delete review
-Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
- ->name('reviews.destroy');
 
  //show hotel reviews 
  Route::get('/hotels/{hotel}/reviews', [ReviewController::class, 'hotelIndex'])

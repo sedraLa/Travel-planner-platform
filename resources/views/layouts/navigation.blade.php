@@ -45,6 +45,7 @@
                 @if(auth()->check() && auth()->user()->role === UserRole::ADMIN->value)
                     <li><a href="{{route('transport.dashboard')}}">Transport & Drivers</a></li>
                        <li><a href="{{route('trips.dashboard')}}">Trips & Guides</a></li>
+                       <li><a href="{{route('admin.reviews.index')}}">Reviews</a></li>
 
 
 

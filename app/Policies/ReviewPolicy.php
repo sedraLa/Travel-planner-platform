@@ -18,8 +18,8 @@ class ReviewPolicy
     /**
      * Delete review
      */
-    public function delete(User $user, Review $review): bool
-    {
-        return $user->id === $review->user_id || $user->role === 'admin';
-    }
+public function delete(User $user, Review $review): bool
+{
+    return $user->role === 'admin';
+}
 }

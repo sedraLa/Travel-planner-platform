@@ -92,6 +92,7 @@
                     <span class="arrow"> → </span>
                 </a>
 
+
                 <a href="{{ route('trips.index') }}" class="vehicles action-card">
                     <div class="action">
                         <img class="icon" src="{{asset('images/icons/icons8-tour-50.png')}}">
@@ -100,6 +101,8 @@
                     <span class="arrow"> → </span>
                 </a>
 
+
+
                 <a href="{{route('trip.reservations.index')}}" class="vehicles action-card">
                     <div class="action">
                         <img class="icon" src="{{asset('images\icons\icons8-date-50.png')}}">
@@ -107,6 +110,8 @@
                     </div>
                     <span class="arrow"> → </span>
                 </a>
+
+                
             </div>
 
             <!-- Top Ratings Card -->

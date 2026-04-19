@@ -19,6 +19,41 @@ use App\Models\Review;
 class ReviewController extends Controller
 {
 
+    public function adminIndex(Request $request)
+{
+    $query = Review::with(['user', 'reviewable']);
+
+    //  search
+    if ($request->search) {
+        $query->whereHas('user', function ($q) use ($request) {
+            $q->where('name', 'like', "%{$request->search}%");
+        });
+    }
+
+    //  filter by type
+    if ($request->type) {
+        $types = [
+            'hotel' => \App\Models\Hotel::class,
+            'trip' => \App\Models\Trip::class,
+            'guide' => \App\Models\Guide::class,
+            'driver' => \App\Models\Driver::class,
+        ];
+
+        if (isset($types[$request->type])) {
+            $query->where('reviewable_type', $types[$request->type]);
+        }
+    }
+
+    //  filter rating
+    if ($request->rating) {
+        $query->where('rating', $request->rating);
+    }
+
+    $reviews = $query->latest()->paginate(10);
+
+    return view('reviews.admin-index', compact('reviews'));
+}
+
     //create review
 
     public function create(Request $request)
