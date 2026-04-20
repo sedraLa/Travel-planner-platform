@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hotel;
 use App\Models\RoomType;
+use App\Models\RoomTypeImage;
 use App\Services\MediaServices;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -54,12 +55,39 @@ class RoomTypeController extends Controller
      */
     public function deleteImage($id)
     {
-        $image = \App\Models\RoomTypeImage::findOrFail($id);
+        $image = RoomTypeImage::findOrFail($id);
+        $roomType = $image->roomType;
+        $wasPrimary = $image->is_primary;
 
         Storage::delete('public/' . $image->image_url);
         $image->delete();
 
+        if ($roomType && $wasPrimary) {
+            $nextImage = $roomType->images()->first();
+            if ($nextImage) {
+                $nextImage->update(['is_primary' => true]);
+            }
+        }
+
         return back()->with('success', 'Image deleted.');
+    }
+
+    /**
+     * Set single image as primary for a room type
+     */
+    public function setPrimaryImage($id)
+    {
+        $image = RoomTypeImage::findOrFail($id);
+        $roomType = $image->roomType;
+
+        if (!$roomType) {
+            return back()->withErrors(['error' => 'Room type not found for this image.']);
+        }
+
+        $roomType->images()->update(['is_primary' => false]);
+        $image->update(['is_primary' => true]);
+
+        return back()->with('success', 'Primary image set successfully.');
     }
 
     /**
