@@ -61,6 +61,10 @@
                              @endphp
 
                    <div class="flex justify-end mt-4">
+
+                     <a href="{{ route('user.trips.show', $trip->id) }}" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm">
+                            Details</a>
+
                       <form method="POST" action="{{ $reservation ? route('guide.trips.complete', $reservation->id) : '#' }}">
                               @csrf
 
@@ -68,6 +72,8 @@
                                      Trip Done
                                </button>
                     </form>
+
+
                 </div>
 
             </div>

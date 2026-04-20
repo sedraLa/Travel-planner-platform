@@ -81,8 +81,8 @@
                         class="block w-full border-gray-300 rounded-md shadow-sm">{{ old('requirements', $activity->requirements) }}</textarea>
 
                         <div class="popup-buttons mt-4" style="display:flex; justify-content:flex-start; gap:10px;">
-                         <button type="submit" class="btn btn-primary">Save</button>
-                         <a href="{{ route('activities.index') }}" class="cancel-btn">Cancel</a>
+                         <button type="submit" class="btn btn-primary">Update</button>
+                         <a href="{{ route('Activity.show') }}" class="cancel-btn">Cancel</a>
                          </div>
                 </div>
 

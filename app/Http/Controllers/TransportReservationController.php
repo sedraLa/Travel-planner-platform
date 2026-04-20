@@ -88,7 +88,11 @@ class TransportReservationController extends Controller
      */
     public function index(Request $request)
     {
-        $query = TransportReservation::with('user');
+       $query = TransportReservation::with([
+        'user',
+        'driver.user',
+        'vehicle'
+    ]);
 
         $isAdmin = Auth::check() && Auth::user()->role === 'admin';
 
@@ -131,7 +135,9 @@ class TransportReservationController extends Controller
 
         $reservations = $query
             ->orderBy('pickup_datetime', 'desc')
-            ->paginate(10);
+            ->paginate(4);
+
+            
 
         $reviewedReservationIds = Review::where('user_id', Auth::id())
             ->whereIn('reservation_id', $reservations->getCollection()->pluck('id'))

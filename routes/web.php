@@ -36,6 +36,7 @@ use App\Http\Controllers\TripBookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ActivityReservationController;
 use App\Http\Controllers\AiAssistantController;
+use App\Http\Controllers\GuideAvailabilityController;
 
 
 
@@ -375,7 +376,7 @@ Route::post('/requests/{guideRequest}/reject', [GuideRequestResponseController::
 
 Route::get('/assigned-trips',[GuideController::class,'assignedTrips'])->name('guide.assignedTrips');
 Route::post('/guide/trips/{id}/complete',[GuideController::class, 'completeTrip'])->name('guide.completed.trip');
-
+Route::get('/guides/{guide}/availability', [GuideAvailabilityController::class, 'show']);
   });
 
 require __DIR__.'/auth.php';

@@ -92,26 +92,23 @@
                 <p>The absolute essentials that define this destination</p>
             </div>
             <!--Experiences cards-->
-
-        <div class="exp-cards">
-            @forelse ($limitedActivities as $activity)
-                <div class="exp-card">
-                    <img src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}">
-                    <h3>{{ $activity->name }}</h3>
-                    <p>{{ $activity->description }}</p>
-
-                    <button type="button" class="details-btn"
-                        data-name="{{ $activity->name }}"
-                        data-description="{{ $activity->description }}">
-                        More Details
-                    </button>
-                </div>
-            @empty
-                <p>No activities available.</p>
-            @endforelse
-
-            <!-- SEE ALL CARD -->
-
+            <div class="exp-cards">
+                @forelse ($destination->activities as $activity)
+                    <div class="exp-card">
+                        <img 
+                            src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}" 
+                            alt="{{ $activity->name }}"
+                        >
+                        <h3>{{ $activity->name }}</h3>
+                        <p>{{ $activity->description }}</p>
+                        <a href="{{ route('Activity.show', $activity->id) }}" class="details-btn">
+                            More Details
+                                    </a>
+                    </div>
+                @empty
+                    <p style="padding:20px;">No activities available for this destination.</p>
+                @endforelse
+            </div>
         </div>
         <a href="{{ route('destination.activities', $destination->id) }}" class="see-all-card">
             <div>

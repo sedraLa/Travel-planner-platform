@@ -70,6 +70,7 @@ class HotelController extends Controller
             $selectedDestination = Destination::find($request->destination_id);
         }
     
+
         $hotels = $query->paginate(9);
     
         return view('hotel.index', compact('hotels', 'selectedDestination'));
@@ -101,9 +102,11 @@ public function show(string $id, GeocodingService $geo)
     // إذا ما في نتيجة بعد fallback، خلي null
     $coords = $coords ?? ['latitude' => null, 'longitude' => null];
     
-
+    $isBooked = Reservation::where('hotel_id', $hotel->id)
+         ->where('user_id', auth()->id())
+         ->exists();
     
-    return view('hotel.show', compact('hotel', 'primaryImage', 'coords'));
+    return view('hotel.show', compact('hotel', 'primaryImage', 'coords','isBooked'));
 }
 
 
