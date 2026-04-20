@@ -3,11 +3,9 @@
 <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
 <link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
 <link rel="stylesheet" href="{{ asset('css/transportreservation.css') }}">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-
 @endpush
 
 {{-- ═══ HERO ═══ --}}
@@ -20,54 +18,47 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
                 </div>
-
-                 
-                <h1>Pending Booking</h1>
-               
-                    <p>A list of all the transport reservations  not done yet.</p>
-               
-                   
-               
+                <h1>Pending Bookings</h1>
+                <p>A list of all transport reservations not completed yet.</p>
             </div>
             <div class="tr-hero-stats">
                 <div class="tr-stat-pill">
                     <div class="num">{{ $reservations->total() }}</div>
                     <div class="lbl">Total</div>
                 </div>
-                
-                
             </div>
         </div>
     </div>
 </div>
 
-
- @if (session('success'))
-            <div class="mb-6 px-4 py-3 bg-green-100 border border-green-200 text-green-800 rounded-lg">
-                {{ session('success') }}
-            </div>
-        @endif
-
+@if(session('success'))
+<div class="tr-alert-success">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    {{ session('success') }}
+</div>
+@endif
 
 {{-- ═══ CARDS ═══ --}}
 <div class="tr-list">
     @forelse($reservations as $reservation)
+    @php
+        $canComplete = \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($reservation->pickup_datetime));
+    @endphp
     <div class="tr-card">
-    <td class="hidden">{{ $reservation->id }}</td>
+
         {{-- ── Left: Info ── --}}
         <div class="tr-info-col">
 
             {{-- User + Price --}}
             <div class="tc-head">
-             
                 <div class="tc-user">
                     <div class="tc-avatar">
                         {{ strtoupper(substr($reservation->user?->name ?? 'N', 0, 1)) }}
                     </div>
                     <span class="tc-uname">{{ $reservation->user?->name ?? 'N/A' }}</span>
                 </div>
-                
-              
                 <span class="tc-price">${{ number_format($reservation->total_price, 2) }}</span>
             </div>
 
@@ -121,44 +112,33 @@
                 </span>
             </div>
 
+            {{-- ── Buttons (Driver only) ── --}}
+            @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
             <hr class="tc-divider">
+            <div class="tc-actions">
+                <form action="{{ route('reservations.complete', $reservation->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="tc-btn-complete {{ $canComplete ? '' : 'tc-btn-disabled' }}"
+                            {{ $canComplete ? '' : 'disabled' }}>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Complete
+                    </button>
+                </form>
+                <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="tc-btn-cancel {{ $canComplete ? '' : 'tc-btn-disabled' }}"
+                            {{ $canComplete ? '' : 'disabled' }}>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+            @endif
 
-           
-<div class="tc-assign">
-
-    <div class="tc-assign-row">
-          @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
-
-           @php
-            $canComplete = \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($reservation->pickup_datetime));
-          @endphp
-
-        <form action="{{ route('reservations.complete', $reservation->id) }}" method="POST" class="inline">
-                                                 @csrf
-                                              <button type="submit"
-                                                 class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                {{ $canComplete ? '' : 'disabled' }}>
-                                                    Complete
-                                                </button>
-                                            </form>
-    </div>
-
-    
-    <div class="tc-assign-row">
-        <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST" class="inline">
-                                                      @csrf
-                                                <button type="submit"
-                                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600
-                                                     {{ $canComplete ? '' : 'disabled opacity-50 cursor-not-allowed' }}">
-                                                         Cancel
-                                                </button>
-                                           </form>
-    </div>
-    @endif
-
-    
-
-</div>
         </div>
 
         {{-- ── Right: Map ── --}}
@@ -181,19 +161,16 @@
             <path stroke-linecap="round" stroke-linejoin="round"
                   d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 10m0 7V10M9 7l6 3"/>
         </svg>
-        <p>No transport reservations found.</p>
+        <p>No pending reservations found.</p>
     </div>
     @endforelse
 </div>
 
-{{-- ═══ PAGINATION ═══ --}}
 @if($reservations->hasPages())
 <div class="tr-pagination">
-   
     {{ $reservations->withQueryString()->links() }}
 </div>
 @endif
-
 @push('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
