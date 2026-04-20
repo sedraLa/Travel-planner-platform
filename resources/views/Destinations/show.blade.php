@@ -65,26 +65,9 @@
                         >
                         <h3>{{ $activity->name }}</h3>
                         <p>{{ $activity->description }}</p>
-                        <button type="button" class="details-btn" 
-                            data-name="{{ $activity->name }}" 
-                            data-description="{{ $activity->description ?? 'No description available.' }}" 
-                            data-destination="{{ $destination->name }}" 
-                            data-duration="{{ $activity->duration }} {{ $activity->duration_unit }}" 
-                            data-price="{{ number_format($activity->price, 2) }}" 
-                            data-category="{{ ucfirst($activity->category) }}" 
-                            data-guide_name="{{ $activity->guide_name ?? 'N/A' }}" 
-                            data-guide_language="{{ $activity->guide_language ?? 'N/A' }}" 
-                            data-availability="{{ $activity->availability ?? 'N/A' }}" 
-                            data-requirements="{{ $activity->requirements ?? 'N/A' }}" 
-                            data-amenities="{{ implode(', ', $activity->amenities ?? []) }}" 
-                            data-highlights="{{ $activity->highlights ?? 'N/A' }}" 
-                            data-difficulty_level="{{ $activity->difficulty_level ?? 'N/A' }}"
-                            data-family_friendly="{{ ucwords(str_replace('_', ' ', $activity->family_friendly)) }}" 
-                            data-pets_allowed="{{ $activity->pets_allowed ? 'Yes' : 'No' }}" 
-                            data-requires_booking="{{ $activity->requires_booking ? 'Yes' : 'No' }}" 
-                            data-image="{{ asset('storage/' . $activity->image) }}">
+                        <a href="{{ route('Activity.show', $activity->id) }}" class="details-btn">
                             More Details
-                        </button>
+                                    </a>
                     </div>
                 @empty
                     <p style="padding:20px;">No activities available for this destination.</p>

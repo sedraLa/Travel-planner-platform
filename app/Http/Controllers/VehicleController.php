@@ -93,7 +93,7 @@ class VehicleController extends Controller
 
 
 
-        $vehicles=$query->get();
+        $vehicles=$query->paginate(4);;
         return view('transport.vehicles', compact('vehicles'));
            
         
