@@ -64,49 +64,50 @@
     <script>
     const existing = @json($rooms);
     let i = 0;
-    const fileStore = {};
-    
+
+    function removeRoomType(card) {
+        card.remove();
+    }
+
     function handleFiles(input, index) {
-        const newFiles = Array.from(input.files);
-    
-        if (!fileStore[index]) fileStore[index] = [];
-    
-        fileStore[index] = fileStore[index].concat(newFiles);
-    
         const preview = document.getElementById(`preview-${index}`);
         const select = document.getElementById(`primary-${index}`);
-    
+        const files = Array.from(input.files || []);
+
         preview.innerHTML = '';
         select.innerHTML = `<option value="">Select primary image</option>`;
-    
-        fileStore[index].forEach((file, idx) => {
-    
+
+        files.forEach((file, idx) => {
             const reader = new FileReader();
-    
             reader.onload = e => {
                 const img = document.createElement('img');
                 img.src = e.target.result;
                 img.className = "h-20 w-full object-cover rounded mb-1";
                 preview.appendChild(img);
             };
-    
             reader.readAsDataURL(file);
-    
+
             const opt = document.createElement('option');
-            opt.value = `new:${idx}`;
+            opt.value = `${idx}`;
             opt.text = file.name;
             select.appendChild(opt);
         });
-    
-        input.value = '';
     }
     
     function template(i, r = {}) {
     
         return `
-        <div class="border rounded-xl p-5 bg-white mb-6">
-    
+        <div class="border rounded-xl p-5 bg-white mb-6 room-type-card">
+
             <input type="hidden" name="room_types[${i}][id]" value="${r.id ?? ''}">
+
+            <div class="flex justify-end mb-3">
+                <button type="button"
+                        class="px-3 py-1.5 text-sm bg-red-600 text-white rounded-md hover:bg-red-700"
+                        onclick="removeRoomType(this.closest('.room-type-card'))">
+                    Remove
+                </button>
+            </div>
     
             <label class="block font-semibold">Room Name</label>
             <input class="border rounded-md w-full mb-3 p-2"
@@ -178,7 +179,11 @@
         document.getElementById('room-container').appendChild(div.firstElementChild);
     }
     
-    existing.forEach(r => add(r));
+    if (existing.length) {
+        existing.forEach(r => add(r));
+    } else {
+        add();
+    }
     
     document.getElementById('add').onclick = () => add();
     
