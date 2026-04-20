@@ -39,6 +39,7 @@
         <div class="form-container">
             <form action="{{ route('activity.reservations.store') }}" method="POST">
                 @csrf
+                <input type="hidden" name="activity_id" value="{{$activity->id}}">
         <div class="form-grid">
                 <!-- Activity Info -->
                 <div class="container">

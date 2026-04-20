@@ -93,7 +93,7 @@
             </div>
             <!--Experiences cards-->
             <div class="exp-cards">
-                @forelse ($destination->activities as $activity)
+                @forelse ($limitedActivities as $activity)
                     <div class="exp-card">
                         <img 
                             src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}" 
@@ -116,7 +116,7 @@
                 <p>View All Activities</p>
             </div>
         </a>
-        </div>
+        
 {{--Trips section--}}
 <div class="experiences-container">
     <div class="exp-header">
