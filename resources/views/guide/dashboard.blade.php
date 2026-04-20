@@ -12,8 +12,8 @@
                 <span>Good day</span>
                 <h2>Welcome back, {{ $guide?->user?->name ?? auth()->user()->name }} 👋</h2>
                 <p id="rating">⭐ 4.9 rating  {{ $assignedTrips }} Assigned trips</p>
-                <button onclick="document.getElementById('schedule-modal').classList.remove('hidden')" 
-class="schedule-btn">
+               <button onclick="openSchedule({{ $guide->id }})"
+        class="schedule-btn">
     Working Schedule
 </button>
             </div>
@@ -119,43 +119,97 @@ class="schedule-btn">
     </div>
 </div>
 
-{{--<div id="schedule-modal"
-class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+<div id="schedule-modal"
+     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
 
-    <div class="schedule-modal-container">
+    <div class="bg-white p-6 rounded-lg w-[600px] relative">
 
         <button onclick="document.getElementById('schedule-modal').classList.add('hidden')"
-        class="schedule-close-btn">
+                class="absolute top-2 right-3 text-2xl">
             &times;
         </button>
 
-        <h2 class="schedule-title">Working Schedule</h2>
+        <h2 class="text-xl font-bold mb-4">Working Days</h2>
 
-        <table class="shift-table">
+        <table class="w-full border">
             <thead>
                 <tr>
-                    <th>Shift Name</th>
-                    <th>Time</th>
-                    <th>Days</th>
+                    <th class="border p-2">Date</th>
                 </tr>
             </thead>
-            <tbody>
-               @if($schedules)
+
+            <tbody id="schedule-body">
                 <tr>
-                    <td>{{$schedules->name??'no schedula name'}}</td>
-                    <td>{{$schedules->start_time ??'no start time'}} -> {{$schedule->end_time??'no end time'}}</td>
-                    <td>{{ is_array($schedules->days_of_week) ? implode(', ', $schedules->days_of_week) : ($schedules->days_of_week ?? 'no days') }}</td>
-                
+                    <td class="p-2">Loading...</td>
                 </tr>
-                @else
-                <tr>
-                      <td colspan="3">No schedules found</td>
-                </tr>
-                  @endif
             </tbody>
         </table>
 
     </div>
-</div>--}}
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    window.openSchedule = function (guideId) {
+
+        console.log("Guide ID:", guideId);
+
+        fetch(`/guide/${guideId}/availability`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                console.log("Response:", data);
+
+                let html = '';
+
+                if (!data.dates || data.dates.length === 0) {
+                    html = `
+                        <tr>
+                            <td class="p-2 text-center text-gray-500">
+                                No working days assigned
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    data.dates.forEach(date => {
+                        html += `
+                            <tr>
+                                <td class="p-2">${date}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                document.getElementById('schedule-body').innerHTML = html;
+
+                document.getElementById('schedule-modal')
+                    .classList.remove('hidden');
+            })
+            .catch(error => {
+
+                console.error("Fetch error:", error);
+
+                document.getElementById('schedule-body').innerHTML = `
+                    <tr>
+                        <td class="p-2 text-red-500 text-center">
+                            Failed to load schedule
+                        </td>
+                    </tr>
+                `;
+
+                document.getElementById('schedule-modal')
+                    .classList.remove('hidden');
+            });
+    };
+
+});
+</script>
 
 </x-app-layout>

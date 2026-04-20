@@ -1,4 +1,6 @@
 @php use App\Enums\UserRole; @endphp
+
+
 <x-app-layout>
 
  {{-- Styles --}}
@@ -260,11 +262,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="info-grid two-col">
                   <div>
                     <span style="display: inline-flex; align-items: center; gap: 5px;"><img src="{{ asset('images/icons/tel.png') }}" alt=""  style="width:25px; height:25px;">PHONE NUMBER</span>
+                    @if(auth()->user()->role === 'admin' || $isBooked)
                     <p>{{$hotel->phone_number}}</p>
+                      @else
+                       <p style="color:#9ca3af;">Available after booking</p>
+                    @endif
                   </div>
                   <div>
                     <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/email.png') }}" alt=""  style="width:25px; height:25px;">EMAIL</span>
+                    @if(auth()->user()->role === 'admin' || $isBooked)
                     <p>{{$hotel->email}}</p>
+                     @else
+                       <p style="color:#9ca3af;">Available after booking</p>
+                    @endif
                   </div>
                   <div>
                     <span style="display: inline-flex; align-items: center; gap: 5px;"> <img src="{{ asset('images/icons/web.png') }}" alt=""  style="width:25px; height:25px;">WEBSITE</span>

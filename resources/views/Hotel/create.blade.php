@@ -125,8 +125,8 @@
                     <x-input-label for="pets_allowed" value="Pets Allowed" />
                     <select id="pets_allowed" name="pets_allowed" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                            <option value=""  disabled  selected>-- Select --</option>
-                           <option value="1" {{ old('pets_allowed') == 'allowed' ? 'selected' : '' }}>pets allowed</option>
-                           <option value="0" {{ old('pets_allowed') == 'not_allowed' ? 'selected' : '' }}>pets not allowed</option>
+                            <option value="1" {{ old('pets_allowed') == '1' ? 'selected' : '' }}>pets allowed</option>
+                            <option value="0" {{ old('pets_allowed') == '0' ? 'selected' : '' }}>pets not allowed</option>
                     </select>
                     
                     <x-input-label for="check_in_time" value="check_in_time" />

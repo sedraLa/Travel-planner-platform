@@ -1,113 +1,249 @@
+<x-app-layout>
 @push('styles')
-<link rel="stylesheet" href="{{asset('css/vehicles.css')}}">
 <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
+<link rel="stylesheet" href="{{ asset('css/vehicles.css') }}">
+<link rel="stylesheet" href="{{ asset('css/transportreservation.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 @endpush
 
-<x-app-layout>
-    <div class="main-wrapper p-6 md:p-8">
+{{-- ═══ HERO ═══ --}}
+<div class="tr-hero">
+    <div class="tr-hero-inner">
+        <div class="tr-hero-top">
+            <div>
+                <div class="tr-hero-icon">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
 
-        {{-- Success messages --}}
-        @if (session('success'))
-            <div class="mb-6 px-4 py-3 bg-green-100 border border-green-200 text-green-800 rounded-lg">
-                {{ session('success') }}
+
+                </div>
+                @if(Auth::user()->role === \App\Enums\UserRole::DRIVER->value)
+                    <h1>Pending Bookings</h1>
+                    <p>A list of all transport reservations not completed yet</p>
+                @else
+                    <h1>Reservations — {{ $driver->user->name }}</h1>
+                    <p>A list of all completed reservations for this driver.</p>
+                @endif
             </div>
-        @endif
-
-        {{-- Reservation list --}}
-        <div class="bg-white rounded-xl shadow-lg overflow-hidden">
 
 
-            <div class="p-6 border-b border-gray-200">
-
-                 @if (Auth::user()->role === \App\Enums\UserRole::DRIVER->value)
-                 <h2 class="text-2xl font-bold text-gray-800"> My Pending Reservations</h2>
-                <p class="text-gray-500 mt-1">A list of all my reservations.</p>
-                  @else
-                <h2 class="text-2xl font-bold text-gray-800">Reservations {{ $driver->user->name }} </h2>
-                <p class="text-gray-500 mt-1">A list of all the Pending Reservations in your system for a driver.</p>
-                 @endif
+            <div class="tr-hero-stats">
+                <div class="tr-stat-pill">
+                    <div class="num">{{ $reservations->total() }}</div>
+                    <div class="lbl">Total</div>
+                </div>
             </div>
-            
+        </div>
+    </div>
+</div>
 
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            
-                            <th class="hidden"></th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Name</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client Phone Number</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup Location</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Dropoff Location</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pickup DateTime</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Passenger</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                              @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                  Actions
-                            </th>
-                               @endif
-                        </tr>
-                    </thead>
+@if(session('success'))
+<div class="tr-alert-success">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+    </svg>
+    {{ session('success') }}
+</div>
+@endif
 
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        @forelse ($reservations as $reservation)
-                            <tr>
-                                
-                                <td class="hidden">{{ $reservation->id }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->user->name?? 'N/A' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->user->phone_number ?? 'N/A' }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->pickup_location }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->dropoff_location }}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d-m-Y H:i') }} </td>
-                                <td class="px-6 py-4 text-sm text-gray-900">{{ $reservation->passengers}}</td>
-                                <td class="px-6 py-4 text-sm text-gray-900">${{ $reservation->total_price }}</td>
+{{-- ═══ CARDS ═══ --}}
+<div class="tr-list">
+    @forelse($reservations as $reservation)
+    @php
+        $canComplete = \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($reservation->pickup_datetime));
+    @endphp
+    <div class="tr-card">
 
-                                <td class="px-6 py-4 text-sm text-yellow-600 font-semibold">Pending</td>
-                                 @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
-                                <td class="px-6 py-4 text-sm">
-                                    
-                                        @php
-                                         $canComplete = \Carbon\Carbon::now()->gte(\Carbon\Carbon::parse($reservation->pickup_datetime));
-                                        @endphp
-                                        
+        {{-- ── Left: Info ── --}}
+        <div class="tr-info-col">
 
-                                             {{-- Complete Button --}}
-                                           <form action="{{ route('reservations.complete', $reservation->id) }}" method="POST" class="inline">
-                                                 @csrf
-                                              <button type="submit"
-                                                 class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
-                                                {{ $canComplete ? '' : 'disabled' }}>
-                                                    Complete
-                                                </button>
-                                            </form>
+            {{-- User + Price --}}
+            <div class="tc-head">
+                <div class="tc-user">
+                    <div class="tc-avatar">
+                        {{ strtoupper(substr($reservation->user?->name ?? 'N', 0, 1)) }}
+                    </div>
+                    <span class="tc-uname">{{ $reservation->user?->name ?? 'N/A' }}</span>
+                </div>
+                <span class="tc-price">${{ number_format($reservation->total_price, 2) }}</span>
+            </div>
+
+            <hr class="tc-divider">
+
+            {{-- Route --}}
+            <div class="tc-route">
+                <div class="tc-loc">
+                    <div class="tc-loc-lbl">📍 Pickup</div>
+                    <div class="tc-loc-val" title="{{ $reservation->pickup_location }}">
+                        {{ $reservation->pickup_location }}
+                    </div>
+                </div>
+                <div class="tc-arrow">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </div>
+                <div class="tc-loc">
+                    <div class="tc-loc-lbl">🏁 Dropoff</div>
+                    <div class="tc-loc-val" title="{{ $reservation->dropoff_location }}">
+                        {{ $reservation->dropoff_location }}
+                    </div>
+                </div>
+            </div>
+
+            <hr class="tc-divider">
+
+           {{-- Date + Passengers --}}
+                 <div class="tc-chips">
+                      <span class="tc-chip">
+                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                         </svg>
+                                  {{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d M Y, H:i') }}
+                              </span>
+                                  <span class="tc-chip">
+                                      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                       </svg>
+                                       {{ \Carbon\Carbon::parse($reservation->dropoff_datetime)->format('d M Y, H:i') }}
+                                   </span>
+                             <span class="tc-chip">
+                                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                      <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+                                   </svg>
+                                        {{ $reservation->passengers }} passenger{{ $reservation->passengers > 1 ? 's' : '' }}
+                               </span>
+                            </div>
+
+                           <hr class="tc-divider">
+
+                                 {{-- ── Status Badge ── --}}
+                                   <div class="tc-status-row">
+                                        <span class="tc-status-badge pending">
+                                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                  </svg>
+                                                          Pending
+                                          </span>
+                                    </div>
 
 
-                                           <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST" class="inline">
-                                                      @csrf
-                                                <button type="submit"
-                                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600
-                                                     {{ $canComplete ? '' : 'disabled opacity-50 cursor-not-allowed' }}">
-                                                         Cancel
-                                                </button>
-                                           </form>
-                                </td>
-                                @endif
+            {{-- ── Buttons (Driver only) ── --}}
+            @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)
+            <hr class="tc-divider">
+            <div class="tc-actions">
+                <form action="{{ route('reservations.complete', $reservation->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="tc-btn-complete {{ $canComplete ? '' : 'tc-btn-disabled' }}"
+                            {{ $canComplete ? '' : 'disabled' }}>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Complete
+                    </button>
+                </form>
+                <form action="{{ route('reservation.cancel', $reservation->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="tc-btn-cancel {{ $canComplete ? '' : 'tc-btn-disabled' }}"
+                            {{ $canComplete ? '' : 'disabled' }}>
+                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Cancel
+                    </button>
+                </form>
+            </div>
+            @endif
 
+        </div>
 
-
-
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="10" class="px-6 py-4 text-center text-gray-500">No reservations found.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+        {{-- ── Right: Map ── --}}
+        <div class="tr-map-col">
+            <div class="tr-map"
+                 id="map-{{ $reservation->id }}"
+                 data-pickup="{{ $reservation->pickup_location }}"
+                 data-dropoff="{{ $reservation->dropoff_location }}">
+            </div>
+            <div class="tr-map-pill">
+                <span><span class="tr-dot tr-dot-blue"></span>Pickup</span>
+                <span><span class="tr-dot tr-dot-red"></span>Dropoff</span>
             </div>
         </div>
 
     </div>
+    @empty
+    <div class="tr-empty">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 10m0 7V10M9 7l6 3"/>
+        </svg>
+        <p>No pending reservations found.</p>
+    </div>
+    @endforelse
+</div>
+
+@if($reservations->hasPages())
+<div class="tr-pagination">
+    {{ $reservations->withQueryString()->links() }}
+</div>
+@endif
+@push('scripts')
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    async function geocode(address) {
+        try {
+            const res  = await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address));
+            const data = await res.json();
+            if (data.length > 0) return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+        } catch(e) {}
+        return null;
+    }
+
+    const mkIcon = color => L.divIcon({
+        className: '',
+        html: `<div style="width:14px;height:14px;border-radius:50%;background:${color};border:2.5px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3)"></div>`,
+        iconSize: [14,14], iconAnchor: [7,7], popupAnchor: [0,-10],
+    });
+
+    const iBlue = mkIcon('#6366f1');
+    const iRed  = mkIcon('#ef4444');
+
+    document.querySelectorAll('.tr-map').forEach(async function(el) {
+        const pickup  = el.dataset.pickup;
+        const dropoff = el.dataset.dropoff;
+
+        const map = L.map(el, {
+            zoomControl: true,
+            attributionControl: false,
+            scrollWheelZoom: false,
+        }).setView([20, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(map);
+
+        el.addEventListener('click',      () => map.scrollWheelZoom.enable());
+        el.addEventListener('mouseleave', () => map.scrollWheelZoom.disable());
+
+        const [pCoord, dCoord] = await Promise.all([geocode(pickup), geocode(dropoff)]);
+
+        if (pCoord && dCoord) {
+            L.marker([pCoord.lat, pCoord.lng], { icon: iBlue }).addTo(map).bindPopup('<b>Pickup:</b> ' + pickup);
+            L.marker([dCoord.lat, dCoord.lng], { icon: iRed  }).addTo(map).bindPopup('<b>Dropoff:</b> ' + dropoff);
+            L.polyline([[pCoord.lat, pCoord.lng],[dCoord.lat, dCoord.lng]], {
+                color: '#6366f1', weight: 3, opacity: .8, dashArray: '7,7',
+            }).addTo(map);
+            map.fitBounds([[pCoord.lat, pCoord.lng],[dCoord.lat, dCoord.lng]], { padding: [30,30] });
+        } else {
+            el.innerHTML = '<div style="height:100%;display:flex;align-items:center;justify-content:center;font-size:.8rem;color:#9ca3af;">Map unavailable</div>';
+        }
+    });
+});
+</script>
+@endpush
+
 </x-app-layout>

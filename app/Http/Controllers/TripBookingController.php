@@ -65,6 +65,7 @@ public function storeBooking(Request $request)
         'people_count' => $validated['people_count'],
         'total_price' => $total,
         'status' => 'pending',
+        'guide_id' => $package->trip->assigned_guide_id,
     ]);
 
     session(['trip_reservation_id' => $reservation->id]);
@@ -112,7 +113,7 @@ public function index(Request $request)
         });
     }
 
-    $reservations = $query->latest()->get();
+    $reservations = $query->latest()->paginate(10);;
 
     $reviewedReservationIds = Review::where('user_id', auth()->id())
         ->whereIn('reservation_id', $reservations->pluck('id'))
