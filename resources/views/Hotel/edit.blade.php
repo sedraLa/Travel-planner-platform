@@ -163,16 +163,6 @@
                 </div>
             </div>
 
-            <div class="mt-10">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">🏨 Room Types</h3>
-                <p class="text-sm text-gray-500 mb-4">Manage existing room types, images, and add new ones.</p>
-                <div id="room-types-container" class="space-y-6"></div>
-                <button type="button" id="add-room-type-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                    + Add Room Type
-                </button>
-            </div>
-             
-
             
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Update Hotel</button>

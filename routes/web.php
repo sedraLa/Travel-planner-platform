@@ -36,6 +36,7 @@ use App\Http\Controllers\TripBookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ActivityReservationController;
 use App\Http\Controllers\AiAssistantController;
+use App\Http\Controllers\RoomTypeController;
 
 
 
@@ -82,12 +83,30 @@ Route::delete('/destinations/{id}', [DestinationController::class, 'destroyDesti
 Route::get('/hotels/create',[HotelController::class,'create'])->name('hotels.create');
 Route::post('/hotels',[HotelController::class,'store'])->name('hotels.store');
 Route::get('/hotels/{hotel}/edit', [HotelController::class, 'edit'])->name('hotels.edit');
-Route::get('/hotels/{id}/room-types/edit', [HotelController::class, 'editRoomTypes'])->name('hotels.room-types.edit');
-Route::put('/hotels/{id}/room-types', [HotelController::class, 'updateRoomTypes'])->name('hotels.room-types.update');
 Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update');
 Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
 Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
 Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
+
+Route::prefix('hotels/{hotel}/room-types')->group(function () {
+
+    Route::get('/create', [RoomTypeController::class, 'create'])
+        ->name('hotels.room-types.create');
+
+    Route::post('/', [RoomTypeController::class, 'store'])
+        ->name('hotels.room-types.store');
+
+    Route::get('/edit', [RoomTypeController::class, 'edit'])
+        ->name('hotels.room-types.edit');
+
+    Route::put('/update', [RoomTypeController::class, 'update'])
+        ->name('room-types.update');
+});
+Route::delete('/room-types/{roomType}', [RoomTypeController::class, 'destroy'])
+    ->name('room-types.destroy');
+
+Route::delete('/room-types/image/{id}', [RoomTypeController::class, 'deleteImage'])
+    ->name('room-types.image.destroy');
 
 
 
@@ -335,7 +354,7 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
 
-    Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
+Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
 Route::get('/destination/{id}/trips', [DestinationController::class, 'trips'])->name('destination.trips');
 
 });
