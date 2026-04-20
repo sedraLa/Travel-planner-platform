@@ -64,6 +64,7 @@
     <script>
     const existing = @json($rooms);
     let i = 0;
+<<<<<<< codex/fix-image-save-issue-in-edit-room-type-b63blf
     const roomTypeSelectedFiles = {};
 
     function removeRoomType(card) {
@@ -71,12 +72,17 @@
         if (cardIndex !== undefined) {
             delete roomTypeSelectedFiles[cardIndex];
         }
+=======
+
+    function removeRoomType(card) {
+>>>>>>> feature/hotel-rooms
         card.remove();
     }
 
     function handleFiles(input, index) {
         const preview = document.getElementById(`preview-${index}`);
         const select = document.getElementById(`primary-${index}`);
+<<<<<<< codex/fix-image-save-issue-in-edit-room-type-b63blf
         const incomingFiles = Array.from(input.files || []);
 
         if (!roomTypeSelectedFiles[index]) {
@@ -99,11 +105,18 @@
         const dataTransfer = new DataTransfer();
         currentFiles.forEach(file => dataTransfer.items.add(file));
         input.files = dataTransfer.files;
+=======
+        const files = Array.from(input.files || []);
+>>>>>>> feature/hotel-rooms
 
         preview.innerHTML = '';
         select.innerHTML = `<option value="">Select primary image</option>`;
 
+<<<<<<< codex/fix-image-save-issue-in-edit-room-type-b63blf
         currentFiles.forEach((file, idx) => {
+=======
+        files.forEach((file, idx) => {
+>>>>>>> feature/hotel-rooms
             const reader = new FileReader();
             reader.onload = e => {
                 const img = document.createElement('img');
@@ -123,7 +136,11 @@
     function template(i, r = {}) {
     
         return `
+<<<<<<< codex/fix-image-save-issue-in-edit-room-type-b63blf
         <div class="border rounded-xl p-5 bg-white mb-6 room-type-card" data-room-type-index="${i}">
+=======
+        <div class="border rounded-xl p-5 bg-white mb-6 room-type-card">
+>>>>>>> feature/hotel-rooms
 
             <input type="hidden" name="room_types[${i}][id]" value="${r.id ?? ''}">
 
