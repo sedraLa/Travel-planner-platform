@@ -1,6 +1,6 @@
 <x-app-layout>
   @push('styles')
-  <link rel="stylesheet" href="{{asset("css/ordercar.css")}}">
+  <link rel="stylesheet" href="{{asset('css/ordercar.css')}}">
   @endpush
 <div class="main-wrapper">
         <div class="hero-background">

@@ -35,17 +35,27 @@
     {{-- Filters --}}
     <form method="GET" action="{{ route('user.trips.index') }}">
         <div class="trips-filters">
-            <div class="filter-group">
-                <label>Category</label>
-                <select name="category">
-                    <option value="">All</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category }}" @selected(request('category') == $category)>
-                            {{ ucfirst($category) }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
+           <div class="dropdown" id="categoryDropdown">
+
+    <button type="button" class="dropbtn" onclick="toggleDropdown()">
+        Category
+    </button>
+
+    <div class="dropdown-content">
+
+        @foreach($categories as $category)
+            <label>
+                <input type="checkbox"
+                       name="category[]"
+                       value="{{ $category }}"
+                       {{ is_array(request('category')) && in_array($category, request('category')) ? 'checked' : '' }}>
+                {{ ucfirst($category) }}
+            </label>
+        @endforeach
+
+    </div>
+
+</div>
 
             <div class="filter-group">
                 <label>Destination</label>
@@ -231,3 +241,18 @@
     });
 
     </script>
+
+
+
+<script>
+function toggleDropdown() {
+    document.getElementById('categoryDropdown').classList.toggle('open');
+}
+
+document.addEventListener('click', function (e) {
+    const dd = document.getElementById('categoryDropdown');
+    if (!dd.contains(e.target)) {
+        dd.classList.remove('open');
+    }
+});
+</script>

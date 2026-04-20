@@ -59,11 +59,13 @@
                     <input type="hidden" name="search" value="{{ request('search') }}">
                 @endif
 
+                @if(Auth::user()->role === \App\Enums\UserRole::ADMIN->value)
                 <select name="availability">
                     <option value="">Availability</option>
                     <option value="available"   {{ request('availability') == 'available'   ? 'selected' : '' }}>Available</option>
                     <option value="unavailable" {{ request('availability') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
                 </select>
+                @endif
 
                 <select name="difficulty">
                     <option value="">Difficulty</option>

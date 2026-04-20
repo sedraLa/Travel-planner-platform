@@ -20,6 +20,10 @@ class ActivityController extends Controller
         $query = Activity::with('destination');
         $user = auth()->user();
         $user->load('favoriteActivities');
+
+        if ($user->role !== 'admin') {
+        $query->where('availability', 'Available');
+    }
     
         // Keyword search
         if ($request->filled('search')) {
@@ -29,9 +33,9 @@ class ActivityController extends Controller
         }
     
         // Filters
-        if ($request->filled('availability')) {
-            $query->where('availability', $request->availability);
-        }
+        if ($request->filled('availability') && $user->role === 'admin') {
+         $query->where('availability', $request->availability);
+}
         if ($request->filled('difficulty')) {
             $query->where('difficulty_level', $request->difficulty);
         }
@@ -168,6 +172,11 @@ public function update(ActivityRequest $request, $id)
 public function destroy($id)
 {
     $activity = Activity::findOrFail($id);
+
+
+     if ($activity->reservations()->exists()) {
+        return redirect()->back()->with('error', 'Cannot delete activity with reservations.');
+    }
     if ($activity->image && \Storage::disk('public')->exists($activity->image)) {
         \Storage::disk('public')->delete($activity->image);
     }

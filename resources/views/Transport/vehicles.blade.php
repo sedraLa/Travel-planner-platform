@@ -154,6 +154,11 @@
             </p>
         @endforelse
     </div>
+
+      {{-- Pagination --}}
+        <div class="pagination-wrapper">
+            {{ $vehicles->appends(request()->query())->links() }}
+        </div>
     
 </div>
 
