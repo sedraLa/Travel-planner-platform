@@ -61,8 +61,9 @@
     })->toArray());
     @endphp
     
-    <script>
+<script>
     const existing = @json($rooms);
+    const csrfToken = '{{ csrf_token() }}';
     let i = 0;
 
     function removeRoomType(card) {
@@ -151,13 +152,33 @@
                 <div class="grid grid-cols-3 gap-3 mt-2">
     
                     ${r.images.map(img => `
-                        <div class="border p-2 rounded">
+                        <div class="relative border p-2 rounded">
                             <img src="/storage/${img.image_url}"
                                  class="w-full h-24 object-cover rounded">
-    
-                            <div class="text-xs mt-1">
-                                ${img.is_primary ? 'Primary' : ''}
-                            </div>
+
+                            <form action="/room-types/image/${img.id}" method="POST"
+                                  class="absolute top-3 right-3 z-10">
+                                <input type="hidden" name="_token" value="${csrfToken}">
+                                <input type="hidden" name="_method" value="DELETE">
+                                <button type="submit"
+                                        class="bg-red-600 text-white text-xs px-2 py-1 rounded hover:bg-red-700 shadow transition">
+                                    ✕
+                                </button>
+                            </form>
+
+                            ${img.is_primary
+                                ? `<span class="absolute bottom-3 left-3 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
+                                        Primary
+                                   </span>`
+                                : `<form action="/room-types/image/${img.id}/set-primary" method="POST"
+                                         class="absolute bottom-3 left-3 z-10">
+                                        <input type="hidden" name="_token" value="${csrfToken}">
+                                        <button type="submit"
+                                                class="bg-blue-600 text-white text-xs px-3 py-1 rounded hover:bg-blue-700 shadow transition">
+                                            Set Primary
+                                        </button>
+                                   </form>`
+                            }
                         </div>
                     `).join('')}
     

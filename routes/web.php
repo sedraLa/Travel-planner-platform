@@ -107,6 +107,8 @@ Route::delete('/room-types/{roomType}', [RoomTypeController::class, 'destroy'])
 
 Route::delete('/room-types/image/{id}', [RoomTypeController::class, 'deleteImage'])
     ->name('room-types.image.destroy');
+Route::post('/room-types/image/{id}/set-primary', [RoomTypeController::class, 'setPrimaryImage'])
+    ->name('room-types.image.setPrimary');
 
 
 
