@@ -36,6 +36,7 @@ use App\Http\Controllers\TripBookingController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ActivityReservationController;
 use App\Http\Controllers\AiAssistantController;
+use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\GuideAvailabilityController;
 
 
@@ -87,6 +88,28 @@ Route::put('hotels/{id}',[HotelController::class,'update'])->name('hotels.update
 Route::delete('hotels/images/{id}',[HotelController::class,'destroyImage'])->name('hotel-images.destroy');
 Route::post('hotels/images/{id}/set-primary', [HotelController::class, 'setPrimaryImage'])->name('hotel-images.setPrimary');
 Route::delete('/hotels/{id}',[HotelController::class,'destroy'])->name('hotels.destroy');
+
+Route::prefix('hotels/{hotel}/room-types')->group(function () {
+
+    Route::get('/create', [RoomTypeController::class, 'create'])
+        ->name('hotels.room-types.create');
+
+    Route::post('/', [RoomTypeController::class, 'store'])
+        ->name('hotels.room-types.store');
+
+    Route::get('/edit', [RoomTypeController::class, 'edit'])
+        ->name('hotels.room-types.edit');
+
+    Route::put('/update', [RoomTypeController::class, 'update'])
+        ->name('room-types.update');
+});
+Route::delete('/room-types/{roomType}', [RoomTypeController::class, 'destroy'])
+    ->name('room-types.destroy');
+
+Route::delete('/room-types/image/{id}', [RoomTypeController::class, 'deleteImage'])
+    ->name('room-types.image.destroy');
+Route::post('/room-types/image/{id}/set-primary', [RoomTypeController::class, 'setPrimaryImage'])
+    ->name('room-types.image.setPrimary');
 
 
 
@@ -325,7 +348,7 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
 
-    Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
+Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
 Route::get('/destination/{id}/trips', [DestinationController::class, 'trips'])->name('destination.trips');
 
 });

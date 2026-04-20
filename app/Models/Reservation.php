@@ -14,10 +14,14 @@ class Reservation extends Model
     protected $fillable = [
         'user_id',
         'hotel_id',
+        'room_type_id',
         'check_in_date',
         'check_out_date',
+        'check_in',
+        'check_out',
         'rooms_count',
         'guest_count',
+        'guests',
         'total_price',
         'reservation_status',
         'hotel_review_notification_sent',
@@ -28,10 +32,22 @@ class Reservation extends Model
         'updated_at'
     ];
 
+    protected $casts = [
+        'check_in_date' => 'date',
+        'check_out_date' => 'date',
+        'check_in' => 'date',
+        'check_out' => 'date',
+    ];
+
     public function hotel()
     {
         return $this->belongsTo(Hotel::class, 'hotel_id');
 
+    }
+
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class, 'room_type_id');
     }
 
 

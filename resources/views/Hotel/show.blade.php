@@ -287,6 +287,84 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
 
 
+          <!-- Available Room Types -->
+          <div class="highlights-header" style="text-align: center; margin-top:65px;">
+            <h1>Available Room Types</h1>
+            <p>Choose the room type that fits your stay and book directly</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8 mb-10">
+            @forelse($hotel->roomTypes as $roomType)
+                @php
+                    $primaryRoomImage = $roomType->images->firstWhere('is_primary', true) ?? $roomType->images->first();
+                @endphp
+                <div class="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
+                    <div class="h-48 bg-gray-100">
+                        @if($primaryRoomImage)
+                            <img src="{{ asset('storage/' . $primaryRoomImage->image_url) }}" alt="{{ $roomType->name }}" class="w-full h-full object-cover">
+                        @else
+                            <div class="w-full h-full flex items-center justify-center text-gray-500 text-sm">No primary image</div>
+                        @endif
+                    </div>
+
+                    <div class="p-5">
+                        <h3 class="text-xl font-semibold text-gray-900">{{ $roomType->name }}</h3>
+                        <p class="text-blue-700 font-semibold mt-1">${{ number_format($roomType->price_per_night, 2) }} / night</p>
+                        <p class="text-sm text-gray-600 mt-1">Capacity: {{ $roomType->capacity }} guests</p>
+                        <p class="text-sm text-gray-600 mt-1">Available now: {{ max(0, $roomType->quantity) }}</p>
+                        <p class="text-sm text-gray-700 mt-3">{{ $roomType->description }}</p>
+
+                        @if(!empty($roomType->amenities))
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach($roomType->amenities as $amenity)
+                                    <span class="px-2 py-1 rounded-full bg-gray-100 text-xs text-gray-700">{{ $amenity }}</span>
+                                @endforeach
+                            </div>
+                        @endif
+
+                        <p class="text-xs text-gray-500 mt-3">
+                            {{ $roomType->is_refundable ? 'Refundable booking' : 'Non-refundable booking' }}
+                        </p>
+
+                        <button 
+                        class="view-room-gallery-btn mt-4 text-sm font-medium text-blue-700"
+                        data-images='@json($roomType->images->pluck("image_url"))'>
+                        View Gallery
+                    </button>
+
+                        <details class="mt-4">
+                            <summary class="cursor-pointer inline-flex items-center px-3 py-2 rounded-lg bg-blue-600 text-white text-sm hover:bg-blue-700">Select Room</summary>
+                            <div class="mt-4 border border-gray-100 rounded-xl p-4">
+                                <form method="GET" action="{{ route('reservations.form', $hotel->id) }}" class="space-y-3">
+                                    <input type="hidden" name="room_type_id" value="{{ $roomType->id }}">
+
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Check In</label>
+                                        <input type="date" name="check_in_date" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Check Out</label>
+                                        <input type="date" name="check_out_date" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs text-gray-600 mb-1">Guests</label>
+                                        <input type="number" min="1" name="guest_count" class="w-full border-gray-300 rounded-lg text-sm" required>
+                                    </div>
+
+                                    <button type="submit" class="w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700">
+                                        Continue
+                                    </button>
+                                </form>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            @empty
+                <p class="text-gray-600 md:col-span-2 xl:col-span-3 text-center">No room types available at this hotel yet.</p>
+            @endforelse
+          </div>
+
+
                   <!--Photo Gallery-->
         <div class="highlights-header" style="text-align: center; margin-top:65px;margin-bottom:-60px">
             <h1>Photo Gallery</h1>
@@ -315,6 +393,14 @@ document.addEventListener("DOMContentLoaded", function () {
     <div class="arrow left">&#10094;</div>
     <div class="arrow right">&#10095;</div>
   </div>
+
+  <!-- ROOM IMAGE POPUP -->
+<div id="room-popup" class="popup-overlay">
+    <span class="room-close-btn">&times;</span>
+    <img id="room-popup-image" src="" alt="Room View">
+    <div class="room-arrow left">&#10094;</div>
+    <div class="room-arrow right">&#10095;</div>
+</div>
 
 
 
@@ -425,4 +511,76 @@ document.addEventListener("DOMContentLoaded", function () {
             observer.observe(el);
         });
     });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+const buttons = document.querySelectorAll('.view-room-gallery-btn');
+
+const popup = document.getElementById('room-popup');
+const popupImage = document.getElementById('room-popup-image');
+const closeBtn = document.querySelector('.room-close-btn');
+const leftArrow = document.querySelector('.room-arrow.left');
+const rightArrow = document.querySelector('.room-arrow.right');
+
+let images = [];
+let currentIndex = 0;
+
+// فتح الجاليري
+buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const imgs = JSON.parse(btn.dataset.images);
+
+        if (!imgs || imgs.length === 0) return;
+
+        images = imgs.map(img => `/storage/${img}`);
+        currentIndex = 0;
+
+        popup.style.display = 'flex';
+        popupImage.src = images[currentIndex];
+
+        // 👇 هون السر: نضمن الأسهم تشتغل فقط إذا في أكتر من صورة
+        toggleArrows();
+    });
+});
+
+function toggleArrows() {
+    if (images.length <= 1) {
+        leftArrow.style.display = 'none';
+        rightArrow.style.display = 'none';
+    } else {
+        leftArrow.style.display = 'block';
+        rightArrow.style.display = 'block';
+    }
+}
+
+// إغلاق
+closeBtn.addEventListener('click', () => {
+    popup.style.display = 'none';
+});
+
+// يسار
+leftArrow.addEventListener('click', () => {
+    if (images.length === 0) return;
+
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    popupImage.src = images[currentIndex];
+});
+
+// يمين
+rightArrow.addEventListener('click', () => {
+    if (images.length === 0) return;
+
+    currentIndex = (currentIndex + 1) % images.length;
+    popupImage.src = images[currentIndex];
+});
+
+// إغلاق عند الضغط برا
+popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+        popup.style.display = 'none';
+    }
+});
+
+});
     </script>

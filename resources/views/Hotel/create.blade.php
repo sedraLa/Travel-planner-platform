@@ -181,6 +181,15 @@
                 </div>
 
             </div>
+
+            <div class="mt-10">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">🏨 Room Types</h3>
+                <p class="text-sm text-gray-500 mb-4">Add one or more room types with pricing, capacity, and gallery images.</p>
+                <div id="room-types-container" class="space-y-6"></div>
+                <button type="button" id="add-room-type-btn" class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    + Add Room Type
+                </button>
+            </div>
              
                    <div class="popup-buttons mt-8">
                    <button type="submit" class="btn btn-primary">Create</button>
@@ -262,3 +271,131 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+<script>
+    let roomFilesMap = {};
+    
+    function handleRoomImages(input, index) {
+        const newFiles = Array.from(input.files);
+    
+        if (!roomFilesMap[index]) {
+            roomFilesMap[index] = [];
+        }
+    
+        roomFilesMap[index] = roomFilesMap[index].concat(newFiles);
+    
+        const select = document.getElementById(`room-primary-select-${index}`);
+        const wrapper = document.getElementById(`room-primary-wrapper-${index}`);
+    
+        if (select && wrapper) {
+            if (roomFilesMap[index].length > 0) {
+                select.innerHTML = '';
+                wrapper.classList.remove('hidden');
+    
+                roomFilesMap[index].forEach((file, i) => {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = file.name;
+                    select.appendChild(option);
+                });
+            } else {
+                wrapper.classList.add('hidden');
+            }
+        }
+    
+        const dt = new DataTransfer();
+        roomFilesMap[index].forEach(f => dt.items.add(f));
+        input.files = dt.files;
+    }
+    </script>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('room-types-container');
+        const addBtn = document.getElementById('add-room-type-btn');
+    
+        let roomTypeIndex = 0;
+        const oldRoomTypes = @json(old('room_types', []));
+    
+        function roomTypeTemplate(index, values = {}) {
+            return `
+            <div class="border border-gray-200 rounded-xl p-5 bg-white shadow-sm room-type-card" data-index="${index}">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-lg text-gray-800">Room Type #${index + 1}</h4>
+                    <button type="button" class="remove-room-type text-red-600 text-sm">Remove</button>
+                </div>
+    
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-sm">Name</label>
+                        <input type="text" name="room_types[${index}][name]" value="${values.name ?? ''}" class="mt-1 w-full border rounded-md" required>
+                    </div>
+    
+                    <div>
+                        <label class="text-sm">Price</label>
+                        <input type="number" name="room_types[${index}][price_per_night]" value="${values.price_per_night ?? ''}" class="mt-1 w-full border rounded-md" required>
+                    </div>
+    
+                    <div>
+                        <label class="text-sm">Capacity</label>
+                        <input type="number" name="room_types[${index}][capacity]" value="${values.capacity ?? ''}" class="mt-1 w-full border rounded-md" required>
+                    </div>
+    
+                    <div>
+                        <label class="text-sm">Quantity</label>
+                        <input type="number" name="room_types[${index}][quantity]" value="${values.quantity ?? ''}" class="mt-1 w-full border rounded-md" required>
+                    </div>
+                </div>
+    
+                <div class="mt-4">
+                    <label class="text-sm">Description</label>
+                    <textarea name="room_types[${index}][description]" class="mt-1 w-full border rounded-md">${values.description ?? ''}</textarea>
+                </div>
+    
+                <div class="mt-4">
+                    <label class="text-sm">Images</label>
+                    <input type="file"
+                        name="room_types[${index}][images][]"
+                        class="mt-1 w-full"
+                        multiple
+                        onchange="handleRoomImages(this, ${index})">
+                </div>
+    
+                <div id="room-primary-wrapper-${index}" class="mt-4 hidden">
+                    <label class="text-sm">Primary Image</label>
+                    <select name="room_types[${index}][primary_image_index]"
+                            id="room-primary-select-${index}"
+                            class="mt-1 w-full border rounded-md">
+                    </select>
+                </div>
+            </div>`;
+        }
+    
+        function attachRemove(card) {
+            card.querySelector('.remove-room-type')?.addEventListener('click', () => {
+                card.remove();
+            });
+        }
+    
+        function addRoom(values = {}) {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = roomTypeTemplate(roomTypeIndex, values);
+    
+            const card = wrapper.firstElementChild;
+            container.appendChild(card);
+    
+            attachRemove(card);
+            roomTypeIndex++;
+        }
+    
+        // init
+        if (oldRoomTypes.length) {
+            oldRoomTypes.forEach(rt => addRoom(rt));
+        } else {
+            addRoom();
+        }
+    
+        addBtn.addEventListener('click', () => addRoom());
+    });
+    </script>
+

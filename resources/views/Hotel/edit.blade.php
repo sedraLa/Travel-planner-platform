@@ -6,7 +6,12 @@
 
 
     <div class="vehicle-form-container"> 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Hotel</h2>
+        <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-gray-800">Edit Hotel</h2>
+        <a href="{{ route('hotels.room-types.edit', $hotel->id) }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            Edit Room Types
+        </a>
+        </div>
 
         <form action="{{ route('hotels.update', $hotel) }}" method="post" enctype="multipart/form-data">
             @csrf
@@ -154,7 +159,6 @@
                         </div> 
                 </div>
             </div>
-             
 
             
                    <div class="popup-buttons mt-8">
@@ -210,6 +214,50 @@
     </div>
 </div>
         @endif
+
+@if($hotel->roomTypes->count())
+<div class="mt-10">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Room Types & Images</h3>
+
+    <div class="space-y-8">
+        @foreach($hotel->roomTypes as $roomType)
+            <div class="border rounded-xl p-4 bg-white dark:bg-gray-900">
+                <div class="mb-4">
+                    <h4 class="text-md font-semibold text-gray-800 dark:text-gray-100">{{ $roomType->name }}</h4>
+                    <p class="text-sm text-gray-600 dark:text-gray-300">
+                        Price: ${{ number_format($roomType->price_per_night, 2) }} |
+                        Capacity: {{ $roomType->capacity }} |
+                        Quantity: {{ $roomType->quantity }}
+                    </p>
+                    @if($roomType->description)
+                        <p class="text-sm text-gray-500 mt-1">{{ $roomType->description }}</p>
+                    @endif
+                </div>
+
+                @if($roomType->images->count())
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        @foreach($roomType->images as $image)
+                            <div class="relative group border rounded shadow overflow-hidden h-48 bg-white dark:bg-gray-900">
+                                <img src="{{ asset('storage/' . $image->image_url) }}"
+                                    class="w-full h-full object-cover"
+                                    alt="{{ $roomType->name }} image">
+
+                                @if ($image->is_primary)
+                                    <span class="absolute bottom-2 left-2 bg-green-600 text-white text-xs px-3 py-1 rounded shadow">
+                                        Primary
+                                    </span>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-sm text-gray-500">No images uploaded for this room type.</p>
+                @endif
+            </div>
+        @endforeach
+    </div>
+</div>
+@endif
             </div>
         </div>
     </div>
@@ -233,7 +281,113 @@ function addFilesToInput(input) {
     input.files = dataTransfer.files;
 }
 </script>
-
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const container = document.getElementById('room-types-container');
+        const addBtn = document.getElementById('add-room-type-btn');
+        let roomTypeIndex = 0;
+    </script>
+    
+    @php
+    $existingRoomTypes = old('room_types',
+        $hotel->roomTypes->map(function ($roomType) {
+            return [
+                'id' => $roomType->id,
+                'name' => $roomType->name,
+                'price_per_night' => $roomType->price_per_night,
+                'capacity' => $roomType->capacity,
+                'quantity' => $roomType->quantity,
+                'description' => $roomType->description,
+                'amenities' => is_array($roomType->amenities)
+                    ? implode(', ', $roomType->amenities)
+                    : '',
+                'is_refundable' => $roomType->is_refundable,
+                'images' => $roomType->images->map(function ($image) {
+                    return [
+                        'id' => $image->id,
+                        'image_url' => $image->image_url,
+                        'is_primary' => $image->is_primary,
+                    ];
+                })->values()->all(),
+            ];
+        })->values()->all()
+    );
+    @endphp
+    
+    <script>
+        const existingRoomTypes = @json($existingRoomTypes);
+    
+        const roomTypeTemplate = (index, values = {}) => {
+            const existingImages = Array.isArray(values.images) ? values.images : [];
+    
+            const existingImagesHtml = existingImages.length
+                ? `<div class="mt-4">
+                    <p class="text-sm text-gray-700 mb-2">Existing Images</p>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        ${existingImages.map(image => `
+                            <div class="border rounded-lg p-2">
+                                <img src="/storage/${image.image_url}" class="w-full h-20 object-cover rounded">
+                                <div class="mt-2">
+                                    <label class="text-xs">
+                                        <input type="radio"
+                                            name="room_types[${index}][primary_image_choice]"
+                                            value="existing:${image.id}"
+                                            ${image.is_primary ? 'checked' : ''}>
+                                        Primary
+                                    </label>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>`
+                : '';
+    
+            return `
+            <div class="border rounded-xl p-5 bg-white room-type-card">
+                <input type="hidden" name="room_types[${index}][id]" value="${values.id ?? ''}">
+    
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" name="room_types[${index}][name]"
+                        value="${values.name ?? ''}" placeholder="Name" class="border rounded-md">
+    
+                    <input type="number" name="room_types[${index}][price_per_night]"
+                        value="${values.price_per_night ?? ''}" placeholder="Price" class="border rounded-md">
+    
+                    <input type="number" name="room_types[${index}][capacity]"
+                        value="${values.capacity ?? ''}" placeholder="Capacity" class="border rounded-md">
+    
+                    <input type="number" name="room_types[${index}][quantity]"
+                        value="${values.quantity ?? ''}" placeholder="Quantity" class="border rounded-md">
+                </div>
+    
+                <textarea name="room_types[${index}][description]"
+                    class="mt-3 w-full border rounded-md">${values.description ?? ''}</textarea>
+    
+                ${existingImagesHtml}
+    
+                <input type="file"
+                    name="room_types[${index}][images][]"
+                    multiple class="mt-3">
+    
+            </div>`;
+        };
+    
+        function addRoomType(values = {}) {
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = roomTypeTemplate(roomTypeIndex, values);
+            container.appendChild(wrapper.firstElementChild);
+            roomTypeIndex++;
+        }
+    
+        if (existingRoomTypes.length) {
+            existingRoomTypes.forEach(rt => addRoomType(rt));
+        } else {
+            addRoomType();
+        }
+    
+        addBtn.addEventListener('click', () => addRoomType());
+    });
+    </script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const destinationSelect = document.getElementById('destination_id');
