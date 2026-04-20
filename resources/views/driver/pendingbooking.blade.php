@@ -17,10 +17,19 @@
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
                     </svg>
+
+
                 </div>
-                <h1>Pending Bookings</h1>
-                <p>A list of all transport reservations not completed yet.</p>
+                @if(Auth::user()->role === \App\Enums\UserRole::DRIVER->value)
+                    <h1>Pending Bookings</h1>
+                    <p>A list of all transport reservations not completed yet</p>
+                @else
+                    <h1>Reservations — {{ $driver->user->name }}</h1>
+                    <p>A list of all completed reservations for this driver.</p>
+                @endif
             </div>
+
+
             <div class="tr-hero-stats">
                 <div class="tr-stat-pill">
                     <div class="num">{{ $reservations->total() }}</div>
@@ -87,30 +96,41 @@
 
             <hr class="tc-divider">
 
-            {{-- Date + Passengers --}}
-            <div class="tc-chips">
-                <span class="tc-chip">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    {{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d M Y, H:i') }}
-                </span>
-                <span class="tc-chip">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                    </svg>
-                    {{ \Carbon\Carbon::parse($reservation->dropoff_datetime)->format('d M Y, H:i') }}
-                </span>
-                <span class="tc-chip">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
-                    </svg>
-                    {{ $reservation->passengers }} passenger{{ $reservation->passengers > 1 ? 's' : '' }}
-                </span>
-            </div>
+           {{-- Date + Passengers --}}
+                 <div class="tc-chips">
+                      <span class="tc-chip">
+                         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                         </svg>
+                                  {{ \Carbon\Carbon::parse($reservation->pickup_datetime)->format('d M Y, H:i') }}
+                              </span>
+                                  <span class="tc-chip">
+                                      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                       </svg>
+                                       {{ \Carbon\Carbon::parse($reservation->dropoff_datetime)->format('d M Y, H:i') }}
+                                   </span>
+                             <span class="tc-chip">
+                                  <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                      <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M12 12a4 4 0 100-8 4 4 0 000 8z"/>
+                                   </svg>
+                                        {{ $reservation->passengers }} passenger{{ $reservation->passengers > 1 ? 's' : '' }}
+                               </span>
+                            </div>
+
+                           <hr class="tc-divider">
+
+                                 {{-- ── Status Badge ── --}}
+                                   <div class="tc-status-row">
+                                        <span class="tc-status-badge pending">
+                                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                  </svg>
+                                                          Pending
+                                          </span>
+                                    </div>
+
 
             {{-- ── Buttons (Driver only) ── --}}
             @if(auth()->check() && auth()->user()->role === \App\Enums\UserRole::DRIVER->value)

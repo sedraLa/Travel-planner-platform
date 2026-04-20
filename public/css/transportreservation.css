@@ -766,3 +766,63 @@ body {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+/* ── Grid layout للكارد جنب بعض ── */
+.tr-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 24px 32px;
+}
+
+/* ── Compact card (بدون خريطة) ── */
+.tr-card-compact {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-height: unset;
+}
+
+/* ── Status row ── */
+.tc-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.tc-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.tc-status-badge svg {
+    width: 13px;
+    height: 13px;
+}
+
+.tc-status-badge.completed {
+    background: #e0faf2;
+    color: #065f46;
+    border: 0.5px solid #6ee7b7;
+}
+
+.tc-date-sub {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.tc-status-badge.pending {
+    background: #fef9ec;
+    color: #92400e;
+    border: 0.5px solid #fde68a;
+}
+
+.tc-btn-disabled {
+    cursor: not-allowed;
+}

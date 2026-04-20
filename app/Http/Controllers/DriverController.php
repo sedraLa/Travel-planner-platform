@@ -143,7 +143,7 @@ class DriverController extends Controller
         $reservations = $driver->reservations()
         ->where('driver_status', 'completed')
         ->with(['vehicle', 'user'])
-        ->get();
+        ->paginate(4); 
 
           return view('driver.completedbooking', compact('driver', 'reservations'));
     }
@@ -167,7 +167,7 @@ class DriverController extends Controller
         ->whereHas('payment', function ($query) {
             $query->where('status', 'completed');
         })
-        ->paginate(10); 
+        ->paginate(4); 
           return view('driver.pendingbooking', compact('driver', 'reservations'));
 }
 
