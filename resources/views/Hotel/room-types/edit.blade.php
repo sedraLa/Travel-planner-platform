@@ -72,12 +72,26 @@
     function handleFiles(input, index) {
         const preview = document.getElementById(`preview-${index}`);
         const select = document.getElementById(`primary-${index}`);
-        const files = Array.from(input.files || []);
+        const previousFiles = Array.isArray(input._selectedFiles) ? input._selectedFiles : [];
+        const latestSelection = Array.from(input.files || []);
+
+        const mergedFiles = [...previousFiles, ...latestSelection].filter((file, fileIndex, filesArray) => {
+            const fileSignature = `${file.name}-${file.size}-${file.lastModified}`;
+            return fileIndex === filesArray.findIndex((candidate) => {
+                return `${candidate.name}-${candidate.size}-${candidate.lastModified}` === fileSignature;
+            });
+        });
+
+        input._selectedFiles = mergedFiles;
+
+        const dataTransfer = new DataTransfer();
+        mergedFiles.forEach((file) => dataTransfer.items.add(file));
+        input.files = dataTransfer.files;
 
         preview.innerHTML = '';
         select.innerHTML = `<option value="">Select primary image</option>`;
 
-        files.forEach((file, idx) => {
+        mergedFiles.forEach((file, idx) => {
             const reader = new FileReader();
             reader.onload = e => {
                 const img = document.createElement('img');
