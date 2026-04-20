@@ -503,57 +503,74 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     </script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-    
-        const buttons = document.querySelectorAll('.view-room-gallery-btn');
-    
-        const popup = document.getElementById('room-popup');
-        const popupImage = document.getElementById('room-popup-image');
-        const closeBtn = document.querySelector('.room-close-btn');
-        const leftArrow = document.querySelector('.room-arrow.left');
-        const rightArrow = document.querySelector('.room-arrow.right');
-    
-        let images = [];
-        let currentIndex = 0;
-    
-        // فتح الجاليري
-        buttons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const imgs = JSON.parse(btn.dataset.images);
-    
-                if (!imgs.length) return;
-    
-                images = imgs.map(img => `/storage/${img}`);
-                currentIndex = 0;
-    
-                popup.style.display = 'flex';
-                popupImage.src = images[currentIndex];
-            });
-        });
-    
-        // إغلاق
-        closeBtn.addEventListener('click', () => {
-            popup.style.display = 'none';
-        });
-    
+document.addEventListener("DOMContentLoaded", function () {
 
-        leftArrow.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + images.length) % images.length;
-            popupImage.src = images[currentIndex];
-        });
-    
-  
-        rightArrow.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % images.length;
-            popupImage.src = images[currentIndex];
-        });
-    
-     
-        popup.addEventListener('click', (e) => {
-            if (e.target === popup) {
-                popup.style.display = 'none';
-            }
-        });
-    
+const buttons = document.querySelectorAll('.view-room-gallery-btn');
+
+const popup = document.getElementById('room-popup');
+const popupImage = document.getElementById('room-popup-image');
+const closeBtn = document.querySelector('.room-close-btn');
+const leftArrow = document.querySelector('.room-arrow.left');
+const rightArrow = document.querySelector('.room-arrow.right');
+
+let images = [];
+let currentIndex = 0;
+
+// فتح الجاليري
+buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const imgs = JSON.parse(btn.dataset.images);
+
+        if (!imgs || imgs.length === 0) return;
+
+        images = imgs.map(img => `/storage/${img}`);
+        currentIndex = 0;
+
+        popup.style.display = 'flex';
+        popupImage.src = images[currentIndex];
+
+        // 👇 هون السر: نضمن الأسهم تشتغل فقط إذا في أكتر من صورة
+        toggleArrows();
     });
+});
+
+function toggleArrows() {
+    if (images.length <= 1) {
+        leftArrow.style.display = 'none';
+        rightArrow.style.display = 'none';
+    } else {
+        leftArrow.style.display = 'block';
+        rightArrow.style.display = 'block';
+    }
+}
+
+// إغلاق
+closeBtn.addEventListener('click', () => {
+    popup.style.display = 'none';
+});
+
+// يسار
+leftArrow.addEventListener('click', () => {
+    if (images.length === 0) return;
+
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    popupImage.src = images[currentIndex];
+});
+
+// يمين
+rightArrow.addEventListener('click', () => {
+    if (images.length === 0) return;
+
+    currentIndex = (currentIndex + 1) % images.length;
+    popupImage.src = images[currentIndex];
+});
+
+// إغلاق عند الضغط برا
+popup.addEventListener('click', (e) => {
+    if (e.target === popup) {
+        popup.style.display = 'none';
+    }
+});
+
+});
     </script>
