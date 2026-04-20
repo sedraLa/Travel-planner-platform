@@ -150,29 +150,66 @@
 
 
 <script>
-function openSchedule(guideId) {
-    fetch(`/guide/${guideId}/availability`)
-        .then(res => res.json())
-        .then(data => {
+document.addEventListener("DOMContentLoaded", function () {
 
-            let html = '';
+    window.openSchedule = function (guideId) {
 
-            if (!data.dates.length) {
-                html = `<tr><td class="p-2">No schedules found</td></tr>`;
-            } else {
-                data.dates.forEach(date => {
-                    html += `<tr>
+        console.log("Guide ID:", guideId);
+
+        fetch(`/guide/${guideId}/availability`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+
+                console.log("Response:", data);
+
+                let html = '';
+
+                if (!data.dates || data.dates.length === 0) {
+                    html = `
+                        <tr>
+                            <td class="p-2 text-center text-gray-500">
+                                No working days assigned
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    data.dates.forEach(date => {
+                        html += `
+                            <tr>
                                 <td class="p-2">${date}</td>
-                             </tr>`;
-                });
-            }
+                            </tr>
+                        `;
+                    });
+                }
 
-            document.getElementById('schedule-body').innerHTML = html;
+                document.getElementById('schedule-body').innerHTML = html;
 
-            document.getElementById('schedule-modal')
-                .classList.remove('hidden');
-        });
-}
+                document.getElementById('schedule-modal')
+                    .classList.remove('hidden');
+            })
+            .catch(error => {
+
+                console.error("Fetch error:", error);
+
+                document.getElementById('schedule-body').innerHTML = `
+                    <tr>
+                        <td class="p-2 text-red-500 text-center">
+                            Failed to load schedule
+                        </td>
+                    </tr>
+                `;
+
+                document.getElementById('schedule-modal')
+                    .classList.remove('hidden');
+            });
+    };
+
+});
 </script>
 
 </x-app-layout>

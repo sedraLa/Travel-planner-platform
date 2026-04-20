@@ -156,59 +156,42 @@
             <hr class="tc-divider">
 
             {{-- Driver / Vehicle / Plate --}}
-            <div class="tc-assign">
-                {{-- Driver --}}
-                <div class="tc-assign-item">
-                    <svg class="ic-driver" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    <span class="key">Driver</span>
-                    <span class="val {{ is_null($reservation->driver?->user?->name) ? 'muted' : '' }}">
-                        {{ $reservation->driver?->user?->name ?? 'Not assigned' }}
-                    </span>
-                </div>
+<div class="tc-assign">
 
-                {{-- Vehicle --}}
-                <div class="tc-assign-item">
-                    <svg class="ic-vehicle" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l1.293 1.293A1 1 0 005 18h14a1 1 0 00.707-1.707L18 15V9a1 1 0 00-.78-.976l-4-.8A1 1 0 0013 8.22V16z"/>
-                    </svg>
-                    <span class="key">Vehicle</span>
-                    <span class="val {{ is_null($reservation->vehicle?->name) ? 'muted' : '' }}">
-                        {{ $reservation->vehicle?->name ?? 'Not assigned' }}
-                    </span>
-                </div>
+    <div class="tc-assign-row">
+        <span class="tc-key">Driver</span>
+        <span class="tc-val">{{ $reservation->driver?->user?->name ?? 'Not assigned' }}</span>
+    </div>
 
+    @if($reservation->driver?->user?->phone)
+    <div class="tc-assign-row">
+        <span class="tc-key">Phone</span>
+        <a href="tel:{{ $reservation->driver->user->phone }}" class="tc-val link">
+            {{ $reservation->driver->user->phone }}
+        </a>
+    </div>
+    @endif
 
-                <div class="tc-assign-item">
-                    <svg class="ic-plate" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M3 10h18M3 14h18M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-                    </svg>
-                    <span class="key">Plate</span>
-                    <span class="val {{ is_null($reservation->vehicle?->plate_number) ? 'muted' : '' }}">
-                        {{ $reservation->vehicle?->category ?? 'N/A' }}
-                    </span>
-                </div>
-                
+    <div class="tc-assign-row">
+        <span class="tc-key">Vehicle</span>
+        <span class="tc-val">{{ $reservation->vehicle?->name ?? 'Not assigned' }}</span>
+    </div>
 
-                {{-- Plate --}}
-                <div class="tc-assign-item">
-                    <svg class="ic-plate" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                              d="M3 10h18M3 14h18M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/>
-                    </svg>
-                    <span class="key">Plate</span>
-                    <span class="val {{ is_null($reservation->vehicle?->plate_number) ? 'muted' : '' }}">
-                        {{ $reservation->vehicle?->plate_number ?? 'N/A' }}
-                    </span>
-                </div>
-            </div>
+    <div class="tc-assign-row">
+        <span class="tc-key">Category</span>
+        <span class="tc-val {{ is_null($reservation->vehicle?->category) ? 'muted' : '' }}">
+            {{ $reservation->vehicle?->category ?? 'N/A' }}
+        </span>
+    </div>
 
+    <div class="tc-assign-row">
+        <span class="tc-key">Plate</span>
+        <span class="tc-val plate {{ is_null($reservation->vehicle?->plate_number) ? 'muted' : '' }}">
+            {{ $reservation->vehicle?->plate_number ?? 'N/A' }}
+        </span>
+    </div>
+
+</div>
         </div>
 
         {{-- ── Right: Map ── --}}

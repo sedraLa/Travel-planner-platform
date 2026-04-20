@@ -277,18 +277,10 @@ Route::get('/notifications/{id}', [NotificationController::class, 'show'])->name
 //trip routes
 Route::get('/trip', [UserTripController::class, 'index'])->name('user.trips.index');
 Route::get('/trip/{trip}', [UserTripController::class, 'show'])->name('user.trips.show');
-Route::get('/trip/package/{packageId}/book',
-    [TripBookingController::class, 'showBookingForm']
-)->name('trip.booking.form');
-Route::post('/trip/booking/store',
-    [TripBookingController::class, 'storeBooking']
-)->name('trip.booking.store');
-Route::get('/trip/payment/paypal',
-    [PaymentController::class, 'payTrip']
-)->name('trip.paypal');
-Route::get('/trip/payment/paypal/callback',
-    [PaymentController::class, 'paypalCallbackTrip']
-)->name('payment.trip.callback');
+Route::get('/trip/package/{packageId}/book',[TripBookingController::class, 'showBookingForm'])->name('trip.booking.form');
+Route::post('/trip/booking/store',[TripBookingController::class, 'storeBooking'])->name('trip.booking.store');
+Route::get('/trip/payment/paypal',[PaymentController::class, 'payTrip'])->name('trip.paypal');
+Route::get('/trip/payment/paypal/callback',[PaymentController::class, 'paypalCallbackTrip'])->name('payment.trip.callback');
 
 Route::get('/trip-reservations', [TripBookingController::class, 'index'])
 ->name('trip.reservations.index');
@@ -376,7 +368,7 @@ Route::post('/requests/{guideRequest}/reject', [GuideRequestResponseController::
 
 Route::get('/assigned-trips',[GuideController::class,'assignedTrips'])->name('guide.assignedTrips');
 Route::post('/guide/trips/{id}/complete',[GuideController::class, 'completeTrip'])->name('guide.completed.trip');
-Route::get('/guides/{guide}/availability', [GuideAvailabilityController::class, 'show']);
+Route::get('/{guide}/availability', [GuideAvailabilityController::class, 'show'])->name('guide.availability');
   });
 
 require __DIR__.'/auth.php';

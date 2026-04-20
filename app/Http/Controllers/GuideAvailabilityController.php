@@ -1,9 +1,9 @@
 <?php
 
+namespace App\Http\Controllers;
+
 use App\Models\Guide;
-use App\Models\GuideAssignment;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class GuideAvailabilityController extends Controller
 {
@@ -13,8 +13,16 @@ class GuideAvailabilityController extends Controller
             ->findOrFail($guideId);
 
         $dates = $guide->assignments
-            ->flatMap(fn ($assignment) => $assignment->trip?->schedules ?? [])
+            ->flatMap(function ($assignment) {
+
+                if (!$assignment->trip || !$assignment->trip->schedules) {
+                    return [];
+                }
+
+                return $assignment->trip->schedules;
+            })
             ->flatMap(function ($schedule) {
+
                 if (!$schedule->start_date || !$schedule->end_date) {
                     return [];
                 }
@@ -32,7 +40,6 @@ class GuideAvailabilityController extends Controller
                 return $range;
             })
             ->unique()
-            ->sort()
             ->values();
 
         return response()->json([

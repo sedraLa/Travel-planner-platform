@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests\DestinationRequest;
 use App\Http\Requests\HighlightRequest;
 use App\Models\Destination;
+use App\Models\Trips;
 use App\Models\Highlight;
 use App\Models\DestinationImage;
 use App\Services\MediaServices;
 use Illuminate\Support\Facades\Storage;
 use App\Events\DestinationViewed;
+use App\Enums\Category;
 
 
 
@@ -126,7 +128,8 @@ class DestinationController extends Controller
             'images',
             'highlights',
             'activities',
-            'catalogTrips.images', // إذا بدك صور لل trips (اختياري)
+            'catalogTrips.images',
+     // إذا بدك صور لل trips (اختياري)
         ])->findOrFail($id);
 
 
@@ -168,15 +171,44 @@ class DestinationController extends Controller
     return view('activities.index', compact('destination', 'activities'));
 }
 
-public function trips(string $id)
+public function trips(Request $request, $destinationId = null)
 {
-    $destination = Destination::findOrFail($id);
+    $categories = Category::values();
 
-    $trips = $destination->trips()
-        ->latest()
-        ->paginate(12);
+    $destinations = Destination::all();
 
-    return view('trips.user.index', compact('destination', 'trips'));
+    $query = Trip::with(['images', 'destination', 'schedules']);
+
+    // إذا في destination → فلترة
+    if ($destinationId) {
+        $query->where('destination_id', $destinationId);
+        $destination = Destination::findOrFail($destinationId);
+    } else {
+        $destination = null;
+    }
+
+    // filters
+    if ($request->filled('category')) {
+        $query->whereIn('category', $request->category);
+    }
+
+    if ($request->filled('destination_id')) {
+        $query->where('destination_id', $request->destination_id);
+    }
+
+    if ($request->filled('search')) {
+        $term = $request->search;
+        $query->where('name', 'like', "%$term%");
+    }
+
+    $trips = $query->latest()->paginate(12);
+
+    return view('trips.user.index', compact(
+        'trips',
+        'categories',
+        'destinations',
+        'destination'
+    ));
 }
 
     /**

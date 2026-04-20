@@ -583,3 +583,102 @@ body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: .95rem;
 }
+
+.tc-assign {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.tc-assign-card {
+    background: var(--color-bg, #f8f9fa);
+    border: 0.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.tc-assign-card.full-width {
+    grid-column: 1 / -1;
+}
+
+.tc-assign-label {
+    font-size: 11px;
+    color: #94a3b8;
+    margin: 0 0 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.tc-assign-value {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+    color: #1e293b;
+}
+
+.tc-assign-value.plate {
+    font-family: monospace;
+    letter-spacing: 0.08em;
+}
+
+.tc-assign-sub {
+    font-size: 12px;
+    color: #64748b;
+    margin: 2px 0 0;
+}
+
+.tc-assign-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #3b82f6;
+    text-decoration: none;
+    margin-top: 4px;
+}
+
+.tc-assign-phone.muted {
+    color: #94a3b8;
+}
+
+
+
+.tc-assign {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tc-assign-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tc-key {
+    font-size: 13px;
+    color: #94a3b8;
+    min-width: 70px;
+    flex-shrink: 0;
+}
+
+.tc-val {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.tc-val.plate {
+    font-family: monospace;
+    letter-spacing: 0.06em;
+}
+
+.tc-val.link {
+    color: #3b82f6;
+    text-decoration: none;
+}
+
+.tc-val.muted {
+    color: #94a3b8;
+    font-weight: 400;
+}

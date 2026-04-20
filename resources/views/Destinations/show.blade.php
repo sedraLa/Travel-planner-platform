@@ -86,48 +86,50 @@
         </div>
 
         <!--Experiences section-->
-        <div class="experiences-container">
-            <div class="exp-header">
-                <h1>Unforgettable Experiences</h1>
-                <p>The absolute essentials that define this destination</p>
+        <!--Experiences section-->
+<div class="experiences-container">
+    <div class="exp-header">
+        <h1>Unforgettable Experiences</h1>
+        <p>The absolute essentials that define this destination</p>
+    </div>
+    <div class="exp-cards">
+        @forelse ($limitedActivities as $activity)
+            <div class="exp-card">
+                <img src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}"
+                     alt="{{ $activity->name }}">
+                <h3>{{ $activity->name }}</h3>
+                <p>{{ $activity->description }}</p>
+                <a href="{{ route('Activity.show', $activity->id) }}" class="details-btn">More Details</a>
             </div>
-            <!--Experiences cards-->
-            <div class="exp-cards">
-                @forelse ($limitedActivities as $activity)
-                    <div class="exp-card">
-                        <img 
-                            src="{{ $activity->image ? asset('storage/' . $activity->image) : asset('images/default-activity.jpg') }}" 
-                            alt="{{ $activity->name }}"
-                        >
-                        <h3>{{ $activity->name }}</h3>
-                        <p>{{ $activity->description }}</p>
-                        <a href="{{ route('Activity.show', $activity->id) }}" class="details-btn">
-                            More Details
-                                    </a>
-                    </div>
-                @empty
-                    <p style="padding:20px;">No activities available for this destination.</p>
-                @endforelse
-            </div>
-        </div>
-        <a href="{{ route('destination.activities', $destination->id) }}" class="see-all-card">
-            <div>
-                <span>→</span>
-                <p>View All Activities</p>
-            </div>
-        </a>
-        
-{{--Trips section--}}
+        @empty
+            <p style="padding:20px;">No activities available.</p>
+        @endforelse
+    </div>
+</div>
+
+<a href="{{ route('destination.activities', $destination->id) }}" class="see-all-new">
+    <div class="see-all-left">
+        <span class="see-all-label">Explore more</span>
+        <span class="see-all-title">View All Activities</span>
+    </div>
+    <div class="see-all-arrow">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+    </div>
+</a>
+
+{{-- Trips section --}}
 <div class="experiences-container">
     <div class="exp-header">
         <h1>Available Trips</h1>
         <p>Handpicked trips for this destination</p>
     </div>
-
     <div class="exp-cards">
         @forelse ($limitedTrips as $trip)
             <div class="exp-card">
-                <img src="{{ $trip->images->first() ? asset('storage/' . $trip->images->first()->image_path) : asset('images/default-trip.jpg') }}">
+                <img src="{{ $trip->images->first() ? asset('storage/' . $trip->images->first()->image_path) : asset('images/default-trip.jpg') }}"
+                     alt="{{ $trip->name }}">
                 <h3>{{ $trip->name }}</h3>
                 <p>{{ $trip->description }}</p>
                 <p><strong>{{ $trip->duration_days }} days</strong></p>
@@ -135,17 +137,20 @@
         @empty
             <p>No trips available.</p>
         @endforelse
-
-
     </div>
-    <a href="{{ route('destination.trips', $destination->id) }}" class="see-all-card">
-        <div>
-            <span>→</span>
-            <p>View All Trips</p>
-        </div>
-    </a>
 </div>
 
+<a href="{{ route('destination.trips', $destination->id) }}" class="see-all-new trips">
+    <div class="see-all-left">
+        <span class="see-all-label">Explore more</span>
+        <span class="see-all-title">View All Trips</span>
+    </div>
+    <div class="see-all-arrow">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+    </div>
+</a>
         <!--Essential info-->
         <div class="highlights-header" style="text-align: center;">
             <h1>Essential Information</h1>
@@ -218,31 +223,7 @@
         <div class="arrow right">&#10095;</div>
     </div>
 
-    <!-- Activity Modal -->
-    <div id="activityModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <img id="modalImage" src="" alt="" class="modal-img">
-            <h2 id="modalTitle"></h2>
-            <p id="modalDescription"></p>
-            <div class="modal-info">
-                <p><strong>Destination:</strong> <span id="modalDestination"></span></p>
-                <p><strong>Duration:</strong> <span id="modalDuration"></span></p>
-                <p><strong>Price:</strong> $<span id="modalPrice"></span></p>
-                <p><strong>Category:</strong> <span id="modalCategory"></span></p>
-                <p><strong>Difficulty Level:</strong> <span id="modalDifficultyLevel"></span></p>
-                <p><strong>Guide Name:</strong> <span id="modalGuideName"></span></p>
-                <p><strong>Guide Language:</strong> <span id="modalGuideLanguage"></span></p>
-                <p><strong>Availability:</strong> <span id="modalAvailability"></span></p>
-                <p><strong>Requirements:</strong> <span id="modalRequirements"></span></p>
-                <p><strong>Amenities:</strong> <span id="modalAmenities"></span></p>
-                <p><strong>Highlights:</strong> <span id="modalHighlights"></span></p>
-                <p><strong>Family Friendly:</strong> <span id="modalFamily"></span></p>
-                <p><strong>Pets Allowed:</strong> <span id="modalPets"></span></p>
-                <p><strong>Requires Booking:</strong> <span id="modalBooking"></span></p>
-            </div>
-        </div>
-    </div>
+    
 
     <script>
         // Image popup script

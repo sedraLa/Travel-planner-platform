@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\GeocodingService;
 use App\Models\Destination ;
 use Carbon\Carbon;
+use App\Enums\Category;
 
 
 class UserTripController extends Controller
@@ -33,14 +34,14 @@ public function index(Request $request)
 
 
     if ($request->filled('category')) {
-        $query->where('category', $request->category);
+      $query->whereIn('category', $request->category);
     }
 
 
 
       $trips = $query->latest()->paginate(6);
 
-    $categories = Trip::whereNotNull('category')->distinct()->pluck('category');
+    $categories = Category::values();
    $destinations = Destination::whereIn('id',Trip::whereNotNull('destination_id')->pluck('destination_id')->unique())->get();
 
     return view('trips.user.index', compact('trips', 'destinations','categories'));

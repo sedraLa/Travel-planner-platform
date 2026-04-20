@@ -167,7 +167,7 @@ class DriverController extends Controller
         ->whereHas('payment', function ($query) {
             $query->where('status', 'completed');
         })
-        ->get();
+        ->paginate(10); 
           return view('driver.pendingbooking', compact('driver', 'reservations'));
 }
 
