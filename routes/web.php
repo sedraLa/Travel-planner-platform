@@ -282,8 +282,7 @@ Route::post('/trip/booking/store',[TripBookingController::class, 'storeBooking']
 Route::get('/trip/payment/paypal',[PaymentController::class, 'payTrip'])->name('trip.paypal');
 Route::get('/trip/payment/paypal/callback',[PaymentController::class, 'paypalCallbackTrip'])->name('payment.trip.callback');
 
-Route::get('/trip-reservations', [TripBookingController::class, 'index'])
-->name('trip.reservations.index');
+Route::get('/trip-reservations', [TripBookingController::class, 'index'])->name('trip.reservations.index');
 
 // Entity AI assistants
 Route::post('/ai/hotel/ask', [AiAssistantController::class, 'askHotel'])->name('ai.hotel.ask');

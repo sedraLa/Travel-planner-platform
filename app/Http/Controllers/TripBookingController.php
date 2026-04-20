@@ -113,7 +113,7 @@ public function index(Request $request)
         });
     }
 
-    $reservations = $query->latest()->get();
+    $reservations = $query->latest()->paginate(10);;
 
     $reviewedReservationIds = Review::where('user_id', auth()->id())
         ->whereIn('reservation_id', $reservations->pluck('id'))
