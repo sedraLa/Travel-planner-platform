@@ -162,13 +162,8 @@ class DestinationController extends Controller
 
     public function activities(string $id)
 {
-    $destination = Destination::findOrFail($id);
-
-    $activities = $destination->activities()
-        ->latest()
-        ->paginate(12);
-
-    return view('activities.index', compact('destination', 'activities'));
+    Destination::findOrFail($id);
+    return redirect()->route('activities.index', ['destination_id' => $id]);
 }
 
 public function trips(Request $request, $destinationId = null)

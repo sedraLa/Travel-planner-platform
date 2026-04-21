@@ -22,7 +22,7 @@ class HotelController extends Controller
     ///index
     public function index(Request $request)
     {
-        
+         $user = auth()->user();
         $query = Hotel::with(['images', 'destination','reviews.user']);
     
         // Search
@@ -64,7 +64,7 @@ class HotelController extends Controller
             });
         }
 
-         if ($request->filled('destination_id')) {
+        if ($request->filled('destination_id') && $user->role !== 'admin') {
             $query->where('destination_id', $request->destination_id);
         }
 

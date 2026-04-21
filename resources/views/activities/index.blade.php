@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="{{ asset('css/activityindex.css') }}"> 
     @endpush
 
+     @php
+        $isUserDestinationScoped = Auth::user()->role === UserRole::USER->value && request()->filled('destination_id');
+    @endphp
     <div>
 
         {{-- ══════ HERO ══════ --}}
@@ -26,7 +29,12 @@
                 @endif
 
                 <h1 class="act-hero__title">Activities</h1>
-                <p class="act-hero__sub">Choose from our curated selection of premium activities</p>
+                 <p class="act-hero__sub">
+                    {{ $selectedDestination?->name
+                        ? 'Activities in ' . $selectedDestination->name
+                        : 'Choose from our curated selection of premium activities' }}
+                </p>
+
 
 
 
@@ -44,6 +52,10 @@
                                 placeholder="Search by activity or destination"
                                 value="{{ request('search') }}"
                             >
+
+                             @if($isUserDestinationScoped)
+                                <input type="hidden" name="destination_id" value="{{ request('destination_id') }}">
+                            @endif    
                             <button type="submit">Search</button>
                         </div>
                     
@@ -57,6 +69,10 @@
 
                 @if(request('search'))
                     <input type="hidden" name="search" value="{{ request('search') }}">
+                @endif
+
+                @if($isUserDestinationScoped)
+                    <input type="hidden" name="destination_id" value="{{ request('destination_id') }}">
                 @endif
 
                 @if(Auth::user()->role === \App\Enums\UserRole::ADMIN->value)
@@ -104,7 +120,7 @@
                 </select>
 
                 <button type="submit" class="act-filters__apply">Filter</button>
-                <a href="{{ route('activities.index') }}" class="act-filters__reset">Reset</a>
+                <a href="{{ route('activities.index', $isUserDestinationScoped ? ['destination_id' => request('destination_id')] : []) }}" class="act-filters__reset">Reset</a>
                 </div>
                
             </form>
