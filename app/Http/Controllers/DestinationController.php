@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\DestinationRequest;
 use App\Http\Requests\HighlightRequest;
 use App\Models\Destination;
-use App\Models\Trips;
+use App\Models\Trip;
 use App\Models\Highlight;
 use App\Models\DestinationImage;
 use App\Services\MediaServices;
@@ -168,42 +168,12 @@ class DestinationController extends Controller
 
 public function trips(Request $request, $destinationId = null)
 {
-    $categories = Category::values();
+    $destination = Destination::findOrFail($destinationId);
 
-    $destinations = Destination::all();
-
-    $query = Trip::with(['images', 'destination', 'schedules']);
-
-    // إذا في destination → فلترة
-    if ($destinationId) {
-        $query->where('destination_id', $destinationId);
-        $destination = Destination::findOrFail($destinationId);
-    } else {
-        $destination = null;
-    }
-
-    // filters
-    if ($request->filled('category')) {
-        $query->whereIn('category', $request->category);
-    }
-
-    if ($request->filled('destination_id')) {
-        $query->where('destination_id', $request->destination_id);
-    }
-
-    if ($request->filled('search')) {
-        $term = $request->search;
-        $query->where('name', 'like', "%$term%");
-    }
-
-    $trips = $query->latest()->paginate(12);
-
-    return view('trips.user.index', compact(
-        'trips',
-        'categories',
-        'destinations',
-        'destination'
-    ));
+    return redirect()->route('user.trips.index', [
+        'destination_id' => $destination->id,
+        'locked_destination_id' => $destination->id,
+    ]);
 }
 
     /**
