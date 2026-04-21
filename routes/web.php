@@ -176,8 +176,7 @@ Route::patch('/admin/guides/{guide}/status',[AdminGuideApplicationController::cl
 
 Route::get('/guide/index', [AdminGuideController::class, 'index'])->name('guides.index');
 Route::delete('/guide/{id}/destroy', [AdminGuideController::class, 'destroy'])->name('guides.destroy');
-Route::get('/guide/{guide}/trips', [AdminGuideController::class, 'guideTrips'])
-    ->name('guides.trips');
+Route::get('/guide/{guide}/trips', [AdminGuideController::class, 'guideTrips'])->name('guides.trips');
 Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('guides.details');
 
 
@@ -207,12 +206,10 @@ Route::post('/guide-requests/{guideRequest}/accept', [GuideRequestResponseContro
 Route::post('/guide-requests/{guideRequest}/reject', [GuideRequestResponseController::class, 'reject'])->name('guide.requests.reject');
 
 //Admin reviews
-Route::get('/admin/reviews', [ReviewController::class, 'adminIndex'])
-    ->name('admin.reviews.index');
+Route::get('/admin/reviews', [ReviewController::class, 'adminIndex'])->name('admin.reviews.index');
 
     // delete review
-Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])
-->name('reviews.destroy');
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     });
 
