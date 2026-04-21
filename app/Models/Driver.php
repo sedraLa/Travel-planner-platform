@@ -50,11 +50,6 @@ class Driver extends Model
     return $this->hasMany(BookingRequest::class);
     }
 
-     public function tripTransports()
-    {
-        return $this->hasMany(TripTransport::class);
-    }
-
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');

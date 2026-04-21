@@ -39,7 +39,7 @@ public function getEndTimeFormattedAttribute()
 
 public function scopeSameTimeAndDays($query, $start, $end, $days)
     {
-        $days = collect($days)->sort()->values()->toArray(); // ترتيب الأيام
+        $days = collect($days)->sort()->values()->toArray();
 
         return $query->where('start_time', $start)
             ->where('end_time', $end)

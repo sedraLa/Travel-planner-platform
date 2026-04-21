@@ -7,7 +7,7 @@
 
 <div class="main-wrapper p-6 md:p-8"> 
 
-    {{-- 🔍 Search Form --}}
+    {{-- Search Form --}}
     <form method="GET" action="{{ route('admin.reviews.index') }}" class="flex flex-wrap gap-4 items-end mb-6">
 
         <div class="flex-1 min-w-[200px]">
@@ -51,7 +51,7 @@
         </div>
     </form>
 
-    {{-- 📊 Reviews Table --}}
+    {{-- Reviews Table --}}
     <div class="bg-white rounded-xl shadow-lg overflow-hidden">
 
         {{-- Header --}}

@@ -240,18 +240,15 @@ document.addEventListener("DOMContentLoaded", function () {
     const button = dropdown.querySelector(".dropbtn");
     const content = dropdown.querySelector(".dropdown-content");
 
-    // فتح/إغلاق بالزر
     button.addEventListener("click", function (e) {
         e.stopPropagation();
         dropdown.classList.toggle("open");
     });
 
-    // مهم: امنعي الكليك داخل القائمة من إغلاقها
     content.addEventListener("click", function (e) {
         e.stopPropagation();
     });
 
-    // إغلاق فقط إذا ضغطتي برا
     document.addEventListener("click", function () {
         dropdown.classList.remove("open");
     });

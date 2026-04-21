@@ -17,7 +17,7 @@ class PaypalPaymentService implements PaymentStrategy
         $token = $this->getAccessToken();
 
         if (!$token) {
-            dd('❌ PayPal Token Failed');
+            dd(' PayPal Token Failed');
         }
 
         $this->header = [
@@ -36,7 +36,7 @@ class PaypalPaymentService implements PaymentStrategy
         ]);
 
         if (!$response->successful()) {
-            dd('❌ TOKEN ERROR', $response->status(), $response->json());
+            dd(' TOKEN ERROR', $response->status(), $response->json());
         }
 
         return $response->json()['access_token'] ?? null;
@@ -44,7 +44,7 @@ class PaypalPaymentService implements PaymentStrategy
 
     public function sendPayment($reservation, $type = 'hotel')
     {
-        // ✅ FIXED CALLBACK
+     
         $callback = match ($type) {
             'transport' => route('payment.transport.callback'),
             'trip' => route('payment.trip.callback'),
@@ -52,9 +52,9 @@ class PaypalPaymentService implements PaymentStrategy
             default => route('payment.paypal.callback'),
         };
 
-        // 🔥 DEBUG
+       
         if (!$reservation->total_price || $reservation->total_price <= 0) {
-            dd('❌ INVALID PRICE', $reservation);
+            dd(' INVALID PRICE', $reservation);
         }
 
         $data = [
@@ -80,16 +80,16 @@ class PaypalPaymentService implements PaymentStrategy
             ->asJson()
             ->post($this->base_url . '/v2/checkout/orders', $data);
 
-        // 🔥 أهم سطر بحياتك حالياً
+ 
         if (!$response->successful()) {
-            dd('❌ PAYPAL ERROR', $response->status(), $response->json());
+            dd(' PAYPAL ERROR', $response->status(), $response->json());
         }
 
         $approveLink = collect($response->json()['links'])
             ->firstWhere('rel', 'approve')['href'] ?? null;
 
         if (!$approveLink) {
-            dd('❌ NO APPROVE LINK', $response->json());
+            dd(' NO APPROVE LINK', $response->json());
         }
 
         return ['success' => true, 'url' => $approveLink];
@@ -113,7 +113,7 @@ class PaypalPaymentService implements PaymentStrategy
             ->send('POST', $url, ['body' => '{}']);
 
         if (!$response->successful()) {
-            dd('❌ CAPTURE ERROR', $response->status(), $response->json());
+            dd(' CAPTURE ERROR', $response->status(), $response->json());
         }
 
         $data = $response->json();

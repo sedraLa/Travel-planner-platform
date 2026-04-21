@@ -115,7 +115,6 @@
                     <div class="mt-6">
                      <x-input-label for="highlight"  required value="Highlight" />
                               @php
-                                 // نجلب النصوص من العلاقة ونحولها لمصفوفة
                                 $existingHighlights = old('highlight', $destination->highlights->pluck('title')->toArray() ?? []);
                               @endphp
 

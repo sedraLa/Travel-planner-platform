@@ -79,16 +79,13 @@ public function index(Request $request)
     }
 
 
-    // 1. جلب العنوان الذي أدخلته أنت
     $addressToSearch = $trip->meeting_point_address;
 
     $coords = null;
     if ($addressToSearch) {
-        // محاولة جلب الإحداثيات للعنوان المدخل (مثل Trocadéro Gardens, Paris)
         $coords = $geo->geocodeAddress($addressToSearch);
     }
 
-    // 2. إذا فشل البحث بالعنوان الدقيق، نجرب دمج العنوان مع المدينة والدولة
     if (!$coords && $trip->primaryDestination) {
         $fallbackAddress = $addressToSearch . ', ' .
                           $trip->primaryDestination->city . ', ' .
@@ -96,12 +93,10 @@ public function index(Request $request)
         $coords = $geo->geocodeAddress($fallbackAddress);
     }
 
-    // 3. إذا ظل فارغاً، نضع إحداثيات باريس يدوياً كحل أخير إذا كان العنوان يحتوي على Paris
     if (!$coords && str_contains(strtolower($addressToSearch), 'paris')) {
-        $coords = ['latitude' => 48.8584, 'longitude' => 2.2945]; // إحداثيات برج إيفل/تروكاديرو
+        $coords = ['latitude' => 48.8584, 'longitude' => 2.2945]; 
     }
 
-    // 4. القيم الافتراضية النهائية (إذا فشل كل شيء)
    $coords = $coords ?? null;
     $today = Carbon::today();
     $upcomingSchedule = $trip->schedules

@@ -526,7 +526,7 @@ const rightArrow = document.querySelector('.room-arrow.right');
 let images = [];
 let currentIndex = 0;
 
-// فتح الجاليري
+
 buttons.forEach(btn => {
     btn.addEventListener('click', () => {
         const imgs = JSON.parse(btn.dataset.images);
@@ -539,7 +539,6 @@ buttons.forEach(btn => {
         popup.style.display = 'flex';
         popupImage.src = images[currentIndex];
 
-        // 👇 هون السر: نضمن الأسهم تشتغل فقط إذا في أكتر من صورة
         toggleArrows();
     });
 });
@@ -554,12 +553,12 @@ function toggleArrows() {
     }
 }
 
-// إغلاق
+
 closeBtn.addEventListener('click', () => {
     popup.style.display = 'none';
 });
 
-// يسار
+
 leftArrow.addEventListener('click', () => {
     if (images.length === 0) return;
 
@@ -567,7 +566,7 @@ leftArrow.addEventListener('click', () => {
     popupImage.src = images[currentIndex];
 });
 
-// يمين
+
 rightArrow.addEventListener('click', () => {
     if (images.length === 0) return;
 
@@ -575,7 +574,7 @@ rightArrow.addEventListener('click', () => {
     popupImage.src = images[currentIndex];
 });
 
-// إغلاق عند الضغط برا
+
 popup.addEventListener('click', (e) => {
     if (e.target === popup) {
         popup.style.display = 'none';

@@ -20,7 +20,7 @@ class ShiftTemplateControllerTest extends TestCase
             'role' => 'admin'
         ]);
 
-        // تسجيل الدخول
+   
         $this->actingAs($user);
     }
 
@@ -121,7 +121,7 @@ public function it_prevents_duplicate_even_if_days_order_different(): void
         'name' => 'Morning Shift 2',
         'start_time' => '08:00',
         'end_time' => '12:00',
-        'days_of_week' => ['Tuesday','Monday'], // ترتيب مختلف
+        'days_of_week' => ['Tuesday','Monday'], 
     ];
 
     $response = $this->from('/admin/shift-templates/create')

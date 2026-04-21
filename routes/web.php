@@ -19,7 +19,6 @@ use App\Http\Controllers\AiTripController;
 use App\Http\Controllers\AiTripCompletionController;
 use App\Http\Controllers\AiTripGenerationController;
 use App\Http\Controllers\ActivityController;
-use App\Http\Controllers\ManualTripController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AiTestController;
 use App\Http\Controllers\ShiftTemplateController;
@@ -184,10 +183,6 @@ Route::get('/guides/details/{id}',[AdminGuideController::class,'show'])->name('g
 //Admin Trip routes
 Route::get('/trip/view',[TripController::class,'view'])->name('trip.view');
 Route::get('/trips',[TripController::class,'index'])->name('trips.index');
-Route::get('/trips/manual/create',[ManualTripController::class,'create'])->name('manual.create'); //show form for creating manual trip
-Route::post('/trips/manual/step',[ManualTripController::class,'postStep'])->name('manual.step'); //handle step submits
-Route::post('/trips/manual/finish',[ManualTripController::class,'finish'])->name('manual.finish'); //finalize (later)
-Route::get('manual/{trip}',[ManualTripController::class,'show'])->name('manual.show');
 Route::delete('/trips/{trip}',[ TripController::class,'destroy'])->name('trip.destroy');
 
 // Admin AI trip routes

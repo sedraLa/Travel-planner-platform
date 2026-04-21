@@ -102,12 +102,12 @@ public function show(string $id, GeocodingService $geo)
     
     $coords = $geo->geocodeAddress($fullAddress);
     
-    // fallback: إذا ما في نتيجة، استخدمي المدينة والدولة
+  
     if (!$coords) {
         $coords = $geo->geocodeAddress($hotel->city . ', ' . $hotel->country);
     }
     
-    // إذا ما في نتيجة بعد fallback، خلي null
+  
     $coords = $coords ?? ['latitude' => null, 'longitude' => null];
     
     $isBooked = Reservation::where('hotel_id', $hotel->id)

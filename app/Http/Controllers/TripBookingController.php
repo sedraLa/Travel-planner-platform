@@ -99,7 +99,7 @@ public function index(Request $request)
         });
     }
 
-    // Month (based on schedule, مو created_at)
+    // Month 
     if ($request->filled('month')) {
         $query->whereHas('schedule', function ($q) use ($request) {
             $q->whereMonth('start_date', $request->month);

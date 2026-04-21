@@ -190,35 +190,34 @@
 
 
 <style>
-/* اجعل الـ div المحتوي flex بشكل افقي */
 td .inline-block {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* مسافة بين select والزر */
+    gap: 0.5rem; 
 }
 
-/* اضبط الـ select */
+
 td select {
-    min-width: 120px; /* أكبر من قبل */
+    min-width: 120px;
     padding: 0.5rem 1rem;
     text-align: center;
-    border-radius: 9999px; /* rounded-full */
+    border-radius: 9999px; 
     border: none;
     appearance: none;
     cursor: pointer;
     font-weight: 600;
 }
 
-/* اضبط الزر */
+
 td button {
-    flex-shrink: 0; /* لا يقلص عند ضغط الجدول */
+    flex-shrink: 0; 
     padding: 0.25rem 0.5rem;
-    font-size: 0.875rem; /* text-sm */
+    font-size: 0.875rem; 
     font-weight: 500;
     border-radius: 0.375rem;
 }
 
-/* ألوان خيارات الـ select */
+
 td select option {
     background-color: white;
     color: #333;

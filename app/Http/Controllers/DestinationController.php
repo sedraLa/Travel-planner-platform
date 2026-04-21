@@ -45,7 +45,7 @@ class DestinationController extends Controller
         ->orderByDesc('clicks') // popular first
         ->paginate(8);
 
-    // نحتفظ فيها بس عشان الـ badge
+
     $popularDestinations = Destination::select('id')
         ->orderByDesc('clicks')
         ->take(6)
@@ -129,7 +129,7 @@ class DestinationController extends Controller
             'highlights',
             'activities',
             'catalogTrips.images',
-     // إذا بدك صور لل trips (اختياري)
+   
         ])->findOrFail($id);
 
 
@@ -179,7 +179,7 @@ public function trips(Request $request, $destinationId = null)
 
     $query = Trip::with(['images', 'destination', 'schedules']);
 
-    // إذا في destination → فلترة
+
     if ($destinationId) {
         $query->where('destination_id', $destinationId);
         $destination = Destination::findOrFail($destinationId);

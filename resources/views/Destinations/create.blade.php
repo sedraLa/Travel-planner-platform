@@ -146,7 +146,7 @@
 
     function showPrimarySelect(input) {
         const newFiles = Array.from(input.files);
-        allFiles = allFiles.concat(newFiles); // نضيف الصور الجديدة بدون حذف القديمة
+        allFiles = allFiles.concat(newFiles); 
 
         const select = document.getElementById('primary_image_index');
         const wrapper = document.getElementById('primary-select-wrapper');
@@ -165,12 +165,11 @@
             wrapper.classList.add('hidden');
         }
 
-        //  تحديث ملفات الفورم المخفية
+   
         updateFileList(input);
     }
 
     function updateFileList(input) {
-        // إنشاء كائن جديد من نوع DataTransfer لتخزين الملفات كلها
         const dataTransfer = new DataTransfer();
         allFiles.forEach(file => dataTransfer.items.add(file));
         input.files = dataTransfer.files;

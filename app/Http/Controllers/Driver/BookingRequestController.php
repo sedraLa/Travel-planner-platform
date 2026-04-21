@@ -49,10 +49,10 @@ class BookingRequestController extends Controller
         
             $stateManager = app(ReservationStateManager::class);
         
-            // هنا بدل التحديث المباشر
+           
             $stateManager->transition($reservation, 'driver_assigned');
         
-            // تحديث الـ driver و vehicle بعد التأكد من الانتقال
+       
             $reservation->update([
                 'driver_id' => $driver->id,
                 'transport_vehicle_id' => $vehicleId,
@@ -60,7 +60,7 @@ class BookingRequestController extends Controller
         
             $bookingRequest->update(['status' => 'accepted']);
         
-            // إلغاء كل الطلبات التانية
+            // expire all other requests
             $reservation->bookingRequests()
                 ->where('id', '!=', $bookingRequest->id)
                 ->where('status', 'pending')

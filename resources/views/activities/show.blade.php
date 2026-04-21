@@ -370,13 +370,12 @@
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-    /* هذا الجزء ضروري جداً لمنع الشاشة الرمادية */
     #activity-map {
-        height: 250px !important; /* ارتفاع ثابت ومؤكد */
+        height: 250px !important; 
         width: 100% !important;
         border-radius: 12px;
         z-index: 1;
-        background: #e5e3df; /* لون خلفية الخريطة الافتراضي */
+        background: #e5e3df; 
     }
     .leaflet-container {
         height: 100%;
@@ -396,7 +395,6 @@
   </div>
 
   <div class="side-card-body" style="padding: 10px;">
-    {{-- حاوية الخريطة مع ارتفاع ثابت --}}
     <div id="map-wrapper" style="width: 100%; height: 200px; border-radius: 12px; overflow: hidden; position: relative; background: #f0f0f0;">
       @if($coords && isset($coords['latitude']) && $coords['latitude'] != 0)
         <div id="activity-map" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;"></div>
@@ -421,44 +419,35 @@
   </aside>
 </div>
 
-{{-- روابط Leaflet --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 @if($coords && isset($coords['latitude'] ) && $coords['latitude'] != 0)
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // التأكد من تحميل المكتبة قبل البدء
     if (typeof L === 'undefined') return;
 
     const lat = {{ $coords['latitude'] }};
     const lng = {{ $coords['longitude'] }};
     const address = "{{ addslashes($activity->address) }}";
-
-    // تهيئة الخريطة
     const map = L.map('activity-map', {
         center: [lat, lng],
         zoom: 15,
         zoomControl: true
     });
 
-    // إضافة طبقة الخريطة
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     } ).addTo(map);
 
-    // إضافة العلامة
     L.marker([lat, lng]).addTo(map)
         .bindPopup(address)
         .openPopup();
-
-    // حل مشكلة الشاشة الرمادية (إعادة حساب الحجم بعد التحميل)
     setTimeout(function() {
         map.invalidateSize();
     }, 500);
 
-    // محاولة ثانية للتأكيد بعد ثانية واحدة
     setTimeout(function() {
         map.invalidateSize();
     }, 1500);

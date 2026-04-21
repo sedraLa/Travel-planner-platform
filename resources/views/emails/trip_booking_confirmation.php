@@ -21,7 +21,7 @@
 
         <hr>
 
-        <h3>📍 Trip Details</h3>
+        <h3> Trip Details</h3>
 
         <p><strong>Trip:</strong> {{ $trip->name }}</p>
         <p><strong>Destination:</strong> {{ $trip->primaryDestination?->name }}</p>
@@ -33,7 +33,7 @@
 
         <hr>
 
-        <h3>📌 What happens next?</h3>
+        <h3> What happens next?</h3>
         <ul>
             <li>You will receive trip instructions before departure</li>
             <li>Your guide will be assigned shortly</li>

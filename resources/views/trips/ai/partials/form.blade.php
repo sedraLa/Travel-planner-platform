@@ -5,7 +5,7 @@
     @endif
 
     <div class="form-container">
-        <h2 class="text-xl font-semibold mb-6">✨ Build from your DB catalog only</h2>
+        <h2 class="text-xl font-semibold mb-6"> Build from your DB catalog only</h2>
 
         @if ($errors->any())
             <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">

@@ -122,12 +122,6 @@ class DriverController extends Controller
 
     }
 
-
-
-
-
-
-
 //show driver completed bookings for admin and driver
     public function CompletedBookings(string $id = null)
     {
