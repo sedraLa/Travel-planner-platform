@@ -105,9 +105,7 @@ class User extends Authenticatable
     return trim($this->name.' '.($this->last_name ?? ''));
 }
 
-    public function trips() {
-        return $this->hasMany(Trip::class);
-    }
+    
 
 
      public function driver()
@@ -121,10 +119,18 @@ class User extends Authenticatable
     }
 
 
+     public function activityReservations()
+    {
+        return $this->hasMany(ActivityReservation::class);
+    }
+
      public function tripReservations()
     {
         return $this->hasMany(TripReservation::class);
     }
+
+
+
 }
 
 

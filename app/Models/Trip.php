@@ -122,6 +122,9 @@ class Trip extends Model
         return $this->hasMany(TripReservation::class);
     }
 
+
+    
+
     public function hasOpenBookingWindow(): bool
     {
         $today = now()->toDateString();

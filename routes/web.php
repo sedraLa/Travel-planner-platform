@@ -115,18 +115,12 @@ Route::post('/room-types/image/{id}/set-primary', [RoomTypeController::class, 's
 
 // ADMIN Vehicles
 Route::get('/admin/vehicles',
-    [VehicleController::class, 'Index']
-)->name('admin.vehicles.index');
-Route::get('/admin/vehicles/create', [VehicleController::class, 'create'])
-    ->name('admin.vehicles.create');
-Route::post('/admin/vehicles', [VehicleController::class, 'store'])
-    ->name('admin.vehicles.store');
-Route::get('/admin/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])
-    ->name('admin.vehicles.edit');
-Route::put('/admin/vehicles/{vehicle}', [VehicleController::class, 'update'])
-    ->name('admin.vehicles.update');
-Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy'])
-    ->name('admin.vehicles.destroy');
+[VehicleController::class, 'Index'])->name('admin.vehicles.index');
+Route::get('/admin/vehicles/create', [VehicleController::class, 'create'])->name('admin.vehicles.create');
+Route::post('/admin/vehicles', [VehicleController::class, 'store'])->name('admin.vehicles.store');
+Route::get('/admin/vehicles/{vehicle}/edit', [VehicleController::class, 'edit'])->name('admin.vehicles.edit');
+Route::put('/admin/vehicles/{vehicle}', [VehicleController::class, 'update'])->name('admin.vehicles.update');
+Route::delete('/admin/vehicles/{vehicle}', [VehicleController::class, 'destroy'])->name('admin.vehicles.destroy');
 
  //Admin Drivers
  //Route::get('/drivers', [DriverController::class, 'index'])->name('drivers.index');

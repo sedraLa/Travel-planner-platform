@@ -175,7 +175,13 @@ public function trips(Request $request, $destinationId = null)
         'locked_destination_id' => $destination->id,
     ]);
 }
+ public function edit(string $id)
+    {
 
+    $destination = Destination::with('highlights', 'images')->findOrFail($id);
+
+    return view('destinations.edit', compact('destination'));
+    }  
     /**
      * Update the specified resource in storage.
      */
@@ -188,6 +194,7 @@ public function trips(Request $request, $destinationId = null)
 
 
     if ($request->filled('highlight')) {
+        $destination->highlights()->delete(); 
     foreach ($request->highlight as $highlightText) {
         if (!empty($highlightText)) {
             $destination->highlights()->create([

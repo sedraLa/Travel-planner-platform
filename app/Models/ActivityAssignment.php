@@ -20,8 +20,5 @@ class ActivityAssignment extends Model
         return $this->belongsTo(DayActivity::class);
     }
 
-    public function guide()
-    {
-        return $this->belongsTo(Guide::class);
-    }
+   
 }
