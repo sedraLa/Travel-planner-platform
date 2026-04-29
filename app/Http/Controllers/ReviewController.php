@@ -14,6 +14,7 @@ use App\Models\Hotel;
 use App\Models\Trip;
 use App\Models\Driver;
 use App\Models\Guide;
+use App\Models\Activity;
 use App\Models\Review;
 
 class ReviewController extends Controller
@@ -36,6 +37,7 @@ class ReviewController extends Controller
             'hotel' => \App\Models\Hotel::class,
             'trip' => \App\Models\Trip::class,
             'guide' => \App\Models\Guide::class,
+            'activity' => \App\Models\Activity::class,
             'driver' => \App\Models\Driver::class,
         ];
 
@@ -80,6 +82,7 @@ class ReviewController extends Controller
             'trip' => Trip::findOrFail($request->id),
             'driver' => Driver::findOrFail($request->id),
             'guide' => Guide::findOrFail($request->id),
+            'activity' => Activity::findOrFail($request->id),
         };
 
         $reservation = $eligibilityService->resolveOwnedReservation(
@@ -180,6 +183,15 @@ public function guideIndex(string $id)
     $avg = $guide->reviews()->avg('rating');
 
     return view('reviews.guide-index', compact('guide', 'reviews', 'avg'));
+}
+
+public function activityIndex(string $id)
+{
+    $activity = Activity::with('reviews.user')->findOrFail($id);
+
+    $reviews = $activity->reviews()->latest()->get();
+
+    return view('reviews.activity-index', compact('activity', 'reviews'));
 }
 
 }

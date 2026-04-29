@@ -38,6 +38,8 @@ class SendReviewRequestNotification
 
             'guide' => \App\Models\Guide::find($id)?->name ?? 'Guide',
 
+            'activity' => \App\Models\Activity::find($id)?->name ?? 'Activity',
+
             default => 'Item',
         };
     }

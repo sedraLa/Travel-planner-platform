@@ -24,6 +24,7 @@
                 <option value="hotel" @selected(request('type')=='hotel')>Hotel</option>
                 <option value="trip" @selected(request('type')=='trip')>Trip</option>
                 <option value="guide" @selected(request('type')=='guide')>Guide</option>
+                <option value="activity" @selected(request('type')=='activity')>Activity</option>
                 <option value="driver" @selected(request('type')=='driver')>Driver</option>
             </select>
         </div>
@@ -111,7 +112,7 @@
                             {{-- Item --}}
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">
-                                    {{ $review->reviewable->name ?? $review->reviewable->title ?? '—' }}
+                                    {{ $review->reviewable?->name ?? $review->reviewable?->title ?? '—' }}
                                 </div>
                             </td>
 
