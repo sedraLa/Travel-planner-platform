@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Reservation;
 use App\Models\TripReservation;
 use App\Models\TransportReservation;
+use App\Models\ActivityReservation;
 use Illuminate\Database\Eloquent\Model;
 
 
@@ -48,6 +49,12 @@ class ReviewEligibilityService
                 )
                 ->exists(),
 
+            'activity' => ActivityReservation::where('user_id', $user->id)
+                ->where('activity_id', $id)
+                ->where('status', 'confirmed')
+                ->where('activity_date', '<', now())
+                ->exists(),
+
             default => false,
         };
     }
@@ -81,6 +88,13 @@ class ReviewEligibilityService
                 ->where('status', 'completed')
                 ->whereHas('trip', fn($q) => $q->where('assigned_guide_id', $reviewableId))
                 ->whereHas('schedule', fn($q) => $q->where('end_date', '<', now()))
+                ->first(),
+
+            'activity' => ActivityReservation::whereKey($reservationId)
+                ->where('user_id', $user->id)
+                ->where('activity_id', $reviewableId)
+                ->where('status', 'confirmed')
+                ->where('activity_date', '<', now())
                 ->first(),
 
             default => null,

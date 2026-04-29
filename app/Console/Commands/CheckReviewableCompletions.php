@@ -7,6 +7,7 @@ use Illuminate\Console\Command;
 use App\Models\Reservation;
 use App\Models\TripReservation;
 use App\Models\TransportReservation;
+use App\Models\ActivityReservation;
 
 use App\Events\ReviewableItemCompleted;
 
@@ -21,6 +22,7 @@ class CheckReviewableCompletions extends Command
         $this->checkHotels();
         $this->checkTrips();
         $this->checkDrivers();
+        $this->checkActivities();
 
         $this->info('Review completion check done.');
     }
@@ -120,6 +122,30 @@ class CheckReviewableCompletions extends Command
 
             $reservation->update([
                 'driver_review_notification_sent' => true
+            ]);
+        }
+    }
+
+    /**
+     * ACTIVITIES
+     */
+    private function checkActivities()
+    {
+        $reservations = ActivityReservation::where('status', 'confirmed')
+            ->where('activity_date', '<', now())
+            ->where('activity_review_notification_sent', false)
+            ->get();
+
+        foreach ($reservations as $reservation) {
+            event(new ReviewableItemCompleted(
+                type: 'activity',
+                id: $reservation->activity_id,
+                userId: $reservation->user_id,
+                reservationId: $reservation->id
+            ));
+
+            $reservation->update([
+                'activity_review_notification_sent' => true,
             ]);
         }
     }

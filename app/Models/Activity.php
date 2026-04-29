@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Favorite;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use App\Models\Review;
 
 class Activity extends Model
 {
@@ -71,8 +72,18 @@ class Activity extends Model
     return $this->hasMany(ActivityReservation::class);
    }
 
-   public function highlights()
+public function highlights()
 {
     return $this->hasMany(ActivityHighlight::class);
+}
+
+public function reviews(): MorphMany
+{
+    return $this->morphMany(Review::class, 'reviewable');
+}
+
+public function getAverageRatingAttribute()
+{
+    return round($this->reviews()->avg('rating') ?? 0, 1);
 }
 }

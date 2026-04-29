@@ -34,6 +34,17 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           {{$activity->address}}
       </div>
+      <div style="margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <a href="{{ route('activities.reviews.index', $activity->id) }}" class="book-btn" style="padding:10px 16px;">
+          View Reviews
+        </a>
+        @if($canReview && $reviewReservation)
+        <a href="{{ route('reviews.create', ['type' => 'activity', 'id' => $activity->id, 'reservation_id' => $reviewReservation->id]) }}" class="book-btn" style="padding:10px 16px;">
+          Leave Review
+        </a>
+        @endif
+      </div>
+
     </div>
     <div class="hero-price-box">
       <div class="price-label">Start from </div>
@@ -143,8 +154,8 @@
         <div class="stat-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82c4" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
-        <div class="stat-number">4.9</div>
-        <div class="stat-desc">User Rating </div>
+        <div class="stat-number">⭐ {{ number_format($averageRating ?? 0, 1) }}</div>
+        <div class="stat-desc">({{ $reviewsCount }}) Reviews</div>
       </div>
     </div>
 

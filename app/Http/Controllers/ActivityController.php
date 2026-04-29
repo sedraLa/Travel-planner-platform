@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\GeocodingService;
 use App\Models\ActivityHighlight;
 use App\Http\Requests\ActivityHighlightRequest;
+use App\Services\Review\ReviewEligibilityService;
 
 class ActivityController extends Controller
 {
@@ -109,9 +110,9 @@ class ActivityController extends Controller
 
 
 
-  public function show($id, GeocodingService $geo)
+  public function show($id, GeocodingService $geo, ReviewEligibilityService $eligibilityService)
 {
-    $activity = Activity::with(['destination','highlights'])->findOrFail($id);
+    $activity = Activity::with(['destination','highlights', 'reviews.user'])->findOrFail($id);
     $hasPaidReservation = $activity->reservations()
         ->where('user_id', auth()->id())
         ->where('status', 'confirmed')
@@ -131,7 +132,22 @@ class ActivityController extends Controller
         $coords = null;
     }
 
-    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords'));
+    $averageRating = $activity->reviews()->avg('rating');
+    $reviewsCount = $activity->reviews()->count();
+    $reviews = $activity->reviews()->latest()->get();
+
+    $reviewReservation = $activity->reservations()
+        ->where('user_id', auth()->id())
+        ->where('status', 'confirmed')
+        ->where('activity_date', '<', now())
+        ->latest('activity_date')
+        ->first();
+
+    $canReview = auth()->check() && $reviewReservation
+        ? $eligibilityService->canReview(auth()->user(), 'activity', (int) $activity->id, (int) $reviewReservation->id)
+        : false;
+
+    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords', 'averageRating', 'reviewsCount', 'reviews', 'canReview', 'reviewReservation'));
 }
 
     /**

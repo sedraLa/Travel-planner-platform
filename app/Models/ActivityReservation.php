@@ -17,6 +17,7 @@ class ActivityReservation extends Model
         'participants_count',
         'total_price',
         'status',
+        'activity_review_notification_sent',
     ];
 
     protected $hidden = [
