@@ -9,6 +9,7 @@ class ReviewRequestNotification extends Notification
 {
     use Queueable;
 
+    //data inside notification
     public function __construct(
         public string $type,
         public int $itemId,
@@ -22,6 +23,7 @@ class ReviewRequestNotification extends Notification
         return ['database'];
     }
 
+    //data saved in database
     public function toDatabase($notifiable)
     {
         return [

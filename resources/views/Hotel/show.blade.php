@@ -60,27 +60,26 @@ document.addEventListener("DOMContentLoaded", function () {
             <p style="letter-spacing: normal; font-size: 18px;">{{$hotel->description}} </p>
             <div class="rating-location">
                 <div class="location">
-                    <a class="reviews-btn" href="{{ route('hotels.reviews.index', $hotel->id) }}">
-                        <span>Reviews</span>
-                        <span class="reviews-count">{{ $hotel->reviews->count() }}</span>
+                    <a style="color:#f4f4f4;" href="{{ route('hotels.reviews.index', $hotel->id) }}">
+
+                        <div class="rating" style="display:flex;align-items:center;gap:6px;">
+                            <span style="color:#f59e0b;font-weight:600;">
+                                ⭐ {{ number_format($hotel->average_rating, 1) }}
+                            </span>
+
+                            <span style="font-size:13px;color:#ddd;">
+                                ({{ $hotel->reviews_count }} reviews)
+                            </span>
+                        </div>
+
                     </a>
+
                     <img src="/images/icons/location-dot-solid-full (4).svg" class="heading-icon">
-                    <h5>{{$hotel->destination->city}},{{$hotel->destination->country}} </h5>
+
+                    <h5>
+                        {{ $hotel->destination->city }}, {{ $hotel->destination->country }}
+                    </h5>
                 </div>
-                <a style="color:#f4f4f4;" href="">
-                    <div class="rating" style="display:flex;align-items:center;gap:6px;">
-                        <span style="color:#f59e0b;font-weight:600;">
-                            ⭐ {{ number_format($hotel->average_rating, 1) }}
-                        </span>
-
-                        <span style="font-size:13px;color:#ddd;">
-                            ({{ $hotel->reviews_count }} reviews)
-                        </span>
-                    </div>
-            </a>
-
-
-
 
               </div>
         </div>
@@ -326,7 +325,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             {{ $roomType->is_refundable ? 'Refundable booking' : 'Non-refundable booking' }}
                         </p>
 
-                        <button 
+                        <button
                         class="view-room-gallery-btn mt-4 text-sm font-medium text-blue-700"
                         data-images='@json($roomType->images->pluck("image_url"))'>
                         View Gallery

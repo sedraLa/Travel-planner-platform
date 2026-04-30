@@ -7,13 +7,15 @@ use Illuminate\Console\Command;
 use App\Models\Reservation;
 use App\Models\TripReservation;
 use App\Models\TransportReservation;
+use App\Models\ActivityReservation;
 
 use App\Events\ReviewableItemCompleted;
 
 class CheckReviewableCompletions extends Command
 {
+    //command name
     protected $signature = 'reviews:check-completions';
-
+    //command description
     protected $description = 'Check completed services and trigger review notifications';
 
     public function handle()
@@ -21,6 +23,7 @@ class CheckReviewableCompletions extends Command
         $this->checkHotels();
         $this->checkTrips();
         $this->checkDrivers();
+        $this->checkActivities();
 
         $this->info('Review completion check done.');
     }
@@ -32,12 +35,13 @@ class CheckReviewableCompletions extends Command
     {
         $reservations = Reservation::where('reservation_status', 'paid')
             ->where('check_out_date', '<', now())
+            //no notification sent before
             ->where('hotel_review_notification_sent', false)
             ->get();
+            //terminal message
             $this->info('Hotels found: ' . $reservations->count());
 
         foreach ($reservations as $reservation) {
-
             event(new ReviewableItemCompleted(
                 type: 'hotel',
                 id: $reservation->hotel_id,
@@ -62,16 +66,16 @@ class CheckReviewableCompletions extends Command
             })
             ->where('trip_review_notification_sent', false)
             ->get();
-    
+
         foreach ($tripReservations as $reservation) {
-    
+
             event(new ReviewableItemCompleted(
                 type: 'trip',
                 id: $reservation->trip_id,
                 userId: $reservation->user_id,
                 reservationId: $reservation->id
             ));
-    
+
             $reservation->update([
                 'trip_review_notification_sent' => true
             ]);
@@ -120,6 +124,30 @@ class CheckReviewableCompletions extends Command
 
             $reservation->update([
                 'driver_review_notification_sent' => true
+            ]);
+        }
+    }
+
+    /**
+     * ACTIVITIES
+     */
+    private function checkActivities()
+    {
+        $reservations = ActivityReservation::where('status', 'paid')
+            ->where('activity_date', '<', now())
+            ->where('activity_review_notification_sent', false)
+            ->get();
+
+        foreach ($reservations as $reservation) {
+            event(new ReviewableItemCompleted(
+                type: 'activity',
+                id: $reservation->activity_id,
+                userId: $reservation->user_id,
+                reservationId: $reservation->id
+            ));
+
+            $reservation->update([
+                'activity_review_notification_sent' => true,
             ]);
         }
     }

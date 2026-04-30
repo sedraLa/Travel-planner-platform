@@ -14,6 +14,7 @@ use App\Models\Hotel;
 use App\Models\Trip;
 use App\Models\Driver;
 use App\Models\Guide;
+use App\Models\Activity;
 use App\Models\Review;
 
 class ReviewController extends Controller
@@ -36,6 +37,7 @@ class ReviewController extends Controller
             'hotel' => \App\Models\Hotel::class,
             'trip' => \App\Models\Trip::class,
             'guide' => \App\Models\Guide::class,
+            'activity' => \App\Models\Activity::class,
             'driver' => \App\Models\Driver::class,
         ];
 
@@ -73,15 +75,17 @@ class ReviewController extends Controller
         ReviewFactoryService $factory,
         ReviewEligibilityService $eligibilityService
     ) {
-        
-    
+
+        //define model
         $model = match ($request->type) {
             'hotel' => Hotel::findOrFail($request->id),
             'trip' => Trip::findOrFail($request->id),
             'driver' => Driver::findOrFail($request->id),
             'guide' => Guide::findOrFail($request->id),
+            'activity' => Activity::findOrFail($request->id),
         };
 
+        //check reservation owner
         $reservation = $eligibilityService->resolveOwnedReservation(
             $request->user(),
             $request->type,
@@ -93,6 +97,7 @@ class ReviewController extends Controller
             abort(403, 'Unauthorized reservation access.');
         }
 
+        //prevent double reviews
         $alreadyReviewed = Review::where('user_id', $request->user()->id)
             ->where('reservation_id', $request->reservation_id)
             ->exists();
@@ -105,6 +110,7 @@ class ReviewController extends Controller
 
         try {
             $factory->create($model, $request->only('rating', 'review', 'reservation_id'));
+            //additional protection (sql errors, duplicate error)
         } catch (QueryException $e) {
             if ((string) $e->getCode() === '23000') {
                 throw ValidationException::withMessages([
@@ -114,28 +120,8 @@ class ReviewController extends Controller
 
             throw $e;
         }
-    
+
         return redirect()->back()->with('success', 'Thanks for your review ❤️');
-    }
-
-    /**
-     * Update review
-     */
-    public function update(Request $request, Review $review)
-    {
-        $this->authorize('update', $review);
-
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'review' => 'nullable|string',
-        ]);
-
-        $review->update([
-            'rating' => $request->rating,
-            'review' => $request->review,
-        ]);
-
-        return back()->with('success', 'Review updated');
     }
 
     /**
@@ -143,10 +129,11 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        $this->authorize('delete', $review);
-
+        // check admin
+        if (!auth()->check() || auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
         $review->delete();
-
         return back()->with('success', 'Review deleted');
     }
 
@@ -159,7 +146,7 @@ class ReviewController extends Controller
 
     return view('reviews.hotel-index', compact('hotel', 'reviews'));
 
-    
+
 }
 
 public function tripIndex(string $id)
@@ -180,6 +167,15 @@ public function guideIndex(string $id)
     $avg = $guide->reviews()->avg('rating');
 
     return view('reviews.guide-index', compact('guide', 'reviews', 'avg'));
+}
+
+public function activityIndex(string $id)
+{
+    $activity = Activity::with('reviews.user')->findOrFail($id);
+
+    $reviews = $activity->reviews()->latest()->get();
+
+    return view('reviews.activity-index', compact('activity', 'reviews'));
 }
 
 }

@@ -14,7 +14,7 @@ class StoreReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required', 'string', Rule::in(['hotel', 'trip', 'guide', 'driver'])],
+            'type' => ['required', 'string', Rule::in(['hotel', 'trip', 'guide', 'driver', 'activity'])],
             'id' => ['required', 'integer', 'min:1'],
             'reservation_id' => ['required', 'integer', 'min:1'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],

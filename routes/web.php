@@ -343,6 +343,9 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
 
+Route::get('/activities/{id}/reviews', [ReviewController::class, 'activityIndex'])
+    ->name('activities.reviews.index');
+
 Route::get('/destination/{id}/activities', [DestinationController::class, 'activities'])->name('destination.activities');
 Route::get('/destination/{id}/trips', [DestinationController::class, 'trips'])->name('destination.trips');
 

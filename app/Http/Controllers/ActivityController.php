@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Services\GeocodingService;
 use App\Models\ActivityHighlight;
 use App\Http\Requests\ActivityHighlightRequest;
+use App\Services\Review\ReviewEligibilityService;
 
 class ActivityController extends Controller
 {
@@ -24,14 +25,14 @@ class ActivityController extends Controller
         if ($user->role !== 'admin') {
         $query->where('availability', 'Available');
     }
-    
+
         // Keyword search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('name', 'like', "%{$search}%")
                   ->orWhereHas('destination', fn($q) => $q->where('name', 'like', "%{$search}%"));
         }
-    
+
         // Filters
         if ($request->filled('availability') && $user->role === 'admin') {
          $query->where('availability', $request->availability);
@@ -63,13 +64,13 @@ class ActivityController extends Controller
         if ($request->filled('destination_id')) {
             $selectedDestination = Destination::find($request->destination_id);
         }
-    
+
         $activities = $query->paginate(6);
-    
-    
+
+
         return view('activities.index', compact('activities','selectedDestination'));
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -109,29 +110,43 @@ class ActivityController extends Controller
 
 
 
-  public function show($id, GeocodingService $geo)
+  public function show($id, GeocodingService $geo, ReviewEligibilityService $eligibilityService)
 {
-    $activity = Activity::with(['destination','highlights'])->findOrFail($id);
+    $activity = Activity::with(['destination','highlights', 'reviews.user'])->findOrFail($id);
     $hasPaidReservation = $activity->reservations()
         ->where('user_id', auth()->id())
         ->where('status', 'confirmed')
         ->exists();
 
-    
+
     $addressToSearch = $activity->address ?? optional($activity->destination)->name;
     $coords = null;
 
-    // محاولة جلب الإحداثيات فقط إذا كان هناك عنوان
+    // get coords if there is address
     if ($addressToSearch) {
         $coords = $geo->geocodeAddress($addressToSearch);
     }
 
-    // إذا كانت الإحداثيات فارغة أو غير صالحة، نضمن أنها null تماماً
+
     if (!$coords || empty($coords['latitude']) || empty($coords['longitude'])) {
         $coords = null;
     }
 
-    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords'));
+    $reviewsCount = $activity->reviews()->count();
+    $reviews = $activity->reviews()->latest()->get();
+
+    $reviewReservation = $activity->reservations()
+        ->where('user_id', auth()->id())
+        ->where('status', 'confirmed')
+        ->where('activity_date', '<', now())
+        ->latest('activity_date')
+        ->first();
+
+    $canReview = auth()->check() && $reviewReservation
+        ? $eligibilityService->canReview(auth()->user(), 'activity', (int) $activity->id, (int) $reviewReservation->id)
+        : false;
+
+    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords',  'reviewsCount', 'reviews', 'canReview', 'reviewReservation'));
 }
 
     /**

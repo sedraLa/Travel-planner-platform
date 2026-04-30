@@ -30,6 +30,7 @@ class SendReviewRequestNotification
     {
         return match ($type) {
 
+            //get hotel name
             'hotel' => \App\Models\Hotel::find($id)?->name ?? 'Hotel',
 
             'trip' => \App\Models\Trip::find($id)?->name ?? 'Trip',
@@ -37,6 +38,8 @@ class SendReviewRequestNotification
             'driver' => \App\Models\Driver::find($id)?->name ?? 'Driver',
 
             'guide' => \App\Models\Guide::find($id)?->name ?? 'Guide',
+
+            'activity' => \App\Models\Activity::find($id)?->name ?? 'Activity',
 
             default => 'Item',
         };
