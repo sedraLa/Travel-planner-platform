@@ -25,14 +25,14 @@ class ActivityController extends Controller
         if ($user->role !== 'admin') {
         $query->where('availability', 'Available');
     }
-    
+
         // Keyword search
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where('name', 'like', "%{$search}%")
                   ->orWhereHas('destination', fn($q) => $q->where('name', 'like', "%{$search}%"));
         }
-    
+
         // Filters
         if ($request->filled('availability') && $user->role === 'admin') {
          $query->where('availability', $request->availability);
@@ -64,13 +64,13 @@ class ActivityController extends Controller
         if ($request->filled('destination_id')) {
             $selectedDestination = Destination::find($request->destination_id);
         }
-    
+
         $activities = $query->paginate(6);
-    
-    
+
+
         return view('activities.index', compact('activities','selectedDestination'));
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -118,21 +118,20 @@ class ActivityController extends Controller
         ->where('status', 'confirmed')
         ->exists();
 
-    
+
     $addressToSearch = $activity->address ?? optional($activity->destination)->name;
     $coords = null;
 
-    // محاولة جلب الإحداثيات فقط إذا كان هناك عنوان
+    // get coords if there is address
     if ($addressToSearch) {
         $coords = $geo->geocodeAddress($addressToSearch);
     }
 
-    // إذا كانت الإحداثيات فارغة أو غير صالحة، نضمن أنها null تماماً
+
     if (!$coords || empty($coords['latitude']) || empty($coords['longitude'])) {
         $coords = null;
     }
 
-    $averageRating = $activity->reviews()->avg('rating');
     $reviewsCount = $activity->reviews()->count();
     $reviews = $activity->reviews()->latest()->get();
 
@@ -147,7 +146,7 @@ class ActivityController extends Controller
         ? $eligibilityService->canReview(auth()->user(), 'activity', (int) $activity->id, (int) $reviewReservation->id)
         : false;
 
-    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords', 'averageRating', 'reviewsCount', 'reviews', 'canReview', 'reviewReservation'));
+    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords',  'reviewsCount', 'reviews', 'canReview', 'reviewReservation'));
 }
 
     /**

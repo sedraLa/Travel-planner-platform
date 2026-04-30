@@ -30,6 +30,7 @@ class SendReviewRequestNotification
     {
         return match ($type) {
 
+            //get hotel name
             'hotel' => \App\Models\Hotel::find($id)?->name ?? 'Hotel',
 
             'trip' => \App\Models\Trip::find($id)?->name ?? 'Trip',

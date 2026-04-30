@@ -13,6 +13,7 @@ class ReviewEligibilityService
 {
     public function canReview(User $user, string $type, int $id, ?int $reservationId = null): bool
     {
+        //check reservation id
         if ($reservationId !== null) {
             return $this->resolveOwnedReservation($user, $type, $id, $reservationId) !== null;
         }
@@ -51,7 +52,7 @@ class ReviewEligibilityService
 
             'activity' => ActivityReservation::where('user_id', $user->id)
                 ->where('activity_id', $id)
-                ->where('status', 'confirmed')
+                ->where('status', 'paid')
                 ->where('activity_date', '<', now())
                 ->exists(),
 
@@ -59,6 +60,7 @@ class ReviewEligibilityService
         };
     }
 
+    //get user reservation
     public function resolveOwnedReservation(User $user, string $type, int $reviewableId, int $reservationId): ?Model
     {
         return match ($type) {
@@ -93,7 +95,7 @@ class ReviewEligibilityService
             'activity' => ActivityReservation::whereKey($reservationId)
                 ->where('user_id', $user->id)
                 ->where('activity_id', $reviewableId)
-                ->where('status', 'confirmed')
+                ->where('status', 'paid')
                 ->where('activity_date', '<', now())
                 ->first(),
 

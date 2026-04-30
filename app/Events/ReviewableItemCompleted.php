@@ -15,7 +15,7 @@ class ReviewableItemCompleted
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * Create a new event instance.
+     * Create a new event instance. data carried with the event
      */
     public function __construct(
         public string $type,   // hotel, trip, driver, guide
@@ -23,16 +23,4 @@ class ReviewableItemCompleted
         public int $userId,
         public int $reservationId
     ) {}
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
-    public function broadcastOn(): array
-    {
-        return [
-            new PrivateChannel('channel-name'),
-        ];
-    }
 }
