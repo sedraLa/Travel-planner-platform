@@ -99,8 +99,10 @@ class ReviewController extends Controller
 
         //prevent double reviews
         $alreadyReviewed = Review::where('user_id', $request->user()->id)
-            ->where('reservation_id', $request->reservation_id)
-            ->exists();
+        ->where('reservation_id', $request->reservation_id)
+        ->where('reviewable_type', get_class($model))
+        ->where('reviewable_id', $request->id)
+        ->exists();
 
         if ($alreadyReviewed) {
             throw ValidationException::withMessages([

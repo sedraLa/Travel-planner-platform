@@ -74,7 +74,7 @@ class ReviewEligibilityService
             'trip' => TripReservation::whereKey($reservationId)
                 ->where('user_id', $user->id)
                 ->where('trip_id', $reviewableId)
-                ->where('status', 'completed')
+                ->where('status', 'paid')
                 ->whereHas('schedule', fn($q) => $q->where('end_date', '<', now()))
                 ->first(),
 
@@ -87,7 +87,7 @@ class ReviewEligibilityService
 
             'guide' => TripReservation::whereKey($reservationId)
                 ->where('user_id', $user->id)
-                ->where('status', 'completed')
+                ->where('status', 'paid')
                 ->whereHas('trip', fn($q) => $q->where('assigned_guide_id', $reviewableId))
                 ->whereHas('schedule', fn($q) => $q->where('end_date', '<', now()))
                 ->first(),

@@ -26,7 +26,6 @@
 
 </span>
             @endif
-
             <div class="reviews-chip" onclick="document.getElementById('reviews-section').scrollIntoView({behavior:'smooth'})">
                 ⭐ {{ number_format($averageRating ?? 0, 1) }} ({{ $reviewsCount }}) Reviews
             </div>
@@ -169,7 +168,7 @@
         </div>
     </div>
 
-    {{-- تفاصيل الفندق --}}
+    {{-- hotel details--}}
     <div style="padding:12px;border-radius:10px;background:#f8fafc;border:1px solid #eee;margin-bottom:12px;">
 
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:8px;">
