@@ -37,7 +37,7 @@ class SendReviewRequestNotification
 
             'driver' => \App\Models\Driver::find($id)?->name ?? 'Driver',
 
-            'guide' => \App\Models\Guide::find($id)?->name ?? 'Guide',
+            'guide' => \App\Models\Guide::with('user')->find($id)?->user?->name ?? 'Guide',
 
             'activity' => \App\Models\Activity::find($id)?->name ?? 'Activity',
 
