@@ -60,7 +60,7 @@ class CheckReviewableCompletions extends Command
      */
     private function checkTrips()
     {
-        $tripReservations = TripReservation::where('status', 'completed')
+        $tripReservations = TripReservation::where('status', 'paid')
             ->whereHas('schedule', function ($q) {
                 $q->where('end_date', '<', now());
             })
@@ -81,7 +81,7 @@ class CheckReviewableCompletions extends Command
             ]);
         }
 
-        $guideReservations = TripReservation::where('status', 'completed')
+        $guideReservations = TripReservation::where('status', 'paid')
             ->whereHas('schedule', function ($q) {
                 $q->where('end_date', '<', now());
             })
