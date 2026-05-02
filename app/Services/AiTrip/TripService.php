@@ -29,9 +29,10 @@ class TripService
     {
     }
 
+    //input sanitizing
     public function createFromAi(array $payload): ?Trip
     {
-        $payload['destination_ids'] = array_values(array_unique(array_map('intval', $payload['destination_ids'])));
+        $payload['destination_ids'] = array_values(array_unique(array_map('intval', $payload['destination_ids']))); //ids to numbers, prevent dupliaction,sorting
         $payload['categories'] = array_values(array_unique($payload['categories']));
         $language = $payload['language'] ?? 'en';
 
@@ -45,11 +46,10 @@ class TripService
             $name = Str::limit($plan['trip_name'] ?: $payload['description'], 120, '');
             $slugBase = Str::slug($name ?: 'ai-trip');
             $primaryDestinationId = (int) $payload['destination_ids'][0];
-
             $trip = Trip::create([
                 'destination_id' => $primaryDestinationId,
                 'name' => $name,
-                'slug' => $this->nextUniqueSlug($slugBase),
+                'slug' => $this->nextUniqueSlug($slugBase), //unique url name
                 'description' => $plan['trip_description'] ?? null,
                 'duration_days' => (int) $payload['duration'],
                 'category' => implode(',', $payload['categories']),
@@ -64,18 +64,19 @@ class TripService
             $this->syncDestinations($trip, $payload['destination_ids']);
             $this->createDaysAndActivities($trip, $plan['days'] ?? []);
             $this->bootstrapPackageFromAiPlan($trip);
-
             return $trip;
         });
     }
+
 
     public function saveBasics(Trip $trip, array $payload): void
     {
         $destinationIds = array_values(array_unique(array_map('intval', $payload['destination_ids'])));
         $primaryDestinationId = (int) $payload['destination_id'];
 
+        //check primary destination is in array
         if (! in_array($primaryDestinationId, $destinationIds, true)) {
-            array_unshift($destinationIds, $primaryDestinationId);
+            array_unshift($destinationIds, $primaryDestinationId); 
         }
 
         $destinationIds = array_values(array_unique([$primaryDestinationId, ...$destinationIds]));
@@ -89,6 +90,7 @@ class TripService
                     ->all()
             );
 
+            //m-m relationship
             $this->syncDestinations($trip, $destinationIds);
         });
     }
@@ -109,7 +111,7 @@ class TripService
                 $sentActivityIds = [];
 
                 foreach (($dayPayload['activities'] ?? []) as $activityPayload) {
-                    if (empty($activityPayload['activity_id'])) {
+                    if (empty($activityPayload['activity_id'])) { //ignore activity without id
                         continue;
                     }
 
@@ -121,17 +123,19 @@ class TripService
                         $this->dayActivityAttributes($tripDay->id, $activityPayload)
                     );
 
-                    $sentActivityIds[] = $activity->id;
+                    $sentActivityIds[] = $activity->id; //to know activities remains after update 
                 }
 
+                //delete not sended activities
                 if (! empty($sentActivityIds)) {
-                    $tripDay->activities()->whereNotIn('id', $sentActivityIds)->delete();
-                } else {
-                    $tripDay->activities()->delete();
+                    $tripDay->activities()->whereNotIn('id', $sentActivityIds)->delete(); 
+                } else { 
+                    $tripDay->activities()->delete();   //No activities at all
                 }
             }
 
-            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip->fresh('days'));
+            //get all hotels in trip
+            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip->fresh('days')); //latest trip instance from db
             $trip->packages()->with('packageHotels')->get()->each(function (TripPackage $package) use ($canonicalHotelIds) {
                 $payload = $package->packageHotels
                     ->map(fn (TripPackageHotel $packageHotel) => [
@@ -151,9 +155,9 @@ class TripService
 
     public function savePackages(Trip $trip, array $payload): void
     {
-        DB::transaction(function () use ($trip, $payload) {
+        DB::transaction(function () use ($trip, $payload) { 
             $keepPackageIds = [];
-            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip);
+            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip); //get hotels from days
 
             foreach (($payload['packages'] ?? []) as $packagePayload) {
                 if (blank($packagePayload['name'] ?? null) && blank($packagePayload['price'] ?? null)) {
@@ -172,8 +176,8 @@ class TripService
                 );
 
                 $keepPackageIds[] = $package->id;
-                $this->syncPackageTextBlocks($package, $packagePayload);
-                $this->syncPackageHotelsFromDays($package, $packagePayload['hotels'] ?? [], $canonicalHotelIds);
+                $this->syncPackageTextBlocks($package, $packagePayload); //package test content (include,exclude)
+                $this->syncPackageHotelsFromDays($package, $packagePayload['hotels'] ?? [], $canonicalHotelIds); //package hotels=days hotels
             }
 
             $trip->packages()->whereNotIn('id', $keepPackageIds ?: [0])->delete();

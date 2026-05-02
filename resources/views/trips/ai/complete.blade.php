@@ -50,6 +50,7 @@
             @endforeach
         </div>
 
+        {{--Basics--}}
         @if($activeTab === 'basics')
             <form method="POST" action="{{ route('trip.complete.basics', $trip->id) }}" class="bg-white border rounded-xl p-5 space-y-4">
                 @csrf
@@ -131,6 +132,7 @@
             </form>
         @endif
 
+        {{--Days--}}
         @if($activeTab === 'days')
             <form method="POST" action="{{ route('trip.complete.days', $trip->id) }}" class="space-y-4">
                 @csrf
@@ -161,6 +163,7 @@
                             Activity start/end time and notes are saved per day in <code>day_activities</code>, not in the master activities catalog.
                         </p>
 
+                        {{--Activities--}}
                         @foreach($day->activities as $activityIndex => $activity)
                             <div class="grid md:grid-cols-4 gap-2 p-3 border rounded">
                                 <input type="hidden" name="days[{{ $dayIndex }}][activities][{{ $activityIndex }}][id]" value="{{ $activity->id }}">
@@ -193,6 +196,7 @@
             </form>
         @endif
 
+        {{--Packages--}}
         @if($activeTab === 'packages')
             <form method="POST" action="{{ route('trip.complete.packages', $trip->id) }}" class="space-y-4">
                 @csrf
@@ -313,6 +317,7 @@
             </form>
         @endif
 
+        {{--Schedules--}}
         @if($activeTab === 'schedules')
             <form method="POST" action="{{ route('trip.complete.schedules', $trip->id) }}" class="space-y-3">
                 @csrf
@@ -359,6 +364,7 @@
             </form>
         @endif
 
+        {{--Images--}}
         @if($activeTab === 'images')
             <form method="POST" action="{{ route('trip.complete.images', $trip->id) }}" enctype="multipart/form-data" class="space-y-3 bg-white border rounded-xl p-4">
                 @csrf
@@ -395,6 +401,7 @@
             </form>
         @endif
 
+        {{--Overview--}}
         @if($activeTab === 'overview')
             <div class="space-y-4">
                 <div class="bg-white border rounded-xl p-5">

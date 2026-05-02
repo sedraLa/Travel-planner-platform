@@ -31,23 +31,28 @@ class GroqTripPlannerService
         ];
 
         $this->promptStrategies = collect($strategies)
-            ->keyBy(fn (TripPromptStrategy $strategy) => $strategy->language())
+            ->keyBy(fn (TripPromptStrategy $strategy) => $strategy->language()) //use language as key
             ->all();
     }
 
     public function generateTripPlan(array $tripData, string $language = 'en'): ?array
     {
+        //check api key
         if (blank($this->apiKey)) {
             Log::error('Groq API Key is missing.');
             return null;
         }
 
+        //language
         $strategy = $this->promptStrategies[$language] ?? $this->promptStrategies['en'];
+
+        //catalog building
         $catalog = $this->catalogService->buildCatalog(
             $tripData['destination_ids'] ?? [],
             $tripData['categories'] ?? []
         );
 
+        //send request
         try {
             $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $this->apiKey,
@@ -55,8 +60,8 @@ class GroqTripPlannerService
             ])->post($this->endpoint, [
                 'model' => $this->model,
                 'messages' => [
-                    ['role' => 'system', 'content' => $strategy->systemMessage()],
-                    ['role' => 'user', 'content' => $strategy->userMessage($tripData, $catalog)],
+                    ['role' => 'system', 'content' => $strategy->systemMessage()], //instructions AI personality
+                    ['role' => 'user', 'content' => $strategy->userMessage($tripData, $catalog)], //request
                 ],
                 'temperature' => 0.2,
                 'max_tokens' => 3500,
@@ -68,18 +73,21 @@ class GroqTripPlannerService
                 return null;
             }
 
+            //extract output
             $content = $response->json('choices.0.message.content');
 
             if (! is_string($content) || blank($content)) {
                 return null;
             }
 
+            //convert to array
             $decoded = json_decode($content, true);
 
             if (! is_array($decoded)) {
                 return null;
             }
 
+            //validate respond data
             return $this->tripPlanSanitizer->sanitizeAgainstCatalog($decoded, $catalog, (int) ($tripData['duration'] ?? 1));
         } catch (\Throwable $e) {
             Log::error('Groq API Exception', ['message' => $e->getMessage()]);

@@ -10,7 +10,7 @@
             <div class="head">
 
                 <h1>Create New Trip Plan</h1>
-                <p>Choose how you'd like to create your perfect itinerary</p>
+                <p>Create a Trip easily with a smart tool</p>
                 @if (session('success'))
                 <div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
                     {{ session('success') }}
@@ -19,26 +19,6 @@
             </div>
         </header>
         <div class="main-section">
-            <a href="{{route('manual.create')}}" class="card-link">
-                <div class="manual cardd">
-                    <img src="{{asset('/images/ChatGPT Image Oct 1, 2025, 01_34_32 PM.png')}}" alt="icon" class="icon">
-                    <div class="plan-heading">
-                        <h2>Manual Creation</h2>
-                        <p>Build your trip step by step with full control over every detail</p>
-                    </div>
-                    <ul class="overview">
-                        <li>Choose your destination and dates</li>
-                        <li>Select hotels and accommodations</li>
-                        <li>Add activities and itineraries</li>
-                        <li>Customize all information needed as you want</li>
-                    </ul>
-                    <div class="time">
-                        <h4>Time required:</h4>
-                        <span>5-10 minutes</span>
-                    </div>
-                </div>
-            </a>
-
             <a href="{{route('ai.create')}}" class="card-link">
                 <div class="ai cardd">
                     <img src="{{asset('/images/ChatGPT Image Oct 1, 2025, 01_37_30 PM.png')}}" alt="icon" class="icon">
