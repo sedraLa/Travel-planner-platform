@@ -32,6 +32,7 @@ class GuideAssignmentService
             return [];
         }
 
+          // match destination language
         $stageOne = $this->guideLanguageFilterService->filterByLanguage($availableGuides, $destinationTerms);
 
         if ($stageOne->isNotEmpty()) {
@@ -44,6 +45,7 @@ class GuideAssignmentService
             return $this->guideRankingService->rankFairly($stageOne)->pluck('id')->all();
         }
 
+        // fallback to English
         logger()->info('Guide assignment stage 1 returned no guides. Falling back to English.', [
             'trip_id' => $trip->id,
         ]);
@@ -59,6 +61,7 @@ class GuideAssignmentService
             return $this->guideRankingService->rankFairly($stageTwo)->pluck('id')->all();
         }
 
+        // Final fallback: use all available guides
         logger()->info('Guide assignment stage 3 fallback applied (availability only).', [
             'trip_id' => $trip->id,
             'matched_guide_ids' => $availableGuides->pluck('id')->all(),
@@ -66,6 +69,7 @@ class GuideAssignmentService
 
         return $this->guideRankingService->rankFairly($availableGuides)->pluck('id')->all();
     }
+
 
     private function resolveTripDateRange(Trip $trip): array
     {
@@ -82,6 +86,7 @@ class GuideAssignmentService
     {
         $rawLanguages = (string) optional($trip->primaryDestination)->language;
 
+        //cleaning languages
         return collect(preg_split('/[,\\/|]+/', $rawLanguages) ?: [])
             ->map(fn (string $language) => trim(mb_strtolower($language)))
             ->filter()
@@ -97,6 +102,7 @@ class GuideAssignmentService
         ];
     }
 
+    //cleaning
     private function normalized(?string $value): ?string
     {
         $normalized = trim(mb_strtolower((string) $value));

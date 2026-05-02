@@ -8,6 +8,7 @@ abstract class GuideRequestHandler
 {
     protected ?GuideRequestHandler $next = null;
 
+    //building chain
     public function setNext(GuideRequestHandler $next): GuideRequestHandler
     {
         $this->next = $next;
@@ -22,5 +23,6 @@ abstract class GuideRequestHandler
         }
     }
 
+    //return true,false(guide accepted, guide rejected)
     abstract protected function process(Trip $trip, array $rankedGuideIds, int $index): bool;
 }

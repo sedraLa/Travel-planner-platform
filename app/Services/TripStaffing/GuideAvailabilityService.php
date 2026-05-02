@@ -8,6 +8,9 @@ use Illuminate\Support\Collection;
 
 class GuideAvailabilityService
 {
+    /**
+     * Retrieve guides eligible for a trip based on location and availability constraints.
+     */
     public function availableGuides(?Carbon $start, ?Carbon $end, ?string $destinationCity, ?string $destinationCountry): Collection
     {
         if (! $destinationCountry && ! $destinationCity) {
@@ -37,6 +40,7 @@ class GuideAvailabilityService
                 }
 
                 foreach ($guide->assignments as $assignment) {
+                    // Only consider active assignments
                     if (! in_array($assignment->status, ['assigned', 'accepted'], true)) {
                         continue;
                     }
@@ -45,6 +49,7 @@ class GuideAvailabilityService
                         $assignedStart = Carbon::parse($schedule->start_date)->startOfDay();
                         $assignedEnd = Carbon::parse($schedule->end_date)->endOfDay();
 
+                        // Exclude if schedules overlap
                         if ($assignedStart <= $end && $assignedEnd >= $start) {
                             logger()->info('Guide excluded due to overlapping trip dates.', [
                                 'guide_id' => $guide->id,
@@ -54,6 +59,7 @@ class GuideAvailabilityService
                             return false;
                         }
 
+                        //break days
                         $restWindowStart = $start->copy()->subDays(3);
                         $restWindowEnd = $end->copy()->addDays(3);
 
