@@ -15,7 +15,7 @@ class GuideAssignmentService
 
         [$start, $end] = $this->resolveTripDateRange($trip);
         [$destinationCity, $destinationCountry] = $this->destinationLocation($trip);
-        $destinationTerms = $this->destinationLanguageTerms($trip);
+        $destinationTerms = $this->destinationLanguageTerms($trip); //get destination local language
 
         $availableGuides = $this->availableGuides($start, $end, $destinationCity, $destinationCountry);
 

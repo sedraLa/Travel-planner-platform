@@ -12,6 +12,7 @@ class TripBasicsService
         $destinationIds = array_values(array_unique(array_map('intval', $payload['destination_ids'])));
         $primaryDestinationId = (int) $payload['destination_id'];
 
+        //check primary destination is in array
         if (! in_array($primaryDestinationId, $destinationIds, true)) {
             array_unshift($destinationIds, $primaryDestinationId);
         }
@@ -27,12 +28,14 @@ class TripBasicsService
                     ->all()
             );
 
+           
             $this->syncDestinations($trip, $destinationIds);
         });
     }
 
     public function syncDestinations(Trip $trip, array $destinationIds): void
     {
+        //pivot data
         $trip->itineraryDestinations()->sync(
             collect($destinationIds)->values()->mapWithKeys(fn (int $destinationId, int $index) => [
                 $destinationId => ['sort_order' => $index + 1],

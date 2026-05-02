@@ -31,7 +31,7 @@ class TripDaysService
                 $sentActivityIds = [];
 
                 foreach (($dayPayload['activities'] ?? []) as $activityPayload) {
-                    if (empty($activityPayload['activity_id'])) {
+                    if (empty($activityPayload['activity_id'])) { //ignore activity without id
                         continue;
                     }
 
@@ -43,9 +43,10 @@ class TripDaysService
                         $this->dayActivityAttributes($tripDay->id, $activityPayload)
                     );
 
-                    $sentActivityIds[] = $activity->id;
+                    $sentActivityIds[] = $activity->id; //to know activities remains after update 
                 }
 
+                //delete not sended activities
                 if (! empty($sentActivityIds)) {
                     $tripDay->activities()->whereNotIn('id', $sentActivityIds)->delete();
                 } else {
@@ -53,7 +54,8 @@ class TripDaysService
                 }
             }
 
-            $canonicalHotelIds = $this->tripPackagesService->canonicalHotelIdsFromDays($trip->fresh('days'));
+            //get all hotels in trip
+            $canonicalHotelIds = $this->tripPackagesService->canonicalHotelIdsFromDays($trip->fresh('days')); //latest trip instance from db
             $trip->packages()->with('packageHotels')->get()->each(function (TripPackage $package) use ($canonicalHotelIds) {
                 $payload = $package->packageHotels
                     ->map(fn (TripPackageHotel $packageHotel) => [
@@ -71,6 +73,7 @@ class TripDaysService
         });
     }
 
+    //connect days with activities
     public function createDaysAndActivities(Trip $trip, array $days): void
     {
         foreach ($days as $day) {
@@ -95,6 +98,7 @@ class TripDaysService
         }
     }
 
+    //build data form for each activity
     public function dayActivityAttributes(int $tripDayId, array $activityPayload): array
     {
         return [
