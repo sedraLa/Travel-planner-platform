@@ -2,13 +2,18 @@
 
 namespace App\Services\TripStaffing;
 
-use App\Models\Guide;
 use App\Models\Trip;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 class GuideAssignmentService
 {
+    public function __construct(
+        private GuideAvailabilityService $guideAvailabilityService,
+        private GuideLanguageFilterService $guideLanguageFilterService,
+        private GuideRankingService $guideRankingService,
+    ) {
+    }
+
     public function rankedGuideIdsForTrip(Trip $trip): array
     {
         $trip->loadMissing(['primaryDestination', 'schedules']);
@@ -17,7 +22,7 @@ class GuideAssignmentService
         [$destinationCity, $destinationCountry] = $this->destinationLocation($trip);
         $destinationTerms = $this->destinationLanguageTerms($trip); //get destination local language
 
-        $availableGuides = $this->availableGuides($start, $end, $destinationCity, $destinationCountry);
+        $availableGuides = $this->guideAvailabilityService->availableGuides($start, $end, $destinationCity, $destinationCountry);
 
         if ($availableGuides->isEmpty()) {
             logger()->info('Guide assignment returned empty result due to hard availability constraints.', [
@@ -27,7 +32,7 @@ class GuideAssignmentService
             return [];
         }
 
-        $stageOne = $this->filterByLanguage($availableGuides, $destinationTerms);
+        $stageOne = $this->guideLanguageFilterService->filterByLanguage($availableGuides, $destinationTerms);
 
         if ($stageOne->isNotEmpty()) {
             logger()->info('Guide assignment stage 1 matched destination language.', [
@@ -36,14 +41,14 @@ class GuideAssignmentService
                 'language_terms' => $destinationTerms,
             ]);
 
-            return $this->rankFairly($stageOne)->pluck('id')->all();
+            return $this->guideRankingService->rankFairly($stageOne)->pluck('id')->all();
         }
 
         logger()->info('Guide assignment stage 1 returned no guides. Falling back to English.', [
             'trip_id' => $trip->id,
         ]);
 
-        $stageTwo = $this->filterByLanguage($availableGuides, ['english']);
+        $stageTwo = $this->guideLanguageFilterService->filterByLanguage($availableGuides, ['english']);
 
         if ($stageTwo->isNotEmpty()) {
             logger()->info('Guide assignment stage 2 matched English fallback.', [
@@ -51,7 +56,7 @@ class GuideAssignmentService
                 'matched_guide_ids' => $stageTwo->pluck('id')->all(),
             ]);
 
-            return $this->rankFairly($stageTwo)->pluck('id')->all();
+            return $this->guideRankingService->rankFairly($stageTwo)->pluck('id')->all();
         }
 
         logger()->info('Guide assignment stage 3 fallback applied (availability only).', [
@@ -59,115 +64,7 @@ class GuideAssignmentService
             'matched_guide_ids' => $availableGuides->pluck('id')->all(),
         ]);
 
-        return $this->rankFairly($availableGuides)->pluck('id')->all();
-    }
-
-    private function availableGuides(?Carbon $start, ?Carbon $end, ?string $destinationCity, ?string $destinationCountry): Collection
-    {
-        if (! $destinationCountry && ! $destinationCity) {
-            logger()->warning('Guide assignment stopped: destination location is missing.', []);
-
-            return collect();
-        }
-
-        $baseQuery = Guide::query()
-            ->whereIn('status', ['approved', 'Approved'])
-            ->with(['assignments.trip.schedules'])
-            ->where(function ($query) use ($destinationCity, $destinationCountry) {
-                if ($destinationCountry) {
-                    $query->whereRaw('LOWER(TRIM(address)) LIKE ?', ['%' . $destinationCountry . '%']);
-                }
-
-                if ($destinationCity) {
-                    $query->whereRaw('LOWER(TRIM(address)) LIKE ?', ['%' . $destinationCity . '%']);
-                }
-            });
-
-        return $baseQuery
-            ->get()
-            ->filter(function (Guide $guide) use ($start, $end) {
-                if (! $start || ! $end) {
-                    return true;
-                }
-
-                foreach ($guide->assignments as $assignment) {
-                    if (! in_array($assignment->status, ['assigned', 'accepted'], true)) {
-                        continue;
-                    }
-
-                    foreach ($assignment->trip?->schedules ?? [] as $schedule) {
-                        $assignedStart = Carbon::parse($schedule->start_date)->startOfDay();
-                        $assignedEnd = Carbon::parse($schedule->end_date)->endOfDay();
-
-                        if ($assignedStart <= $end && $assignedEnd >= $start) {
-                            logger()->info('Guide excluded due to overlapping trip dates.', [
-                                'guide_id' => $guide->id,
-                                'existing_trip_id' => $assignment->trip_id,
-                            ]);
-
-                            return false;
-                        }
-
-                        $restWindowStart = $start->copy()->subDays(3);
-                        $restWindowEnd = $end->copy()->addDays(3);
-
-                        if ($assignedStart <= $restWindowEnd && $assignedEnd >= $restWindowStart) {
-                            logger()->info('Guide excluded due to insufficient 3-day rest period.', [
-                                'guide_id' => $guide->id,
-                                'existing_trip_id' => $assignment->trip_id,
-                            ]);
-
-                            return false;
-                        }
-                    }
-                }
-
-                return true;
-            })
-            ->values();
-    }
-
-    private function filterByLanguage(Collection $guides, array $languageTerms): Collection
-    {
-        if (empty($languageTerms)) {
-            return collect();
-        }
-
-        $terms = collect($languageTerms)
-            ->map(fn (string $term) => trim(mb_strtolower($term)))
-            ->filter()
-            ->unique()
-            ->values();
-
-        if ($terms->isEmpty()) {
-            return collect();
-        }
-
-        $languageMatchedIds = Guide::query()
-            ->whereIn('id', $guides->pluck('id')->all())
-            ->where(function ($query) use ($terms) {
-                foreach ($terms as $term) {
-                    $query->orWhereRaw('LOWER(TRIM(languages)) LIKE ?', ['%' . $term . '%']);
-                }
-            })
-            ->pluck('id')
-            ->all();
-
-        return $guides->whereIn('id', $languageMatchedIds)->values();
-    }
-
-    private function rankFairly(Collection $guides): Collection
-    {
-        return $guides->sortBy(function (Guide $guide) {
-            $lastTripAt = $guide->last_trip_at
-                ? Carbon::parse($guide->last_trip_at)->timestamp
-                : now()->subYears(20)->timestamp;
-
-            return [
-                $lastTripAt,
-                (int) ($guide->total_trips_count ?? 0),
-            ];
-        })->values();
+        return $this->guideRankingService->rankFairly($availableGuides)->pluck('id')->all();
     }
 
     private function resolveTripDateRange(Trip $trip): array
