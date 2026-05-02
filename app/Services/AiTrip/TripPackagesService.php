@@ -17,7 +17,7 @@ class TripPackagesService
     {
         DB::transaction(function () use ($trip, $payload) {
             $keepPackageIds = [];
-            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip);
+            $canonicalHotelIds = $this->canonicalHotelIdsFromDays($trip); //get hotels from days
 
             foreach (($payload['packages'] ?? []) as $packagePayload) {
                 if (blank($packagePayload['name'] ?? null) && blank($packagePayload['price'] ?? null)) {
@@ -36,14 +36,15 @@ class TripPackagesService
                 );
 
                 $keepPackageIds[] = $package->id;
-                $this->syncPackageTextBlocks($package, $packagePayload);
-                $this->syncPackageHotelsFromDays($package, $packagePayload['hotels'] ?? [], $canonicalHotelIds);
+                $this->syncPackageTextBlocks($package, $packagePayload); //package text content (include,exclude)
+                $this->syncPackageHotelsFromDays($package, $packagePayload['hotels'] ?? [], $canonicalHotelIds); //package hotels = days hotels
             }
 
             $trip->packages()->whereNotIn('id', $keepPackageIds ?: [0])->delete();
         });
     }
 
+    
     public function syncPackageHotelsFromDays(TripPackage $package, array $hotelPayloads, array $canonicalHotelIds): void
     {
         $payloadByHotelId = collect($hotelPayloads)
@@ -111,10 +112,12 @@ class TripPackagesService
 
     protected function normalizeRepeaterInput(mixed $value): array
     {
+        //multiple inputs
         if (is_array($value)) {
             return array_values($value);
         }
 
+        //textarea, each row is an element
         if (is_string($value)) {
             return explode(PHP_EOL, $value);
         }

@@ -25,7 +25,7 @@ class TripCreationService
 
     public function createFromAi(array $payload): ?Trip
     {
-        $payload['destination_ids'] = array_values(array_unique(array_map('intval', $payload['destination_ids'])));
+        $payload['destination_ids'] = array_values(array_unique(array_map('intval', $payload['destination_ids']))); //ids to numbers, prevent dupliaction,sorting
         $payload['categories'] = array_values(array_unique($payload['categories']));
         $language = $payload['language'] ?? 'en';
 
@@ -42,7 +42,7 @@ class TripCreationService
             $trip = Trip::create([
                 'destination_id' => $primaryDestinationId,
                 'name' => $name,
-                'slug' => $this->tripSlugService->nextUniqueSlug($slugBase),
+                'slug' => $this->tripSlugService->nextUniqueSlug($slugBase), //unique url name
                 'description' => $plan['trip_description'] ?? null,
                 'duration_days' => (int) $payload['duration'],
                 'category' => implode(',', $payload['categories']),
@@ -61,6 +61,7 @@ class TripCreationService
         });
     }
 
+    //initial package
     protected function bootstrapPackageFromAiPlan(Trip $trip): void
     {
         if ($trip->packages()->exists()) {
@@ -73,6 +74,7 @@ class TripCreationService
             'price' => 0,
         ]);
 
+        //connect hotels to package
         $hotelIds = $this->tripPackagesService->canonicalHotelIdsFromDays($trip);
         foreach ($hotelIds as $hotelId) {
             TripPackageHotel::create([

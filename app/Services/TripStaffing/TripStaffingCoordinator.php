@@ -34,6 +34,7 @@ class TripStaffingCoordinator
                 ['status' => 'assigned']
             );
 
+            //cancel other requests
             $trip->guideRequests()->where('id', '!=', $request->id)->where('status', 'pending')->update(['status' => 'expired']);
 
             $this->notifyAdmins("Guide assigned to trip: #{$trip->name}.");

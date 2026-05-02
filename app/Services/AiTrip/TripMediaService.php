@@ -15,11 +15,13 @@ class TripMediaService
         DB::transaction(function () use ($trip, $payload, $coverImageFile, $imageFiles) {
             $trip->images()->delete();
 
+            //get current cover image
             $coverImagePath = $payload['cover_existing_path'] ?? null;
+            //new cover image
             if ($coverImageFile) {
                 $coverImagePath = '/storage/' . Storage::disk('public')->put('trips', $coverImageFile);
             }
-
+            //save cover image
             if (! empty($coverImagePath)) {
                 TripImage::create([
                     'trip_id' => $trip->id,
@@ -28,9 +30,12 @@ class TripMediaService
                 ]);
             }
 
+            //process other images
             foreach (($payload['images'] ?? []) as $index => $imagePayload) {
+                //old images
                 $imagePath = $imagePayload['existing_path'] ?? null;
 
+                //new images
                 if (($imageFiles[$index]['image_file'] ?? null) instanceof UploadedFile) {
                     $imagePath = '/storage/' . Storage::disk('public')->put('trips', $imageFiles[$index]['image_file']);
                 }

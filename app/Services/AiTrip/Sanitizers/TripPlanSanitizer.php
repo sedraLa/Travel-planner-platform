@@ -30,6 +30,7 @@ class TripPlanSanitizer
                     'day_number' => (int) ($day['day_number'] ?? ($index + 1)), //fallback when no day number
                     'title' => (string) ($day['title'] ?? 'Day ' . ($index + 1)),
                     'description' => (string) ($day['description'] ?? ''),
+
                     //Hotels cleaning
                     'hotel_id' => in_array((int) ($day['hotel_id'] ?? 0), $allowedHotelIds, true)
                         ? (int) $day['hotel_id']

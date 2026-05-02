@@ -36,6 +36,7 @@ class ProcessTripGuideMatchingJob implements ShouldQueue
             $handler->handle($trip, $rankedGuideIds, 0);
         }
 
+        //No guides 
         $coordinator->finalizeInitialMatchingOutcome($trip);
     }
 }
