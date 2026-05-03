@@ -7,7 +7,7 @@ use App\Services\GeocodingService;
 use App\Models\Destination ;
 use Carbon\Carbon;
 use App\Enums\Category;
-
+use App\Enums\UserRole;
 
 class UserTripController extends Controller
 {
@@ -16,14 +16,24 @@ public function index(Request $request)
 {
     $query = Trip::with('primaryDestination')->where('status','published');
     $user = auth()->user();
-     $user->load('favoriteTrips');
+    $user->load('favoriteTrips');
+
+    $lockedDestination = null;
+    if (
+        $user->role !== UserRole::ADMIN->value
+        && $request->filled('locked_destination_id')
+    ) {
+        $lockedDestination = Destination::findOrFail($request->locked_destination_id);
+        $query->where('destination_id', $lockedDestination->id);
+    }
+
 
    if ($request->filled('search')) {
     $query->where('name', 'like', '%' . $request->search . '%');
        }
 
 
-    if ($request->filled('destination_id')) {
+      if (!$lockedDestination && $request->filled('destination_id')) {
         $query->where('destination_id', $request->destination_id);
     }
 
@@ -42,9 +52,8 @@ public function index(Request $request)
       $trips = $query->latest()->paginate(6);
 
     $categories = Category::values();
-   $destinations = Destination::whereIn('id',Trip::whereNotNull('destination_id')->pluck('destination_id')->unique())->get();
-
-    return view('trips.user.index', compact('trips', 'destinations','categories'));
+   $destinations = Destination::whereIn('id', Trip::whereNotNull('destination_id')->pluck('destination_id')->unique())->get();
+    return view('trips.user.index', compact('trips', 'destinations', 'categories', 'lockedDestination'));
     }
 
 

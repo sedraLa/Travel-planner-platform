@@ -36,9 +36,6 @@ class TransportVehicle extends Model
     }
    
 
-    public function tripTransports()
-    {
-        return $this->hasMany(TripTransport::class);
-    }
+    
 
 }

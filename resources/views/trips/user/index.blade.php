@@ -20,6 +20,10 @@
         <h1>All Trips</h1>
         <p>Explore and manage all your travel experiences</p>
         <form method="GET" action="{{ route('user.trips.index') }}" class="trips-hero-search">
+             @if(!empty($lockedDestination))
+                <input type="hidden" name="locked_destination_id" value="{{ $lockedDestination->id }}">
+                <input type="hidden" name="destination_id" value="{{ $lockedDestination->id }}">
+            @endif
             <input type="text" name="search" value="{{ request('search') }}"
                    placeholder="Search by name, destination" />
             <button type="submit">Search</button>
@@ -34,6 +38,10 @@
 
     {{-- Filters --}}
     <form method="GET" action="{{ route('user.trips.index') }}">
+
+      @if(!empty($lockedDestination))
+            <input type="hidden" name="locked_destination_id" value="{{ $lockedDestination->id }}">
+        @endif
         <div class="trips-filters">
            <div class="dropdown" id="categoryDropdown">
 
@@ -59,11 +67,13 @@
 
             <div class="filter-group">
                 <label>Destination</label>
-                <select name="destination_id">
-                    <option value="">All</option>
+                <select name="destination_id" @disabled(!empty($lockedDestination))>
+                    @if(empty($lockedDestination))
+                        <option value="">All</option>
+                    @endif
                     @foreach($destinations as $destination)
                         <option value="{{ $destination->id }}"
-                            @selected(request('destination_id') == $destination->id)>
+                             @selected((!empty($lockedDestination) ? $lockedDestination->id : request('destination_id')) == $destination->id)>
                             {{ $destination->name }}
                         </option>
                     @endforeach
@@ -78,7 +88,7 @@
 
             <div class="filter-actions">
                 <button type="submit" class="btn-filter">Filter</button>
-                <a href="{{ route('user.trips.index') }}" class="btn-reset">Reset</a>
+                <a href="{{ route('user.trips.index', !empty($lockedDestination) ? ['destination_id' => $lockedDestination->id, 'locked_destination_id' => $lockedDestination->id] : []) }}" class="btn-reset">Reset</a>
             </div>
         </div>
     </form>

@@ -29,8 +29,10 @@ class ActivityController extends Controller
         // Keyword search
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhereHas('destination', fn($q) => $q->where('name', 'like', "%{$search}%"));
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhereHas('destination', fn($destinationQuery) => $destinationQuery->where('name', 'like', "%{$search}%"));
+            });
         }
 
         // Filters

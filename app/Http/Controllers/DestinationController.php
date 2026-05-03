@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\DestinationRequest;
 use App\Http\Requests\HighlightRequest;
 use App\Models\Destination;
-use App\Models\Trips;
+use App\Models\Trip;
 use App\Models\Highlight;
 use App\Models\DestinationImage;
 use App\Services\MediaServices;
@@ -162,55 +162,26 @@ class DestinationController extends Controller
 
     public function activities(string $id)
 {
-    $destination = Destination::findOrFail($id);
-
-    $activities = $destination->activities()
-        ->latest()
-        ->paginate(12);
-
-    return view('activities.index', compact('destination', 'activities'));
+    Destination::findOrFail($id);
+    return redirect()->route('activities.index', ['destination_id' => $id]);
 }
 
 public function trips(Request $request, $destinationId = null)
 {
-    $categories = Category::values();
+    $destination = Destination::findOrFail($destinationId);
 
-    $destinations = Destination::all();
-
-    $query = Trip::with(['images', 'destination', 'schedules']);
-
-
-    if ($destinationId) {
-        $query->where('destination_id', $destinationId);
-        $destination = Destination::findOrFail($destinationId);
-    } else {
-        $destination = null;
-    }
-
-    // filters
-    if ($request->filled('category')) {
-        $query->whereIn('category', $request->category);
-    }
-
-    if ($request->filled('destination_id')) {
-        $query->where('destination_id', $request->destination_id);
-    }
-
-    if ($request->filled('search')) {
-        $term = $request->search;
-        $query->where('name', 'like', "%$term%");
-    }
-
-    $trips = $query->latest()->paginate(12);
-
-    return view('trips.user.index', compact(
-        'trips',
-        'categories',
-        'destinations',
-        'destination'
-    ));
+    return redirect()->route('user.trips.index', [
+        'destination_id' => $destination->id,
+        'locked_destination_id' => $destination->id,
+    ]);
 }
+ public function edit(string $id)
+    {
 
+    $destination = Destination::with('highlights', 'images')->findOrFail($id);
+
+    return view('destinations.edit', compact('destination'));
+    }  
     /**
      * Update the specified resource in storage.
      */
@@ -223,6 +194,7 @@ public function trips(Request $request, $destinationId = null)
 
 
     if ($request->filled('highlight')) {
+        $destination->highlights()->delete(); 
     foreach ($request->highlight as $highlightText) {
         if (!empty($highlightText)) {
             $destination->highlights()->create([

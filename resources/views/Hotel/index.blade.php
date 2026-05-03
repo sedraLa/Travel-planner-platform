@@ -31,6 +31,10 @@
             @endif
 
             <form method="GET" action="{{ route('hotels.index') }}" style="width:100%;display:flex;justify-content:center;">
+
+             @if(request('destination_id'))
+                    <input type="hidden" name="destination_id" value="{{ request('destination_id') }}">
+                @endif
                 <div class="act-hero__search">
                     <input
                         type="text"

@@ -1,0 +1,324 @@
+* {
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ══ HERO ══ */
+.gt-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: linear-gradient(135deg, #052659 0%, #185FA5 100%);
+    border-radius: 20px;
+    padding: 28px 32px;
+    margin: 24px 32px 20px;
+}
+
+.gt-hero-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.gt-hero-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: #fff;
+}
+
+.gt-hero h1 {
+    font-size: 24px;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.gt-hero p {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.gt-hero-stats {
+    display: flex;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+.gt-stat-pill {
+    background: rgba(255, 255, 255, 0.12);
+    border: 0.5px solid rgba(255, 255, 255, 0.2);
+    border-radius: 14px;
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 90px;
+}
+
+.gt-stat-pill .num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+}
+
+.gt-stat-pill .lbl {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 2px;
+}
+
+/* ══ GRID ══ */
+.gt-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 18px;
+    padding: 0 32px 40px;
+}
+
+/* ══ CARD ══ */
+.gt-card {
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 0.5px solid #e2e8f0;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.gt-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.09);
+}
+
+.gt-card-bar {
+    height: 5px;
+    width: 100%;
+}
+
+.gt-card-body {
+    padding: 16px;
+}
+
+/* Head */
+.gt-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.gt-user {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+}
+
+.gt-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.gt-name-wrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.gt-uname {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gt-role {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.gt-duration {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
+    flex-shrink: 0;
+}
+
+/* Divider */
+.gt-divider {
+    height: 0.5px;
+    background: #f1f5f9;
+    margin: 12px 0;
+}
+
+/* Trip block */
+.gt-trip-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.gt-trip-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.3;
+}
+
+.gt-destination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.gt-destination svg {
+    width: 13px;
+    height: 13px;
+    stroke: #94a3b8;
+    flex-shrink: 0;
+}
+
+/* Chips */
+.gt-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.gt-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    background: #f8fafc;
+    color: #475569;
+    border: 0.5px solid #e2e8f0;
+}
+
+.gt-chip svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
+
+/* Status row */
+.gt-status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gt-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gt-badge svg {
+    width: 13px;
+    height: 13px;
+}
+
+.gt-badge-active {
+    background: #e0faf2;
+    color: #065f46;
+    border: 0.5px solid #6ee7b7;
+}
+
+.gt-badge-pending {
+    background: #fef9ec;
+    color: #92400e;
+    border: 0.5px solid #fde68a;
+}
+
+.gt-badge-inactive,
+.gt-badge-cancelled,
+.gt-badge-canceled {
+    background: #fff1f2;
+    color: #881337;
+    border: 0.5px solid #fecdd3;
+}
+
+.gt-badge-completed {
+    background: #eff6ff;
+    color: #1e3a8a;
+    border: 0.5px solid #bfdbfe;
+}
+
+.gt-accent-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* ══ EMPTY ══ */
+.gt-empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 80px 20px;
+    background: #fff;
+    border: 0.5px solid #e2e8f0;
+    border-radius: 18px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.gt-empty svg {
+    width: 48px;
+    height: 48px;
+    stroke: #cbd5e1;
+}
+
+.gt-empty p {
+    font-size: 14px;
+}
+
+/* ══ RESPONSIVE ══ */
+@media (max-width: 768px) {
+    .gt-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        margin: 16px;
+        padding: 20px;
+    }
+
+    .gt-hero-stats {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .gt-grid {
+        grid-template-columns: 1fr;
+        padding: 0 16px 32px;
+    }
+}
