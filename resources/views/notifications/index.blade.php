@@ -93,15 +93,11 @@
                         </p>
 
                         @if(($data['is_reviewed'] ?? false) === true)
-                            <button
-                                type="button"
-                                disabled
-                                class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg cursor-not-allowed"
-                            >
-                                Rated
-                            </button>
-                        @else
-                        @if(isset($data['reservation_id']))
+                        <button disabled class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">
+                            Rated
+                        </button>
+                    
+                    @elseif(($data['can_review'] ?? false) === true)
                         <a href="{{ route('reviews.create', [
                             'type' => $data['review_type'],
                             'id' => $data['review_id'],
@@ -109,8 +105,13 @@
                         ]) }}">
                             Rate Now
                         </a>
+                    
+                    @else
+                        <button disabled class="bg-gray-200 text-gray-500 px-4 py-2 rounded-lg">
+                            Not allowed
+                        </button>
                     @endif
-                        @endif
+                       
                     </div>
 
 

@@ -9,7 +9,7 @@ class HotelImage extends Model
 {
     
     use HasFactory;
-/////ddddd
+
     protected $fillable = [
         'image_url',
         'is_primary',

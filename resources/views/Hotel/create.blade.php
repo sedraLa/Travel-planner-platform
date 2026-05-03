@@ -211,7 +211,7 @@
 
     function showPrimarySelect(input) {
         const newFiles = Array.from(input.files);
-        allFiles = allFiles.concat(newFiles); // نضيف الصور الجديدة بدون حذف القديمة
+        allFiles = allFiles.concat(newFiles); 
 
         const select = document.getElementById('primary_image_index');
         const wrapper = document.getElementById('primary-select-wrapper');

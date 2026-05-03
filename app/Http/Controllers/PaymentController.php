@@ -144,10 +144,9 @@ public function paypalCallbackTransport(Request $request)
         DB::transaction(function () use ($reservation, $result) {
             $stateManager = app(ReservationStateManager::class);
         
-            // بدل التحديث المباشر
-            $stateManager->transition($reservation, 'pending_payment'); // بعد assign driver
-            $stateManager->transition($reservation, 'confirmed');       // بعد الدفع
         
+            $stateManager->transition($reservation, 'pending_payment'); 
+            $stateManager->transition($reservation, 'confirmed');       
             $driver = Driver::find($reservation->driver_id);
         
             if ($driver) {
@@ -182,7 +181,7 @@ public function payTrip()
     $reservationId = session('trip_reservation_id');
 
     if (!$reservationId) {
-        dd('❌ NO SESSION ID');
+        dd(' NO SESSION ID');
     }
 
     $reservation = TripReservation::findOrFail($reservationId);

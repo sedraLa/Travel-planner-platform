@@ -275,7 +275,7 @@
 </style>
 
 <script>
-    // دالة لإضافة حقل جديد
+ 
     function addHighlightField() {
         const wrapper = document.getElementById('highlights-wrapper');
         const div = document.createElement('div');
@@ -294,9 +294,9 @@
         wrapper.appendChild(div);
     }
 
-    // دالة لحذف الحقل عند الضغط على الزر الأحمر
+  
     function removeHighlightField(button) {
-        // button.parentElement تشير إلى الـ div الذي يحتوي على الإدخال والزر
+      
         button.parentElement.remove();
     }
 </script>

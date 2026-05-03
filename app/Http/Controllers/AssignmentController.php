@@ -133,7 +133,7 @@ class AssignmentController extends Controller
     ->with('user')
         ->where(function ($q) use ($assignment) {
             $q->doesntHave('assignment')
-              ->orWhere('id', $assignment->driver_id); // السائق الحالي يظل ضمن القائمة
+              ->orWhere('id', $assignment->driver_id); 
         })
         ->orderBy('id')
         ->get();

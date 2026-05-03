@@ -27,8 +27,6 @@ class TransportReservationController extends Controller
     public function create(Request $request, TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
-
-        // استخدام State pattern بدل المقارنة المباشرة
         $allowedStatus = ['driver_assigned'];
         if (!in_array($reservation->status, $allowedStatus) || !$reservation->vehicle) {
             return redirect()->route('vehicle.searching', $reservation)
@@ -63,8 +61,6 @@ class TransportReservationController extends Controller
     public function store(VehicleOrderRequest $request, TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
-
-        // بدل المقارنة المباشرة للـ status، يمكننا التحقق من خلال الـ State
         $allowedStatus = ['driver_assigned'];
         if (!in_array($reservation->status, $allowedStatus)) {
             return back()->withErrors('Reservation is not ready for payment.');
@@ -155,7 +151,6 @@ class TransportReservationController extends Controller
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        // استخدام StateManager لتأكيد الانتقال من driver_assigned -> confirmed
         try {
             $this->stateManager->transition($reservation, 'confirmed');
         } catch (\LogicException $e) {

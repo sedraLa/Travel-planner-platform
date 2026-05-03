@@ -191,7 +191,6 @@
     <x-input-label value="Highlights" />
 
     <div id="highlights-wrapper">
-        {{-- عرض الـ Highlights المخزنة مسبقاً --}}
         @forelse($activity->highlights as $index => $highlight)
             <div class="highlight-item flex items-center mb-2">
                 <input type="text" name="highlights[]"
@@ -212,7 +211,6 @@
                 @endif
             </div>
         @empty
-            {{-- في حال لم يكن هناك أي Highlight مسبقاً --}}
             <div class="highlight-item flex items-center mb-2">
                 <input type="text" name="highlights[]"
                        class="block w-full border-gray-300 rounded-md shadow-sm"

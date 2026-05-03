@@ -118,7 +118,7 @@
                 </div>
             @endif
 
-            {{-- ✅ Status + Heart في نفس الصف --}}
+          
     <div class="trip-card-top-bar">
     @if($trip->schedules->first())
         <span   style="{{ $trip->isBookingClosed() ? 'background:#fee2e2;color:#991b1b;' : 'background:#E1F5EE;color:#0F6E56;' }}"
@@ -159,7 +159,7 @@
         <div class="trip-card-body">
             <div class="trip-card-title">{{ $trip->name }}</div>
 
-            {{-- ✅ Category Badge --}}
+            {{--  Category Badge --}}
             @if($trip->category)
                 <span class="trip-category-badge">{{ ucfirst($trip->category) }}</span>
             @endif

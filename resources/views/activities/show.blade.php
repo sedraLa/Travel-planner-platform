@@ -23,7 +23,7 @@
     <div class="hero-left">
       <div class="hero-eyebrow">
         <span class="tag tag-accent">{{ ucfirst($activity->category) }}</span>
-        <span class="tag tag-gold">⭐ الأكثر حجزاً</span>
+        <span class="tag tag-gold">⭐{{ number_format($activity->average_rating ?? 0, 1) }}</span>
         <span class="tag tag-outline">
           <span class="avail-dot" style="background:#9fe1cb;"></span>
          {{$activity->availability}}
@@ -34,6 +34,7 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
           {{$activity->address}}
       </div>
+
     </div>
     <div class="hero-price-box">
       <div class="price-label">Start from </div>
@@ -143,8 +144,8 @@
         <div class="stat-icon">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82c4" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         </div>
-        <div class="stat-number">4.9</div>
-        <div class="stat-desc">User Rating </div>
+        <div class="stat-number">⭐ {{ number_format($activity->average_rating ?? 0, 1) }}</div>
+        <div class="stat-desc">({{ $reviewsCount }}) Reviews</div>
       </div>
     </div>
 
@@ -185,6 +186,53 @@
     @endforelse
 </ul>
     </div>
+
+    <!-- REVIEWS SECTION -->
+<div class="section" id="reviews">
+    <div class="section-head">
+      <div class="section-icon icon-blue">
+        ⭐
+      </div>
+      <h2 class="section-title">User Reviews</h2>
+    </div>
+
+    <div class="divider"></div>
+
+    @if($reviews->count())
+
+      @foreach($reviews->take(3) as $review)
+        <div style="margin-bottom:15px; padding:12px; border:1px solid #eee; border-radius:10px;">
+
+          <div style="font-weight:600;">
+            {{ $review->user->name }}
+          </div>
+
+          <div style="color:#f5a623; font-size:14px;">
+            ⭐ {{ $review->rating }}
+          </div>
+
+          @if($review->review)
+            <div style="margin-top:5px; font-size:13px; color:#555;">
+              {{ $review->review }}
+            </div>
+          @endif
+
+        </div>
+      @endforeach
+
+      {{-- زر مشاهدة الكل --}}
+      @if($reviews->count() > 3)
+        <div style="text-align:center; margin-top:10px;">
+          <a href="{{ route('activities.reviews.index', $activity->id) }}" class="book-btn" style="padding:8px 14px;">
+            See all {{ $reviewsCount }} reviews
+          </a>
+        </div>
+      @endif
+
+    @else
+      <p style="color:#888;">No reviews yet</p>
+    @endif
+  </div>
 
     <!-- REQUIREMENTS -->
     <div class="section">
@@ -337,7 +385,7 @@
        Contact information
       </div>
       <div class="side-card-body" style="padding-top:0.5rem;">
-        
+
           @if($isAdmin||$hasPaidReservation ||!$activity->requires_booking)
         <div class="contact-row">
           <div class="contact-icon">
@@ -370,13 +418,12 @@
 @push('styles')
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
-    /* هذا الجزء ضروري جداً لمنع الشاشة الرمادية */
     #activity-map {
-        height: 250px !important; /* ارتفاع ثابت ومؤكد */
+        height: 250px !important;
         width: 100% !important;
         border-radius: 12px;
         z-index: 1;
-        background: #e5e3df; /* لون خلفية الخريطة الافتراضي */
+        background: #e5e3df;
     }
     .leaflet-container {
         height: 100%;
@@ -396,7 +443,6 @@
   </div>
 
   <div class="side-card-body" style="padding: 10px;">
-    {{-- حاوية الخريطة مع ارتفاع ثابت --}}
     <div id="map-wrapper" style="width: 100%; height: 200px; border-radius: 12px; overflow: hidden; position: relative; background: #f0f0f0;">
       @if($coords && isset($coords['latitude']) && $coords['latitude'] != 0)
         <div id="activity-map" style="width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;"></div>
@@ -421,44 +467,35 @@
   </aside>
 </div>
 
-{{-- روابط Leaflet --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 @if($coords && isset($coords['latitude'] ) && $coords['latitude'] != 0)
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    // التأكد من تحميل المكتبة قبل البدء
     if (typeof L === 'undefined') return;
 
     const lat = {{ $coords['latitude'] }};
     const lng = {{ $coords['longitude'] }};
     const address = "{{ addslashes($activity->address) }}";
-
-    // تهيئة الخريطة
     const map = L.map('activity-map', {
         center: [lat, lng],
         zoom: 15,
         zoomControl: true
     });
 
-    // إضافة طبقة الخريطة
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
     } ).addTo(map);
 
-    // إضافة العلامة
     L.marker([lat, lng]).addTo(map)
         .bindPopup(address)
         .openPopup();
-
-    // حل مشكلة الشاشة الرمادية (إعادة حساب الحجم بعد التحميل)
     setTimeout(function() {
         map.invalidateSize();
     }, 500);
 
-    // محاولة ثانية للتأكيد بعد ثانية واحدة
     setTimeout(function() {
         map.invalidateSize();
     }, 1500);

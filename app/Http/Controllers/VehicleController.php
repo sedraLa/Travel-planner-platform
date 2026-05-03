@@ -17,8 +17,6 @@ class VehicleController extends Controller
      */
     public function create(Request $request)
     {
-        // جلب الـ drivers المصرح لهم واللي ما عندهم سيارة
-       
 
         return view('vehicles.create');
     }
@@ -28,10 +26,6 @@ class VehicleController extends Controller
      */
     public function store(VehicleRequest $request)
     {
-        
-        
-
-        // حفظ الصورة
         $imagePath = $request->hasFile('image')
             ? MediaServices::save($request->file('image'), 'image', 'vehicles')
             : null;
@@ -159,8 +153,6 @@ class VehicleController extends Controller
     public function destroy(string $id)
     {
         $vehicle = TransportVehicle::with('reservations')->findOrFail($id);
-
-        // تحقق من وجود حجوزات مستقبلية مؤكدة
         $hasUpcoming = $vehicle->reservations()
             ->where('pickup_datetime', '>=', now())
             ->exists();
@@ -169,7 +161,6 @@ class VehicleController extends Controller
             return back()->withErrors("You can't delete this vehicle because it has upcoming confirmed (paid) reservations");
         }
 
-        // حذف الصورة إذا موجودة
         if ($vehicle->image && Storage::disk('public')->exists($vehicle->image)) {
             Storage::disk('public')->delete($vehicle->image);
         }

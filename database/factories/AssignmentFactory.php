@@ -15,7 +15,6 @@ class AssignmentFactory extends Factory
     public function definition(): array
     {
         return [
-            // driver لازم يكون approved
             'driver_id' => Driver::factory()->approved(),
             'transport_vehicle_id' => TransportVehicle::factory(),
             'shift_template_id' => ShiftTemplate::factory(),
@@ -23,7 +22,6 @@ class AssignmentFactory extends Factory
         ];
     }
 
-    // helpers لتخصيص العلاقات بالتست
     public function forDriver($driver)
     {
         return $this->state(fn () => [

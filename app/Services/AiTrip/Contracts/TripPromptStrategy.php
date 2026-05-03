@@ -8,5 +8,5 @@ interface TripPromptStrategy
 
     public function systemMessage(): string; //Basic instructions and the main role of AI
 
-    public function userMessage(array $tripData, array $catalog): string; //the prompt
+    public function userMessage(array $tripData, array $catalog): string; // prompt
 }

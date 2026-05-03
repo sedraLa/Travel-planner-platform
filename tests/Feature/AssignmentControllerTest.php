@@ -21,15 +21,15 @@ class AssignmentControllerTest extends TestCase
     {
         parent::setUp();
 
-        // إنشاء مستخدم admin
+   
         $user = User::factory()->create([
             'role' => 'admin'
         ]);
 
-        // تسجيل الدخول
+ 
         $this->actingAs($user);
 
-        // Mock للخدمة حتى لا ترسل notifications
+       
         $mock = Mockery::mock(AssignmentNotificationService::class);
         $mock->shouldIgnoreMissing();
 

@@ -9,9 +9,11 @@ class TripCatalogService
 {
     public function buildCatalog(array $destinationIds, array $tripCategories = []): array
     {
+        //cleaning
         $destinationIds = collect($destinationIds)->map(fn ($id) => (int) $id)->filter()->unique()->values();
         $normalizedCategories = $this->normalizeCategories($tripCategories);
 
+        //get data 
         $destinations = Destination::query()
             ->whereIn('id', $destinationIds)
             ->with([
@@ -26,6 +28,7 @@ class TripCatalogService
             ])
             ->get();
 
+            //data sent to api
         return [
             'destinations' => $destinations->map(fn ($destination) => [
                 'id' => $destination->id,
@@ -34,12 +37,14 @@ class TripCatalogService
                 'country' => $destination->country,
                 'updated_at' => optional($destination->updated_at)?->toDateTimeString(),
             ])->values()->all(),
+
+            //to ensure the plan stays relevant
             'filters' => [
                 'requested_destination_ids' => $destinationIds->all(),
                 'requested_trip_categories' => $tripCategories,
                 'normalized_activity_categories' => $normalizedCategories,
             ],
-            'hotels' => $destinations->flatMap(fn ($destination) => $destination->hotels->map(fn ($hotel) => [
+            'hotels' => $destinations->flatMap(fn ($destination) => $destination->hotels->map(fn ($hotel) => [ //one array to all hotels
                 'id' => $hotel->id,
                 'destination_id' => $destination->id,
                 'destination_name' => $destination->name,
@@ -78,11 +83,10 @@ class TripCatalogService
     protected function normalizeCategories(array $categories): array
     {
         $allowed = Category::values();
-
         return collect($categories)
             ->map(fn ($category) => strtolower(trim((string) $category)))
             ->map(fn (string $category) => str_replace(' ', '_', $category))
-            ->filter(fn (string $category) => in_array($category, $allowed, true))
+            ->filter(fn (string $category) => in_array($category, $allowed, true)) //filter according to enum
             ->unique()
             ->values()
             ->all();

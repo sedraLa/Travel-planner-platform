@@ -11,7 +11,7 @@ class TransportReservationFactory extends Factory
 {
     public function definition(): array
     {
-        $vehicle = TransportVehicle::factory()->create(); // هان صار عندك object كامل
+        $vehicle = TransportVehicle::factory()->create(); 
     
         return [
             'user_id' => User::factory(),
@@ -22,7 +22,7 @@ class TransportReservationFactory extends Factory
             'pickup_datetime' => now()->addHour(),
             'dropoff_datetime' => now()->addHours(2),
     
-            'transport_vehicle_id' => $vehicle->id,  // خلي ID فقط بالعمود
+            'transport_vehicle_id' => $vehicle->id,  
             'passengers' => fake()->numberBetween(1, $vehicle->max_passengers),
             'preferred_category' => $vehicle->category,
             'preferred_type' => $vehicle->type,
@@ -36,11 +36,7 @@ class TransportReservationFactory extends Factory
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | States للتستات
-    |--------------------------------------------------------------------------
-    */
+
 
     public function pendingDriver()
     {

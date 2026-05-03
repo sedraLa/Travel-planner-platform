@@ -37,42 +37,51 @@ class Trip extends Model
         'ranked_guide_ids' => 'array',
     ];
 
+    //packages
    public function packages()
     {
         return $this->hasMany(TripPackage::class);
     }
+    
+    //images
     public function images()
     {
         return $this->hasMany(TripImage::class);
     }
+
+    //schedules
      public function schedules()
     {
         return $this->hasMany(TripSchedule::class);
     }
 
+    //days
    public function days()
     {
         return $this->hasMany(TripDay::class);
     }
 
 
-
+    //assignments
     public function assignments()
    {
     return $this->hasMany(GuideAssignment::class);
    }
 
 
+   //guide requests
     public function guideRequests()
     {
         return $this->hasMany(GuideRequest::class);
     }
 
+    //assigned guide
     public function assignedGuide()
     {
         return $this->belongsTo(Guide::class, 'assigned_guide_id');
     }
 
+    //guides
     public function guides()
     {
         return $this->belongsToMany(Guide::class, 'guide_assignments')
@@ -80,13 +89,13 @@ class Trip extends Model
             ->withTimestamps();
     }
 
-    // Clear relation name for the primary destination.
+    // primary destination.
     public function primaryDestination()
     {
         return $this->belongsTo(Destination::class, 'destination_id');
     }
 
-    // Clear relation name for all itinerary destinations (including primary).
+    //  itinerary destinations.
     public function itineraryDestinations()
     {
         return $this->belongsToMany(Destination::class, 'trip_destinations')
@@ -106,29 +115,28 @@ class Trip extends Model
         return $this->itineraryDestinations();
     }
 
-
+    //fav
     public function favorites():MorphMany
      {
     return $this->morphMany(Favorite::class, 'favoritable');
     }
 
+    //reviews
     public function reviews()
     {
         return $this->morphMany(Review::class, 'reviewable');
     }
 
+    //reservations
     public function reservations()
     {
         return $this->hasMany(TripReservation::class);
     }
 
-
-    
-
+    //accessories
     public function hasOpenBookingWindow(): bool
     {
         $today = now()->toDateString();
-
         return $this->schedules()
             ->whereDate('booking_deadline', '>=', $today)
             ->where('status', 'available')
@@ -137,11 +145,9 @@ class Trip extends Model
     }
 
 
-
-public function isBookingClosed(): bool
-{
+    public function isBookingClosed(): bool
+    {
     $today = Carbon::today();
-
     return $this->schedules->isEmpty() || $this->schedules->every(function ($schedule) use ($today) {
         if (! $schedule->booking_deadline) {
             return true;

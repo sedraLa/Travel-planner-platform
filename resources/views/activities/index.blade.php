@@ -12,8 +12,6 @@
 
         {{-- ══════ HERO ══════ --}}
         <section class="act-hero">
-
-            {{-- 📌 ضع مسار صورتك هنا --}}
             <img
                 class="act-hero__img"
                 src="{{ asset('images/activity.jpg') }}"

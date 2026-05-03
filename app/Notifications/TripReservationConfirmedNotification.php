@@ -14,7 +14,7 @@ class TripReservationConfirmedNotification extends Notification
 
     public function via($notifiable)
     {
-        return ['database']; // إذا بدك email + notification
+        return ['database']; 
     }
 
 

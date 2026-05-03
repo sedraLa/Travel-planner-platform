@@ -49,32 +49,31 @@ class GuideController extends Controller
     {
         $guide = auth()->user()->guide;
 
-        // نجيب الحجز مع schedule
+   
         $reservation = TripReservation::with('schedule')
             ->where('id', $reservationId)
             ->where('guide_id', $guide->id)
             ->firstOrFail();
 
-        // تأكد أن الرحلة انتهت
         if (now()->lt($reservation->schedule->end_date)) {
             return back()->with('error', 'Trip is not finished yet.');
         }
 
-        // منع التكرار
+    
         if ($reservation->guide_paid_at) {
             return back()->with('error', 'This trip already completed.');
         }
 
-        // حساب الربح (20%)
+   
         $earning = round($reservation->total_price * 0.20, 2);
 
-        // تحديث الحجز
+  
         $reservation->update([
             'guide_earning' => $earning,
             'guide_paid_at' => now(),
         ]);
 
-        // إضافة رصيد للمرشد
+  
         $guide->increment('earnings_balance', $earning);
 
         return back()->with('success', 'Trip completed successfully and earning added.');

@@ -5,7 +5,7 @@
     @endif
 
     <div class="form-container">
-        <h2 class="text-xl font-semibold mb-6">✨ Build from your DB catalog only</h2>
+        <h2 class="text-xl font-semibold mb-6"> Build from your DB catalog only</h2>
 
         @if ($errors->any())
             <div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
@@ -19,8 +19,8 @@
 
         <div class="space-y-6">
             <div>
-                <x-input-label for="destination_ids">Destinations from Database (Multi-select)</x-input-label>
-                <select name="destination_ids[]" id="destination_ids" class="w-full rounded-md border-gray-300" multiple required size="6">
+                <x-input-label for="destination_ids" >Destinations included in this itinerary</x-input-label>
+                <select style="margin-top:10px;" name="destination_ids[]" id="destination_ids" class="w-full rounded-md border-gray-300" multiple required size="6">
                     @foreach($destinations as $destination)
                         <option value="{{ $destination->id }}" @selected(in_array($destination->id, old('destination_ids', $formData['destination_ids'] ?? [])))>
                             {{ $destination->name }} - {{ $destination->city }}, {{ $destination->country }}

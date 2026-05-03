@@ -10,6 +10,7 @@ class TripStateManager
 {
     public function transition(Trip $trip, string $nextStatus): Trip
     {
+        //same status
         if ($trip->status === $nextStatus) {
             return $trip->refresh();
         }

@@ -136,7 +136,6 @@ class VehicleOrderController extends Controller
 
         $redirectUrl = null;
 
-        // استخدم StateManager لتحديد الانتقال أو الصفحة التالية
         if ($this->stateManager->isDriverAssigned($reservation)) {
             $redirectUrl = route('vehicle.assigned', $reservation);
         }

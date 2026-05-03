@@ -347,20 +347,20 @@
 <style>
     .vehicle-info .stat {
   display: flex;
-  flex-direction: row;      /* أفقي */
-  align-items: center;      /* توسيط عمودي */
+  flex-direction: row;    
+  align-items: center;      
   gap: 10px;
 }
 
 .vehicle-info .stat .stat-icon {
   width: 20px;
   height: 20px;
-  flex-shrink: 0;           /* ما ينكمش */
+  flex-shrink: 0;           
 }
 
 .vehicle-info .stat div {
   display: flex;
-  flex-direction: column;   /* h5 فوق h6 */
+  flex-direction: column;  
   gap: 2px;
 }
     </style>
