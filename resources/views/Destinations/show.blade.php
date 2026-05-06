@@ -17,11 +17,6 @@
                         <img src="/images/icons/location-dot-solid-full (4).svg" class="heading-icon">
                         <h5>{{ $destination->city }}, {{ $destination->country }}</h5>
                     </div>
-                   <!-- <a style="color:#f4f4f4;" href="">
-                        <div class="rating">
-                            <span>⭐ 4.8 (12487 reviews)</span>
-                        </div>
-                    </a>-->
                 </div>
             </div>
         </div>
@@ -252,84 +247,31 @@
           popupImage.src = images[currentIndex].src;
         });
         popup.addEventListener('click', (e) => { if(e.target === popup) popup.style.display = 'none'; });
-
-        // Activity modal script
-        document.addEventListener('DOMContentLoaded', () => {
-            const modal = document.getElementById('activityModal');
-            const closeBtn = modal.querySelector('.close');
-            const title = document.getElementById('modalTitle');
-            const description = document.getElementById('modalDescription');
-            const destination = document.getElementById('modalDestination');
-            const duration = document.getElementById('modalDuration');
-            const price = document.getElementById('modalPrice');
-            const category = document.getElementById('modalCategory');
-            const image = document.getElementById('modalImage');
-
-            const guideName = document.getElementById('modalGuideName');
-            const guideLang = document.getElementById('modalGuideLanguage');
-            const availability = document.getElementById('modalAvailability');
-            const requirements = document.getElementById('modalRequirements');
-            const amenities = document.getElementById('modalAmenities');
-            const highlights = document.getElementById('modalHighlights');
-            const family = document.getElementById('modalFamily');
-            const pets = document.getElementById('modalPets');
-            const booking = document.getElementById('modalBooking');
-            const difficulty = document.getElementById('modalDifficultyLevel');
-
-            document.querySelectorAll('.details-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    title.textContent = button.dataset.name;
-                    description.textContent = button.dataset.description;
-                    destination.textContent = button.dataset.destination;
-                    duration.textContent = button.dataset.duration;
-                    price.textContent = button.dataset.price;
-                    category.textContent = button.dataset.category;
-                    image.src = button.dataset.image;
-
-                    guideName.textContent = button.dataset.guide_name;
-                    guideLang.textContent = button.dataset.guide_language;
-                    availability.textContent = button.dataset.availability;
-                    difficulty.textContent = button.dataset.difficulty_level;
-                    requirements.textContent = button.dataset.requirements;
-                    amenities.textContent = button.dataset.amenities;
-                    highlights.textContent = button.dataset.highlights;
-                    family.textContent = button.dataset.family_friendly;
-                    pets.textContent = button.dataset.pets_allowed;
-                    booking.textContent = button.dataset.requires_booking;
-
-                    modal.style.display = 'block';
-                });
-            });
-
-            closeBtn.addEventListener('click', () => modal.style.display = 'none');
-            window.addEventListener('click', (e) => {
-                if (e.target === modal) modal.style.display = 'none';
-            });
-        });
     </script>
+
 
     {{--Ai script--}}
     <script>
         let aiInput = document.getElementById("ai-input");
-let aiResponse = document.getElementById("ai-response");
+        let aiResponse = document.getElementById("ai-response");
 
 // preset click
-function askPreset(question) {
-    aiInput.value = question;
-    sendAI();
-}
+    function askPreset(question) {
+        aiInput.value = question;
+        sendAI();
+    }
 
 // send question
-function sendAI() {
-    let question = aiInput.value.trim();
-    if (!question) return;
+    function sendAI() {
+        let question = aiInput.value.trim();
+        if (!question) return;
 
-    aiResponse.style.display = "block";
-    aiResponse.innerHTML = "Thinking... 🤖";
+        aiResponse.style.display = "block";
+        aiResponse.innerHTML = "Thinking... 🤖";
 
-    fetch("{{ route('ai.destination.ask') }}", {
-        method: "POST",
-        headers: {
+        fetch("{{ route('ai.destination.ask') }}", {
+            method: "POST",
+            headers: {
             "Content-Type": "application/json",
             "X-CSRF-TOKEN": "{{ csrf_token() }}"
         },
@@ -338,6 +280,7 @@ function sendAI() {
             question
         })
     })
+    //get response from server
     .then(async (res) => {
         const data = await res.json();
         if (!res.ok) {
@@ -345,6 +288,7 @@ function sendAI() {
         }
         return data;
     })
+    //show answer
     .then((data) => {
         aiResponse.innerHTML = data.answer;
     })

@@ -65,10 +65,10 @@
                      <a href="{{ route('user.trips.show', $trip->id) }}" class="px-4 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm">
                             Details</a>
 
-                      <form method="POST" action="{{ $reservation ? route('guide.trips.complete', $reservation->id) : '#' }}">
+                      <form method="POST" action="{{ $reservation ? route('guide.completed.trip', $reservation->id) : '#' }}">
                               @csrf
 
-                              <buttontype="submit" class="px-4 py-2 rounded text-white {{ $isDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700' }}" {{ $isDisabled ? 'disabled' : '' }}>
+                              <button type="submit" class="px-4 py-2 rounded text-white {{ $isDisabled ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700' }}" {{ $isDisabled ? 'disabled' : '' }}>
                                      Trip Done
                                </button>
                     </form>

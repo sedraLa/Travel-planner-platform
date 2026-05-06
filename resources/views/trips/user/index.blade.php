@@ -9,8 +9,25 @@
 <link rel="stylesheet" href="{{ asset('css/transport.css') }}">
 @endpush
 
-{{-- ══ HERO ══ --}}
+{{--Error messages--}}
+@if ($errors->any())
+<div class="mb-4 px-4 py-3 bg-red-100 text-red-800 rounded">
+    <ul class="list-disc list-inside">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
 
+{{--Success messages--}}
+@if (session('success'))
+<div class="mb-4 px-4 py-3 bg-green-100 text-green-800 rounded">
+    {{ session('success') }}
+</div>
+@endif
+
+{{-- ══ HERO ══ --}}
 <div class="trips-hero">
     <div class="trips-hero-bg"
          style="background-image: url('{{ asset('images/trip.jpg') }}')">

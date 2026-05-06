@@ -176,16 +176,20 @@ public function paypalCallbackTransport(Request $request)
     return back()->withErrors('Payment failed.');
 }
 
+// Trip Payment
 public function payTrip()
 {
     $reservationId = session('trip_reservation_id');
 
+    //reservationn exists
     if (!$reservationId) {
-        dd(' NO SESSION ID');
+        return redirect()->route('trips.index')
+            ->withErrors('Session expired. Please start your booking again.');
     }
 
     $reservation = TripReservation::findOrFail($reservationId);
 
+    //reservation belongs to the user
     if ($reservation->user_id !== auth()->id()) {
         abort(403);
     }
@@ -210,6 +214,7 @@ public function paypalCallbackTrip(Request $request)
 
     if ($result['success'] && $reservation) {
 
+        //update reservation status
         $reservation->update(['status' => 'paid']);
 
         Payment::create([
@@ -221,6 +226,7 @@ public function paypalCallbackTrip(Request $request)
             'payment_date' => now(),
         ]);
 
+        //PaymentNotificationService
         $this->notificationService->sendTripPaymentConfirmation($reservation->refresh());
         
 
@@ -231,6 +237,7 @@ public function paypalCallbackTrip(Request $request)
     return back()->withErrors('Payment failed');
 }
 
+//Activity Payment
 public function payWithPayPalActivity($reservationId)
 {
     $reservation = ActivityReservation::findOrFail($reservationId);

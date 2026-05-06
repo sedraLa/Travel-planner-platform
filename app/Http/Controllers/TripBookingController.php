@@ -47,14 +47,11 @@ public function storeBooking(Request $request)
         return back()->withErrors(['schedule_id' => 'This schedule is no longer available for booking.'])->withInput();
     }
 
-    if (!$schedule->booking_deadline || now()->gt(\Carbon\Carbon::parse($schedule->booking_deadline)->endOfDay())) {
-        return back()->withErrors(['schedule_id' => 'Booking deadline has passed for this trip schedule.'])->withInput();
-    }
-
     if ($validated['people_count'] > (int) $schedule->available_seats) {
         return back()->withErrors(['people_count' => 'People count exceeds available seats.'])->withInput();
     }
 
+    //calculate total price
     $total = $package->price * $validated['people_count'];
 
     $reservation = TripReservation::create([
