@@ -20,12 +20,12 @@ class GeocodingService
         $cacheKey  = 'geocode_' . md5($fullAddress);
 
         //try to get data from cache first
-
         $cachedCoords = Cache::get($cacheKey);
         if($cachedCoords) {
             return $cachedCoords;   //return without new request if exist in cache
         }
-            //If not exist in cache send request
+
+        //If not exist in cache send request
         try {
             $this->userAgent = config('services.nominatim.user_agent', 'MyTravelPlanningApp (default@example.com)');
             $response = Http::withHeaders([
@@ -50,7 +50,6 @@ class GeocodingService
             ];
 
             //store data in cache for 30 days
-
             Cache::put($cacheKey,$coords,now()->addDays(30));
             return $coords;
 

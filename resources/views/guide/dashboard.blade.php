@@ -119,6 +119,7 @@
     </div>
 </div>
 
+{{--Schedule--}}
 <div id="schedule-modal"
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
 
@@ -164,11 +165,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-
                 console.log("Response:", data);
-
                 let html = '';
-
                 if (!data.dates || data.dates.length === 0) {
                     html = `
                         <tr>

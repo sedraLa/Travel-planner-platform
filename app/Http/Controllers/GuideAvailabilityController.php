@@ -32,7 +32,7 @@ class GuideAvailabilityController extends Controller
 
                 $range = [];
 
-                while ($start->lte($end)) {
+                while ($start->lte($end)) { 
                     $range[] = $start->toDateString();
                     $start->addDay();
                 }

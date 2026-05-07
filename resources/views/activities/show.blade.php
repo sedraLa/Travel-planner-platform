@@ -456,7 +456,7 @@
   </div>
 </div>
 
-    <!-- CTA -->
+    <!-- booking -->
      @if (Auth::user()->role === UserRole::USER->value)
     <div style="background:var(--ink); border-radius:6px; padding:1.5rem; text-align:center;">
       <p style="color:rgba(255,255,255,0.6); font-size:12px; margin-bottom:6px; letter-spacing:0.05em;">Don’t miss this unique experience</p>
@@ -473,17 +473,20 @@
 @if($coords && isset($coords['latitude'] ) && $coords['latitude'] != 0)
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    if (typeof L === 'undefined') return;
+    if (typeof L === 'undefined') return; //L is leaflet object
 
     const lat = {{ $coords['latitude'] }};
     const lng = {{ $coords['longitude'] }};
     const address = "{{ addslashes($activity->address) }}";
+
+    //build map
     const map = L.map('activity-map', {
-        center: [lat, lng],
+        center: [lat, lng], //open map on this location
         zoom: 15,
         zoomControl: true
     });
 
+    //map images source
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
         attribution: '© OpenStreetMap'
@@ -493,7 +496,7 @@
         .bindPopup(address)
         .openPopup();
     setTimeout(function() {
-        map.invalidateSize();
+        map.invalidateSize();  //resize map
     }, 500);
 
     setTimeout(function() {
