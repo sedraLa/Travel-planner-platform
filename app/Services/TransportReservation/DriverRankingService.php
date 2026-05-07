@@ -89,7 +89,20 @@ class DriverRankingService
             return [];
         }
 
-        $drivers = Driver::query()->whereIn("id", $driverIds)->get();
+        $drivers = Driver::query()->with('user:id,country')->whereIn("id", $driverIds)->get();
+
+        $pickupLocationParts = explode(',', (string) $reservation->pickup_location);
+        $pickupCountry = trim((string) end($pickupLocationParts));
+
+        if ($pickupCountry !== '') {
+            $drivers = $drivers->filter(function ($driver) use ($pickupCountry) {
+                return $driver->user?->country === $pickupCountry;
+            })->values();
+        }
+
+        if ($drivers->isEmpty()) {
+            return [];
+        }
 
         //ranking strategy
         return $this->strategy->rank($drivers)->pluck("id")->all();
