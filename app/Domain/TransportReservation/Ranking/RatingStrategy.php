@@ -10,6 +10,7 @@ class RatingStrategy implements DriverRankingStrategy
     public function rank(Collection $drivers): Collection
     {
         return $drivers->sortBy(function ($driver) {
+
             $lastTripAt = $driver->last_trip_at;
 
             if (!$lastTripAt) {
@@ -20,8 +21,9 @@ class RatingStrategy implements DriverRankingStrategy
                 $lastTripTimestamp = Carbon::parse($lastTripAt)->timestamp;
             }
 
+            // rating comes from reviews() accessor (NOT DB column)
             $averageRating = $driver->average_rating;
-            $hasRating = $averageRating !== null;
+            $hasRating = $driver->reviews()->exists();
 
             return [
                 $hasRating ? 0 : 1,
@@ -29,6 +31,7 @@ class RatingStrategy implements DriverRankingStrategy
                 (int) ($driver->total_trips_count ?? 0),
                 $lastTripTimestamp,
             ];
+
         })->values();
     }
 }
