@@ -8,9 +8,14 @@ use Illuminate\Database\Seeder;
 
 class ActivitySeeder extends Seeder
 {
-    public function run(): void
-    {
-        Destination::query()->get()->each(function (Destination $destination) {
+        public function run(): void
+        {
+            if (Activity::exists()) {
+                return;
+            }
+    
+            $destinations = Destination::take(5)->get();
+    
             $activities = [
                 ['name' => 'City Museum Tour', 'category' => 'culture', 'price' => 20, 'duration' => 2],
                 ['name' => 'Historical Walking Tour', 'category' => 'culture', 'price' => 35, 'duration' => 3],
@@ -28,15 +33,17 @@ class ActivitySeeder extends Seeder
                 ['name' => 'Wellness Spa & Yoga Session', 'category' => 'wellness', 'price' => 65, 'duration' => 4],
                 ['name' => 'Local Culinary Workshop', 'category' => 'food', 'price' => 35, 'duration' => 3],
             ];
-
-            foreach ($activities as $activity) {
-                Activity::updateOrCreate(
-                    [
+    
+            foreach ($destinations as $destination) {
+                foreach ($activities as $activity) {
+    
+                    Activity::create([
                         'destination_id' => $destination->id,
                         'name' => $activity['name'],
-                    ],
-                    [
-                        'image' => 'https://picsum.photos/seed/activity/600/400',
+    
+                        // 🎯 منع duplicates حتى لو seeder اشتغل بالغلط
+                        'image' => 'https://picsum.photos/seed/'.$destination->id.'-'.$activity['name'].'/600/400',
+    
                         'description' => "{$activity['name']} in {$destination->city}",
                         'duration' => $activity['duration'],
                         'duration_unit' => 'hours',
@@ -56,11 +63,10 @@ class ActivitySeeder extends Seeder
                         'requires_booking' => true,
                         'family_friendly' => 1,
                         'pets_allowed' => false,
-                        'highlights' => "Top rated {$activity['category']} activity",
-                    ]
-                );
+                    ]);
+                }
             }
-        });
+        }
     }
-}
+
 

@@ -23,6 +23,7 @@
 
             <div class="first-section">
                 <div class="left">
+                    {{--Name, desc, destination--}}
                     <x-input-label for="name" value="Activity Name" />
                     <x-text-input id="name" type="text" name="name" :value="old('name', $activity->name)" required
                         placeholder="Enter activity name" />
@@ -42,6 +43,7 @@
                         @endforeach
                     </select>
 
+                    {{--Duaration--}}
                     <x-input-label for="duration" value="Duration" />
                     <x-text-input id="duration" type="number" step="0.1" name="duration" :value="old('duration', $activity->duration)"
                         placeholder="e.g. 2" />
@@ -54,6 +56,7 @@
                         <option value="days" {{ old('duration_unit', $activity->duration_unit) == 'days' ? 'selected' : '' }}>Days</option>
                     </select>
 
+                    {{--Dates, availability--}}
                     <x-input-label for="start_date" value="Start Date" />
                     <x-text-input id="start_date" type="date" name="start_date" :value="old('start_date', optional($activity->start_date)->format('Y-m-d'))"  />
 
@@ -68,7 +71,7 @@
                         <option value="Not available" {{ old('availability', $activity->availability) == 'Not available' ? 'selected' : '' }}>Not Available</option>
                     </select>
 
-                    
+                    {{--Contact--}}
                     <x-input-label for="contact_email" value="contact_email" />
                     <x-text-input id="contact_email" type="email" name="contact_email"
                     :value="old('contact_email', $activity->contact_email)"/>
@@ -76,16 +79,19 @@
                     <x-input-label for="contact_number" value="Contact Number" />
                     <x-text-input id="contact_number" type="text" name="contact_number" :value="old('contact_number', $activity->contact_number)" />
 
+                        {{--Requirements--}}
                     <x-input-label for="requirements" value="Requirements" />
                     <textarea id="requirements" name="requirements"
                         class="block w-full border-gray-300 rounded-md shadow-sm">{{ old('requirements', $activity->requirements) }}</textarea>
 
+                        {{--Action buttons--}}
                         <div class="popup-buttons mt-4" style="display:flex; justify-content:flex-start; gap:10px;">
                          <button type="submit" class="btn btn-primary">Update</button>
-                         <a href="{{ route('Activity.show') }}" class="cancel-btn">Cancel</a>
+                         <a href="{{ route('Activity.show',$activity->id)}}" class="cancel-btn">Cancel</a>
                          </div>
                 </div>
 
+                {{--price,category--}}
                 <div class="right">
                     <x-input-label for="price" value="Price" />
                     <x-text-input id="price" type="number" step="0.01" name="price" :value="old('price', $activity->price)"
@@ -102,7 +108,7 @@
                     </select>
 
                    
-
+                    {{--difficulty,amenities--}}
                     <x-input-label for="difficulty_level" value="Difficulty Level" />
                     <select id="difficulty_level" name="difficulty_level"
                         class="block w-full border-gray-300 rounded-md shadow-sm">
@@ -125,6 +131,7 @@
 @endforeach
                     </div>
 
+                    {{--address, require booking,pets,family--}}
                     <x-input-label for="address" value="Address" />
                     <x-text-input id="address" type="text" name="address" :value="old('address', $activity->address)" required />
 
@@ -178,7 +185,7 @@
                         @endforeach
                     </select>
 
-                    
+                    {{--image--}}
                    <x-input-label for="image" value="Activity Image" />
 
                     @if($activity->image)
@@ -187,7 +194,9 @@
                                   @endif
                        <input type="file" id="image" name="image" accept="image/*">
 
-                       <div class="mt-6">
+                       
+    <div class="mt-6">
+        {{--highlights--}}
     <x-input-label value="Highlights" />
 
     <div id="highlights-wrapper">

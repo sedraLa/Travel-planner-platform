@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 class GeocodingService
 {
     protected $baseUrl = 'https://nominatim.openstreetmap.org/search';
-    protected $userAgent;
+    protected $userAgent; //app identifier
 
 
     public function geocodeAddress(string $fullAddress) : ?array

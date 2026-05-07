@@ -99,7 +99,6 @@ class ActivityController extends Controller
         if ($request->has('highlights')) {
         foreach ($request->highlights as $highlightTitle) {
             if (!empty($highlightTitle)) {
-                // استخدام العلاقة لإنشاء السجل وربطه بالـ activity_id تلقائياً
                 $activity->highlights()->create([
                     'title' => $highlightTitle
                 ]);
@@ -112,7 +111,7 @@ class ActivityController extends Controller
 
 
 
-  public function show($id, GeocodingService $geo, ReviewEligibilityService $eligibilityService)
+  public function show($id, GeocodingService $geo)
 {
     $activity = Activity::with(['destination','highlights', 'reviews.user'])->findOrFail($id);
     $hasPaidReservation = $activity->reservations()
@@ -134,21 +133,11 @@ class ActivityController extends Controller
         $coords = null;
     }
 
+    //get reviews
     $reviewsCount = $activity->reviews()->count();
     $reviews = $activity->reviews()->latest()->get();
 
-    $reviewReservation = $activity->reservations()
-        ->where('user_id', auth()->id())
-        ->where('status', 'confirmed')
-        ->where('activity_date', '<', now())
-        ->latest('activity_date')
-        ->first();
-
-    $canReview = auth()->check() && $reviewReservation
-        ? $eligibilityService->canReview(auth()->user(), 'activity', (int) $activity->id, (int) $reviewReservation->id)
-        : false;
-
-    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords',  'reviewsCount', 'reviews', 'canReview', 'reviewReservation'));
+    return view('activities.show', compact('activity', 'hasPaidReservation', 'coords',  'reviewsCount', 'reviews'));
 }
 
     /**
@@ -189,8 +178,6 @@ public function update(ActivityRequest $request, $id)
 public function destroy($id)
 {
     $activity = Activity::findOrFail($id);
-
-
      if ($activity->reservations()->exists()) {
         return redirect()->back()->with('error', 'Cannot delete activity with reservations.');
     }
