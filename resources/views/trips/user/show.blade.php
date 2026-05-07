@@ -340,7 +340,7 @@
                 </div>
                 @endif
 
-                {{--change design later--}}
+                {{--Booking--}}
                 @if(Auth::user()->role ===UserRole::USER->value)
                 @if($isBookingClosed)
                     <div style="width:40%;padding:12px;background:#fee2e2;color:#991b1b;border-radius:10px;font-size:13px;text-align:center;">

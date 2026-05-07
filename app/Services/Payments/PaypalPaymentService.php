@@ -39,6 +39,7 @@ class PaypalPaymentService implements PaymentStrategy
             dd(' TOKEN ERROR', $response->status(), $response->json());
         }
 
+        //get access token from response
         return $response->json()['access_token'] ?? null;
     }
 
@@ -52,7 +53,7 @@ class PaypalPaymentService implements PaymentStrategy
             default => route('payment.paypal.callback'),
         };
 
-       
+       //make sure a price existed
         if (!$reservation->total_price || $reservation->total_price <= 0) {
             dd(' INVALID PRICE', $reservation);
         }
@@ -66,6 +67,7 @@ class PaypalPaymentService implements PaymentStrategy
                 ],
                 'description' => 'Payment for reservation #' . $reservation->id,
             ]],
+            //User UI on paypal
             'application_context' => [
                 'return_url' => $callback,
                 'cancel_url' => $callback,
@@ -76,6 +78,7 @@ class PaypalPaymentService implements PaymentStrategy
             ],
         ];
 
+        //send payment request to paypal 
         $response = Http::withHeaders($this->header)
             ->asJson()
             ->post($this->base_url . '/v2/checkout/orders', $data);
@@ -85,6 +88,7 @@ class PaypalPaymentService implements PaymentStrategy
             dd(' PAYPAL ERROR', $response->status(), $response->json());
         }
 
+        //extract pay approval link
         $approveLink = collect($response->json()['links'])
             ->firstWhere('rel', 'approve')['href'] ?? null;
 
@@ -97,14 +101,15 @@ class PaypalPaymentService implements PaymentStrategy
 
     public function callBack(Request $request)
     {
+        //PayPal Order ID
         $token = $request->get('token');
 
         if (!$token) {
             return ['success' => false, 'message' => 'Missing PayPal token'];
         }
 
+        //the actual payment
         $url = $this->base_url . '/v2/checkout/orders/' . $token . '/capture';
-
         $response = Http::withToken($this->getAccessToken())
             ->withHeaders([
                 'Content-Type' => 'application/json',

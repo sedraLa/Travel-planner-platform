@@ -3,6 +3,8 @@
 namespace App\Jobs;
 
 use App\Domain\TransportReservation\DriverChain\SendToNextDriverHandler;
+use App\Domain\TransportReservation\Ranking\LastTripAndTripsCountStrategy;
+use App\Domain\TransportReservation\Ranking\RatingStrategy;
 use App\Models\TransportReservation;
 use App\Services\TransportReservation\DriverRankingService;
 use App\Services\TransportReservation\ReservationStateManager;
@@ -22,17 +24,22 @@ class ProcessReservationDriverMatchingJob implements ShouldQueue
     {
     }
 
-    public function handle(DriverRankingService $rankingService, ReservationStateManager $stateManager): void
+    public function handle(ReservationStateManager $stateManager): void
     {
+        //get reservation
         $reservation = TransportReservation::find($this->reservationId);
 
         if (!$reservation || $reservation->status === 'cancelled') {
             return;
         }
 
-        if ($reservation->status === 'pending_payment') {
-            $stateManager->transition($reservation, 'pending_driver');
-        }
+        $preferredCategory = strtolower((string) $reservation->preferred_category);
+        $strategy = in_array($preferredCategory, ['vip', 'luxury'], true)
+            ? new RatingStrategy()
+            : new LastTripAndTripsCountStrategy();
+
+        $rankingService = new DriverRankingService($strategy);
+
         try {
             $rankedDriverIds = $rankingService->rankedDriverIdsForReservation($reservation);
         } catch (Throwable $exception) {
@@ -46,7 +53,7 @@ class ProcessReservationDriverMatchingJob implements ShouldQueue
 
         if (!is_array($rankedDriverIds)) {
             $rankedDriverIds = [];
-        }
+        } 
         $reservation->update(['ranked_driver_ids' => $rankedDriverIds]);
 
         $handler = new SendToNextDriverHandler();

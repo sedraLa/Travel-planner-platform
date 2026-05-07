@@ -18,13 +18,11 @@ class TripReservationConfirmedNotification extends Notification
     }
 
 
-
-
     public function toDatabase($notifiable)
 {
     return [
         'type' => 'trip_reservation',
-        'message' => 'Your trip has been successfully booked 🎉',
+        'message' => 'Your trip has been successfully booked',
 
         'reservation_id' => $this->reservation->id,
 

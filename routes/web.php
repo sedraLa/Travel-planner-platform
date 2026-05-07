@@ -366,8 +366,7 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
 
     });
 
-    
-
+    //guides routes
 Route::middleware(['auth','check.guide.status']) ->prefix('guide') ->group(function () {
 
     Route::get('/requests', [GuideRequestResponseController::class, 'index'])

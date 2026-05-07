@@ -55,4 +55,9 @@ class Driver extends Model
         return $this->morphMany(Review::class, 'reviewable');
     }
 
+    public function getAverageRatingAttribute()
+{
+    return round($this->reviews()->avg('rating') ?? 0, 1);
+}
+
 }

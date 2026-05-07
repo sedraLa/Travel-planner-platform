@@ -51,6 +51,18 @@ body {
 
 }
 
+.hero-background.trip-bg {
+  background-image: url('/images/drif-riadh-YpkuRn54y4w-unsplash.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 450px;
+  width: 100vw;
+  z-index: -1;
+  position: absolute;
+
+}
+
 .headings {
   color: var(--white);
   display: flex;

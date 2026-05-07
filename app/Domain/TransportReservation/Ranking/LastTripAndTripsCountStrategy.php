@@ -24,7 +24,7 @@ class LastTripAndTripsCountStrategy implements DriverRankingStrategy
             }
 
             return [
-                (int) ($driver->total_trips_count ?? 0),
+                (int) ($driver->total_trips_count ?? 0), //driver who has least number of trips
                 $lastTripTimestamp,
             ];
         })->values();
