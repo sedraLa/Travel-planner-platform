@@ -38,7 +38,7 @@ class ActivityController extends Controller
         // Filters
         if ($request->filled('availability') && $user->role === 'admin') {
          $query->where('availability', $request->availability);
-}
+        }
         if ($request->filled('difficulty')) {
             $query->where('difficulty_level', $request->difficulty);
         }
@@ -191,14 +191,15 @@ public function destroy($id)
     $activity = Activity::findOrFail($id);
 
 
-     if ($activity->reservations()->exists()) {
-        return redirect()->back()->with('error', 'Cannot delete activity with reservations.');
-    }
+    if ($activity->reservations()->where('activity_date', '>', now())->exists()) {
+       return back()->with('error', 'Cannot delete activity with upcoming reservations.');
+      }
+
     if ($activity->image && \Storage::disk('public')->exists($activity->image)) {
         \Storage::disk('public')->delete($activity->image);
     }
     $activity->delete();
 
     return redirect()->route('activities.index')->with('success', 'Activity deleted successfully!');
-}
+     }
 }

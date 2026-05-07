@@ -156,7 +156,7 @@
     </label>
 </div>
 
-        <x-input-label for="pets_allowed" value="Pets Allowed?" />
+<x-input-label for="pets_allowed" value="Pets Allowed?" />
 <div class="flex items-center space-x-4 mb-2">
     <label class="inline-flex items-center cursor-pointer">
         <input type="radio" name="pets_allowed" value="1"
@@ -187,7 +187,7 @@
                         class="block w-full border-gray-300 rounded-md shadow-sm" required>
                         @foreach(['all_ages', 'adults_only', 'families'] as $option)
                             <option value="{{ $option }}" {{ old('family_friendly') == $option ? 'selected' : '' }}>
-                                {{ ucwords(str_replace('_', ' ', $option)) }}
+                            
                             </option>
                         @endforeach
                     </select>

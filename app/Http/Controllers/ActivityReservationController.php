@@ -21,7 +21,7 @@ class  ActivityReservationController extends Controller
 
 
   public function store(ActivityReservationRequest $request)
-{
+  {
 
     $activity = Activity::findOrFail($request->activity_id);
 
@@ -113,10 +113,13 @@ class  ActivityReservationController extends Controller
     /* =======================
        Date filters
     ======================= */
-    if ($request->filled('activity_date')) {
-        $query->whereMonth('activity_date', $request->activity_date);
+     if ($request->filled('month')) {
+        $query->whereMonth('activity_date', $request->month);
     }
 
+    if ($request->filled('year')) {
+        $query->whereYear('activity_date', $request->year);
+    }
     
 
     /* =======================
@@ -126,9 +129,9 @@ class  ActivityReservationController extends Controller
         $query->where('status', $request->status);
     }
 
-    $reservations = $query->latest()->get();
+    $reservations = $query->latest()->paginate(10);
 
-    return view('reservation.index', compact('reservations'));
+    return view('activities.reservations-index', compact('reservations'));
 }
 
 

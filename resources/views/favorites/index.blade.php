@@ -6,11 +6,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 @endpush
 
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('My Favorites') }}
-        </h2>
-    </x-slot>
+   
 
     <div class="fav-page">
 
@@ -177,6 +173,8 @@
                         </a>
                     @endforeach
                 </div>
+
+                
             @else
                 <div class="empty-state">
                     <p>You haven't added any favorite activity yet.</p>
