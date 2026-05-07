@@ -39,12 +39,6 @@ class AdminGuideApplicationController extends Controller
             $query->where('languages', 'like', "%{$request->languages}%");
         }
 
-        if ($request->filled('tour_leader')) {
-            $query->where('is_tour_leader', $request->tour_leader);
-        }
-
-        
-
         $guides = $query
             ->orderBy('years_of_experience', 'desc')
             ->orderBy('created_at', 'desc')

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Domain\GuideApplication\Factory\GuideApplicationStateFactory;
+use App\Domain\GuideApplication\Factory\GuideApplicationStrategyFactory;
 use App\Mail\GuideStatusMail;
 use App\Models\Guide;
 use Illuminate\Support\Facades\Mail;
@@ -11,19 +11,20 @@ use Illuminate\Support\Facades\Storage;
 class GuideApplicationStatusService
 {
     public function __construct(
-        private readonly GuideApplicationStateFactory $stateFactory
+        private readonly GuideApplicationStrategyFactory $strategyFactory
     ) {
     }
 
     public function updateStatus(Guide $guide, string $status): void
     {
-        $state = $this->stateFactory->make($status);
-        $state->apply($guide);
+        $strategy = $this->strategyFactory->make($status);
+        $strategy->apply($guide);
 
+        //send email
         Mail::to($guide->user->email)
-            ->send(new GuideStatusMail($guide->user->name, $state->status(), $state->emailMessage()));
+            ->send(new GuideStatusMail($guide->user->name, $strategy->status(), $strategy->emailMessage()));
 
-        if ($state->shouldDeleteGuide()) {
+        if ($strategy->shouldDeleteGuide()) {
             $this->deleteGuideAssets($guide);
             $guide->user()->delete();
             $guide->delete();

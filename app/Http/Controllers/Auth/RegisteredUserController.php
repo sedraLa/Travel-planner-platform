@@ -28,7 +28,7 @@ class RegisteredUserController extends Controller
     public function create(): View
     {
 
-    
+
         return view('auth.register' );
     }
 
@@ -145,15 +145,15 @@ class RegisteredUserController extends Controller
 
             'date_of_hire' => null,
 
-           
-            
-          
-            
+
+
+
+
         ]);
 
-          
 
-        
+
+
         return redirect()
             ->route('login')
             ->with('success', 'Guide request sent successfully. You can login after admin approval.');

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain\GuideApplication\States;
+namespace App\Domain\GuideApplication\Strategies;
 
 use App\Models\Guide;
 
-class RejectedGuideApplicationState extends AbstractGuideApplicationState
+class RejectedGuideApplicationStrategy extends AbstractGuideApplicationStrategy
 {
     public function apply(Guide $guide): void
     {
