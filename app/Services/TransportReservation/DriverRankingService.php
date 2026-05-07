@@ -30,7 +30,7 @@ class DriverRankingService
         // Apply vehicle type and category filtering directly to the assignments query
         if (!empty($reservation->preferred_category)) {
             $assignmentsQuery->whereHas("vehicle", fn ($vehicleQuery) => 
-                $vehicleQuery->whereRaw("LOWER(category) = ?", [strtolower($reservation->preferred_category)])
+                $vehicleQuery->whereRaw("LOWER(category) = ?", [strtolower($reservation->preferred_category)]) //to pass case sensitive
             );
         }
 
@@ -40,6 +40,7 @@ class DriverRankingService
             );
         }
 
+        //max passengers filtering
         $assignments = $assignmentsQuery
             ->whereHas("vehicle", function ($vehicleQuery) use ($reservation) {
                 $vehicleQuery->where("max_passengers", ">=", $reservation->passengers);
@@ -53,20 +54,24 @@ class DriverRankingService
                     return false;
                 }
 
+                //transform days to lower case collection
                 $days = collect($assignment->shiftTemplate->days_of_week ?? [])
                     ->map(fn ($day) => strtolower((string) $day))
                     ->values();
 
+                    //check of driver works these days
                 $dayMatches = $days->contains($shortDay) || $days->contains($fullDay);
 
                 if (!$dayMatches) {
                     return false;
                 }
 
+                //time check
                 if (!$this->isWithinShift($requestTime, $assignment->shiftTemplate->start_time, $assignment->shiftTemplate->end_time)) {
                     return false;
                 }
 
+                //overlapped reservations check
                 return !$this->hasVehicleOverlap(
                     vehicleId: $assignment->transport_vehicle_id,
                     pickup: $pickup,
@@ -86,6 +91,7 @@ class DriverRankingService
 
         $drivers = Driver::query()->whereIn("id", $driverIds)->get();
 
+        //ranking strategy
         return $this->strategy->rank($drivers)->pluck("id")->all();
     }
 
@@ -95,29 +101,30 @@ class DriverRankingService
         $start = Carbon::createFromFormat("H:i:s", $startTime);
         $end = Carbon::createFromFormat("H:i:s", $endTime);
 
-        // Normal shift: 09:00 -> 17:00
+        // Normal shift: 09:00 -> 17:00 , 14 between ?
         if ($start->lte($end)) {
             return $request->betweenIncluded($start, $end);
         }
 
-        // Overnight shift: 22:00 -> 06:00
-        return $request->gte($start) || $request->lte($end);
+        // Overnight shift: 22:00 -> 06:00 , 1 is between?
+        return $request->gte($start) || $request->lte($end); //after 22 or before 6 is included in work schedule
     }
 
     private function hasVehicleOverlap(int $vehicleId, CarbonInterface $pickup, CarbonInterface $dropoff, ?int $reservationIdToIgnore = null): bool
     {
+        //get all vehicle reservations
         return TransportReservation::query()
             ->where("transport_vehicle_id", $vehicleId)
             ->when($reservationIdToIgnore, fn ($query) => $query->where("id", "!=", $reservationIdToIgnore))
             ->where("status", "confirmed")
             ->where("driver_status","pending")
-            ->where(function ($query) use ($pickup, $dropoff) {
+            ->where(function ($query) use ($pickup, $dropoff) { //check time overlap
                 $query
                     ->whereBetween("pickup_datetime", [$pickup, $dropoff])
                     ->orWhereBetween("dropoff_datetime", [$pickup, $dropoff])
                     ->orWhere(function ($inner) use ($pickup, $dropoff) {
-                        $inner->where("pickup_datetime", "<=", $pickup)
-                            ->where("dropoff_datetime", ">=", $dropoff);
+                        $inner->where("pickup_datetime", "<=", $pickup) 
+                            ->where("dropoff_datetime", ">=", $dropoff); 
                     });
             })
             ->exists();

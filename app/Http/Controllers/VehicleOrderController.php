@@ -35,7 +35,6 @@ class VehicleOrderController extends Controller
     // Send request and create reservation
     public function store(VehicleOrderRequest $request)
     {
-
         $reservation = TransportReservation::create([
             'user_id' => Auth::id(),
             'pickup_location' => $request->pickup_location,
