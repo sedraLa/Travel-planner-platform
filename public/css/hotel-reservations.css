@@ -1,0 +1,531 @@
+/* =============================================
+   hotel-reservations.css  —  Professional
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap');
+
+:root {
+    --hr-navy: #0A1628;
+    --hr-navy2: #0F2040;
+    --hr-blue-light: #3B82F6;
+    --hr-surface: #F4F6FA;
+    --hr-white: #FFFFFF;
+    --hr-border: rgba(10, 22, 40, 0.08);
+    --hr-border2: rgba(10, 22, 40, 0.14);
+    --hr-text: #0A1628;
+    --hr-muted: #64748B;
+    --hr-mono: 'DM Mono', monospace;
+    --hr-sans: 'Instrument Sans', sans-serif;
+    --hr-display: 'Syne', sans-serif;
+}
+
+/* ── Wrapper ── */
+.hr-wrap {
+    background: var(--hr-surface);
+    min-height: 100vh;
+    font-family: var(--hr-sans);
+    color: var(--hr-text);
+    padding: 36px 32px 56px;
+    animation: hr-fadeIn .25s ease both;
+}
+
+@keyframes hr-fadeIn {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes hr-slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+/* ── Header ── */
+.hr-hdr {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--hr-border);
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.hr-eyebrow {
+    font-family: var(--hr-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--hr-blue-light);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.hr-hdr-left h1 {
+    font-family: var(--hr-display);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--hr-navy);
+    letter-spacing: -.5px;
+    line-height: 1;
+}
+
+.hr-hdr-left p {
+    font-size: 13px;
+    color: var(--hr-muted);
+    margin-top: 5px;
+}
+
+/* Stats bar */
+.hr-stats {
+    display: flex;
+    gap: 1px;
+    background: var(--hr-border);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--hr-border);
+}
+
+.hr-stat {
+    background: var(--hr-white);
+    padding: 12px 20px;
+    text-align: center;
+    min-width: 80px;
+}
+
+.hr-stat:first-child {
+    border-radius: 11px 0 0 11px
+}
+
+.hr-stat:last-child {
+    border-radius: 0 11px 11px 0
+}
+
+.hr-stat-num {
+    font-family: var(--hr-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--hr-navy);
+    line-height: 1;
+}
+
+.hr-stat-num.is-green {
+    color: #0F6E56
+}
+
+.hr-stat-num.is-amber {
+    color: #854F0B
+}
+
+.hr-stat-num.is-red {
+    color: #A32D2D
+}
+
+.hr-stat-lbl {
+    font-family: var(--hr-mono);
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--hr-muted);
+    text-transform: uppercase;
+    margin-top: 3px;
+}
+
+/* ── Filter Bar ── */
+.hr-filter {
+    background: var(--hr-white);
+    border: 1px solid var(--hr-border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    animation: hr-slideUp .28s ease both;
+}
+
+.hr-fg {
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+.hr-fg label {
+    font-family: var(--hr-mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--hr-muted);
+}
+
+.hr-fg input,
+.hr-fg select {
+    font-family: var(--hr-sans);
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid var(--hr-border2);
+    border-radius: 8px;
+    background: var(--hr-surface);
+    color: var(--hr-text);
+    height: 36px;
+    outline: none;
+    transition: border-color .15s, background .15s;
+}
+
+.hr-fg input:focus,
+.hr-fg select:focus {
+    border-color: var(--hr-blue-light);
+    background: var(--hr-white);
+}
+
+.hr-fg-grow {
+    flex: 1;
+    min-width: 180px
+}
+
+.hr-filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end
+}
+
+.hr-btn-primary {
+    background: var(--hr-navy);
+    color: var(--hr-white);
+    border: none;
+    height: 36px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-family: var(--hr-sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s;
+}
+
+.hr-btn-primary:hover {
+    background: var(--hr-navy2)
+}
+
+.hr-btn-ghost {
+    background: transparent;
+    color: var(--hr-muted);
+    border: 1px solid var(--hr-border2);
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    font-family: var(--hr-sans);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: border-color .15s, color .15s;
+}
+
+.hr-btn-ghost:hover {
+    border-color: var(--hr-navy);
+    color: var(--hr-navy)
+}
+
+/* ── Alerts ── */
+.hr-alert {
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.hr-alert-success {
+    background: #EAF3DE;
+    color: #27500A;
+    border-left: 3px solid #3B6D11;
+}
+
+.hr-alert-error {
+    background: #FCEBEB;
+    color: #791F1F;
+    border-left: 3px solid #A32D2D;
+}
+
+/* ── Empty State ── */
+.hr-empty {
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--hr-white);
+    border-radius: 16px;
+    border: 1px solid var(--hr-border);
+}
+
+.hr-empty-ring {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px dashed var(--hr-border2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: var(--hr-muted);
+}
+
+.hr-empty p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--hr-navy);
+    margin-bottom: 4px
+}
+
+.hr-empty span {
+    font-size: 13px;
+    color: var(--hr-muted)
+}
+
+/* ── Table Card ── */
+.hr-table-card {
+    background: var(--hr-white);
+    border: 1px solid var(--hr-border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: hr-slideUp .3s ease both;
+}
+
+.hr-table-scroll {
+    overflow-x: auto
+}
+
+/* ── Table ── */
+.hr-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.hr-table thead {
+    background: var(--hr-navy)
+}
+
+.hr-table th {
+    padding: 13px 18px;
+    text-align: left;
+    font-family: var(--hr-mono);
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 400;
+    white-space: nowrap;
+}
+
+.hr-table th.center {
+    text-align: center
+}
+
+.hr-table tbody tr {
+    border-bottom: 1px solid var(--hr-border);
+    transition: background .12s;
+}
+
+.hr-table tbody tr:last-child {
+    border-bottom: none
+}
+
+.hr-table tbody tr:hover td {
+    background: #F8FAFF
+}
+
+.hr-table td {
+    padding: 14px 18px;
+    vertical-align: middle;
+}
+
+/* User cell */
+.hr-user {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+.hr-av {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--hr-navy);
+    color: rgba(255, 255, 255, .9);
+    font-family: var(--hr-display);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: .5px;
+}
+
+.hr-uname {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--hr-navy)
+}
+
+.hr-hotel-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--hr-navy)
+}
+
+.hr-date {
+    font-family: var(--hr-mono);
+    font-size: 12px;
+    color: var(--hr-muted);
+    white-space: nowrap;
+}
+
+.center {
+    text-align: center
+}
+
+.hr-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: var(--hr-surface);
+    font-family: var(--hr-mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--hr-navy);
+    border: 1px solid var(--hr-border2);
+}
+
+.hr-price {
+    font-family: var(--hr-mono);
+    font-size: 13px;
+    font-weight: 500;
+    color: #0F6E56;
+}
+
+/* ── Badges ── */
+.hr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 6px;
+    font-family: var(--hr-mono);
+    font-size: 10px;
+    letter-spacing: .5px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.hr-badge::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.hr-badge-confirmed {
+    background: #EAF3DE;
+    color: #27500A
+}
+
+.hr-badge-confirmed::before {
+    background: #3B6D11
+}
+
+.hr-badge-pending {
+    background: #FAEEDA;
+    color: #633806
+}
+
+.hr-badge-pending::before {
+    background: #854F0B
+}
+
+.hr-badge-cancelled {
+    background: #FCEBEB;
+    color: #791F1F
+}
+
+.hr-badge-cancelled::before {
+    background: #A32D2D
+}
+
+.hr-badge-default {
+    background: var(--hr-surface);
+    color: var(--hr-muted)
+}
+
+.hr-badge-default::before {
+    background: var(--hr-muted)
+}
+
+/* ── Pagination ── */
+.hr-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .hr-wrap {
+        padding: 20px 16px 40px
+    }
+
+    .hr-hdr {
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .hr-stats {
+        width: 100%
+    }
+
+    .hr-stat {
+        flex: 1
+    }
+
+    .hr-filter {
+        flex-direction: column
+    }
+
+    .hr-fg,
+    .hr-fg-grow {
+        width: 100%
+    }
+
+    .hr-fg input,
+    .hr-fg select {
+        width: 100%
+    }
+
+    .hr-filter-actions {
+        width: 100%
+    }
+
+    .hr-btn-primary,
+    .hr-btn-ghost {
+        flex: 1;
+        justify-content: center
+    }
+
+    .hr-table-card {
+        border-radius: 12px
+    }
+}

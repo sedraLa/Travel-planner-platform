@@ -194,7 +194,7 @@ public function index(Request $request)
         $query->where('reservation_status', $request->reservation_status);
     }
 
-    $reservations = $query->latest()->get();
+    $reservations = $query->latest()->pagination(10);
 
     $reviewedReservationIds = Review::where('user_id', Auth::id())
         ->whereIn('reservation_id', $reservations->pluck('id'))

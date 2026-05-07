@@ -1,0 +1,536 @@
+/* =============================================
+   trips-index.css  —  Professional
+   ============================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@500;700&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500&display=swap');
+
+:root {
+    --ti-navy: #0A1628;
+    --ti-navy2: #0F2040;
+    --ti-blue-l: #3B82F6;
+    --ti-surf: #F4F6FA;
+    --ti-white: #FFFFFF;
+    --ti-b1: rgba(10, 22, 40, 0.08);
+    --ti-b2: rgba(10, 22, 40, 0.14);
+    --ti-muted: #64748B;
+    --ti-mono: 'DM Mono', monospace;
+    --ti-sans: 'Instrument Sans', sans-serif;
+    --ti-disp: 'Syne', sans-serif;
+}
+
+/* ── Wrapper ── */
+.ti-wrap {
+    background: var(--ti-surf);
+    min-height: 100vh;
+    font-family: var(--ti-sans);
+    color: var(--ti-navy);
+    padding: 36px 32px 56px;
+    animation: ti-fi .25s ease both;
+}
+
+@keyframes ti-fi {
+    from {
+        opacity: 0
+    }
+
+    to {
+        opacity: 1
+    }
+}
+
+@keyframes ti-su {
+    from {
+        opacity: 0;
+        transform: translateY(10px)
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0)
+    }
+}
+
+/* ── Header ── */
+.ti-hdr {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--ti-b1);
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.ti-eyebrow {
+    font-family: var(--ti-mono);
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--ti-blue-l);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.ti-hdr-left h1 {
+    font-family: var(--ti-disp);
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ti-navy);
+    letter-spacing: -.5px;
+    line-height: 1;
+}
+
+.ti-hdr-left p {
+    font-size: 13px;
+    color: var(--ti-muted);
+    margin-top: 5px;
+}
+
+.ti-btn-create {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ti-navy);
+    color: var(--ti-white);
+    border: none;
+    height: 36px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font-family: var(--ti-sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+}
+
+.ti-btn-create:hover {
+    background: var(--ti-navy2)
+}
+
+/* ── Alerts ── */
+.ti-alert {
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.ti-alert-success {
+    background: #EAF3DE;
+    color: #27500A;
+    border-left: 3px solid #3B6D11;
+}
+
+.ti-alert-error {
+    background: #FCEBEB;
+    color: #791F1F;
+    border-left: 3px solid #A32D2D;
+}
+
+/* ── Filter Bar ── */
+.ti-filter {
+    background: var(--ti-white);
+    border: 1px solid var(--ti-b1);
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: flex-end;
+    margin-bottom: 24px;
+    animation: ti-su .28s ease both;
+}
+
+.ti-fg {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.ti-fg label {
+    font-family: var(--ti-mono);
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ti-muted);
+}
+
+.ti-fg input,
+.ti-fg select {
+    font-family: var(--ti-sans);
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid var(--ti-b2);
+    border-radius: 8px;
+    background: var(--ti-surf);
+    color: var(--ti-navy);
+    height: 36px;
+    outline: none;
+    transition: border-color .15s, background .15s;
+}
+
+.ti-fg input:focus,
+.ti-fg select:focus {
+    border-color: var(--ti-blue-l);
+    background: var(--ti-white);
+}
+
+.ti-fg-grow {
+    flex: 1;
+    min-width: 180px
+}
+
+.ti-fa {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end
+}
+
+.ti-bp {
+    background: var(--ti-navy);
+    color: var(--ti-white);
+    border: none;
+    height: 36px;
+    padding: 0 18px;
+    border-radius: 8px;
+    font-family: var(--ti-sans);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .15s;
+}
+
+.ti-bp:hover {
+    background: var(--ti-navy2)
+}
+
+.ti-bg {
+    background: transparent;
+    color: var(--ti-muted);
+    border: 1px solid var(--ti-b2);
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 8px;
+    font-family: var(--ti-sans);
+    font-size: 13px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: border-color .15s, color .15s;
+}
+
+.ti-bg:hover {
+    border-color: var(--ti-navy);
+    color: var(--ti-navy)
+}
+
+/* ── Empty State ── */
+.ti-empty {
+    text-align: center;
+    padding: 64px 24px;
+    background: var(--ti-white);
+    border-radius: 16px;
+    border: 1px solid var(--ti-b1);
+}
+
+.ti-empty-ring {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px dashed var(--ti-b2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: var(--ti-muted);
+}
+
+.ti-empty p {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ti-navy);
+    margin-bottom: 4px
+}
+
+.ti-empty span {
+    font-size: 13px;
+    color: var(--ti-muted)
+}
+
+/* ── Cards Grid ── */
+.ti-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 16px;
+    animation: ti-su .3s ease both;
+}
+
+/* ── Card ── */
+.ti-card {
+    background: var(--ti-white);
+    border: 1px solid var(--ti-b1);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform .2s, border-color .2s;
+}
+
+.ti-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ti-b2);
+}
+
+.ti-card-top {
+    padding: 18px 18px 14px;
+    flex: 1;
+}
+
+.ti-name-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ti-name {
+    font-family: var(--ti-disp);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ti-navy);
+    line-height: 1.3;
+}
+
+.ti-ai-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #EFF6FF;
+    color: #1D4ED8;
+    font-family: var(--ti-mono);
+    font-size: 9px;
+    letter-spacing: .5px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ti-desc {
+    font-size: 12px;
+    color: var(--ti-muted);
+    line-height: 1.5;
+    margin-bottom: 14px;
+    min-height: 36px;
+}
+
+/* Meta */
+.ti-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 5px
+}
+
+.ti-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ti-muted);
+}
+
+.ti-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--ti-b2);
+    flex-shrink: 0;
+}
+
+.ti-meta-val {
+    color: var(--ti-navy);
+    font-weight: 500;
+}
+
+/* Status badges */
+.ti-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-family: var(--ti-mono);
+    font-size: 9px;
+    letter-spacing: .5px;
+    font-weight: 500;
+}
+
+.ti-status::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+}
+
+.ti-status-published {
+    background: #EAF3DE;
+    color: #27500A
+}
+
+.ti-status-published::before {
+    background: #3B6D11
+}
+
+.ti-status-draft {
+    background: #FAEEDA;
+    color: #633806
+}
+
+.ti-status-draft::before {
+    background: #854F0B
+}
+
+/* ── Card Bottom ── */
+.ti-card-bottom {
+    padding: 12px 18px;
+    border-top: 1px solid var(--ti-b1);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ti-btn-view {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ti-navy);
+    color: var(--ti-white);
+    border: none;
+    height: 32px;
+    border-radius: 7px;
+    font-family: var(--ti-sans);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+    min-width: 90px;
+}
+
+.ti-btn-view:hover {
+    background: var(--ti-navy2)
+}
+
+.ti-btn-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FAEEDA;
+    color: #633806;
+    border: none;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 7px;
+    font-family: var(--ti-sans);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+}
+
+.ti-btn-edit:hover {
+    background: #F5D5A8
+}
+
+.ti-btn-complete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #EFF6FF;
+    color: #1D4ED8;
+    border: none;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 7px;
+    font-family: var(--ti-sans);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background .15s;
+}
+
+.ti-btn-complete:hover {
+    background: #DBEAFE
+}
+
+.ti-btn-del {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #FCEBEB;
+    color: #791F1F;
+    border: none;
+    height: 32px;
+    width: 32px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background .15s;
+    flex-shrink: 0;
+}
+
+.ti-btn-del:hover {
+    background: #F5C1C1
+}
+
+/* ── Pagination ── */
+.ti-pagination {
+    margin-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .ti-wrap {
+        padding: 20px 16px 40px
+    }
+
+    .ti-hdr {
+        flex-direction: column;
+        align-items: flex-start
+    }
+
+    .ti-filter {
+        flex-direction: column
+    }
+
+    .ti-fg,
+    .ti-fg-grow {
+        width: 100%
+    }
+
+    .ti-fg input,
+    .ti-fg select {
+        width: 100%
+    }
+
+    .ti-fa {
+        width: 100%
+    }
+
+    .ti-bp,
+    .ti-bg {
+        flex: 1;
+        justify-content: center
+    }
+
+    .ti-grid {
+        grid-template-columns: 1fr
+    }
+}
