@@ -89,6 +89,7 @@ class DriverRankingService
             return [];
         }
 
+        //location filtering
         $drivers = Driver::query()->with('user:id,country')->whereIn("id", $driverIds)->get();
 
         $pickupLocationParts = explode(',', (string) $reservation->pickup_location);

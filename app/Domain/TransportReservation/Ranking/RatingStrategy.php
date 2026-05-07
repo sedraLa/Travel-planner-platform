@@ -27,6 +27,7 @@ class RatingStrategy implements DriverRankingStrategy
             // check if driver actually has reviews
             $hasRating = $driver->reviews()->exists();
 
+            //sorting array
             return [
                 $hasRating ? 1 : 0,
                 $hasRating ? (float) $averageRating : 0,

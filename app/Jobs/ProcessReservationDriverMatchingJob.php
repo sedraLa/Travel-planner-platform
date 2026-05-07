@@ -33,11 +33,6 @@ class ProcessReservationDriverMatchingJob implements ShouldQueue
             return;
         }
 
-        //??
-        if ($reservation->status === 'pending_payment') {
-            $stateManager->transition($reservation, 'pending_driver');
-        }
-
         $preferredCategory = strtolower((string) $reservation->preferred_category);
         $strategy = in_array($preferredCategory, ['vip', 'luxury'], true)
             ? new RatingStrategy()
