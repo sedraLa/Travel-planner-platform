@@ -335,6 +335,9 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
 
+Route::get('/driver/{id}/reviews', [ReviewController::class, 'driverIndex'])
+    ->name('reviews.driver');
+
 Route::get('/activities/{id}/reviews', [ReviewController::class, 'activityIndex'])
     ->name('activities.reviews.index');
 
