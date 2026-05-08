@@ -313,7 +313,7 @@
            Family-friendly
           </div></td>
           <td><div class="col-value bool-yes">
-          {{ $activity->family_friendly  }}
+          {{ $activity->family_friendly? 'Yes' : 'No'}}
           </div></td>
         </tr>
         <tr>

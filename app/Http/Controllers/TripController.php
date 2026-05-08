@@ -40,7 +40,7 @@ class TripController extends Controller
                 $query->whereHas('destination', fn ($destinationQuery) => $destinationQuery->where('name', 'like', "%{$destination}%"));
             })
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('trips.index', compact('trips'));
     }

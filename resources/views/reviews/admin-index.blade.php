@@ -68,6 +68,7 @@
                 <option value="trip"   @selected(request('type')=='trip')>Trip</option>
                 <option value="guide"  @selected(request('type')=='guide')>Guide</option>
                 <option value="driver" @selected(request('type')=='driver')>Driver</option>
+                 <option value="activity" @selected(request('type')=='activity')>Activity</option>
             </select>
         </div>
         <div class="rv-field">
@@ -99,6 +100,7 @@
             'trip'   => ['bar'=>'#10b981','bg'=>'#e0faf2','text'=>'#065f46','border'=>'#6ee7b7'],
             'guide'  => ['bar'=>'#3b82f6','bg'=>'#eff6ff','text'=>'#1e3a8a','border'=>'#bfdbfe'],
             'driver' => ['bar'=>'#f59e0b','bg'=>'#fef9ec','text'=>'#78350f','border'=>'#fde68a'],
+            'activity' => ['bar' => '#ec4899','bg' => '#fdf2f8','text' => '#9d174d','border' => '#f9a8d4'],
         ];
         $tc = $typeColors[$type] ?? ['bar'=>'#8b5cf6','bg'=>'#f5f3ff','text'=>'#3730a3','border'=>'#ddd6fe'];
         $starColors = [1=>'#ef4444', 2=>'#f97316', 3=>'#f59e0b', 4=>'#84cc16', 5=>'#10b981'];

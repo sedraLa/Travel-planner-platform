@@ -311,6 +311,7 @@ Route::post('/activity-reservations', [ActivityReservationController::class, 'st
 Route::get('/actvivty-reservations/{activityreservation}/pay', [ActivityReservationController::class, 'pay'])->name('activity-reservations.pay');
 Route::post('/actvivit/payment/paypal/{reservationId}', [PaymentController::class, 'payWithPayPalActivity'])->name('actvivty.payment.paypal');
 Route::get('/payment/paypal/activity/callback', [PaymentController::class, 'paypalCallbackActivity'])->name('payment.activity.callback');
+Route::get('/activity-reservations', [ActivityReservationController::class, 'index'])->name('activity.reservations.index');
 
 //Reviews routes
 //create review
