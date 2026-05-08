@@ -56,6 +56,7 @@ class VehicleOrderController extends Controller
         return redirect()->route('vehicle.searching', $reservation);
     }
 
+    //looking for a driver (view)
     public function searching(TransportReservation $reservation)
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
@@ -75,7 +76,7 @@ class VehicleOrderController extends Controller
     {
         abort_unless($reservation->user_id === Auth::id(), 403);
 
-        //check booking requests to decide if we eant to send to the next driver or not
+        //check booking requests to decide if we want to send to the next driver or not
         if ($reservation->status === 'pending_driver') {
             $rankedDriverIds = $reservation->ranked_driver_ids ?? [];
 
@@ -110,12 +111,10 @@ class VehicleOrderController extends Controller
                     ->where('reservation_id', $reservation->id)
                     ->latest('id')
                     ->first();
-
-
                 if ($lastRequest && in_array($lastRequest->status, ['expired', 'rejected'], true)) {
-                    $currentIndex = array_search($lastRequest->driver_id, $rankedDriverIds, true); //this driver is done
+                    $currentIndex = array_search($lastRequest->driver_id, $rankedDriverIds, true); //the current driver
                     $nextIndex = $currentIndex === false ? 1 : $currentIndex + 1; //move to next driver
-                    $nextDriverId = $rankedDriverIds[$nextIndex] ?? null;
+                    $nextDriverId = $rankedDriverIds[$nextIndex] ?? null; //get next driver
 
                     if ($nextDriverId) {
                         //check if request already sent to next driver (to prevent sending same request to same driver more than once)
