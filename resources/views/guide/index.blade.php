@@ -139,7 +139,16 @@
                                  
                            </td>
 
-
+                             <td class="px-6 py-4 whitespace-nowrap  text-center">
+                                <a href="{{ route('reviews.guide', $guide->id) }}">
+                                      <div class="inline-flex items-center gap-2">
+                                           <button class="order-btn edit-btn px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+                                                Reviews
+                                                  </button>
+                                      </div>
+                                  </a>
+                                 
+                           </td>
 
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                             <!--delete driver button-->
