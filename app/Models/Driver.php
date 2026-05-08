@@ -60,4 +60,9 @@ class Driver extends Model
     return round($this->reviews()->avg('rating') ?? 0, 1);
 }
 
+public function getReviewsCountAttribute()
+{
+    return $this->reviews()->count();
+}
+
 }
