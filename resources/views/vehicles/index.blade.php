@@ -61,15 +61,7 @@
                                 <span>{{$vehicle->category}}</span>
                             </div>
                         </div>
-{{--
-                        <div class="driver-section">
-                            <h4>Driver Name : <span class="driver-name">{{$vehicle->driver ? $vehicle->driver->user->full_name : 'No driver assigned'}}</span></h4>
-                            <div class="align">
-                                <img src="{{asset('images/icons/phone-solid-full.svg')}}" class="icon">
-                                <p>{{$vehicle->driver ? $vehicle->driver->user->phone_number : 'No driver assigned'}}</p>
-                            </div>
-                        </div>
---}}
+
                         <div class="price-section">
                             <div class="left">
                                 <h4>Base Price : {{$vehicle->base_price}}$</h4>
@@ -138,6 +130,7 @@
                         attribution: '&copy; OpenStreetMap contributors'
                     }).addTo(map);
 
+                    //route calculation
                     //leaflet routing machine to calculate route
                     var control = L.Routing.control({
                         waypoints: [

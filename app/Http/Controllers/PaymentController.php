@@ -139,12 +139,8 @@ public function paypalCallbackTransport(Request $request)
     $reservation = $reservationId ? TransportReservation::find($reservationId) : null;
 
     if ($result['success'] && $reservation) {
-      
-
         DB::transaction(function () use ($reservation, $result) {
             $stateManager = app(ReservationStateManager::class);
-        
-        
             $stateManager->transition($reservation, 'pending_payment'); 
             $stateManager->transition($reservation, 'confirmed');       
             $driver = Driver::find($reservation->driver_id);
