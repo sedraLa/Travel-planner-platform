@@ -47,7 +47,7 @@ class AssignmentController extends Controller
 
     $assignments = $assignments->get();
 
-    // جلب السيارات والسائقين اللي عندهم إسناد فقط
+    // get drivers and vvehicles who has assignments
     $vehicles = $assignments->pluck('vehicle')->unique('id')->values();
     $drivers = $assignments->pluck('driver')->unique('id')->values();
 
@@ -74,10 +74,6 @@ class AssignmentController extends Controller
         'shiftTemplates' => $shiftTemplates,
     ]);
 }
-
-
-
-
 
     public function store(AssignmentRequest $request)
     {
@@ -158,7 +154,7 @@ class AssignmentController extends Controller
 
     $vehicleConflict = Assignment::with('shiftTemplate')
         ->where('transport_vehicle_id', $validated['transport_vehicle_id'])
-        ->where('id', '!=', $assignment->id) // تجاهل الـ assignment الحالي
+        ->where('id', '!=', $assignment->id) 
         ->get()
         ->first(fn (Assignment $assignment) => $this->hasShiftConflict($assignment->shiftTemplate, $shiftTemplate));
     if ($vehicleConflict) {
