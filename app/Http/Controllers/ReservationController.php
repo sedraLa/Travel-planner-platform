@@ -14,6 +14,73 @@ use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
+    public function index(Request $request)
+{
+    $query = Reservation::with(['hotel', 'hotel.destination', 'user']);
+
+    $isAdmin = Auth::check() && Auth::user()->role === 'admin';
+
+    
+    if (!$isAdmin) {
+        $query->where('user_id', Auth::id());
+    }
+
+    /* =======================
+       Keyword search
+    ======================= */
+    if ($request->filled('keyword')) {
+        $term = trim($request->keyword);
+
+        $query->where(function ($q) use ($term, $isAdmin) {
+
+            $q->whereHas('hotel', fn ($h) =>
+                $h->where('name', 'like', "%{$term}%")
+            )
+            ->orWhereHas('hotel.destination', fn ($d) =>
+                $d->where('name', 'like', "%{$term}%")
+            );
+
+          
+            if ($isAdmin) {
+                $q->orWhereHas('user', function ($u) use ($term) {
+                    $u->where('name', 'like', "%{$term}%")
+                      ->orWhere('last_name', 'like', "%{$term}%")
+                      ->orWhere('email', 'like', "%{$term}%");
+                });
+            }
+        });
+    }
+
+    /* =======================
+       Date filters
+    ======================= */
+    if ($request->filled('month')) {
+        $query->whereMonth('check_in_date', $request->month);
+    }
+
+    if ($request->filled('year')) {
+        $query->whereYear('check_in_date', $request->year);
+    }
+
+    /* =======================
+       Status filter
+    ======================= */
+    if ($request->filled('reservation_status')) {
+        $query->where('reservation_status', $request->reservation_status);
+    }
+
+    $reservations = $query->latest()->paginate(10);
+
+    $reviewedReservationIds = Review::where('user_id', Auth::id())
+        ->whereIn('reservation_id', $reservations->pluck('id'))
+        ->pluck('reservation_id')
+        ->map(fn($id) => (int) $id)
+        ->all();
+
+    return view('reservation.index', compact('reservations', 'reviewedReservationIds'));
+}
+
+
    public function showReservationForm(Request $request, $id)
 {
     $hotel = Hotel::with('roomTypes')->findOrFail($id);
@@ -136,72 +203,5 @@ public function pay($reservationId) {
         abort(403,'Unauthorized action');
     }
     return view('reservation.pay',compact('reservationId','reservation'));
-}
-
-
-public function index(Request $request)
-{
-    $query = Reservation::with(['hotel', 'hotel.destination', 'user']);
-
-    $isAdmin = Auth::check() && Auth::user()->role === 'admin';
-
-    
-    if (!$isAdmin) {
-        $query->where('user_id', Auth::id());
-    }
-
-    /* =======================
-       Keyword search
-    ======================= */
-    if ($request->filled('keyword')) {
-        $term = trim($request->keyword);
-
-        $query->where(function ($q) use ($term, $isAdmin) {
-
-            $q->whereHas('hotel', fn ($h) =>
-                $h->where('name', 'like', "%{$term}%")
-            )
-            ->orWhereHas('hotel.destination', fn ($d) =>
-                $d->where('name', 'like', "%{$term}%")
-            );
-
-          
-            if ($isAdmin) {
-                $q->orWhereHas('user', function ($u) use ($term) {
-                    $u->where('name', 'like', "%{$term}%")
-                      ->orWhere('last_name', 'like', "%{$term}%")
-                      ->orWhere('email', 'like', "%{$term}%");
-                });
-            }
-        });
-    }
-
-    /* =======================
-       Date filters
-    ======================= */
-    if ($request->filled('month')) {
-        $query->whereMonth('check_in_date', $request->month);
-    }
-
-    if ($request->filled('year')) {
-        $query->whereYear('check_in_date', $request->year);
-    }
-
-    /* =======================
-       Status filter
-    ======================= */
-    if ($request->filled('reservation_status')) {
-        $query->where('reservation_status', $request->reservation_status);
-    }
-
-    $reservations = $query->latest()->pagination(10);
-
-    $reviewedReservationIds = Review::where('user_id', Auth::id())
-        ->whereIn('reservation_id', $reservations->pluck('id'))
-        ->pluck('reservation_id')
-        ->map(fn($id) => (int) $id)
-        ->all();
-
-    return view('reservation.index', compact('reservations', 'reviewedReservationIds'));
 }
 }

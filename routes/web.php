@@ -335,6 +335,9 @@ Route::get('/reviews/create', [ReviewController::class, 'create'])
 Route::get('/guide/{id}/reviews', [ReviewController::class, 'guideIndex'])
     ->name('reviews.guide');
 
+Route::get('/driver/{id}/reviews', [ReviewController::class, 'driverIndex'])
+    ->name('reviews.driver');
+
 Route::get('/activities/{id}/reviews', [ReviewController::class, 'activityIndex'])
     ->name('activities.reviews.index');
 
@@ -361,7 +364,6 @@ Route::middleware(['auth','check.driver.status']) ->prefix('driver') ->group(fun
  Route::get('/booking-requests', [BookingRequestController::class, 'index'])->name('driver.booking-requests.index');
  Route::post('/booking-requests/{bookingRequest}/accept', [BookingRequestController::class, 'accept'])->name('driver.booking-requests.accept');
  Route::post('/booking-requests/{bookingRequest}/reject', [BookingRequestController::class, 'reject'])->name('driver.booking-requests.reject');
- Route::get('/pending-reservations', [BookingRequestController::class, 'pendingReservations'])->name('driver.pending-reservations');
 
 
     });

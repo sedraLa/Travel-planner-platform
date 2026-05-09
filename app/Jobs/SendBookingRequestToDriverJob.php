@@ -47,7 +47,7 @@ class SendBookingRequestToDriverJob implements ShouldQueue
 
         if (Queue::getDefaultDriver() !== 'sync') {
             CheckBookingRequestTimeoutJob::dispatch($bookingRequest->id, $this->rankedDriverIds, $this->currentIndex)
-                ->delay($bookingRequest->expires_at);
+                ->delay($bookingRequest->expires_at); //don't run unless after 2 minutes
         }
     }
 }

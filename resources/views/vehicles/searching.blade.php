@@ -16,8 +16,8 @@
             const data = await response.json();
 
             if (data.redirect_url) {
-                window.location.href = data.redirect_url;
+                window.location.href = data.redirect_url; //go to the next page
             }
-        }, 3000);
+        }, 3000); //repeat each 3 seconds
     </script>
 </x-app-layout>

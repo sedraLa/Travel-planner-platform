@@ -38,6 +38,7 @@ class TransportReservationController extends Controller
 
         if ($distance > 0) {
             $totalPrice = ($distance * $reservation->vehicle->price_per_km) + $reservation->vehicle->base_price;
+            //calcaulate dropoff time
             $dropoffDateTime = Carbon::parse($reservation->pickup_datetime)
                 ->addMinutes($duration > 0 ? $duration : 0);
 
@@ -132,14 +133,6 @@ class TransportReservationController extends Controller
         $reservations = $query
             ->orderBy('pickup_datetime', 'desc')
             ->paginate(4);
-
-            
-
-        $reviewedReservationIds = Review::where('user_id', Auth::id())
-            ->whereIn('reservation_id', $reservations->getCollection()->pluck('id'))
-            ->pluck('reservation_id')
-            ->map(fn($id) => (int) $id)
-            ->all();
 
         return view('transportreservation.index', compact('reservations', 'reviewedReservationIds'));
     }

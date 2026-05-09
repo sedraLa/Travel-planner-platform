@@ -88,16 +88,4 @@ class BookingRequestController extends Controller
         return back()->with('success', 'Booking request rejected.');
     }
 
-    public function pendingReservations()
-    {
-        $driver = auth()->user()->driver;
-
-        $reservations = TransportReservation::with('user', 'vehicle')
-            ->where('driver_id', $driver->id)
-            ->whereIn('status', ['driver_assigned', 'confirmed'])
-            ->latest()
-            ->get();
-
-        return view('driver.pending-reservations', compact('reservations'));
-    }
 }

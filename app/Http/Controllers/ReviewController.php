@@ -171,6 +171,18 @@ public function guideIndex(string $id)
     return view('reviews.guide-index', compact('guide', 'reviews', 'avg'));
 }
 
+
+public function driverIndex(string $id)
+{
+    $driver = Driver::with('user')->findOrFail($id);
+
+    $reviews = $driver->reviews()->with('user')->latest()->get();
+
+    $avg = $driver->average_rating;
+
+    return view('reviews.driver-index', compact('driver', 'reviews', 'avg'));
+}
+
 public function activityIndex(string $id)
 {
     $activity = Activity::with('reviews.user')->findOrFail($id);
