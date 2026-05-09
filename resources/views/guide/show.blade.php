@@ -74,8 +74,7 @@
             <h3>Earnings</h3>
             </div>
             <div class="count">
-            <span id="earning-total">2 <!--number of pending booings--> </span>
-            {{--<span id="earning-total">{{ $completedTrips}}</span>--}}
+            <span id="earning-total">{{$totalEarnings}}</span>
             </div>
         </div>
 </div>

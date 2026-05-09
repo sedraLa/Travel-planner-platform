@@ -31,8 +31,8 @@ class TripController extends Controller
             ->when(request('search'), function ($query, $search) {
                 $query->where(function ($inner) use ($search) {
                     $inner->where('name', 'like', "%{$search}%")
-                        ->orWhere('description', 'like', "%{$search}%")
-                        ->orWhere('ai_prompt', 'like', "%{$search}%");
+                        ->orWhere('description', 'like', "%{$search}%"); 
+                        
                 });
             })
             ->when(request('status'), fn ($query, $status) => $query->where('status', $status))

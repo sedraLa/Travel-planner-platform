@@ -34,7 +34,7 @@
             <div class="ti-fg ti-fg-grow">
                 <label>Search</label>
                 <input type="text" name="search" value="{{ request('search') }}"
-                    placeholder="Search by name, description, or AI prompt...">
+                    placeholder="Search by name, description...">
             </div>
 
             

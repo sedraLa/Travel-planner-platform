@@ -74,7 +74,7 @@
             <h3>Earnings</h3>
             </div>
             <div class="count">
-            <span id="earning-total">2 <!--number of pending booings--> </span>
+            <span id="earning-total">for all {{ $earnings }} </span>
             </div>
         </div>
 </div>
@@ -217,7 +217,7 @@
                          @if($driver->personal_image  && Storage::disk('public')->exists($driver->personal_image))
                              <img src="{{ asset('storage/' . $driver->personal_image) }}"
                              alt="personal Photo"
-                            class="personal-modal-image">
+                            class="license-modal-image">
                          @else
                         <p class="text-center text-gray-500">No personal  photo available</p>
                          @endif
@@ -239,11 +239,7 @@
     <div class="vehicle-header">
         <h3>Assigned Vehicle</h3>
 
-        @if($vehicle)
-            <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}" class="edit-btn">
-                 Edit Vehicle
-            </a>
-        @endif
+      
     </div>
 
     @if($vehicle)

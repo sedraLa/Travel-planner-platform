@@ -184,7 +184,7 @@
                                 <!--disable select-->
                                       <select name="status" x-model="status"
                                        @if($driver->status === 'approved') disabled @endif
-                                         class="px-4 py-2 text-sm font-semibold rounded-full appearance-none border-none focus:outline-none transition-colors duration-200"
+                                         class="px-4 py-2 text-sm font-semibold rounded-full appearance-none border-none focus:outline-none transition-colors duration-200
                                          {{ $driver->status === 'approved'
                             ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
                             : '' }}"
@@ -207,7 +207,7 @@
                                                     ? 'bg-gray-400 text-white cursor-not-allowed'
                                                      : 'bg-blue-600 text-white hover:bg-blue-700' }}">
                                                                   Confirm
-                                             </button>
+                                            </button>
                                      </div>
                                 </form>
                             </td>
