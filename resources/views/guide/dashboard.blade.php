@@ -25,7 +25,7 @@
             <img class="icon" src="{{asset('images/icons/icons8-pending-50.png')}}">
             <div class="count">
             <h3>REQUESTS</h3>
-            <span id="pending-total">{{ $pendingRequests}}</span>
+            <span id="pending-total">3</span>
             </count>
             </div>
         </div>
@@ -34,7 +34,7 @@
             <img class="icon" src="{{asset('images/icons/icons8-checkmark-50.png')}}">
             <div class="count">
             <h3>TRIPS</h3>
-            <span id="completed-total">{{ $assignedTrips }}</span>
+            <span id="completed-total">2</span>
             </count>
             </div>
         </div>
@@ -43,7 +43,7 @@
             <img class="icon" src="{{asset('images/icons/icons8-cancel-50.png')}}">
             <div class="count">
             <h3>CANCELED</h3>
-            <span id="canceled-total">{{ $rejectedTrips }}</span>
+            <span id="canceled-total">4</span>
             </count>
             </div>
         </div>
@@ -53,7 +53,7 @@
             <div class="count">
             <h3>EARNINGS</h3>
             <span id="earning-total">2 <!--number of pending booings--> </span>
-            {{--<span id="earning-total">{{ $completedTrips}}</span>--}}
+            {{--<span id="earning-total">20</span>--}}
             </count>
             </div>
         </div>
@@ -64,17 +64,17 @@
     
         <div class="vehicle-info">
             <img class="vehicle-photo"
-                 src="{{ $trip?->images->first() ? asset('storage/' . $trip->images->first()->path) : asset('images/default-trip.jpg') }}"
+                src="{{ asset('storage/Destinations/Hyaqt3pekgM0gWMGp9jUAJUzypFIiOxhbqYtSKg8.jpg') }}"
                  alt="Trip Image">
     
             <div class="vehicle-details">
     
                 <h2 class="vehicle-model">
-                    {{ $trip->name ?? 'No assigned trip yet' }}
+                    {{ 'Beirut Historical City Tour' }}
                 </h2>
     
                 <span class="category">
-                  To:  {{ $trip?->primaryDestination?->name ?? 'No destination' }}
+                  To:  {{ 'Beirut, Lebanon' }}
                 </span>
     
                 <div class="vehicle-stats">
@@ -84,7 +84,7 @@
                         <div>
                             <h5>Start Date</h5>
                             <h6>
-                                {{ optional($trip?->schedules->first())->start_date ?? 'N/A' }}
+                              {{ '2026-06-15' }}
                             </h6>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                         <img class="stat-icon" src="{{ asset('images/icons/user-group-solid-full.svg') }}">
                         <div>
                             <h5> Participants</h5>
-                            <h6>{{ $trip->max_participants ?? 'N/A' }}</h6>
+                            <h6>{{ '20' }}</h6>
                         </div>
                     </div>
     
@@ -101,7 +101,7 @@
                         <img class="stat-icon" src="{{ asset('images/icons/icons8-24-hours-50.png') }}">
                         <div>
                             <h5>Duration</h5>
-                            <h6>{{ $trip->duration_days ?? 'N/A' }} days</h6>
+                            <h6>{{ '5 days' }} </h6>
                         </div>
                     </div>
     
@@ -109,7 +109,7 @@
                         <img class="stat-icon" src="{{ asset('images/icons/icons8-tour-50.png') }}">
                         <div>
                             <h5>Category</h5>
-                            <h6>{{ $trip->category ?? 'N/A' }}</h6>
+                            <h6>{{ 'Cultural & Historical Tour' }}</h6>
                         </div>
                     </div>
     
