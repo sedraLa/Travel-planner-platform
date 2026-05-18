@@ -264,7 +264,7 @@ public function paypalCallbackActivity(Request $request)
 
     if ($result['success'] && $reservation) {
         $reservation->update([
-            'status' => 'paid',
+            'status' => 'confirmed',
         ]);
 
         Payment::create([

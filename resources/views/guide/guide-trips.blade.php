@@ -21,10 +21,7 @@
             <div class="num">{{ $assignments->count() }}</div>
             <div class="lbl">Total Trips</div>
         </div>
-        <div class="gt-stat-pill">
-            <div class="num">{{ $assignments->where('status', 'active')->count() }}</div>
-            <div class="lbl">Active</div>
-        </div>
+       
         <div class="gt-stat-pill">
             <div class="num">{{ $assignments->sum(fn($a) => $a->trip->max_participants ?? 0) }}</div>
             <div class="lbl">Participants</div>

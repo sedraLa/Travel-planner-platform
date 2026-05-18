@@ -28,8 +28,8 @@
             <div class="lbl">Total</div>
         </div>
         <div class="cr-stat-pill">
-            <div class="num">${{ number_format($reservations->sum('total_price'), 0) }}</div>
-            <div class="lbl">Revenue</div>
+            <div class="num">${{ number_format($earnings, 2) }}</div>
+            <div class="lbl">Earnings</div>
         </div>
     </div>
 </div>

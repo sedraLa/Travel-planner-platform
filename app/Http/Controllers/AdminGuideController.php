@@ -51,7 +51,8 @@ public function show(string $id)
         'user',
         'assignments.trip.schedules',
         'assignments.trip.primaryDestination',
-        'assignments.trip.images'
+        'assignments.trip.images',
+        'assignments.reservations',
     ])->findOrFail($id);
 
     $trip = $guide->assignments
@@ -62,9 +63,11 @@ public function show(string $id)
          $assignedTrips = $guide?->assignments()->where('status', 'assigned')->count() ?? 0;
          $pendingRequests = $guide?->guideRequests()->where('status','pending')->count() ?? 0;
          $rejectedTrips = $guide?->guideRequests()->where('status','rejected')->count() ?? 0;
+          $totalEarnings = $guide->reservations()->where('status', 'assigned')->sum('guide_earning');
 
+         
 
-    return view('guide.show', compact('guide', 'trip','assignedTrips','pendingRequests','rejectedTrips'));
+    return view('guide.show', compact('guide', 'trip','assignedTrips','pendingRequests','rejectedTrips','totalEarnings'));
    }
 
 

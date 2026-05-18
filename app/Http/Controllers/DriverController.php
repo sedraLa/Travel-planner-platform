@@ -99,6 +99,7 @@ class DriverController extends Controller
         $pendingBookings = $driver->reservations()->where('status','pending')->count();
         $completedBookings = $driver->reservations()->where('status','completed')->count();
         $canceledBookings = $driver->reservations()->where('status','canceled')->count();
+        $earnings = $driver->reservations()->where('status', 'completed')->sum('driver_earning');
         return view('driver.show', compact([
             'driver',
             'assignment',
@@ -106,6 +107,7 @@ class DriverController extends Controller
             'pendingBookings',
             'completedBookings',
             'canceledBookings',
+            'earnings',
         ]));
     }
 
@@ -139,7 +141,11 @@ class DriverController extends Controller
         ->with(['vehicle', 'user'])
         ->paginate(4); 
 
-          return view('driver.completedbooking', compact('driver', 'reservations'));
+        $earnings = $driver->reservations()
+        ->where('driver_status', 'completed')
+       ->sum('driver_earning'); 
+
+          return view('driver.completedbooking', compact('driver', 'reservations','earnings'));
     }
 
    //show driver pending bookings for admin and driver
@@ -186,8 +192,8 @@ class DriverController extends Controller
         }
 
 
-         if ($guide->personal_image && Storage::disk('public')->exists($guide->personal_image)) {
-            Storage::disk('public')->delete($guide->personal_image);
+         if ($driver->personal_image && Storage::disk('public')->exists($driver->personal_image)) {
+            Storage::disk('public')->delete($driver->personal_image);
          }
         //delete driver
         $driver->user()->delete();
@@ -216,7 +222,7 @@ class DriverController extends Controller
         if ($validated['status'] === 'pending') {
         return redirect()->back()
             ->with('error', 'Please select a status before confirming.');
-    }
+        }
 
         $statusService->updateStatus($driver, $validated['status']);
 
