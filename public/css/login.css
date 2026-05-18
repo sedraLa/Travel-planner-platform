@@ -140,6 +140,10 @@ textarea {
         background: linear-gradient(135deg, #f59e0b, #fbbf24);
     }
 
+    .guide .icon {
+        background: linear-gradient(135deg, #1f2937, #2563eb);
+    }
+
     /* نص الخيار */
     .option-box .text h3 {
         margin: 0;

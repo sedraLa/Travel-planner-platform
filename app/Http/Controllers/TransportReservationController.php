@@ -134,7 +134,7 @@ class TransportReservationController extends Controller
             ->orderBy('pickup_datetime', 'desc')
             ->paginate(4);
 
-        return view('transportreservation.index', compact('reservations', 'reviewedReservationIds'));
+        return view('transportreservation.index', compact('reservations'));
     }
 
     /**
